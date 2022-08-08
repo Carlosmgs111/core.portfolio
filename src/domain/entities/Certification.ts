@@ -1,0 +1,88 @@
+import { v4 as uuidv4 } from "uuid";
+import { getEntityProperties, filterAttrs } from "../../utils";
+
+export class Certification {
+  uuid: string = "";
+  name: string = "";
+  certificatedTo: string = ""; // * ID to user
+  emitedBy: string = ""; // * ID to institution
+  emitedDate: number = 0; // * timestamp
+  image: string = ""; // * url to image
+  url: string = ""; // * url to certificated course or institution
+  createdAt: number = 0;
+  updatedAt: number = 0;
+  
+  constructor({
+    uuid,
+    name,
+    certificatedTo,
+    emitedBy,
+    emitedDate,
+    image,
+    url,
+  }: any) {
+    this.uuid = uuid;
+    this.name = name;
+    this.certificatedTo = certificatedTo;
+    this.emitedBy = emitedBy;
+    this.emitedDate = emitedDate;
+    this.image = image;
+    this.url = url;
+    this.createdAt = new Date().getTime();
+    this.updatedAt = new Date().getTime();
+  }
+  static create = async (
+    DatabaseServices: any,
+    data: any
+  ): Promise<Certification> => {
+    const uuid = uuidv4();
+    const certificate = new Certification({ ...data, uuid });
+    await DatabaseServices.create(certificate);
+    return certificate;
+  };
+
+  static load = async (DatabaseServices: any, credentials: any) => {
+    const project = await Certification.find(DatabaseServices, credentials);
+    if (!project) throw new Error("Incorrect credentials!");
+    const certificate = new Certification(project);
+    return certificate;
+  };
+
+  static find = async (DatabaseServices: any, credentials: any) => {
+    const certificate: any = await DatabaseServices.findOne({
+      ...filterAttrs(
+        getEntityProperties(credentials),
+        ["businessName", "name", "uuid"],
+        false
+      ),
+    });
+    return certificate;
+  };
+
+  static findAll = async (DatabaseServices: any, credentials: any) => {
+    const certificate: any = await DatabaseServices.find({
+      ...filterAttrs(
+        getEntityProperties(credentials),
+        ["businessName", "name", "uuid"],
+        false
+      ),
+    });
+    return certificate;
+  };
+
+  remove = async (DatabaseServices: any) => {
+    return await DatabaseServices.remove({
+      ...filterAttrs(
+        getEntityProperties(this),
+        ["businessName", "name", "uuid"],
+        false
+      ),
+    });
+  };
+
+  update = async (DatabaseServices: any) => {
+    return await DatabaseServices.update({
+      ...getEntityProperties(this),
+    });
+  };
+}
