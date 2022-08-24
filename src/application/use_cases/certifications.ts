@@ -1,7 +1,7 @@
-import { DatabaseService } from "../services/DatabaseServices.ts";
-import { Certification } from "../entities/Certification";
-import { Institution } from "../entities/Institution";
-import { User } from "../entities/User";
+import { DatabaseService } from "../services/DatabaseServices";
+import { Certification } from "../../domain/entities/Certification";
+import { Institution } from "../../domain/entities/Institution";
+import { User } from "../../domain/entities/User";
 
 export const addNewCertification = async (data: any) => {
   let { emitedBy, certificatedTo }: any = data;
@@ -10,7 +10,7 @@ export const addNewCertification = async (data: any) => {
     await Institution.find(
       new DatabaseService({ __identifier: "Institution" }),
       {
-        name: emitedBy,
+        businessName: emitedBy,
       }
     )
   ).uuid;

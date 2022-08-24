@@ -1,7 +1,8 @@
+import "../../../infrastructure/repositories/mongoose";
 import models from "../../../infrastructure/repositories/mongoose/models";
 import { model } from "mongoose";
 
-export class DatabaseMongooseService {
+export default class DatabaseMongooseService {
   __identifier: string;
   constructor({ __identifier }: any) {
     this.__identifier = __identifier;

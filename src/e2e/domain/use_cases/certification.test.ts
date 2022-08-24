@@ -1,12 +1,13 @@
-import { DatabaseService } from "../../../domain/services/DatabaseServices.ts";
+import { fakeCollection } from "../../../__mocks__/DatabaseServiceStub";
+import { DatabaseService } from "../../../application/services/DatabaseServices";
 import { User } from "../../../domain/entities/User";
 import { Certification } from "../../../domain/entities/Certification";
 import { Institution } from "../../../domain/entities/Institution";
-import { addNewCertification } from "../../../domain/use_cases/certifications";
-import "../../../infrastructure/repositories/mongoose";
+import { addNewCertification } from "../../../application/use_cases/certifications";
 
 describe("Aggregates of certificates", () => {
   const userCredentials = {
+    uuid:"123",
     username: "test245",
     email: "test245@email.com",
     password: "p@55w0rd",
@@ -22,7 +23,8 @@ describe("Aggregates of certificates", () => {
   let institution: Institution;
   let certification: Certification;
 
-  beforeAll(async () => {
+  beforeAll(async () => {/* 
+    spyFindOne.mockResolvedValue(userCredentials); */
     user = await User.create(
       new DatabaseService({ __identifier: "User" }),
       userCredentials
@@ -31,20 +33,22 @@ describe("Aggregates of certificates", () => {
       new DatabaseService({ __identifier: "Institution" }),
       institutionData
     );
+    // jest.clearAllMocks() / ? for clear all mocks
   });
 
   describe("Create a new certification", () => {
     test("Use case add new certification", async () => {
-      const certificateData = {
-        name: "ANGULAR.JS: MANEJO PROFESIONAL DEL ESTADO",
-        certificatedTo: user.username,
-        emitedBy: institution.name,
+      // spyFindOne.mockResolvedValue(institution);
+      const certificationData = {
+        title: "ANGULAR.JS: MANEJO PROFESIONAL DEL ESTADO",
+        certificatedTo: user.email,
+        emitedBy: institution.businessName,
         emitedDate: new Date().getTime(),
         image: "https://image_angular.url.com",
         url: "https://url_angular.com",
       };
-      certification = await addNewCertification(certificateData);
-      // console.log({ certification });
+      console.log({fakeCollection})
+      certification = await addNewCertification(certificationData);
       expect(certification.emitedBy).toEqual(institution.uuid);
       expect(certification.certificatedTo).toEqual(user.uuid);
       expect(certification.createdAt).toBeGreaterThan(0);

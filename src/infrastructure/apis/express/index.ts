@@ -7,7 +7,8 @@ import routes from "./routes";
 // import passport from "../../auth/passport";
 // import { authMiddleware } from "./middlewares/auth.handler";
 // Create a new app server
-const app = express();
+
+export const app = express();
 
 app.set("port", config.serverPort);
 app.use(morgan("dev"));
@@ -30,6 +31,6 @@ app.use((req: any, res: any, next: any) => {
 });
 app.use(routes);
 
-export default app.listen(app.get("port"), () => {
+export default (()=>app.listen(app.get("port"), () => {
   console.log(`🚀💼 Portfolio app listening on port ${app.get("port")}`);
-});;
+}));;

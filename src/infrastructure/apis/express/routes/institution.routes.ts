@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addNewInstitution } from "../../../../domain/use_cases/institutions";
+import { addNewInstitution } from "../../../../application/use_cases/institutions";
 import { expressHandlerAdapter } from "../../../../adapters/apis/express";
 
 const router = Router();

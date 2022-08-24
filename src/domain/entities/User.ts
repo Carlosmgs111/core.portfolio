@@ -37,13 +37,12 @@ export class User {
     this.updatedAt = updatedAt;
   }
   static create = async (DatabaseServices: any, data: any): Promise<any> => {
-    if (
-      await DatabaseServices.findOne({
-        ...filterAttrs(data, ["email", "username"], false),
-      })
-    ) {
-      throw new Error("Entity exist yet!");
-    }
+    const exist = await DatabaseServices.findOne({
+      ...filterAttrs(data, ["email", "username"], false),
+    })
+    console.log({exist})
+    if (exist) throw new Error("Entity exist yet!");
+    
     const uuid = uuidv4();
     const account = new User({
       ...data,

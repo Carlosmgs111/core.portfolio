@@ -1,5 +1,5 @@
-import { DatabaseService } from "../services/DatabaseServices.ts";
-import { User } from "../entities/User";
+import { DatabaseService } from "../services/DatabaseServices";
+import { User } from "../../domain/entities/User";
 
 const DBService = new DatabaseService({__identifier: "User"});
 

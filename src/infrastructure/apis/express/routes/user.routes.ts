@@ -4,7 +4,7 @@ import {
   removeUser,
   updateUser,
   signin,
-} from "../../../../domain/use_cases/users";
+} from "../../../../application/use_cases/users";
 import { expressHandlerAdapter } from "../../../../adapters/apis/express";
 
 const router = Router();

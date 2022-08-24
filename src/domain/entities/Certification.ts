@@ -3,7 +3,7 @@ import { getEntityProperties, filterAttrs } from "../../utils";
 
 export class Certification {
   uuid: string = "";
-  name: string = "";
+  title: string = "";
   certificatedTo: string = ""; // * ID to user
   emitedBy: string = ""; // * ID to institution
   emitedDate: number = 0; // * timestamp
@@ -14,7 +14,7 @@ export class Certification {
   
   constructor({
     uuid,
-    name,
+    title,
     certificatedTo,
     emitedBy,
     emitedDate,
@@ -22,7 +22,7 @@ export class Certification {
     url,
   }: any) {
     this.uuid = uuid;
-    this.name = name;
+    this.title = title;
     this.certificatedTo = certificatedTo;
     this.emitedBy = emitedBy;
     this.emitedDate = emitedDate;
@@ -52,7 +52,7 @@ export class Certification {
     const certificate: any = await DatabaseServices.findOne({
       ...filterAttrs(
         getEntityProperties(credentials),
-        ["businessName", "name", "uuid"],
+        ["businessName", "title", "uuid"],
         false
       ),
     });
@@ -63,7 +63,7 @@ export class Certification {
     const certificate: any = await DatabaseServices.find({
       ...filterAttrs(
         getEntityProperties(credentials),
-        ["businessName", "name", "uuid"],
+        ["businessName", "title", "uuid"],
         false
       ),
     });
@@ -74,7 +74,7 @@ export class Certification {
     return await DatabaseServices.remove({
       ...filterAttrs(
         getEntityProperties(this),
-        ["businessName", "name", "uuid"],
+        ["businessName", "title", "uuid"],
         false
       ),
     });

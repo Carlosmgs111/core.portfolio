@@ -1,6 +1,7 @@
+import "../../../__mocks__/DatabaseServiceStub";
 import { User } from "../../../domain/entities/User";
-import { DatabaseService } from "../../../domain/services/DatabaseServices.ts";
-import "../../../infrastructure/repositories/mongoose";
+import { DatabaseService } from "../../../application/services/DatabaseServices";
+
 
 describe("Life cycle of user", () => {
   const userCredentials = {
@@ -13,7 +14,7 @@ describe("Life cycle of user", () => {
   test("Create a new user with static method `new`", async () => {
     const DBS = new DatabaseService({ __identifier: "User" });
     user = await User.create(DBS, {
-      ...userCredentials
+      ...userCredentials,
     });
     expect(user.password).not.toBe(userCredentials.password);
   });

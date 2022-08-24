@@ -2,7 +2,7 @@ import { model, Schema, Document } from "mongoose";
 
 export interface ICertification extends Document {
   uuid: string;
-  name: string;
+  title: string;
   certificatedTo: string;
   emitedBy: string;
   emitedDate: number;
@@ -18,7 +18,7 @@ const certificationSchema = new Schema<ICertification>({
     required: true,
     unique: true,
   },
-  name: {
+  title: {
     type: String,
     unique: true,
     required: true,

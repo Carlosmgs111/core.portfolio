@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { addProject, getAllProjects } from "../../../../domain/use_cases/projects";
+import { addProject, getAllProjects } from "../../../../application/use_cases/projects";
 import { expressHandlerAdapter } from "../../../../adapters/apis/express";
 
 const router = Router();
