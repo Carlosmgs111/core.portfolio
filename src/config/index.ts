@@ -1,6 +1,7 @@
 require("dotenv").config();
 const config = {
   mongoDBLocalUrl: String(process.env.MONGODB_LOCAL_URL),
+  mongoDBLocalTestUrl: String(process.env.MONGODB_LOCAL_TEST_URL),
   mongoDBAtlasURL: String(process.env.MONGODB_ATLAS_URL),
   postgresDatabase: String(process.env.POSTGRES_DATABASE),
   postgresUser: String(process.env.POSTGRES_USER),

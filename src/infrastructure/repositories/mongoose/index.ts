@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import config from "../../../config";
 
-mongoose.connect(config.mongoDBAtlasURL);
+mongoose.connect(config.mongoDBLocalTestUrl);
 
-const connection = mongoose.connection;
+export const {connection} = mongoose;
 
 // Callback once connection open
 connection.once("open", () => {

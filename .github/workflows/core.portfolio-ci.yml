@@ -39,8 +39,8 @@ jobs:
         ports:
           - 27017:27017
         env:
-          MONGO_INITDB_ROOT_USERNAME: root
-          MONGO_INITDB_ROOT_PASSWORD: root123
+          MONGO_INITDB_ROOT_USERNAME: test
+          MONGO_INITDB_ROOT_PASSWORD: p@55w0rd
 
     steps:
       - name: Checkout
@@ -54,5 +54,5 @@ jobs:
         shell: bash
         run: npm run test:e2e
         env:
-          MONGO_DB_NAME: demo
-          MONGO_URL: mongodb://root:root123@mongo-test:27017?retryWrites=true&writeConcern=true
+          MONGO_DB_NAME: test
+          MONGO_URL: mongodb://test:p%4055w0rd@localhost:27017/test?retryWrites=true&writeConcern=majority
