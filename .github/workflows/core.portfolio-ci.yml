@@ -8,6 +8,7 @@ defaults:
 jobs:
   unit-test:
     runs-on: ubuntu-latest
+
     steps:
       - name: Checkout
         uses: actions/checkout@v2
@@ -25,3 +26,33 @@ jobs:
       - name: Run unit test
         shell: bash
         run: npm run test
+  
+  e2e-test:
+    runs-on: ubuntu-latest
+
+    container:
+      image: node:16
+
+    services:
+      mongo-e2e:
+        image: mongo:4.4
+        ports:
+          - 27017:27017
+        env:
+          MONGO_INITDB_ROOT_USERNAME: root
+          MONGO_INITDB_ROOT_PASSWORD: root123
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Install
+        shell: bash
+        run: npm ci
+
+      - name: Run e2e test
+        shell: bash
+        run: npm run test:e2e
+        env:
+          MONGO_DB_NAME: demo
+          MONGO_URL: mongodb://root:root123@mongo-test:27017?retryWrites=true&writeConcern=true
