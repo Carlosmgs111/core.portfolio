@@ -1,4 +1,4 @@
-import { Project } from "../../../domain/entities/Project";
+import { Project } from "../../../../domain/entities/Project";
 
 describe("Lifecycle of project entity",()=>{test("Create a new project", () => {
   const project = new Project({

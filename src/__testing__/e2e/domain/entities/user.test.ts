@@ -1,6 +1,6 @@
-import "../../../__mocks__/DatabaseServiceStub";
-import { User } from "../../../domain/entities/User";
-import { DatabaseService } from "../../../application/services/DatabaseServices";
+import "../../../__mocks__/DatabaseService.stub";
+import { User } from "../../../../domain/entities/User";
+import { DatabaseService } from "../../../../application/services/DatabaseServices";
 
 
 describe("Life cycle of user", () => {

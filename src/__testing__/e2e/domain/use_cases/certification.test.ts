@@ -1,9 +1,9 @@
-import { fakeCollection } from "../../../__mocks__/DatabaseServiceStub";
-import { DatabaseService } from "../../../application/services/DatabaseServices";
-import { User } from "../../../domain/entities/User";
-import { Certification } from "../../../domain/entities/Certification";
-import { Institution } from "../../../domain/entities/Institution";
-import { addNewCertification } from "../../../application/use_cases/certifications";
+import { fakeCollection } from "../../../__mocks__/DatabaseService.stub";
+import { DatabaseService } from "../../../../application/services/DatabaseServices";
+import { User } from "../../../../domain/entities/User";
+import { Certification } from "../../../../domain/entities/Certification";
+import { Institution } from "../../../../domain/entities/Institution";
+import { addNewCertification } from "../../../../application/use_cases/certifications";
 
 describe("Aggregates of certificates", () => {
   const userCredentials = {

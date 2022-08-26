@@ -1,8 +1,8 @@
 // import { spyFind } from "../__mocks__/DatabaseServiceStub";
 import request from "supertest";
-import { app } from "../infrastructure/apis/express";
+import { app } from "../../infrastructure/apis/express";
 import { generateOneProject } from "../fakers/project.fake";
-import {connection} from "../infrastructure/repositories/mongoose"
+import {connection} from "../../infrastructure/repositories/mongoose"
 
 describe("Test for get all projects endpoint", () => {
   let server: any = null;

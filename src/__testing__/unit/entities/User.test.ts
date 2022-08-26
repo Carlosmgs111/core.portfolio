@@ -1,6 +1,6 @@
-import { spyFindOne, spyCreate, fakeCollection } from "../../__mocks__/DatabaseServiceStub";
-import { User } from "./User";
-import { DatabaseService } from "../../application/services/DatabaseServices";
+import { spyFindOne, spyCreate, fakeCollection } from "../../__mocks__/DatabaseService.stub";
+import { User } from "../../../domain/entities/User";
+import { DatabaseService } from "../../../application/services/DatabaseServices";
 import { generateOneUser } from "../../fakers/user.fake";
 
 describe("User entity behavior", () => {
