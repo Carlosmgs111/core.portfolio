@@ -2,7 +2,7 @@
 import request from "supertest";
 import { app } from "../../infrastructure/apis/express";
 import { generateOneProject } from "../fakers/project.fake";
-import {connection} from "../../infrastructure/repositories/mongoose"
+import { connection } from "../../infrastructure/repositories/mongoose";
 
 describe("Test for get all projects endpoint", () => {
   let server: any = null;
@@ -13,12 +13,14 @@ describe("Test for get all projects endpoint", () => {
   });
   afterAll(async () => {
     server.close();
-    await connection.db.dropDatabase()
+    await connection.db.dropDatabase();
   });
 
   describe("test for create projects", () => {
     test("should add a new project", async () => {
-      const { body } = await request(app).post("/api/projects/add").send(generateOneProject())
+      const { body } = await request(app)
+        .post("/api/projects/add")
+        .send(generateOneProject());
       console.log({ body });
     });
   });
@@ -31,7 +33,7 @@ describe("Test for get all projects endpoint", () => {
 
       console.log({ body });
       expect.arrayContaining(body);
-      expect(body.length).toEqual(1)
+      expect(body.length).toEqual(1);
     });
   });
 });

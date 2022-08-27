@@ -1,4 +1,4 @@
-import "../../../__mocks__/DatabaseService.stub";
+import "../../../mocks/DatabaseService.stub";
 import { User } from "../../../../domain/entities/User";
 import { DatabaseService } from "../../../../application/services/DatabaseServices";
 

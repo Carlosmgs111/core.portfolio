@@ -1,4 +1,4 @@
-import { fakeCollection } from "../../../__mocks__/DatabaseService.stub";
+import { fakeCollection } from "../../../mocks/DatabaseService.stub";
 import { DatabaseService } from "../../../../application/services/DatabaseServices";
 import { User } from "../../../../domain/entities/User";
 import { Certification } from "../../../../domain/entities/Certification";

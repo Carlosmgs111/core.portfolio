@@ -1,7 +1,8 @@
 import { faker } from "@faker-js/faker";
+import { capitalize } from "../../utils";
 
 export const generateOneProject = () => ({
-  name: faker.company.name(),
+  name: capitalize(faker.company.bsBuzz()),
   description: faker.commerce.productDescription(),
   uri: faker.internet.url(),
   version: `${faker.datatype.number(100)}.${faker.datatype.number(

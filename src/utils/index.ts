@@ -19,3 +19,11 @@ export const getEntityProperties = (Entity: any) => {
   }
   return newObj;
 };
+
+export const capitalize = (label: string, pluralize: boolean = false) => {
+  return (
+    label[0].toUpperCase() +
+    label.slice(1).toLowerCase() +
+    (pluralize ? "s" : "")
+  );
+};
