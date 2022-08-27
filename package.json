@@ -10,7 +10,7 @@
     "start": "node dist/index.js",
     "dev": "yarn copy && tsc-watch --onSuccess \"node dist/index.js\" ",
     "test": "jest",
-    "test:e2e": "jest --config ./src/e2e/jest-e2e.json --forceExit",
+    "test:e2e": "jest --config ./src/testing/e2e/jest-e2e.json --forceExit",
     "build": "tsc"
   },
   "repository": {
