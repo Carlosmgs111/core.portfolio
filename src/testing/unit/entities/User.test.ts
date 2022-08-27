@@ -1,4 +1,4 @@
-import { spyFindOne, spyCreate, fakeCollection } from "../../__mocks__/DatabaseService.stub";
+import { spyFindOne, spyCreate, fakeCollection } from "../../mocks/DatabaseService.stub";
 import { User } from "../../../domain/entities/User";
 import { DatabaseService } from "../../../application/services/DatabaseServices";
 import { generateOneUser } from "../../fakers/user.fake";
