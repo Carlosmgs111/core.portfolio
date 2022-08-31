@@ -14,7 +14,7 @@ describe("Creation of a new certification", () => {
   let user: any;
   let institution: any;
   let server: any;
-  beforeAll(async() => {
+  beforeAll(async () => {
     server = app.listen(4080, () =>
       console.log("Test server running at port 4080")
     );
@@ -26,7 +26,7 @@ describe("Creation of a new certification", () => {
       new DatabaseService({ __identifier: "Institution" }),
       generateOneInstitution()
     );
-  },12000);
+  }, 12000);
 
   afterAll(async () => {
     server.close();
@@ -35,8 +35,8 @@ describe("Creation of a new certification", () => {
 
   describe("Create a new certification and related with existing entities", () => {
     test("Create a new certification", async () => {
-      console.log({user})
-      console.log({institution})
+      console.log({ user });
+      console.log({ institution });
       const { body } = await request(app)
         .post("/api/certifications/add")
         .send({

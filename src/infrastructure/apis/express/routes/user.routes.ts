@@ -9,9 +9,10 @@ import { expressHandlerAdapter } from "../../../../adapters/apis/express";
 
 const router = Router();
 
-router.post("/signup", expressHandlerAdapter(registerUser));
-router.post("/signin", expressHandlerAdapter(signin));
-router.post("/remove", expressHandlerAdapter(removeUser));
-router.post("/update", expressHandlerAdapter(updateUser));
+router
+  .post("/signup", expressHandlerAdapter(registerUser))
+  .post("/signin", expressHandlerAdapter(signin))
+  .post("/remove", expressHandlerAdapter(removeUser))
+  .post("/update", expressHandlerAdapter(updateUser));
 
 export default router;

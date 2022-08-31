@@ -1,7 +1,7 @@
 import models from "../../../infrastructure/repositories/sequelize/models";
 import { Model } from "sequelize";
 
-export class DatabaseSequelizeService {
+export default class DatabaseSequelizeService {
   __identifier: string;
   constructor({ __identifier }: any) {
     this.__identifier = __identifier;
@@ -13,7 +13,7 @@ export class DatabaseSequelizeService {
     return entity;
   };
 
-  find = async () => {
+  findAll = async () => {
     const Model = models[this.__identifier];
     await Model.sync({ alter: true });
     const entities = await Model.find();

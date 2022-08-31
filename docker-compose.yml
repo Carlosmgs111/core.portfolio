@@ -9,3 +9,40 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: p@55w0rd
     ports:
       - 27017:27017
+  
+  postgres:
+    image: postgres
+    environment:
+      - POSTGRES_DB=portfolio
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=p@55w0rd
+    ports:
+      - 5432:5432
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@mail.com
+      - PGADMIN_DEFAULT_PASSWORD=p@55w0rd
+    ports:
+      - 5050:80
+
+  mysql:
+    image: mysql:5
+    environment:
+      - MYSQL_DATABASE=portfolio
+      - MYSQL_ROOT_PASSWORD=p@55w0rd
+      - MYSQL_PORT=3306
+    ports:
+      - 3306:3306
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      - MYSQL_ROOT_PASSWORD=p@55w0rd
+      - PMA_HOST=mysql
+    ports:
+      - 8080:80

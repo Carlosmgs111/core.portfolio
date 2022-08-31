@@ -3,24 +3,26 @@ import { Certification } from "../../domain/entities/Certification";
 import { Institution } from "../../domain/entities/Institution";
 import { User } from "../../domain/entities/User";
 
+const DBS = new DatabaseService({})
+
 export const addNewCertification = async (data: any) => {
   let { emitedBy, certificatedTo }: any = data;
   console.log({ emitedBy, certificatedTo });
   emitedBy = (
     await Institution.find(
-      new DatabaseService({ __identifier: "Institution" }),
+      DBS.setup("Institution" ),
       {
         businessName: emitedBy,
       }
     )
   ).uuid;
   certificatedTo = (
-    await User.find(new DatabaseService({ __identifier: "User" }), {
+    await User.find(DBS.setup("User" ), {
       username: certificatedTo,
     })
   ).uuid;
   return await Certification.create(
-    new DatabaseService({ __identifier: "Certification" }),
+    DBS.setup("Certification" ),
     {
       ...data,
       emitedBy,
@@ -31,7 +33,7 @@ export const addNewCertification = async (data: any) => {
 
 export const getCertifications = async (data: any) => {
   return await Certification.findAll(
-    new DatabaseService({ __identifier: "Certification" }),
+    DBS.setup("Certification" ),
     data
   );
 };

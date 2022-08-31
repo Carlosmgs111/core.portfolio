@@ -14,7 +14,7 @@ export default class DatabaseMongooseService {
     return entity;
   };
 
-  find = async () => {
+  findAll = async () => {
     const Model = models[this.__identifier];
     const entities = await Model.find();
     return entities;
@@ -36,4 +36,5 @@ export default class DatabaseMongooseService {
     const model = await Model.updateOne({ uuid: Entity.uuid }, Entity);
     return model;
   };
+  setup = (__identifier:string)=>this.__identifier=__identifier
 }
