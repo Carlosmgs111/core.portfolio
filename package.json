@@ -16,7 +16,9 @@
     "postgres:migrations:run": "cd \"src/infrastructure/repositories/sequelize\" && sequelize-cli db:migrate",
     "postgres:migrations:revert": "cd \"src/infrastructure/repositories/sequelize\" && sequelize-cli db:migrate:undo",
     "postgres:migrations:delete": "cd \"src/infrastructure/repositories/sequelize\" && sequelize-cli db:migrate:undo:all",
-    "psmgt:generate":"yarn postgres:migrations:generate"
+    "psmgt:generate":"yarn postgres:migrations:generate",
+    "psmgt:run":"yarn postgres:migrations:run",
+    "psmgt:revert":"yarn postgres:migrations:revert"
   },
   "repository": {
     "type": "git",

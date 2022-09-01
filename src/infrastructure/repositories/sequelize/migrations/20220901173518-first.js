@@ -1,7 +1,5 @@
 "use strict";
 const { user_table, user_schema } = require("../models/User");
-console.log({ user_table, user_schema });
-console.log(user_schema.username)
 
 module.exports = {
   async up(queryInterface, Sequelize) {
@@ -9,11 +7,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    /**
-     * Add reverting commands here.
-     *
-     * Example:
-     * await queryInterface.dropTable('users');
-     */
+    await queryInterface.removeColumn(user_table, 'role');
   },
 };
