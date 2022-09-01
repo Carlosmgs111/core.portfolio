@@ -12,7 +12,6 @@
     "test": "jest",
     "test:e2e": "jest --config ./src/testing/e2e/jest-e2e.json --forceExit",
     "build": "tsc",
-    "tsc:sequelize":"tsc --rootdir \"./src/infrastructure/repositories/sequelize/\" --target es6 --outdir \"src/infrastructure/repositories/sequelize\"",
     "postgres:migrations:generate": "cd \"src/infrastructure/repositories/sequelize\" && sequelize-cli migration:generate --name",
     "postgres:migrations:run": "cd \"src/infrastructure/repositories/sequelize\" && sequelize-cli db:migrate",
     "postgres:migrations:revert": "cd \"src/infrastructure/repositories/sequelize\" && sequelize-cli db:migrate:undo",
