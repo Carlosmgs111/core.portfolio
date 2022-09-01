@@ -11,7 +11,13 @@
     "dev": "yarn copy && tsc-watch --onSuccess \"node dist/index.js\" ",
     "test": "jest",
     "test:e2e": "jest --config ./src/testing/e2e/jest-e2e.json --forceExit",
-    "build": "tsc"
+    "build": "tsc",
+    "tsc:sequelize":"tsc --rootdir \"./src/infrastructure/repositories/sequelize/\" --target es6 --outdir \"src/infrastructure/repositories/sequelize\"",
+    "postgres:migrations:generate": "cd \"src/infrastructure/repositories/sequelize\" && sequelize-cli migration:generate --name",
+    "postgres:migrations:run": "cd \"src/infrastructure/repositories/sequelize\" && sequelize-cli db:migrate",
+    "postgres:migrations:revert": "cd \"src/infrastructure/repositories/sequelize\" && sequelize-cli db:migrate:undo",
+    "postgres:migrations:delete": "cd \"src/infrastructure/repositories/sequelize\" && sequelize-cli db:migrate:undo:all",
+    "psmgt:generate":"yarn postgres:migrations:generate"
   },
   "repository": {
     "type": "git",
@@ -58,6 +64,9 @@
     "@types/faker": "^6.6.9",
     "@types/jest": "^28.1.6",
     "@types/supertest": "^2.0.12",
+    "mongoose-data-migrate": "^0.1.2",
+    "sequelize-cli": "^6.4.1",
+    "sequelize-cli-typescript": "^3.2.0-c",
     "supertest": "^6.2.4",
     "ts-jest": "^28.0.7",
     "tsc-watch": "^5.0.3",

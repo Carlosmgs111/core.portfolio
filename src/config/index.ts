@@ -6,6 +6,8 @@ const config = {
   postgresDatabase: String(process.env.POSTGRES_DATABASE),
   postgresUser: String(process.env.POSTGRES_USER),
   postgresPassword: String(process.env.POSTGRES_PASSWORD),
+  postgresHost:String(process.env.POSTGRES_HOST),
+  postgresPort:String(process.env.POSTGRES_PORT),
   serverPort: String(process.env.PORT),
   jwtAccessSecret: String(process.env.JWT_ACCESS_SECRET),
   jwtSignupSecret: String(process.env.JWT_SIGNUP_SECRET),

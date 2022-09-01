@@ -29,7 +29,7 @@ describe("Creation of a new certification", () => {
   }, 12000);
 
   afterAll(async () => {
-    server.close();
+    await server.close();
     await connection.db.dropDatabase();
   });
 

@@ -12,7 +12,7 @@ describe("Test for get all projects endpoint", () => {
     );
   });
   afterAll(async () => {
-    server.close();
+    await server.close();
     await connection.db.dropDatabase();
   });
 
