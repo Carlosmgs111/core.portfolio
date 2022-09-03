@@ -3,7 +3,7 @@ import { Model } from "sequelize";
 
 export default class DatabaseSequelizeService {
   __identifier: string;
-  Model: any
+  Model: any;
   constructor({ __identifier }: any) {
     this.__identifier = __identifier;
     this.Model = models[__identifier]
@@ -37,6 +37,13 @@ export default class DatabaseSequelizeService {
   update = async (Entity: any) => {
     const model = await this.Model.update( Entity,{ where: { uuid: Entity.uuid } },);
     return model;
+  };
+
+  setup = (__identifier: string) => {
+    console.log(this)
+    this.__identifier = __identifier;
+    this.Model = models[__identifier]
+    return this;
   };
 
   associate = async(Entity: any)=>{

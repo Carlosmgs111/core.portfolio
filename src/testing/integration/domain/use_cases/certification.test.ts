@@ -1,4 +1,4 @@
-import { fakeCollection } from "../../../mocks/DatabaseService.stub";
+import "../../../mocks/DatabaseService.stub";
 import { DatabaseService } from "../../../../application/services/DatabaseServices";
 import { User } from "../../../../domain/entities/User";
 import { Certification } from "../../../../domain/entities/Certification";
@@ -7,7 +7,7 @@ import { addNewCertification } from "../../../../application/use_cases/certifica
 
 describe("Aggregates of certificates", () => {
   const userCredentials = {
-    uuid:"123",
+    uuid: "123",
     username: "test245",
     email: "test245@email.com",
     password: "p@55w0rd",
@@ -23,18 +23,16 @@ describe("Aggregates of certificates", () => {
   let institution: Institution;
   let certification: Certification;
 
-  const DBS = new DatabaseService({})
+  const DBS = new DatabaseService({});
 
-  beforeAll(async () => {/* 
-    spyFindOne.mockResolvedValue(userCredentials); */
-    user = await User.create(
-      DBS.setup("User"),
-      userCredentials
-    );
-    institution = await Institution.create(
-      DBS.setup("Institution"),
-      institutionData
-    );
+  beforeAll(async () => {
+    /* 
+    spyFindOne.mockResolvedValue(userCredentials); */ 
+    DBS.setup("User")
+    user = await User.create(DBS, userCredentials);
+    console.log({user})
+    DBS.setup("Institution")
+    institution = await Institution.create(DBS, institutionData);
     // jest.clearAllMocks() / ? for clear all mocks
   });
 
@@ -49,7 +47,8 @@ describe("Aggregates of certificates", () => {
         image: "https://image_angular.url.com",
         url: "https://url_angular.com",
       };
-      console.log({fakeCollection})
+      // console.log({ fakeCollection });
+      console.log({DBS})
       certification = await addNewCertification(certificationData);
       expect(certification.emitedBy).toEqual(institution.uuid);
       expect(certification.certificatedTo).toEqual(user.uuid);
@@ -59,12 +58,11 @@ describe("Aggregates of certificates", () => {
   });
 
   afterAll(async () => {
-    await user.remove(new DatabaseService({ __identifier: "User" }));
-    await institution.remove(
-      DBS.setup("Institution")
-    );
-    await certification.remove(
-      DBS.setup("Certification")
-    );
+    DBS.setup("User")
+    await user.remove(DBS);
+    DBS.setup("Institution")
+    await institution.remove(DBS);
+    DBS.setup("Certification")
+    await certification.remove(DBS);
   });
 });

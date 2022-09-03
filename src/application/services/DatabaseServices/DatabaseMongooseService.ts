@@ -4,8 +4,7 @@ import { model } from "mongoose";
 
 export default class DatabaseMongooseService {
   __identifier: string;
-  Model:any
-  models: any = models
+  Model: any;
   constructor({ __identifier }: any) {
     this.__identifier = __identifier;
     this.Model = models[__identifier]
@@ -33,5 +32,11 @@ export default class DatabaseMongooseService {
   update = async (Entity: any) => {
     const model = await this.Model.updateOne({ uuid: Entity.uuid }, Entity);
     return model;
+  };
+  setup = (__identifier: string) => {
+    console.log(this)
+    this.__identifier = __identifier;
+    this.Model = models[__identifier]
+    return this;
   };
 }

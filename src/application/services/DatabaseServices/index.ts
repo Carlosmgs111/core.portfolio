@@ -5,9 +5,4 @@ export class DatabaseService extends DatabaseMongooseService {
   constructor(props: any) {
     super(props);
   }
-  setup = (__identifier: string) => {
-    this.__identifier = __identifier;
-    this.Model = this.models[__identifier]
-    return this;
-  };
 }

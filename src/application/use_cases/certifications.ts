@@ -8,21 +8,25 @@ const DBS = new DatabaseService({})
 export const addNewCertification = async (data: any) => {
   let { emitedBy, certificatedTo }: any = data;
   console.log({ emitedBy, certificatedTo });
+  
+  DBS.setup("Institution" )
   emitedBy = (
     await Institution.find(
-      DBS.setup("Institution" ),
+      DBS,
       {
         businessName: emitedBy,
       }
     )
   ).uuid;
+  DBS.setup("User" )
   certificatedTo = (
-    await User.find(DBS.setup("User" ), {
+    await User.find(DBS, {
       username: certificatedTo,
     })
   ).uuid;
+  DBS.setup("Certification")
   return await Certification.create(
-    DBS.setup("Certification" ),
+    DBS,
     {
       ...data,
       emitedBy,

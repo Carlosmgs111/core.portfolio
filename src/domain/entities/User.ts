@@ -37,6 +37,7 @@ export class User {
     this.updatedAt = updatedAt;
   }
   static create = async (DatabaseServices: any, data: any): Promise<any> => {
+    console.log("User ",{DatabaseServices})
     const exist = await DatabaseServices.findOne({
       ...filterAttrs(data, ["email", "username"], false),
     })

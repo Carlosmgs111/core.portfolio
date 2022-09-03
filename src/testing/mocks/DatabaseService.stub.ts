@@ -5,6 +5,7 @@ const create = async (fake: any) => {
 };
 
 const findOne = async (fake: any) => {
+  console.log("FINDONE")
   return (
     fakeCollection.filter((value: any) => {
       for (let attr in fake) {
@@ -35,6 +36,7 @@ export const DatabaseServiceStub = {
   find: async () => fakeCollection,
   remove,
   update: async () => {},
+  setup: async ()=>{}
 };
 
 export const spyCreate = jest.spyOn(DatabaseServiceStub, "create");
