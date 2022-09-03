@@ -14,15 +14,12 @@ describe("Creation of a new certification", () => {
   let user: any;
   let institution: any;
   let server: any;
-  const DBS = new DatabaseService({})
+  const DBS = new DatabaseService({});
   beforeAll(async () => {
     server = app.listen(4080, () =>
       console.log("Test server running at port 4080")
     );
-    user = await User.create(
-      DBS.setup("User"),
-      generateOneUser()
-    );
+    user = await User.create(DBS.setup("User"), generateOneUser());
     institution = await Institution.create(
       DBS.setup("Institution"),
       generateOneInstitution()
@@ -31,7 +28,7 @@ describe("Creation of a new certification", () => {
 
   afterAll(async () => {
     await server.close();
-    await connection.db.dropDatabase();
+    connection.db.dropDatabase();
   });
 
   describe("Create a new certification and related with existing entities", () => {
