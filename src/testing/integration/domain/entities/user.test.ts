@@ -10,9 +10,10 @@ describe("Life cycle of user", () => {
     password: "p@55w0rd",
   };
   var user: User;
+  const DBS = new DatabaseService({});
 
   test("Create a new user with static method `new`", async () => {
-    const DBS = new DatabaseService({ __identifier: "User" });
+    DBS.setup("User")
     user = await User.create(DBS, {
       ...userCredentials,
     });
@@ -27,7 +28,7 @@ describe("Life cycle of user", () => {
   });
 
   afterAll(async () => {
-    const DBS = new DatabaseService({ __identifier: "User" });
+    DBS.setup("User")
     const user = await User.load(DBS, {
       email: "test@email.com",
       password: "p@55w0rd",
