@@ -21,7 +21,7 @@ jobs:
 
       - name: Install
         shell: bash
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run unit test
         shell: bash
@@ -48,7 +48,7 @@ jobs:
 
       - name: Install
         shell: bash
-        run: npm ci
+        run: npm ci --legacy-peer-deps
 
       - name: Run e2e test
         shell: bash
