@@ -4,36 +4,34 @@ import { model } from "mongoose";
 
 export default class DatabaseMongooseService {
   __identifier: string;
+  Model:any
+  models: any = models
   constructor({ __identifier }: any) {
     this.__identifier = __identifier;
+    this.Model = models[__identifier]
   }
   create = async (Entity: any): Promise<typeof model | null> => {
-    const Model = models[this.__identifier];
-    const entity = new Model(Entity);
+    const entity = new this.Model(Entity);
     await entity.save();
     return entity;
   };
 
   findAll = async () => {
-    const Model = models[this.__identifier];
-    const entities = await Model.find();
+    const entities = await this.Model.find();
     return entities;
   };
 
   findOne = async (Entity: any) => {
-    const Model = models[this.__identifier];
-    const entity = await Model.findOne(Entity);
+    const entity = await this.Model.findOne(Entity);
     return entity;
   };
 
   remove = async (Entity: any) => {
-    const Model = models[this.__identifier];
-    return await Model.deleteOne(Entity);
+    return await this.Model.deleteOne(Entity);
   };
 
   update = async (Entity: any) => {
-    const Model = models[this.__identifier];
-    const model = await Model.updateOne({ uuid: Entity.uuid }, Entity);
+    const model = await this.Model.updateOne({ uuid: Entity.uuid }, Entity);
     return model;
   };
 }

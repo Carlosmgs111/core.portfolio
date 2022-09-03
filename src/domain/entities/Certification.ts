@@ -60,7 +60,7 @@ export class Certification {
   };
 
   static findAll = async (DatabaseServices: any, credentials: any) => {
-    const certificate: any = await DatabaseServices.find({
+    const certificate: any = await DatabaseServices.findAll({
       ...filterAttrs(
         getEntityProperties(credentials),
         ["businessName", "title", "uuid"],

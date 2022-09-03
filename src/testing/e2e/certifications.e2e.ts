@@ -14,16 +14,17 @@ describe("Creation of a new certification", () => {
   let user: any;
   let institution: any;
   let server: any;
+  const DBS = new DatabaseService({})
   beforeAll(async () => {
     server = app.listen(4080, () =>
       console.log("Test server running at port 4080")
     );
     user = await User.create(
-      new DatabaseService({ __identifier: "User" }),
+      DBS.setup("User"),
       generateOneUser()
     );
     institution = await Institution.create(
-      new DatabaseService({ __identifier: "Institution" }),
+      DBS.setup("Institution"),
       generateOneInstitution()
     );
   }, 12000);

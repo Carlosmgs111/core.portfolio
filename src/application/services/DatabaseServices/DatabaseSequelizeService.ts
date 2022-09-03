@@ -3,28 +3,27 @@ import { Model } from "sequelize";
 
 export default class DatabaseSequelizeService {
   __identifier: string;
+  Model: any
   constructor({ __identifier }: any) {
     this.__identifier = __identifier;
+    this.Model = models[__identifier]
   }
   create = async (Entity: any): Promise<typeof Model | null> => {
-    const Model = models[this.__identifier];
-    await Model.sync({ alter: true });
-    const entity = await Model.create(Entity);
+    await this.Model.sync({ alter: true });
+    const entity = await this.Model.create(Entity);
     return entity;
   };
 
   findAll = async () => {
-    const Model = models[this.__identifier];
-    await Model.sync({ alter: true });
-    const entities = await Model.find();
+    await this.Model.sync({ alter: true });
+    const entities = await this.Model.find();
     return entities;
   };
 
   findOne = async (Entity: any) => {
-    const Model = models[this.__identifier];
-    await Model.sync({ alter: true });
+    await this.Model.sync({ alter: true });
     try {
-      const entity = await Model.findOne({ where: Entity });
+      const entity = await this.Model.findOne({ where: Entity });
       return entity;
     } catch (e) {
       return null;
@@ -32,13 +31,15 @@ export default class DatabaseSequelizeService {
   };
 
   remove = async (Entity: any) => {
-    const Model = models[this.__identifier];
-    return await Model.destroy({ where: Entity });
+    return await this.Model.destroy({ where: Entity });
   };
 
   update = async (Entity: any) => {
-    const Model = models[this.__identifier];
-    const model = await Model.update( Entity,{ where: { uuid: Entity.uuid } },);
+    const model = await this.Model.update( Entity,{ where: { uuid: Entity.uuid } },);
     return model;
   };
+
+  associate = async(Entity: any)=>{
+    
+  }
 }

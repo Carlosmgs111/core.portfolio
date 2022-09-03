@@ -1,9 +1,13 @@
 import DatabaseMongooseService from "./DatabaseMongooseService";
-import DatabaseSequelizeService  from "./DatabaseSequelizeService";
+import DatabaseSequelizeService from "./DatabaseSequelizeService";
 
 export class DatabaseService extends DatabaseMongooseService {
   constructor(props: any) {
-    super(props)
+    super(props);
   }
-  setup = (__identifier:string)=>{this.__identifier=__identifier;return this}
+  setup = (__identifier: string) => {
+    this.__identifier = __identifier;
+    this.Model = this.models[__identifier]
+    return this;
+  };
 }

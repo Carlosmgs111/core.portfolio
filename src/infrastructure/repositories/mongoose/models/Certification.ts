@@ -31,6 +31,7 @@ const certificationSchema = new Schema<ICertification>({
     required: true,
     lowercase: true,
     trim: true,
+    ref: "User"
   },
   emitedBy: {
     type: String,
@@ -38,6 +39,7 @@ const certificationSchema = new Schema<ICertification>({
     required: true,
     lowercase: true,
     trim: true,
+    ref: "Institution"
   },
   image: {
     type: String,
