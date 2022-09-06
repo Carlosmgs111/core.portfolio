@@ -11,3 +11,15 @@ export const createUserSchema = Joi.object({
   password: password.required(),
   privilege,
 })
+
+export const updateUserSchema = Joi.object({
+  email:email.required(),
+  privilege,
+  password: password.required()
+});
+
+export const getUserSchema = Joi.object({
+  email: email.required(),
+  username,
+  password: password.required(),
+});
