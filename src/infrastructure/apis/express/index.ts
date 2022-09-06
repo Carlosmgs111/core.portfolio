@@ -3,6 +3,7 @@ import config from "../../../config";
 import morgan from "morgan";
 import cors from "cors";
 import routes from "./routes";
+import { logErrors, errorHandler, boomErrorHandler, ormErrorHandler } from './middlewares/error.handler';
 // import authRoutes from "./routes/auth.routes";
 // import passport from "../../auth/passport";
 // import { authMiddleware } from "./middlewares/auth.handler";
@@ -30,6 +31,11 @@ app.use((req: any, res: any, next: any) => {
   next();
 });
 app.use(routes);
+
+app.use(logErrors);
+app.use(ormErrorHandler);
+app.use(boomErrorHandler);
+app.use(errorHandler);
 
 export default (()=>app.listen(app.get("port"), () => {
   console.log(`🚀💼 Portfolio app listening on port ${app.get("port")}`);

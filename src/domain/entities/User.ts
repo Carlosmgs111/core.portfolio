@@ -1,6 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import { getEntityProperties, filterAttrs } from "../../utils";
+import boom from "@hapi/boom"
 
 export class User {
   uuid: string;
@@ -42,7 +43,7 @@ export class User {
       ...filterAttrs(data, ["email", "username"], false),
     })
     console.log({exist})
-    if (exist) throw new Error("Entity exist yet!");
+    if (exist) throw boom.conflict("Entity exist yet!");
     
     const uuid = uuidv4();
     const account = new User({
@@ -67,7 +68,7 @@ export class User {
       filterAttrs(credentials, ["email", "username"], false)
     );
     console.log({ user });
-    if (!user) throw new Error("Incorrect credentials!");
+    if (!user) throw boom.notFound("Incorrect credentials!");
     const account = new User(user);
     return account;
   };
