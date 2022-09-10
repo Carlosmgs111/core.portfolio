@@ -1,5 +1,5 @@
 "use strict";
-const { user_table, user_schema } = require("../models/User");
+const { user_table, user_schema } = require("../dist/models/User");
 
 module.exports = {
   async up(queryInterface, Sequelize) {
