@@ -1,4 +1,4 @@
-import models from "../../../infrastructure/repositories/sequelize/models";
+import models from "../../../infrastructure/repositories/sequelize/src/models";
 import { Model } from "sequelize";
 
 export default class DatabaseSequelizeService {
