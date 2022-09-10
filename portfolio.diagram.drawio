@@ -1,0 +1,28 @@
+<mxfile host="app.diagrams.net" modified="2022-09-10T04:48:14.194Z" agent="5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/105.0.0.0 Safari/537.36" etag="XsjC1aPglCx16EfvyNPy" version="20.3.0" type="github">
+  <diagram id="Ly9nGoLZ0aLEDpdiUq0o" name="Página-1">
+    <mxGraphModel dx="1422" dy="831" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="pZ6B12GuwLYYp0C2Zuq8-12" value="Users" style="swimlane;fontStyle=0;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeParentMax=0;resizeLast=0;collapsible=1;marginBottom=0;" parent="1" vertex="1">
+          <mxGeometry x="40" y="20" width="270" height="210" as="geometry" />
+        </mxCell>
+        <mxCell id="pZ6B12GuwLYYp0C2Zuq8-13" value="uuid VARCHAR(255) UNIQUE NN PK" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;" parent="pZ6B12GuwLYYp0C2Zuq8-12" vertex="1">
+          <mxGeometry y="30" width="270" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZ6B12GuwLYYp0C2Zuq8-14" value="username VARCHAR (255) UNIQUE NN" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;" parent="pZ6B12GuwLYYp0C2Zuq8-12" vertex="1">
+          <mxGeometry y="60" width="270" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZ6B12GuwLYYp0C2Zuq8-15" value="email VARCHAR(255) UNIQUE NN" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;" parent="pZ6B12GuwLYYp0C2Zuq8-12" vertex="1">
+          <mxGeometry y="90" width="270" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZ6B12GuwLYYp0C2Zuq8-16" value="password VARCHAR(255) NN" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;" parent="pZ6B12GuwLYYp0C2Zuq8-12" vertex="1">
+          <mxGeometry y="120" width="270" height="30" as="geometry" />
+        </mxCell>
+        <mxCell id="pZ6B12GuwLYYp0C2Zuq8-17" value="privilege VARCHAR(255) &#xa;CHECK(&quot;user&quot;, &quot;administrator&quot;, &quot;support&quot;) &#xa;DEFAULT(&quot;user&quot;)" style="text;strokeColor=none;fillColor=none;align=left;verticalAlign=middle;spacingLeft=4;spacingRight=4;overflow=hidden;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rotatable=0;" parent="pZ6B12GuwLYYp0C2Zuq8-12" vertex="1">
+          <mxGeometry y="150" width="270" height="60" as="geometry" />
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
