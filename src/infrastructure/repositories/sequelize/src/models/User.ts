@@ -1,7 +1,7 @@
 import { Model, DataTypes } from 'sequelize';
 import { sequelize } from '..';
 
-export const user_table = "User"
+export const user_table = "Users"
 export const user_schema = { uuid: DataTypes.STRING,
   username: DataTypes.STRING,
   email: DataTypes.STRING,
