@@ -28,7 +28,7 @@ describe("Creation of a new certification", () => {
 
   afterAll(async () => {
     await server.close();
-    connection.db.dropDatabase();
+    // connection.db.dropDatabase();
   });
 
   describe("Create a new certification and related with existing entities", () => {

@@ -21,7 +21,7 @@ describe("Test for get all projects endpoint", () => {
       const { body } = await request(app)
         .post("/api/projects/add")
         .send(generateOneProject());
-      console.log({ body });
+      await console.log({ body });
     });
   });
 
@@ -31,7 +31,7 @@ describe("Test for get all projects endpoint", () => {
         .get("/api/projects/projects")
         .expect(200);
 
-      console.log({ body });
+      await console.log({ body });
       expect.arrayContaining(body);
       expect(body.length).toEqual(1);
     });
