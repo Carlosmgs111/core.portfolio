@@ -13,8 +13,8 @@ export const institution_schema = {
   businessName: { allowNull: false, type: DataTypes.STRING, as:"business_name"  },
   descriptions: {  type: DataTypes.ARRAY(DataTypes.TEXT) },
   urls: {  type: DataTypes.ARRAY(DataTypes.STRING) },
-  createdAt: { type: DataTypes.DATE, allowNull: false, as: "created_at" },
-  updatedAt: { type: DataTypes.DATE, allowNull: false, as: "updated_at" },
+  createdAt: { type: DataTypes.DATE, allowNull: false, as: "created_at", underscored:true },
+  updatedAt: { type: DataTypes.DATE, allowNull: false, as: "updated_at", underscored:true },
 };
 
 export const Institution = sequelize.define(institution_table, institution_schema);

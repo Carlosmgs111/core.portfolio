@@ -9,5 +9,6 @@ export const getAllProjects = async () => {
 };
 
 export const addProject = async (data: any) => {
+  console.log({data})
   return await Project.new(DBService, data);
 };

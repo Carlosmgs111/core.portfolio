@@ -16,9 +16,19 @@ export const user_schema = {
   },
   email: { allowNull: false, unique: true, type: DataTypes.STRING },
   password: { allowNull: false, type: DataTypes.STRING },
-  privilege: DataTypes.STRING,
-  createdAt: { type: DataTypes.DATE, allowNull: false, as: "created_at" },
-  updatedAt: { type: DataTypes.DATE, allowNull: false, as: "updated_at" },
+  privilege:{ type:DataTypes.ENUM, values:["user", "admin"]},
+  createdAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    name: "created_at",
+    underscored: true,
+  },
+  updatedAt: {
+    type: DataTypes.DATE,
+    allowNull: false,
+    name: "updated_at",
+    underscoring: true,
+  },
 };
 
 export const User = sequelize.define(user_table, user_schema);

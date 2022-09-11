@@ -4,7 +4,7 @@ export const generateOneCertification = () => ({
   title: faker.helpers
     .fake("{{commerce.productAdjective}}: {{commerce.productDescription}} ")
     .toUpperCase(),
-  emitedDate: faker.datatype.datetime({min:1577836800000}).getTime(),
+  emitedAt: faker.datatype.datetime({min:1577836800000}).getTime(),
   image: faker.image.avatar(),
   url: faker.internet.url(),
 });

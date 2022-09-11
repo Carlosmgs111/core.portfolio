@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 type IProject = {
   uuid: string;
+  user_uuid: string;
   name: string;
   description: string;
   uri: string;
@@ -10,6 +11,7 @@ type IProject = {
 
 export class Project {
   uuid: string;
+  user_uuid: string;
   name: string;
   description: string;
   uri: string;
@@ -17,8 +19,9 @@ export class Project {
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({ uuid, name, description, uri, version }: IProject) {
+  constructor({ uuid, user_uuid, name, description, uri, version }: IProject) {
     this.uuid = uuid;
+    this.user_uuid = user_uuid;
     this.name = name;
     this.description = description;
     this.uri = uri;
@@ -28,7 +31,7 @@ export class Project {
   }
   static new = async (DatabaseServices: any, data: any): Promise<string> => {
     const uuid = uuidv4();
-    const account = new Project({ ...data, uuid });
+    const account = new Project({ ...data, uuid, user_uuid:"b0f29c76-cc3f-4d06-89d8-8923f433fc60" });
     return await DatabaseServices.create(account);
   };
 

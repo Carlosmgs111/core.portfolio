@@ -9,16 +9,21 @@ export const project_schema = {
     unique: true,
     type: DataTypes.STRING,
   },
-  user_id: {
+  user_uuid: {
     unique: true,
     allowNull: false,
     type: DataTypes.STRING,
-    foreignKey:true
+    references: {
+      model: "Users",
+      key: "uuid",
+      onDelete: "NO ACTION",
+      onUpdate: "NO ACTION",
+    },
   },
   name: { allowNull: false, type: DataTypes.STRING },
   description: { allowNull: false, type: DataTypes.TEXT },
-  uri:{ type:DataTypes.STRING},
-  version:{type:DataTypes.STRING, allowNull:false},
+  uri: { type: DataTypes.STRING },
+  version: { type: DataTypes.STRING, allowNull: false },
   createdAt: { type: DataTypes.DATE, allowNull: false, as: "created_at" },
   updatedAt: { type: DataTypes.DATE, allowNull: false, as: "updated_at" },
 };

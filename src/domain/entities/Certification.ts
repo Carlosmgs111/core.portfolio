@@ -6,7 +6,7 @@ export class Certification {
   title: string = "";
   certificatedTo: string = ""; // * ID to user
   emitedBy: string = ""; // * ID to institution
-  emitedDate: number = 0; // * timestamp
+  emitedAt: number = 0; // * timestamp
   image: string = ""; // * url to image
   url: string = ""; // * url to certificated course or institution
   createdAt: number = 0;
@@ -17,7 +17,7 @@ export class Certification {
     title,
     certificatedTo,
     emitedBy,
-    emitedDate,
+    emitedAt,
     image,
     url,
   }: any) {
@@ -25,7 +25,7 @@ export class Certification {
     this.title = title;
     this.certificatedTo = certificatedTo;
     this.emitedBy = emitedBy;
-    this.emitedDate = emitedDate;
+    this.emitedAt = emitedAt;
     this.image = image;
     this.url = url;
     this.createdAt = new Date().getTime();

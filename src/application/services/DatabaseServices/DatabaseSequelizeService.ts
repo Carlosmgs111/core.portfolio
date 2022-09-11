@@ -16,7 +16,7 @@ export default class DatabaseSequelizeService {
 
   findAll = async () => {
     // await this.Model.sync({ alter: true });
-    const entities = await this.Model.find();
+    const entities = await this.Model.findAll();
     return entities;
   };
 
