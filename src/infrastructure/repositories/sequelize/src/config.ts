@@ -1,4 +1,10 @@
-import {postgresUser, postgresPassword, postgresHost, postgresPort, postgresDatabase} from "./config.env"
+import {
+  postgresUser,
+  postgresPassword,
+  postgresHost,
+  postgresPort,
+  postgresDatabase,
+} from "./config.env";
 
 const USER = encodeURIComponent(postgresUser);
 const PASSWORD = encodeURIComponent(postgresPassword);

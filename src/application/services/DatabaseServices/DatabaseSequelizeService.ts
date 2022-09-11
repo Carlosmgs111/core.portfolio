@@ -9,19 +9,19 @@ export default class DatabaseSequelizeService {
     this.Model = models[__identifier]
   }
   create = async (Entity: any): Promise<typeof Model | null> => {
-    await this.Model.sync({ alter: true });
+    // await this.Model.sync({ alter: true });
     const entity = await this.Model.create(Entity);
     return entity;
   };
 
   findAll = async () => {
-    await this.Model.sync({ alter: true });
+    // await this.Model.sync({ alter: true });
     const entities = await this.Model.find();
     return entities;
   };
 
   findOne = async (Entity: any) => {
-    await this.Model.sync({ alter: true });
+    // await this.Model.sync({ alter: true });
     try {
       const entity = await this.Model.findOne({ where: Entity });
       return entity;
@@ -47,6 +47,6 @@ export default class DatabaseSequelizeService {
   };
 
   associate = async(Entity: any)=>{
-    
+
   }
 }

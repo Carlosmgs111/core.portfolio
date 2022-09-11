@@ -4,7 +4,8 @@
   "description": "core portfolio sequelize",
   "main": "index.js",
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "hello": "echo Hello!"
   },
   "devDependencies": {
     "sequelize-cli": "^6.4.1",
