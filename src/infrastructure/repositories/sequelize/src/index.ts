@@ -1,9 +1,17 @@
 import { Sequelize } from "sequelize";
-import { postgresDatabase, postgresUser, postgresPassword } from "./config.env";
+import {
+  postgresDatabaseDev,
+  postgresUserDev,
+  postgresPasswordDev,
+  postgresHostDev,
+  postgresPortDev,
+} from "./config.env";
+
+const PASSWORD = encodeURIComponent(postgresPasswordDev);
 
 export const sequelize = new Sequelize(
-  postgresDatabase,
-  postgresUser,
-  postgresPassword,
-  { host: "localhost", dialect: "postgres" }
+  postgresDatabaseDev,
+  postgresUserDev,
+  PASSWORD,
+  { host: postgresHostDev, port: Number(postgresPortDev), dialect: "postgres" }
 );

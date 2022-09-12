@@ -31,7 +31,7 @@ export class Project {
   }
   static new = async (DatabaseServices: any, data: any): Promise<string> => {
     const uuid = uuidv4();
-    const account = new Project({ ...data, uuid, user_uuid:"b0f29c76-cc3f-4d06-89d8-8923f433fc60" });
+    const account = new Project({ ...data, uuid, user_uuid:"3659701c-59c8-4458-8654-5130505bc245" });
     return await DatabaseServices.create(account);
   };
 

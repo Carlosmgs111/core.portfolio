@@ -9,27 +9,38 @@ services:
       MONGO_INITDB_ROOT_PASSWORD: p@55w0rd
     ports:
       - 27020:27017
-  
-  postgres:
+
+  mongo-dev:
+    image: mongo:4.4
+    container_name: mongo-dev
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: test
+      MONGO_INITDB_ROOT_PASSWORD: password
+    ports:
+      - 27022:27017
+    volumes: 
+      - ./mongodbdata:/data/db
+  postgres-test:
     image: postgres
     environment:
       - POSTGRES_DB=portfolio
       - POSTGRES_USER=admin
-      - POSTGRES_PASSWORD=p@55w0rd
+      - POSTGRES_PASSWORD=password
     ports:
-      - 5482:5432
+      - 5456:5432
+  
+  postgres-dev:
+    image: postgres
+    environment:
+      - POSTGRES_DB=portfolio
+      - POSTGRES_USER=admin
+      - POSTGRES_PASSWORD=password
+    ports:
+      - 5454:5432
     volumes:
       - ./postgresdata:/var/lib/postgresql
 
-  pgadmin:
-    image: dpage/pgadmin4
-    environment:
-      - PGADMIN_DEFAULT_EMAIL=admin@mail.com
-      - PGADMIN_DEFAULT_PASSWORD=p@55w0rd
-    ports:
-      - 5050:80
-
-  mysql:
+  mysql-dev:
     image: mysql:5.7.16
     environment:
       - MYSQL_DATABASE=portfolio
@@ -39,6 +50,14 @@ services:
       - 3306:3306
     volumes:
       - ./mysqldata:/var/lib/mysql
+
+  pgadmin:
+    image: dpage/pgadmin4
+    environment:
+      - PGADMIN_DEFAULT_EMAIL=admin@mail.com
+      - PGADMIN_DEFAULT_PASSWORD=p@55w0rd
+    ports:
+      - 5050:80
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
     environment:

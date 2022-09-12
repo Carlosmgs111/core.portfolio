@@ -9,7 +9,7 @@ export const blog_schema = {
     unique: true,
     type: DataTypes.STRING,
   },
-  user_id: {
+  user_uuid: {
     unique: true,
     allowNull: false,
     type: DataTypes.STRING,
