@@ -3,10 +3,15 @@ import config from "../../../config";
 import morgan from "morgan";
 import cors from "cors";
 import routes from "./routes";
-import { logErrors, errorHandler, boomErrorHandler, ormErrorHandler } from './middlewares/error.handler';
+import {
+  logErrors,
+  errorHandler,
+  boomErrorHandler,
+  ormErrorHandler,
+} from "./middlewares/error.handler";
 // import authRoutes from "./routes/auth.routes";
 // import passport from "../../auth/passport";
-// import { authMiddleware } from "./middlewares/auth.handler";
+import { urlFilter } from "./middlewares/urlFilter.handler";
 // Create a new app server
 
 export const app = express();
@@ -18,14 +23,16 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // app.use(authRoutes);
 // app.use(passport);
-// /* to check */
-// app.use(authMiddleware);
+app.use(urlFilter(["signin", "signup"], ["POST"]));
 /* to check */
 app.use((req: any, res: any, next: any) => {
   // Dominio que tengan acceso (ej. 'http://example.com')
   res.setHeader("Access-Control-Allow-Origin", "*");
   // Metodos de solicitud que deseas permitir
-  res.setHeader("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET, POST, PATCH, PUT, DELETE"
+  );
   // Encabecedados que permites (ej. 'X-Requested-With,content-type')
   res.setHeader("Access-Control-Allow-Headers", "*");
   next();
@@ -37,6 +44,7 @@ app.use(ormErrorHandler);
 app.use(boomErrorHandler);
 app.use(errorHandler);
 
-export default (()=>app.listen(app.get("port"), () => {
-  console.log(`🚀💼 Portfolio app listening on port ${app.get("port")}`);
-}));;
+export default () =>
+  app.listen(app.get("port"), () => {
+    console.log(`🚀💼 Portfolio app listening on port ${app.get("port")}`);
+  });

@@ -2,10 +2,8 @@ import models from "../../../infrastructure/repositories/sequelize/src/models";
 import { Model } from "sequelize";
 
 export default class DatabaseSequelizeService {
-  __identifier: string;
   Model: any;
   constructor({ __identifier }: any) {
-    this.__identifier = __identifier;
     this.Model = models[__identifier]
   }
   create = async (Entity: any): Promise<typeof Model | null> => {
@@ -40,8 +38,6 @@ export default class DatabaseSequelizeService {
   };
 
   setup = (__identifier: string) => {
-    console.log(this)
-    this.__identifier = __identifier;
     this.Model = models[__identifier]
     return this;
   };

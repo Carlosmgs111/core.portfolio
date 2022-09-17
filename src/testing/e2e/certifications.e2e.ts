@@ -5,6 +5,7 @@ import { generateOneProject } from "../fakers/project.fake";
 import { generateOneUser } from "../fakers/user.fake";
 import { generateOneInstitution } from "../fakers/institution.fake";
 import { connection } from "../../infrastructure/repositories/mongoose";
+import { sequelize } from "../../infrastructure/repositories/sequelize/src";
 import { User } from "../../domain/entities/User";
 import { Institution } from "../../domain/entities/Institution";
 import { DatabaseService } from "../../application/services/DatabaseServices";
@@ -24,11 +25,13 @@ describe("Creation of a new certification", () => {
       DBS.setup("Institution"),
       generateOneInstitution()
     );
+    // sequelize.sync({alter:true})
   }, 12000);
 
   afterAll(async () => {
     await server.close();
-    // connection.db.dropDatabase();
+    await sequelize.drop()
+    connection.db.dropDatabase()
   });
 
   describe("Create a new certification and related with existing entities", () => {

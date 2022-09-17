@@ -2,7 +2,7 @@ version: '3.3'
 
 services:
   mongo-test:
-    image: mongo:4.4
+    image: mongo:latest
     container_name: mongo-test
     environment:
       MONGO_INITDB_ROOT_USERNAME: test
@@ -11,7 +11,7 @@ services:
       - 27020:27017
 
   mongo-dev:
-    image: mongo:4.4
+    image: mongo:latest
     container_name: mongo-dev
     environment:
       MONGO_INITDB_ROOT_USERNAME: test
@@ -19,7 +19,7 @@ services:
     ports:
       - 27022:27017
     volumes: 
-      - ./mongodbdata:/data/db
+      - ./datadir:/data/db
   postgres-test:
     image: postgres
     environment:

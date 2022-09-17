@@ -1,7 +1,7 @@
 import mongoose from "mongoose";
 import config from "../../../config";
 
-mongoose.connect(config.mongoDBLocalTestUrl);
+mongoose.connect(config.mongoDBLocalUrl);
 
 export const {connection} = mongoose;
 

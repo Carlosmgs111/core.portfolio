@@ -6,20 +6,20 @@ const password =  Joi.string()
 const privilege = Joi.string()
 
 export const createUserSchema = Joi.object({
-  email:email.required(),
+  email,
   username:username.required(),
   password: password.required(),
   privilege,
 })
 
 export const updateUserSchema = Joi.object({
-  email:email.required(),
+  email,
   privilege,
   password: password.required()
 });
 
 export const getUserSchema = Joi.object({
-  email: email.required(),
-  username,
+  email,
+  username:username.required(),
   password: password.required(),
 });

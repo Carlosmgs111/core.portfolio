@@ -3,10 +3,8 @@ import models from "../../../infrastructure/repositories/mongoose/models";
 import { model } from "mongoose";
 
 export default class DatabaseMongooseService {
-  __identifier: string;
   Model: any;
   constructor({ __identifier }: any) {
-    this.__identifier = __identifier;
     this.Model = models[__identifier]
   }
   create = async (Entity: any): Promise<typeof model | null> => {
@@ -34,8 +32,6 @@ export default class DatabaseMongooseService {
     return model;
   };
   setup = (__identifier: string) => {
-    console.log(this)
-    this.__identifier = __identifier;
     this.Model = models[__identifier]
     return this;
   };
