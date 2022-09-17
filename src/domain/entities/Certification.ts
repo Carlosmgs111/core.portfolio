@@ -36,9 +36,10 @@ export class Certification {
     data: any
   ): Promise<Certification> => {
     const uuid = uuidv4();
-    const certificate = new Certification({ ...data, uuid });
-    await DatabaseServices.create(certificate);
-    return certificate;
+    const certification = new Certification({ ...data, uuid });
+    console.log({certification})
+    await DatabaseServices.create(certification);
+    return certification;
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {

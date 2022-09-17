@@ -20,7 +20,7 @@ export const project_schema = {
       onUpdate: "NO ACTION",
     },
   },
-  name: { allowNull: false, type: DataTypes.STRING },
+  name: { allowNull: false, type: DataTypes.STRING, unique:true },
   description: { allowNull: false, type: DataTypes.TEXT },
   uri: { type: DataTypes.STRING },
   version: { type: DataTypes.STRING, allowNull: false },

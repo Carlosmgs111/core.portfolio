@@ -19,18 +19,18 @@ export const addNewCertification = async (data: any) => {
     )
   ).uuid;
   DBS.setup("User" )
-  certificatedTo = (
+  /* certificatedTo = (
     await User.find(DBS, {
-      username: certificatedTo,
+      username: data.user.username,
     })
-  ).uuid;
+  ).uuid; */
   DBS.setup("Certification")
   return await Certification.create(
     DBS,
     {
       ...data,
       emitedBy,
-      certificatedTo,
+      certificatedTo:data.user.uuid,
     }
   );
 };
