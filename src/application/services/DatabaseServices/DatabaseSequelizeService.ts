@@ -4,7 +4,8 @@ import { Model } from "sequelize";
 export default class DatabaseSequelizeService {
   Model: any;
   constructor({ __identifier }: any) {
-    this.Model = models[__identifier]
+    this.Model = models[__identifier];
+    this.syncModels()
   }
   create = async (Entity: any): Promise<typeof Model | null> => {
     // await this.Model.sync({ alter: true });
@@ -33,16 +34,22 @@ export default class DatabaseSequelizeService {
   };
 
   update = async (Entity: any) => {
-    const model = await this.Model.update( Entity,{ where: { uuid: Entity.uuid } },);
+    const model = await this.Model.update(Entity, {
+      where: { uuid: Entity.uuid },
+    });
     return model;
   };
 
   setup = (__identifier: string) => {
-    this.Model = models[__identifier]
+    this.Model = models[__identifier];
     return this;
   };
 
-  associate = async(Entity: any)=>{
-
+  syncModels=()=>{
+    for(var model in models){
+      model:models[model].associate(models)
+    }
   }
+
+  associate = async () => this.Model.associate(models);
 }

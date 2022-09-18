@@ -26,12 +26,11 @@ describe("Aggregates of certificates", () => {
   const DBS = new DatabaseService({});
 
   beforeAll(async () => {
-    /* 
-    spyFindOne.mockResolvedValue(userCredentials); */ 
-    DBS.setup("User")
+    // spyFindOne.mockResolvedValue(userCredentials);
+    DBS.setup("User");
     user = await User.create(DBS, userCredentials);
-    console.log({user})
-    DBS.setup("Institution")
+    console.log({ user });
+    DBS.setup("Institution");
     institution = await Institution.create(DBS, institutionData);
     // jest.clearAllMocks() / ? for clear all mocks
   });
@@ -41,14 +40,14 @@ describe("Aggregates of certificates", () => {
       // spyFindOne.mockResolvedValue(institution);
       const certificationData = {
         title: "ANGULAR.JS: MANEJO PROFESIONAL DEL ESTADO",
-        certificatedTo: user.email,
         emitedBy: institution.businessName,
         emitedDate: new Date().getTime(),
         image: "https://image_angular.url.com",
         url: "https://url_angular.com",
+        user,
       };
       // console.log({ fakeCollection });
-      console.log({DBS})
+      // console.log({DBS})
       certification = await addNewCertification(certificationData);
       expect(certification.emitedBy).toEqual(institution.uuid);
       expect(certification.certificatedTo).toEqual(user.uuid);
@@ -58,11 +57,11 @@ describe("Aggregates of certificates", () => {
   });
 
   afterAll(async () => {
-    DBS.setup("User")
+    DBS.setup("User");
     await user.remove(DBS);
-    DBS.setup("Institution")
+    DBS.setup("Institution");
     await institution.remove(DBS);
-    DBS.setup("Certification")
+    DBS.setup("Certification");
     await certification.remove(DBS);
   });
 });

@@ -33,4 +33,4 @@ export const user_institution_schema = {
   },
 };
 
-export const User = sequelize.define(user_institution_table, user_institution_schema);
+export const Users_Institutions = sequelize.define(user_institution_table, user_institution_schema);

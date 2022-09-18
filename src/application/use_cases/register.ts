@@ -9,7 +9,6 @@ const AUTHS = new AuthServices();
 export const signup = async (credentials: any) => {
   const { password, username, email } = credentials;
   const existAccount = await User.find(DBS, { email });
-  console.log({ existAccount });
   return await User.create(DBS, { email, password, username });
 };
 

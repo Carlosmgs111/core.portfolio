@@ -38,7 +38,6 @@ export class User {
     this.updatedAt = updatedAt;
   }
   static create = async (DatabaseServices: any, data: any): Promise<any> => {
-    console.log("User ",{DatabaseServices})
     const exist = await DatabaseServices.findOne({
       ...filterAttrs(data, ["email", "username"], false),
     })
@@ -54,7 +53,6 @@ export class User {
       updatedAt: new Date().getTime(),
     });
     await account.hashPassword(account.password);
-    console.log({ account });
     await DatabaseServices.create({
       ...getEntityProperties(account),
     });
@@ -62,12 +60,10 @@ export class User {
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    console.log({ credentials });
     const user = await User.find(
       DatabaseServices,
       filterAttrs(credentials, ["email", "username"], false)
     );
-    console.log({ user });
     if (!user) throw boom.notFound("Incorrect credentials!");
     const account = new User(user);
     return account;
@@ -81,7 +77,6 @@ export class User {
         false
       ),
     });
-    console.log({ account });
     return account;
   };
 
@@ -92,8 +87,7 @@ export class User {
   };
 
   update = async (DatabaseServices: any) => {
-    this.updatedAt = new Date().getTime(),
-    console.log("getEntityProperties(this):", getEntityProperties(this));
+    this.updatedAt = new Date().getTime();
     return await DatabaseServices.update({
       ...getEntityProperties(this),
     });

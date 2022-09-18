@@ -32,6 +32,7 @@ export class Institution {
     const uuid = uuidv4();
     const institution = new Institution({ ...data, uuid });
     await DatabaseServices.create(institution);
+    console.log({institution})
     return institution;
   };
 

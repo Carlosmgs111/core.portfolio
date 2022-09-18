@@ -21,4 +21,8 @@ export const blog_schema = {
   updatedAt: { type: DataTypes.DATE, allowNull: false, as: "updated_at" },
 };
 
-export const Blog = sequelize.define(blog_table, blog_schema);
+export class Blog extends Model{
+  static associate(models: any){}
+}
+
+Blog.init(blog_schema, {sequelize, tableName:blog_table})

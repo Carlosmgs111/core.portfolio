@@ -44,6 +44,6 @@ export const spyFindOne = jest.spyOn(DatabaseServiceStub, "findOne");
 export const spyFind = jest.spyOn(DatabaseServiceStub, "find");
 
 export default jest.mock(
-  "../../application/services/DatabaseServices/DatabaseMongooseService",
+  "../../application/services/DatabaseServices/DatabaseSequelizeService",
   () => jest.fn().mockImplementation(() => DatabaseServiceStub)
 );

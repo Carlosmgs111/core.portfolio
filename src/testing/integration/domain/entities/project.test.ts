@@ -3,6 +3,7 @@ import { Project } from "../../../../domain/entities/Project";
 describe("Lifecycle of project entity",()=>{test("Create a new project", () => {
   const project = new Project({
     uuid: "0",
+    user_uuid:"1",
     name: "Test Project",
     description: "A test project",
     uri: "https://test.project.com",

@@ -17,4 +17,8 @@ export const institution_schema = {
   updatedAt: { type: DataTypes.DATE, allowNull: false, as: "updated_at", underscored:true },
 };
 
-export const Institution = sequelize.define(institution_table, institution_schema);
+export class Institution extends Model{
+  static associate(models:any){}
+}
+
+Institution.init(institution_schema, {sequelize, modelName: institution_table})

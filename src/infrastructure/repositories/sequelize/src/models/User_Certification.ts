@@ -33,4 +33,4 @@ export const user_certification_schema = {
   },
 };
 
-export const User = sequelize.define(user_certification_table, user_certification_schema);
+export const Users_Certifications = sequelize.define(user_certification_table, user_certification_schema);

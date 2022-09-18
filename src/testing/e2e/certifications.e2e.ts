@@ -30,8 +30,8 @@ describe("Creation of a new certification", () => {
 
   afterAll(async () => {
     await server.close();
-    await sequelize.drop()
-    connection.db.dropDatabase()
+    await sequelize.drop();
+    connection.db.dropDatabase();
   });
 
   describe("Create a new certification and related with existing entities", () => {
@@ -44,7 +44,11 @@ describe("Creation of a new certification", () => {
           ...generateOneCertification(),
           certificatedTo: user.username,
           emitedBy: institution.businessName,
-        });
+        })
+        .set(
+          "Authorization",
+          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMjU0MDhkM2MtMjAzOS00N2U2LTg2ZjUtZGVhNGY0NWJiMTc2IiwiZW1haWwiOiJjYXJsb3NtZ3MxMTFAb3V0bG9vay5jb20iLCJpYXQiOjE2NjM1MTc0NTAsImV4cCI6MTY2NjEwOTQ1MH0.zNtKPgtU2rSZbdvqAx6Y-5iW6CBxIXr7ZRUV43tJrK4"
+        );
       console.log({ body });
     });
   });

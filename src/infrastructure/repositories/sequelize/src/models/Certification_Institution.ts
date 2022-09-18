@@ -33,7 +33,7 @@ export const certification_institution_schema = {
   },
 };
 
-export const User = sequelize.define(
+export const Certifications_Institutions = sequelize.define(
   certification_institution_table,
   certification_institution_schema
 );

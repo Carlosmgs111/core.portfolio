@@ -28,4 +28,8 @@ export const project_schema = {
   updatedAt: { type: DataTypes.DATE, allowNull: false, as: "updated_at" },
 };
 
-export const Project = sequelize.define(project_table, project_schema);
+export class Project extends Model{
+  static associate(models: any){}
+}
+
+Project.init(project_schema,{sequelize, modelName:project_table})

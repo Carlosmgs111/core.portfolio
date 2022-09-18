@@ -12,9 +12,13 @@ export const certification_schema = {
   title: { allowNull: false, type: DataTypes.STRING, unique:true },
   image: { allowNull: false, type: DataTypes.STRING, unique:true },
   url: { allowNull: false, type: DataTypes.STRING },
+  
   emitedAt: { type: DataTypes.DATE, allowNull: false, as: "emited_at" },
   createdAt: { type: DataTypes.DATE, allowNull: false, as: "created_at" },
   updatedAt: { type: DataTypes.DATE, allowNull: false, as: "updated_at" },
 };
 
-export const Certification = sequelize.define(certification_table, certification_schema);
+export class Certification extends Model{
+  static associate(models: any){}
+}
+Certification.init(certification_schema, {sequelize, modelName:certification_table})

@@ -2,15 +2,13 @@ import { DatabaseService } from "../services/DatabaseServices";
 import { User } from "../../domain/entities/User";
 // ! implementar el uso de ´boom´ a traves de un ´interface´
 import boom from "@hapi/boom";
-
 const DBService = new DatabaseService({ __identifier: "User" });
+DBService.setup("User")
 
 export const registerUser = async (data: any) => {
   return await User.create(DBService, data);
 };
 export const signin = async (data: any) => {
-  console.log({ data });
-  console.log(new Map(Object.entries(data)).has("username" || "email"));
   if (
     !(
       new Map(Object.entries(data)).has("email") ||
@@ -30,3 +28,5 @@ export const updateUser = async (data: any) => {
   user.privilege = data.privilege;
   return await user.update(DBService);
 };
+
+export const sayHello = (data: any) => data.user.sayHello(data.name);

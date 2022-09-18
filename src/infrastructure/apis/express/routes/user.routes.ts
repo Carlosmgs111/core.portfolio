@@ -4,6 +4,7 @@ import {
   removeUser,
   updateUser,
   signin,
+  sayHello
 } from "../../../../application/use_cases/users";
 import { createUserSchema, getUserSchema, updateUserSchema } from "../../../schemas/user.schema";
 import { validatorHandler } from "../middlewares/validator.handler";
@@ -17,6 +18,7 @@ router
     validatorHandler(getUserSchema, "body"),
     expressHandlerAdapter(signin)
   )
+  .get("/sayhello", expressHandlerAdapter(sayHello))
   .get(
     "/:email",
     validatorHandler(getUserSchema, "params"),
@@ -36,6 +38,6 @@ router
     "/",
     validatorHandler(getUserSchema, "body"),
     expressHandlerAdapter(removeUser)
-  );
+  )
 
 export default router;

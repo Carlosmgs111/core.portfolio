@@ -1,4 +1,5 @@
 require("dotenv").config();
+import { DatabaseService } from "../application/services";
 const config = {
   mongoDBLocalUrl: String(process.env.MONGODB_LOCAL_URL),
   mongoDBLocalTestUrl: String(process.env.MONGODB_LOCAL_TEST_URL),
