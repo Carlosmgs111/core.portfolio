@@ -1,6 +1,6 @@
 import { spyFindOne, spyCreate, fakeCollection } from "../../mocks/DatabaseService.stub";
 import { User } from "../../../domain/entities/User";
-import { DatabaseService } from "../../../application/services/DatabaseServices";
+import { DatabaseService } from "../../../config/dependencies";
 import { generateOneUser } from "../../fakers/user.fake";
 
 describe("User entity behavior", () => {
@@ -11,8 +11,9 @@ describe("User entity behavior", () => {
   });
   describe("User entity life cycle", () => {
     test("Creation of new entity", async () => {
+      DatabaseService.setupModel("User")
       const newUser = await User.create(
-        new DatabaseService({ __identifier: "User" }),
+        DatabaseService,
         fakeUser
       );
       console.log({ newUser });

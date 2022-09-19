@@ -1,10 +1,10 @@
-import { DatabaseService } from "../services/DatabaseServices";
 import { Institution } from "../../domain/entities/Institution";
-
-const DBService = new DatabaseService({ __identifier: "Institution" });
+import {DatabaseService} from "../../config/dependencies"
 
 export const addNewInstitution = async (data: any) => {
-  return await Institution.create(DBService, data);
+
+DatabaseService.setupModel("Institution")
+  return await Institution.create(DatabaseService, data);
 };
 /* 
 export const getCertificates = async (data:any) => {

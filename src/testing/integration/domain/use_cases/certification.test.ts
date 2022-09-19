@@ -1,5 +1,5 @@
 import "../../../mocks/DatabaseService.stub";
-import { DatabaseService } from "../../../../application/services/DatabaseServices";
+import { DatabaseService } from "../../../../config/dependencies";
 import { User } from "../../../../domain/entities/User";
 import { Certification } from "../../../../domain/entities/Certification";
 import { Institution } from "../../../../domain/entities/Institution";
@@ -23,15 +23,15 @@ describe("Aggregates of certificates", () => {
   let institution: Institution;
   let certification: Certification;
 
-  const DBS = new DatabaseService({});
+  // const DBS = new DatabaseService({});
 
   beforeAll(async () => {
     // spyFindOne.mockResolvedValue(userCredentials);
-    DBS.setup("User");
-    user = await User.create(DBS, userCredentials);
+    DatabaseService.setupModel("User");
+    user = await User.create(DatabaseService, userCredentials);
     console.log({ user });
-    DBS.setup("Institution");
-    institution = await Institution.create(DBS, institutionData);
+    DatabaseService.setupModel("Institution");
+    institution = await Institution.create(DatabaseService, institutionData);
     // jest.clearAllMocks() / ? for clear all mocks
   });
 
@@ -47,7 +47,7 @@ describe("Aggregates of certificates", () => {
         user,
       };
       // console.log({ fakeCollection });
-      // console.log({DBS})
+      // console.log({DatabaseService})
       certification = await addNewCertification(certificationData);
       expect(certification.emitedBy).toEqual(institution.uuid);
       expect(certification.certificatedTo).toEqual(user.uuid);
@@ -57,11 +57,11 @@ describe("Aggregates of certificates", () => {
   });
 
   afterAll(async () => {
-    DBS.setup("User");
-    await user.remove(DBS);
-    DBS.setup("Institution");
-    await institution.remove(DBS);
-    DBS.setup("Certification");
-    await certification.remove(DBS);
+    DatabaseService.setupModel("User");
+    await user.remove(DatabaseService);
+    DatabaseService.setupModel("Institution");
+    await institution.remove(DatabaseService);
+    DatabaseService.setupModel("Certification");
+    await certification.remove(DatabaseService);
   });
 });

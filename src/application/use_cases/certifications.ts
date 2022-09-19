@@ -1,43 +1,35 @@
-import { DatabaseService } from "../services/DatabaseServices";
+import { DatabaseService } from "../../config/dependencies";
 import { Certification } from "../../domain/entities/Certification";
 import { Institution } from "../../domain/entities/Institution";
 import { User } from "../../domain/entities/User";
 
-const DBS = new DatabaseService({})
-
 export const addNewCertification = async (data: any) => {
   let { emitedBy, certificatedTo }: any = data;
   console.log({ emitedBy, certificatedTo });
-  
-  DBS.setup("Institution" )
+
+  DatabaseService.setupModel("Institution");
   emitedBy = (
-    await Institution.find(
-      DBS,
-      {
-        businessName: emitedBy,
-      }
-    )
+    await Institution.find(DatabaseService, {
+      businessName: emitedBy,
+    })
   ).uuid;
-  DBS.setup("User" )
+  DatabaseService.setupModel("User");
   /* certificatedTo = (
-    await User.find(DBS, {
+    await User.find(DatabaseService, {
       username: data.user.username,
     })
   ).uuid; */
-  DBS.setup("Certification")
-  return await Certification.create(
-    DBS,
-    {
-      ...data,
-      emitedBy,
-      certificatedTo:data.user.uuid,
-    }
-  );
+  DatabaseService.setupModel("Certification");
+  return await Certification.create(DatabaseService, {
+    ...data,
+    emitedBy,
+    certificatedTo: data.user.uuid,
+  });
 };
 
 export const getCertifications = async (data: any) => {
   return await Certification.findAll(
-    DBS.setup("Certification" ),
+    DatabaseService.setupModel("Certification"),
     data
   );
 };

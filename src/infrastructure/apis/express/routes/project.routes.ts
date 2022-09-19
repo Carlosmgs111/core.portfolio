@@ -1,10 +1,16 @@
 import { Router } from "express";
-import { addProject, getAllProjects } from "../../../../application/use_cases/projects";
+import {
+  addProject,
+  getAllProjects,
+  deleteProject
+} from "../../../../application/use_cases/projects";
 import { expressHandlerAdapter } from "../../../../adapters/apis/express";
 
 const router = Router();
 
-router.get("/projects", expressHandlerAdapter(getAllProjects));
-router.post("/add", expressHandlerAdapter(addProject));
+router
+  .get("/", expressHandlerAdapter(getAllProjects))
+  .post("/", expressHandlerAdapter(addProject))
+  .delete("/", expressHandlerAdapter(deleteProject))
 
 export default router;

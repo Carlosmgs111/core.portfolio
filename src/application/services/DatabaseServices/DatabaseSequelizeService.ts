@@ -5,22 +5,19 @@ export default class DatabaseSequelizeService {
   Model: any;
   constructor({ __identifier }: any) {
     this.Model = models[__identifier];
-    this.syncModels()
+    this.syncModels();
   }
   create = async (Entity: any): Promise<typeof Model | null> => {
-    // await this.Model.sync({ alter: true });
     const entity = await this.Model.create(Entity);
     return entity;
   };
 
   findAll = async () => {
-    // await this.Model.sync({ alter: true });
     const entities = await this.Model.findAll();
     return entities;
   };
 
   findOne = async (Entity: any) => {
-    // await this.Model.sync({ alter: true });
     try {
       const entity = await this.Model.findOne({ where: Entity });
       return entity;
@@ -30,7 +27,7 @@ export default class DatabaseSequelizeService {
   };
 
   remove = async (Entity: any) => {
-    return await this.Model.destroy({ where: Entity });
+    return await this.Model.destroy({ where: { uuid: Entity.uuid } });
   };
 
   update = async (Entity: any) => {
@@ -40,16 +37,13 @@ export default class DatabaseSequelizeService {
     return model;
   };
 
-  setup = (__identifier: string) => {
+  setupModel(__identifier: string) {
     this.Model = models[__identifier];
     return this;
-  };
-
-  syncModels=()=>{
-    for(var model in models){
-      model:models[model].associate(models)
-    }
   }
 
-  associate = async () => this.Model.associate(models);
+  syncModels = () => {
+    for (var model in models)
+      models[model].associate ? models[model].associate(models) : null;
+  };
 }

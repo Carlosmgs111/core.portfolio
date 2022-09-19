@@ -10,11 +10,11 @@ export const institution_schema = {
     type: DataTypes.STRING,
   },
   name: { allowNull: false, type: DataTypes.STRING, unique:true },
-  businessName: { allowNull: false, unique:true, type: DataTypes.STRING, as:"business_name"  },
+  businessName: { allowNull: false, unique:true, type: DataTypes.STRING, field:"business_name"  },
   descriptions: {  type: DataTypes.ARRAY(DataTypes.TEXT) },
   urls: {  type: DataTypes.ARRAY(DataTypes.STRING) },
-  createdAt: { type: DataTypes.DATE, allowNull: false, as: "created_at", underscored:true },
-  updatedAt: { type: DataTypes.DATE, allowNull: false, as: "updated_at", underscored:true },
+  createdAt: { type: DataTypes.DATE, allowNull: false, field: "created_at" },
+  updatedAt: { type: DataTypes.DATE, allowNull: false, field: "updated_at" },
 };
 
 export class Institution extends Model{

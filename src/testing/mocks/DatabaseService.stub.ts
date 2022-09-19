@@ -36,7 +36,7 @@ export const DatabaseServiceStub = {
   find: async () => fakeCollection,
   remove,
   update: async () => {},
-  setup: async ()=>{}
+  setupModel: async ()=>{}
 };
 
 export const spyCreate = jest.spyOn(DatabaseServiceStub, "create");

@@ -1,6 +1,6 @@
 import "../../../mocks/DatabaseService.stub";
 import { User } from "../../../../domain/entities/User";
-import { DatabaseService } from "../../../../application/services/DatabaseServices";
+import { DatabaseService } from "../../../../config/dependencies";
 
 
 describe("Life cycle of user", () => {
@@ -10,11 +10,11 @@ describe("Life cycle of user", () => {
     password: "p@55w0rd",
   };
   var user: User;
-  const DBS = new DatabaseService({});
+  // const DatabaseService = new DatabaseService({});
 
   test("Create a new user with static method `new`", async () => {
-    DBS.setup("User")
-    user = await User.create(DBS, {
+    DatabaseService.setupModel("User")
+    user = await User.create(DatabaseService, {
       ...userCredentials,
     });
     expect(user.password).not.toBe(userCredentials.password);
@@ -28,13 +28,13 @@ describe("Life cycle of user", () => {
   });
 
   afterAll(async () => {
-    DBS.setup("User")
-    const user = await User.load(DBS, {
+    DatabaseService.setupModel("User")
+    const user = await User.load(DatabaseService, {
       email: "test@email.com",
       password: "p@55w0rd",
     });
-    await user.remove(DBS);
-    const loadedUser = await User.find(DBS, {
+    await user.remove(DatabaseService);
+    const loadedUser = await User.find(DatabaseService, {
       email: "test@email.com",
     });
     expect(loadedUser).toBe(null);

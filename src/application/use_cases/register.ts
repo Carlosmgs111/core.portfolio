@@ -1,30 +1,26 @@
 import { User } from "../../domain/entities/User";
-import { DatabaseService, AuthServices } from "../services";
+import { DatabaseService, AuthServices } from "../../config/dependencies";
 import { filterAttrs, encryptData, decryptData } from "../../domain/utils";
 import config from "../../config";
 
-const DBS = new DatabaseService({ __identifier: "User" });
-const AUTHS = new AuthServices();
-
 export const signup = async (credentials: any) => {
   const { password, username, email } = credentials;
-  const existAccount = await User.find(DBS, { email });
-  return await User.create(DBS, { email, password, username });
+  const existAccount = await User.find(DatabaseService.setupModel("User"), { email });
+  return await User.create(DatabaseService, { email, password, username });
 };
 
 export const signin = async (credentials: any) => {
-  const account = await User.load(DBS, credentials);
+  const account = await User.load(DatabaseService.setupModel("User"), credentials);
   if (!account) throw new Error("The account doesn't exist!");
-  // const isMatch = await account.comparePassword(credentials.password);
-  // if (!isMatch) throw new Error("Email or password are incorrect");
-  let response = AUTHS.getAuthPackage(
+  let response = AuthServices.getAuthPackage(
     filterAttrs(account, ["uuid", "email"], false)
   );
   return response;
 };
 
 export const authSignin = async (credentials: any) => {
-  const entity = await User.load(DBS, credentials);
+  DatabaseService.setupModel("User");
+  const entity = await User.load(DatabaseService, credentials);
   // console.log({ entity });
   if (!entity) throw new Error("The account doesn't exist!");
   const isMatch = entity.comparePassword(credentials.password);
@@ -33,22 +29,25 @@ export const authSignin = async (credentials: any) => {
 };
 
 export const unsubscribe = async (credentials: any) => {
-  const account = await User.load(DBS, credentials);
-  if (account) await account.remove(DBS);
+  DatabaseService.setupModel("User");
+  const account = await User.load(DatabaseService, credentials);
+  if (account) await account.remove(DatabaseService);
 };
 
 export const update = async (credentials: any) => {
-  const account = await User.load(DBS, credentials);
-  if (account) await account.update(DBS);
+  DatabaseService.setupModel("User");
+  const account = await User.load(DatabaseService, credentials);
+  if (account) await account.update(DatabaseService);
 };
 
 // ! possible vulnerability detected!
 export const resetPassword = async (credentials: any) => {
+  DatabaseService.setupModel("User");
   const { token } = credentials;
   console.log({ token });
-  const { email, cipheredPassword } = AUTHS.verifyKey(token);
+  const { email, cipheredPassword } = AuthServices.verifyKey(token);
   const newPassword = decryptData(cipheredPassword, config.jwtSignupSecret);
-  const account = await User.load(DBS, { email });
+  const account = await User.load(DatabaseService, { email });
   const oldPassword = account.password;
   // account.changePassword({ newPassword, oldPassword }); // ! check this method
 };

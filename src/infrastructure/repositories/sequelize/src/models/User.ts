@@ -1,7 +1,5 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "..";
-import { Users_Certifications } from "./User_Certification";
-import { Users_Institutions } from "./User_Institution";
 
 export const user_table = "Users";
 export const user_schema = {
@@ -22,13 +20,13 @@ export const user_schema = {
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false,
-    name: "created_at",
+    field: "created_at",
     underscored: true,
   },
   updatedAt: {
     type: DataTypes.DATE,
     allowNull: false,
-    name: "updated_at",
+    field: "updated_at",
     underscoring: true,
   },
 };
@@ -37,8 +35,13 @@ export const user_schema = {
 export class User extends Model {
   static associate(models: any) {
     this.belongsToMany(models.Certification, {
-      through: Users_Certifications,
+      through: models.Users_Certifications,
       foreignKey: "certification_uuid",
+      otherKey: "user_uuid",
+    });
+    this.belongsToMany(models.Institution, {
+      through: models.Users_Institutions,
+      foreignKey: "institution_uuid",
       otherKey: "user_uuid",
     });
   }

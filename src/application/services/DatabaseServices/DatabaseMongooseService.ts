@@ -31,7 +31,7 @@ export default class DatabaseMongooseService {
     const model = await this.Model.updateOne({ uuid: Entity.uuid }, Entity);
     return model;
   };
-  setup = (__identifier: string) => {
+  setupModel(__identifier: string) {
     this.Model = models[__identifier]
     return this;
   };

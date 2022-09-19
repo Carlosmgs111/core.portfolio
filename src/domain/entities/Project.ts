@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 type IProject = {
   uuid: string;
-  user_uuid: string;
+  userUUID: string;
   name: string;
   description: string;
   uri: string;
@@ -11,7 +11,7 @@ type IProject = {
 
 export class Project {
   uuid: string;
-  user_uuid: string;
+  userUUID: string;
   name: string;
   description: string;
   uri: string;
@@ -19,9 +19,9 @@ export class Project {
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({ uuid, user_uuid, name, description, uri, version }: IProject) {
+  constructor({ uuid, userUUID, name, description, uri, version }: IProject) {
     this.uuid = uuid;
-    this.user_uuid = user_uuid;
+    this.userUUID = userUUID;
     this.name = name;
     this.description = description;
     this.uri = uri;
@@ -31,21 +31,22 @@ export class Project {
   }
   static new = async (DatabaseServices: any, data: any): Promise<string> => {
     const uuid = uuidv4();
-    const account = new Project({ ...data, uuid, user_uuid:data.user.uuid});
+    const account = new Project({ ...data, uuid, userUUID: data.user.uuid });
     return await DatabaseServices.create(account);
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
     const project = await Project.find(DatabaseServices, credentials);
+    console.log({ Model: DatabaseServices.Model, credentials });
     if (!project) throw new Error("Incorrect credentials!");
     const account = new Project(project);
     return account;
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
-    const { email } = credentials;
+    const { uuid } = credentials;
     const account: any = await DatabaseServices.findOne({
-      email,
+      uuid,
     });
     return account;
   };
