@@ -13,11 +13,14 @@ export default class DatabaseSequelizeService {
   };
 
   findAll = async () => {
+    console.log("FIND ALL!")
+    console.log({MODEL: this.Model})
     const entities = await this.Model.findAll();
     return entities;
   };
 
   findOne = async (Entity: any) => {
+    await console.log({Entity})
     try {
       const entity = await this.Model.findOne({ where: Entity });
       return entity;
@@ -31,6 +34,7 @@ export default class DatabaseSequelizeService {
   };
 
   update = async (Entity: any) => {
+    console.log({Entity})
     const model = await this.Model.update(Entity, {
       where: { uuid: Entity.uuid },
     });

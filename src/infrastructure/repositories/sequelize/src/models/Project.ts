@@ -30,7 +30,8 @@ export const project_schema = {
 };
 
 export class Project extends Model{
-  static associate(models: any){}
+  static associate(models: any){
+  }
 }
 
 Project.init(project_schema,{sequelize, modelName:project_table})

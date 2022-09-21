@@ -3,14 +3,15 @@ import { sequelize } from "..";
 
 export const user_certification_table = "Users_Certifications";
 export const user_certification_schema = {
-  id: {
+  uuid: {
     primaryKey: true,
     allowNull: false,
     unique: true,
     type: DataTypes.STRING,
   },
-  user_uuid: {
-    unique: true,
+  userUUID: {
+    field: "user_uuid",
+    unique: false,
     allowNull: false,
     type: DataTypes.STRING,
     references: {
@@ -20,8 +21,9 @@ export const user_certification_schema = {
       onUpdate: "NO ACTION",
     },
   },
-  certification_uuid: {
-    unique: true,
+  certificationUUID: {
+    field: "certification_uuid",
+    unique: false,
     allowNull: false,
     type: DataTypes.STRING,
     references: {
@@ -33,4 +35,11 @@ export const user_certification_schema = {
   },
 };
 
-export const Users_Certifications = sequelize.define(user_certification_table, user_certification_schema);
+export const Users_Certifications = sequelize.define(
+  user_certification_table,
+  user_certification_schema,
+  {
+    createdAt: false,
+    updatedAt: false,
+  }
+);

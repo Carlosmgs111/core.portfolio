@@ -59,9 +59,9 @@ export class Project {
     return await DatabaseServices.remove(this);
   };
 
-  update = async (DatabaseServices: any) => {
+  update = async (DatabaseServices: any, data:any) => {
     DatabaseServices.setupModel("Project")
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update(this);
+    return await DatabaseServices.update({...this, ...data});
   };
 }

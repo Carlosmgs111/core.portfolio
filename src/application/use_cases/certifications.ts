@@ -1,30 +1,28 @@
 import { DatabaseService } from "../../config/dependencies";
 import { Certification } from "../../domain/entities/Certification";
 import { Institution } from "../../domain/entities/Institution";
-import { User } from "../../domain/entities/User";
+import { User_Certification } from "../../domain/entities/User_Certification";
 
 export const addNewCertification = async (data: any) => {
   let { emitedBy, certificatedTo }: any = data;
   console.log({ emitedBy, certificatedTo });
-
-  DatabaseService;
-  emitedBy = (
+  const institutionUUID = (
     await Institution.find(DatabaseService, {
       businessName: emitedBy,
     })
   ).uuid;
-  DatabaseService;
-  /* certificatedTo = (
-    await User.find(DatabaseService, {
-      username: data.user.username,
-    })
-  ).uuid; */
-  DatabaseService;
-  return await Certification.create(DatabaseService, {
+  console.log({institutionUUID})
+  const certification = await Certification.create(DatabaseService, {
     ...data,
-    emitedBy,
-    certificatedTo: data.user.uuid,
+    institutionUUID,
   });
+  console.log({User_Certification})
+  const userCertification = await User_Certification.create(DatabaseService, {
+    userUUID: data.user.uuid,
+    certificationUUID: certification.uuid,
+  });
+  console.log({ userCertification });
+  return certification;
 };
 
 export const getCertifications = async (data: any) => {

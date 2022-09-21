@@ -1,5 +1,5 @@
 import { User } from "../../domain/entities/User";
-import {DatabaseService} from "../../config/dependencies"
+import { DatabaseService } from "../../config/dependencies";
 // ! implementar el uso de ´boom´ a traves de un ´interface´
 import boom from "@hapi/boom";
 
@@ -22,9 +22,6 @@ export const removeUser = async (data: any) => {
 };
 export const updateUser = async (data: any) => {
   console.log({ data });
-  const user = await User.load(DatabaseService, data);
-  user.privilege = data.privilege;
-  return await user.update(DatabaseService);
+  return await(await User.load(DatabaseService, data)).update(DatabaseService, data);
 };
-
 export const sayHello = (data: any) => data.user.sayHello(data.name);

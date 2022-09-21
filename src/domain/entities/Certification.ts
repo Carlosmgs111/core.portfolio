@@ -4,27 +4,17 @@ import { getEntityProperties, filterAttrs } from "../../utils";
 export class Certification {
   uuid: string = "";
   title: string = "";
-  certificatedTo: string = ""; // * ID to user
-  emitedBy: string = ""; // * ID to institution
+  institutionUUID: string = ""; // * ID to institution
   emitedAt: number = 0; // * timestamp
   image: string = ""; // * url to image
   url: string = ""; // * url to certificated course or institution
   createdAt: number = 0;
   updatedAt: number = 0;
-  
-  constructor({
-    uuid,
-    title,
-    certificatedTo,
-    emitedBy,
-    emitedAt,
-    image,
-    url,
-  }: any) {
+
+  constructor({ uuid, title, institutionUUID, emitedAt, image, url }: any) {
     this.uuid = uuid;
     this.title = title;
-    this.certificatedTo = certificatedTo;
-    this.emitedBy = emitedBy;
+    this.institutionUUID = institutionUUID;
     this.emitedAt = emitedAt;
     this.image = image;
     this.url = url;
@@ -35,16 +25,17 @@ export class Certification {
     DatabaseServices: any,
     data: any
   ): Promise<Certification> => {
-    DatabaseServices.setupModel("Certification")
+    DatabaseServices.setupModel("Certification");
     const uuid = uuidv4();
+    console.log({data})
     const certification = new Certification({ ...data, uuid });
-    console.log({certification})
+    console.log({ certification });
     await DatabaseServices.create(certification);
     return certification;
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Certification")
+    DatabaseServices.setupModel("Certification");
     const project = await Certification.find(DatabaseServices, credentials);
     if (!project) throw new Error("Incorrect credentials!");
     const certificate = new Certification(project);
@@ -52,31 +43,23 @@ export class Certification {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Certification")
-    const certificate: any = await DatabaseServices.findOne({
-      ...filterAttrs(
-        getEntityProperties(credentials),
-        ["businessName", "title", "uuid"],
-        false
-      ),
-    });
+    DatabaseServices.setupModel("Certification");
+    const certificate: any = await DatabaseServices.findOne(credentials)
+    ;
     return certificate;
   };
 
   static findAll = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Certification")
-    const certificate: any = await DatabaseServices.findAll({
-      ...filterAttrs(
-        getEntityProperties(credentials),
-        ["businessName", "title", "uuid"],
-        false
-      ),
-    });
+    DatabaseServices.setupModel("Certification");
+    console.log({credentials})
+    const certificate: any = await DatabaseServices.findAll(
+      credentials
+    );
     return certificate;
   };
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("Certification")
+    DatabaseServices.setupModel("Certification");
     return await DatabaseServices.remove({
       ...filterAttrs(
         getEntityProperties(this),
@@ -87,7 +70,7 @@ export class Certification {
   };
 
   update = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("Certification")
+    DatabaseServices.setupModel("Certification");
     return await DatabaseServices.update({
       ...getEntityProperties(this),
     });

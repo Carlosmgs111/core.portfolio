@@ -5,7 +5,6 @@ import { Certification } from "./Certification";
 import { Post } from "./Post";
 import { Users_Institutions } from "./User_Institution";
 import { Users_Certifications } from "./User_Certification";
-import { Certifications_Institutions } from "./Certification_Institution";
 
 const models: any = {
   User,
@@ -15,7 +14,6 @@ const models: any = {
   Post,
   Users_Institutions,
   Users_Certifications,
-  Certifications_Institutions,
 };
 
 export default models;

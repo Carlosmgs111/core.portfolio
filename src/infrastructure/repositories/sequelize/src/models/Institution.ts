@@ -18,7 +18,12 @@ export const institution_schema = {
 };
 
 export class Institution extends Model{
-  static associate(models:any){}
+  static associate(models:any){
+    this.hasMany(models.Certification, {
+      as: "certifications",
+      foreignKey: "institutionUUID"
+    })
+  }
 }
 
 Institution.init(institution_schema, {sequelize, modelName: institution_table})

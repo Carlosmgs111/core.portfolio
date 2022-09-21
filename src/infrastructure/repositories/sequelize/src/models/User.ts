@@ -21,13 +21,11 @@ export const user_schema = {
     type: DataTypes.DATE,
     allowNull: false,
     field: "created_at",
-    underscored: true,
   },
   updatedAt: {
     type: DataTypes.DATE,
     allowNull: false,
     field: "updated_at",
-    underscoring: true,
   },
 };
 
@@ -37,12 +35,20 @@ export class User extends Model {
     this.belongsToMany(models.Certification, {
       through: models.Users_Certifications,
       foreignKey: "certification_uuid",
-      otherKey: "user_uuid",
+      otherKey: "userUUID",
     });
     this.belongsToMany(models.Institution, {
       through: models.Users_Institutions,
       foreignKey: "institution_uuid",
-      otherKey: "user_uuid",
+      otherKey: "userUUID",
+    });
+    this.hasMany(models.Project, {
+      as: "projects",
+      foreignKey: "userUUID",
+    });
+    this.hasMany(models.Post, {
+      as: "posts",
+      foreignKey: "userUUID",
     });
   }
   sayHello(name: string) {

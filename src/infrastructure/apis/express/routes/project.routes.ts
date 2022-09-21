@@ -2,7 +2,8 @@ import { Router } from "express";
 import {
   addProject,
   getAllProjects,
-  deleteProject
+  deleteProject,
+  updateProject
 } from "../../../../application/use_cases/projects";
 import { expressHandlerAdapter } from "../../../../adapters/apis/express";
 
@@ -12,5 +13,6 @@ router
   .get("/", expressHandlerAdapter(getAllProjects))
   .post("/", expressHandlerAdapter(addProject))
   .delete("/", expressHandlerAdapter(deleteProject))
+  .patch("/", expressHandlerAdapter(updateProject))
 
 export default router;

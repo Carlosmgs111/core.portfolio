@@ -9,9 +9,10 @@ export const user_institution_schema = {
     unique: true,
     type: DataTypes.STRING,
   },
-  user_uuid: {
-    unique: true,
+  userUUID: {
+    unique: false,
     allowNull: false,
+    field:"user_uuid",
     type: DataTypes.STRING,
     references: {
       model: "Users",
@@ -20,9 +21,10 @@ export const user_institution_schema = {
       onUpdate: "NO ACTION",
     },
   },
-  institution_uuid: {
-    unique: true,
+  institutionUUID: {
+    unique: false,
     allowNull: false,
+    field:"institution_uuid",
     type: DataTypes.STRING,
     references: {
       model: "Institutions",
@@ -33,4 +35,6 @@ export const user_institution_schema = {
   },
 };
 
-export const Users_Institutions = sequelize.define(user_institution_table, user_institution_schema);
+export const Users_Institutions = sequelize.define(user_institution_table, user_institution_schema, 
+  {createdAt:false,
+  updatedAt:false});

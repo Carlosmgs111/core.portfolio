@@ -34,12 +34,12 @@ export const unsubscribe = async (credentials: any) => {
   if (account) await account.remove(DatabaseService);
 };
 
-export const update = async (credentials: any) => {
+export const update = async (credentials: any, data:any) => {
   DatabaseService;
   const account = await User.load(DatabaseService, credentials);
-  if (account) await account.update(DatabaseService);
+  if (account) await account.update(DatabaseService, data);
 };
-
+ 
 // ! possible vulnerability detected!
 export const resetPassword = async (credentials: any) => {
   DatabaseService;
