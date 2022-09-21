@@ -5,12 +5,12 @@ import config from "../../config";
 
 export const signup = async (credentials: any) => {
   const { password, username, email } = credentials;
-  const existAccount = await User.find(DatabaseService.setupModel("User"), { email });
+  const existAccount = await User.find(DatabaseService, { email });
   return await User.create(DatabaseService, { email, password, username });
 };
 
 export const signin = async (credentials: any) => {
-  const account = await User.load(DatabaseService.setupModel("User"), credentials);
+  const account = await User.load(DatabaseService, credentials);
   if (!account) throw new Error("The account doesn't exist!");
   let response = AuthServices.getAuthPackage(
     filterAttrs(account, ["uuid", "email"], false)
@@ -19,7 +19,7 @@ export const signin = async (credentials: any) => {
 };
 
 export const authSignin = async (credentials: any) => {
-  DatabaseService.setupModel("User");
+  DatabaseService;
   const entity = await User.load(DatabaseService, credentials);
   // console.log({ entity });
   if (!entity) throw new Error("The account doesn't exist!");
@@ -29,20 +29,20 @@ export const authSignin = async (credentials: any) => {
 };
 
 export const unsubscribe = async (credentials: any) => {
-  DatabaseService.setupModel("User");
+  DatabaseService;
   const account = await User.load(DatabaseService, credentials);
   if (account) await account.remove(DatabaseService);
 };
 
 export const update = async (credentials: any) => {
-  DatabaseService.setupModel("User");
+  DatabaseService;
   const account = await User.load(DatabaseService, credentials);
   if (account) await account.update(DatabaseService);
 };
 
 // ! possible vulnerability detected!
 export const resetPassword = async (credentials: any) => {
-  DatabaseService.setupModel("User");
+  DatabaseService;
   const { token } = credentials;
   console.log({ token });
   const { email, cipheredPassword } = AuthServices.verifyKey(token);

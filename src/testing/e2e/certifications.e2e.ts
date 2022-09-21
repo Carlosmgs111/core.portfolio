@@ -16,6 +16,7 @@ describe("Creation of a new certification", () => {
   let institution: any;
   let server: any;
   // const DatabaseService = new DatabaseService({});
+  const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMjhhMmJlNmYtMzVjNy00ZTFjLWExZjktYjc5ODQxOTk2OGY1IiwiZW1haWwiOiJjYXJsb3NtZ3MxMTFAb3V0bG9vay5jb20iLCJpYXQiOjE2NjM3Njg1NDcsImV4cCI6MTY2NjM2MDU0N30.hZlZTQwxEH75a-HI4JsVqR6tejb8feQHI_2DYR8rAbI"
   beforeAll(async () => {
     server = app.listen(4080, () =>
       console.log("Test server running at port 4080")
@@ -39,7 +40,7 @@ describe("Creation of a new certification", () => {
       await console.log({ user });
       await console.log({ institution });
       const { body } = await request(app)
-        .post("/api/v1/certifications/add")
+        .post("/api/v1/certifications/")
         .send({
           ...generateOneCertification(),
           certificatedTo: user.username,
@@ -47,7 +48,7 @@ describe("Creation of a new certification", () => {
         })
         .set(
           "Authorization",
-          "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiMjU0MDhkM2MtMjAzOS00N2U2LTg2ZjUtZGVhNGY0NWJiMTc2IiwiZW1haWwiOiJjYXJsb3NtZ3MxMTFAb3V0bG9vay5jb20iLCJpYXQiOjE2NjM1MTc0NTAsImV4cCI6MTY2NjEwOTQ1MH0.zNtKPgtU2rSZbdvqAx6Y-5iW6CBxIXr7ZRUV43tJrK4"
+          `Bearer ${token}`
         );
       await console.log({ body });
     });

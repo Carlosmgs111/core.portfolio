@@ -11,7 +11,7 @@ import {
 } from "./middlewares/error.handler";
 // import authRoutes from "./routes/auth.routes";
 // import passport from "../../auth/passport";
-import { urlFilter } from "./middlewares/urlFilter.handler";
+import { grantUrls } from "./middlewares/grantUrls.handler";
 // Create a new app server
 
 export const app = express();
@@ -23,7 +23,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // app.use(authRoutes);
 // app.use(passport);
-app.use(urlFilter(["signin", "signup"], ["POST"]));
+app.use(grantUrls(["signin", "signup"], ["POST"]));
 /* to check */
 app.use((req: any, res: any, next: any) => {
   // Dominio que tengan acceso (ej. 'http://example.com')

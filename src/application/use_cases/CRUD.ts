@@ -5,9 +5,9 @@ const entities: any = { User };
 
 export const findBy = async (label: string, findBy: any) => {
   // console.log({ findBy });
-  return await entities[label].find(DatabaseService.setupModel(label), findBy);
+  return await entities[label].find(DatabaseService, findBy);
 };
 
 export const createOne = async (label: string, args: any) => {
-  return await entities[label].new(DatabaseService.setupModel(label), args);
+  return await entities[label].new(DatabaseService, args);
 };

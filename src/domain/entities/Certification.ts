@@ -35,6 +35,7 @@ export class Certification {
     DatabaseServices: any,
     data: any
   ): Promise<Certification> => {
+    DatabaseServices.setupModel("Certification")
     const uuid = uuidv4();
     const certification = new Certification({ ...data, uuid });
     console.log({certification})
@@ -43,6 +44,7 @@ export class Certification {
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
+    DatabaseServices.setupModel("Certification")
     const project = await Certification.find(DatabaseServices, credentials);
     if (!project) throw new Error("Incorrect credentials!");
     const certificate = new Certification(project);
@@ -50,6 +52,7 @@ export class Certification {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
+    DatabaseServices.setupModel("Certification")
     const certificate: any = await DatabaseServices.findOne({
       ...filterAttrs(
         getEntityProperties(credentials),
@@ -61,6 +64,7 @@ export class Certification {
   };
 
   static findAll = async (DatabaseServices: any, credentials: any) => {
+    DatabaseServices.setupModel("Certification")
     const certificate: any = await DatabaseServices.findAll({
       ...filterAttrs(
         getEntityProperties(credentials),
@@ -72,6 +76,7 @@ export class Certification {
   };
 
   remove = async (DatabaseServices: any) => {
+    DatabaseServices.setupModel("Certification")
     return await DatabaseServices.remove({
       ...filterAttrs(
         getEntityProperties(this),
@@ -82,6 +87,7 @@ export class Certification {
   };
 
   update = async (DatabaseServices: any) => {
+    DatabaseServices.setupModel("Certification")
     return await DatabaseServices.update({
       ...getEntityProperties(this),
     });

@@ -30,12 +30,14 @@ export class Project {
     this.updatedAt = new Date().getTime();
   }
   static new = async (DatabaseServices: any, data: any): Promise<string> => {
+    DatabaseServices.setupModel("Project")
     const uuid = uuidv4();
     const account = new Project({ ...data, uuid, userUUID: data.user.uuid });
     return await DatabaseServices.create(account);
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
+    DatabaseServices.setupModel("Project")
     const project = await Project.find(DatabaseServices, credentials);
     console.log({ Model: DatabaseServices.Model, credentials });
     if (!project) throw new Error("Incorrect credentials!");
@@ -44,6 +46,7 @@ export class Project {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
+    DatabaseServices.setupModel("Project")
     const { uuid } = credentials;
     const account: any = await DatabaseServices.findOne({
       uuid,
@@ -52,10 +55,12 @@ export class Project {
   };
 
   remove = async (DatabaseServices: any) => {
+    DatabaseServices.setupModel("Project")
     return await DatabaseServices.remove(this);
   };
 
   update = async (DatabaseServices: any) => {
+    DatabaseServices.setupModel("Project")
     this.updatedAt = new Date().getTime();
     return await DatabaseServices.update(this);
   };

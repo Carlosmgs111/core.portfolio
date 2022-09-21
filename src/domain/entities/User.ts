@@ -38,6 +38,7 @@ export class User {
     this.updatedAt = updatedAt;
   }
   static create = async (DatabaseServices: any, data: any): Promise<any> => {
+    DatabaseServices.setupModel("User")
     const exist = await DatabaseServices.findOne({
       ...filterAttrs(data, ["email", "username"], false),
     })
@@ -60,6 +61,7 @@ export class User {
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
+    DatabaseServices.setupModel("User")
     const user = await User.find(
       DatabaseServices,
       filterAttrs(credentials, ["email", "username"], false)
@@ -70,6 +72,7 @@ export class User {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
+    DatabaseServices.setupModel("User")
     const account: any = await DatabaseServices.findOne({
       ...filterAttrs(
         getEntityProperties(credentials),
@@ -81,12 +84,14 @@ export class User {
   };
 
   remove = async (DatabaseServices: any) => {
+    DatabaseServices.setupModel("User")
     return await DatabaseServices.remove({
       ...filterAttrs(getEntityProperties(this), ["email", "name"], false),
     });
   };
 
   update = async (DatabaseServices: any) => {
+    DatabaseServices.setupModel("User")
     this.updatedAt = new Date().getTime();
     return await DatabaseServices.update({
       ...getEntityProperties(this),

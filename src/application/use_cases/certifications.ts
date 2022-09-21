@@ -7,19 +7,19 @@ export const addNewCertification = async (data: any) => {
   let { emitedBy, certificatedTo }: any = data;
   console.log({ emitedBy, certificatedTo });
 
-  DatabaseService.setupModel("Institution");
+  DatabaseService;
   emitedBy = (
     await Institution.find(DatabaseService, {
       businessName: emitedBy,
     })
   ).uuid;
-  DatabaseService.setupModel("User");
+  DatabaseService;
   /* certificatedTo = (
     await User.find(DatabaseService, {
       username: data.user.username,
     })
   ).uuid; */
-  DatabaseService.setupModel("Certification");
+  DatabaseService;
   return await Certification.create(DatabaseService, {
     ...data,
     emitedBy,
@@ -28,8 +28,5 @@ export const addNewCertification = async (data: any) => {
 };
 
 export const getCertifications = async (data: any) => {
-  return await Certification.findAll(
-    DatabaseService.setupModel("Certification"),
-    data
-  );
+  return await Certification.findAll(DatabaseService, data);
 };

@@ -4,6 +4,6 @@ import { expressHandlerAdapter } from "../../../../adapters/apis/express";
 
 const router = Router();
 
-router.post("/add", expressHandlerAdapter(addNewInstitution));
+router.post("/", expressHandlerAdapter(addNewInstitution));
 
 export default router;

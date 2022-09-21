@@ -7,7 +7,7 @@ import { expressHandlerAdapter } from "../../../../adapters/apis/express";
 
 const router = Router();
 
-router.post("/add", expressHandlerAdapter(addNewCertification));
-router.get("/certifications", expressHandlerAdapter(getCertifications));
+router.post("/", expressHandlerAdapter(addNewCertification));
+router.get("/", expressHandlerAdapter(getCertifications));
 
 export default router;

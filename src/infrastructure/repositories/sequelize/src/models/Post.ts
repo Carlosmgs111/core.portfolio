@@ -1,8 +1,8 @@
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "..";
 
-export const blog_table = "Blogs";
-export const blog_schema = {
+export const post_table = "Posts";
+export const post_schema = {
   uuid: {
     primaryKey: true,
     allowNull: false,
@@ -22,8 +22,8 @@ export const blog_schema = {
   updatedAt: { type: DataTypes.DATE, allowNull: false, field: "updated_at" },
 };
 
-export class Blog extends Model{
+export class Post extends Model{
   static associate(models: any){}
 }
 
-Blog.init(blog_schema, {sequelize, tableName:blog_table})
+Post.init(post_schema, {sequelize, tableName:post_table})

@@ -2,7 +2,6 @@ import { User } from "../../domain/entities/User";
 import {DatabaseService} from "../../config/dependencies"
 // ! implementar el uso de ´boom´ a traves de un ´interface´
 import boom from "@hapi/boom";
-DatabaseService.setupModel("User")
 
 export const registerUser = async (data: any) => {
   return await User.create(DatabaseService, data);

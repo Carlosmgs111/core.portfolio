@@ -1,7 +1,7 @@
 import { authMiddleware } from "./auth.handler";
 import { apiConfig } from "../../../../config/dependencies";
 
-export const urlFilter = (
+export const grantUrls = (
   urlsGranted: string[] = [],
   methodsGranted: string[] = []
 ) => {
