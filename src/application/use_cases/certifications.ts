@@ -3,28 +3,38 @@ import { Certification } from "../../domain/entities/Certification";
 import { Institution } from "../../domain/entities/Institution";
 import { User_Certification } from "../../domain/entities/User_Certification";
 
+export const getCertifications = async (data: any) => {
+  return await Certification.findAll(DatabaseService, data);
+};
+
 export const addNewCertification = async (data: any) => {
-  let { emitedBy, certificatedTo }: any = data;
-  console.log({ emitedBy, certificatedTo });
   const institutionUUID = (
     await Institution.find(DatabaseService, {
-      businessName: emitedBy,
+      businessName: data.emitedBy,
     })
   ).uuid;
-  console.log({institutionUUID})
   const certification = await Certification.create(DatabaseService, {
     ...data,
     institutionUUID,
   });
-  console.log({User_Certification})
-  const userCertification = await User_Certification.create(DatabaseService, {
+  await User_Certification.create(DatabaseService, {
     userUUID: data.user.uuid,
     certificationUUID: certification.uuid,
   });
-  console.log({ userCertification });
   return certification;
 };
 
-export const getCertifications = async (data: any) => {
-  return await Certification.findAll(DatabaseService, data);
+export const updateCertification = async (data:any)=>{
+  return await(await Certification.load(DatabaseService,{uuid:data.uuid})).update(DatabaseService, data)
+}
+
+export const removeCertification = async (data: any) => {
+  await (
+    await User_Certification.load(DatabaseService, {
+      certificationUUID: data.uuid,
+    })
+  ).remove(DatabaseService);
+  return await (
+    await Certification.load(DatabaseService, { uuid: data.uuid })
+  ).remove(DatabaseService);
 };

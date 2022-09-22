@@ -1,4 +1,4 @@
-import { spyFindOne, spyCreate, fakeCollection } from "../../mocks/DatabaseService.stub";
+import { spyFindOne, spyCreate, fakeDatabase } from "../../mocks/DatabaseService.stub";
 import { User } from "../../../domain/entities/User";
 import { DatabaseService } from "../../../config/dependencies";
 import { generateOneUser } from "../../fakers/user.fake";
@@ -17,7 +17,7 @@ describe("User entity behavior", () => {
         fakeUser
       );
       console.log({ newUser });
-      console.log({ fakeCollection });
+      console.log({ fakeDatabase });
       expect(fakeUser.password).not.toEqual(newUser.password);
       expect(spyFindOne).toHaveBeenCalled();
       expect(spyCreate).toHaveBeenCalled();

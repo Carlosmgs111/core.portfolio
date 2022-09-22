@@ -27,9 +27,7 @@ export class Certification {
   ): Promise<Certification> => {
     DatabaseServices.setupModel("Certification");
     const uuid = uuidv4();
-    console.log({data})
     const certification = new Certification({ ...data, uuid });
-    console.log({ certification });
     await DatabaseServices.create(certification);
     return certification;
   };
@@ -69,10 +67,11 @@ export class Certification {
     });
   };
 
-  update = async (DatabaseServices: any) => {
+  update = async (DatabaseServices: any, data:any) => {
     DatabaseServices.setupModel("Certification");
+    this.updatedAt = new Date().getTime();
     return await DatabaseServices.update({
-      ...getEntityProperties(this),
+      ...getEntityProperties({...this, ...data}),
     });
   };
 }

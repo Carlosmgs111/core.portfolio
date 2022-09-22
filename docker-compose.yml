@@ -23,8 +23,8 @@ services:
   postgres-test:
     image: postgres
     environment:
-      - POSTGRES_DB=portfolio
-      - POSTGRES_USER=admin
+      - POSTGRES_DB=test
+      - POSTGRES_USER=tester
       - POSTGRES_PASSWORD=password
     ports:
       - 5456:5432
