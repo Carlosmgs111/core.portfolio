@@ -1,6 +1,6 @@
 import { DatabaseService as DBS, AuthServices as AS } from "../application/services";
 
-export const DatabaseService =  new DBS({})
+export const DatabaseService =  new DBS({env:"TEST"})
 export const AuthServices = new AS()
 
 const apiVersions = ["v1"]

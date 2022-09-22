@@ -25,7 +25,7 @@ export class User_Certification {
     const exist = await DatabaseServices.findOne({
       ...filterAttrs(data, ["certificationUUID", "userUUID"], false),
     })
-    console.log({exist})
+    console.log({UCExist:exist})
     if (exist) throw boom.conflict("Entity exist yet!");
     
     const uuid = uuidv4();
@@ -43,25 +43,25 @@ export class User_Certification {
   static load = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Users_Certifications")
     const user = await User_Certification.find(
-      DatabaseServices,credentials
+      DatabaseServices, credentials
     );
     if (!user) throw boom.notFound("Incorrect credentials!");
+    console.log({user})
     const account = new User_Certification(user);
     return account;
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Users_Certifications")
-    const account: any = await DatabaseServices.findOne(
-        getEntityProperties(credentials));
-    return account;
+    const userCertification: any = await DatabaseServices.findOne(credentials);
+    console.log({userCertification})
+    return userCertification;
   };
 
   remove = async (DatabaseServices: any) => {
     DatabaseServices.setupModel("Users_Certifications")
-    return await DatabaseServices.remove({
-      ...filterAttrs(getEntityProperties(this), ["certificationUUID", "name"], false),
-    });
+    return await DatabaseServices.remove(getEntityProperties(this)
+    );
   };
 
   update = async (DatabaseServices: any, data:any) => {

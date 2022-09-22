@@ -1,13 +1,19 @@
-export const fakeCollection: any = [];
-
-const create = async (fake: any) => {
-  fakeCollection.push(fake);
+export const fakeDatabase: any = {
+  User: [],
+  Project: [],
+  Certification: [],
+  Post: [],
+  Institution: [],
+  Users_Certifications: [],
+  Users_Institutions: [],
+};
+ async function create(this:any, fake: any) {
+  fakeDatabase[this.Model].push(fake);
 };
 
-const findOne = async (fake: any) => {
-  console.log("FINDONE")
+async function findOne (this:any, fake: any) {
   return (
-    fakeCollection.filter((value: any) => {
+    fakeDatabase[this.Model].filter((value: any) => {
       for (let attr in fake) {
         for (let val in value) {
           if (fake[attr] === value[val]) return value;
@@ -17,26 +23,31 @@ const findOne = async (fake: any) => {
   );
 };
 
-const remove = async (fake: any) => {
+async function remove(this:any, fake: any) {
   let index = 0;
-  fakeCollection.forEach((value: any, idx: any) => {
+  fakeDatabase[this.Model].forEach((value: any, idx: any) => {
     for (let attr in fake) {
       for (let val in value) {
         if (fake[attr] === value[val]) index = idx;
       }
     }
   });
-  await delete fakeCollection[index];
+  await delete fakeDatabase[this.Model][index];
   return null;
 };
 
 export const DatabaseServiceStub = {
+  Model: "",
   create,
   findOne,
-  find: async () => fakeCollection,
+  find: async function () {
+    return fakeDatabase[this.Model];
+  },
   remove,
   update: async () => {},
-  setupModel: async ()=>{}
+  setupModel: async function (model: string) {
+    this.Model = model;
+  },
 };
 
 export const spyCreate = jest.spyOn(DatabaseServiceStub, "create");

@@ -23,6 +23,7 @@ describe("Aggregates of certificates", () => {
   let institution: Institution;
   let certification: Certification;
 
+  
   // const DBS = new DatabaseService({});
 
   beforeAll(async () => {
@@ -49,8 +50,7 @@ describe("Aggregates of certificates", () => {
       // console.log({ fakeCollection });
       // console.log({DatabaseService})
       certification = await addNewCertification(certificationData);
-      expect(certification.emitedBy).toEqual(institution.uuid);
-      expect(certification.certificatedTo).toEqual(user.uuid);
+      expect(certification.institutionUUID).toEqual(institution.uuid);
       expect(certification.createdAt).toBeGreaterThan(0);
       expect(certification.updatedAt).toBeGreaterThan(0);
     });

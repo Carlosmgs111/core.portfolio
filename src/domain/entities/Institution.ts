@@ -54,14 +54,23 @@ export class Institution {
     return institution;
   };
 
+  static findAll = async (DatabaseServices: any, credentials: any) => {
+    DatabaseServices.setupModel("Institution");
+    console.log({credentials})
+    const institutions: any = await DatabaseServices.findAll(
+      credentials
+    );
+    return institutions;
+  };
+
   remove = async (DatabaseServices: any) => {
     DatabaseServices.setupModel("Institution")
     return await DatabaseServices.remove(this);
   };
 
-  update = async (DatabaseServices: any) => {
+  update = async (DatabaseServices: any, data:any) => {
     DatabaseServices.setupModel("Institution")
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update(this);
+    return await DatabaseServices.update({...this, ...data});
   };
 }

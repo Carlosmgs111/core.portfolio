@@ -27,3 +27,24 @@ export const capitalize = (label: string, pluralize: boolean = false) => {
     (pluralize ? "s" : "")
   );
 };
+
+export const Mapfy = (object:any) => new Map(Object.entries(object));
+
+export const settingName = (value:any) =>
+  "set" + value.slice(0, 1).toUpperCase() + value.slice(1);
+
+export const getActionTypes = (object:any) => {
+  const actionTypes:any = {};
+  for (var key of object.keys()) {
+    actionTypes[settingName(key)] = settingName(key);
+  }
+  actionTypes["reset"] = "reset";
+  return actionTypes;
+};
+
+export const setEnums = (actions:string[], entity:any={}) => {
+  actions = [...actions, "reset"];
+  const types:any = {};
+  actions.forEach((action:any) => (types[action] = action));
+  return Object.freeze({ ...types, });
+};

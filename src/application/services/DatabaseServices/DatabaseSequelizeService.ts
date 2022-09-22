@@ -3,7 +3,9 @@ import { Model } from "sequelize";
 
 export default class DatabaseSequelizeService {
   Model: any;
-  constructor({ __identifier }: any) {
+  name:string = "Sequelize Interface Database Service"
+  
+  constructor({ __identifier, env }: any) {
     this.Model = models[__identifier];
     this.syncModels();
   }
@@ -13,8 +15,6 @@ export default class DatabaseSequelizeService {
   };
 
   findAll = async () => {
-    console.log("FIND ALL!")
-    console.log({MODEL: this.Model})
     const entities = await this.Model.findAll();
     return entities;
   };
@@ -50,4 +50,5 @@ export default class DatabaseSequelizeService {
     for (var model in models)
       models[model].associate ? models[model].associate(models) : null;
   };
+  
 }

@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "node dist/index.js",
-    "dev": "yarn copy && tsc-watch --onSuccess \"node dist/index.js\" ",
+    "dev": "yarn copy && tsc-watch --onSuccess \"node dist/index.js DEV\" ",
     "test": "jest",
     "test:e2e": "jest --config ./src/testing/e2e/jest-e2e.json --forceExit",
     "build": "tsc",
@@ -20,7 +20,8 @@
     "p:m:generate": "yarn postgres:migrations:generate",
     "p:m:run": "yarn postgres:migrations:run",
     "p:m:revert": "yarn postgres:migrations:revert",
-    "p:m:drop": "yarn postgres:migrations:drop"
+    "p:m:drop": "yarn postgres:migrations:drop",
+    "p:m:stand": "yarn p:m:revert && yarn p:m:run"
   },
   "repository": {
     "type": "git",
