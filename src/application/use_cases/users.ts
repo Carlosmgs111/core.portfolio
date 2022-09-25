@@ -18,6 +18,7 @@ export const signin = async (data: any) => {
 };
 export const removeUser = async (data: any) => {
   const user = await User.load(DatabaseService, data);
+  console.log({user})
   return await user.remove(DatabaseService);
 };
 export const updateUser = async (data: any) => {

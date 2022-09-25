@@ -85,9 +85,7 @@ export class User {
 
   remove = async (DatabaseServices: any) => {
     DatabaseServices.setupModel("User")
-    return await DatabaseServices.remove({
-      ...filterAttrs(getEntityProperties(this), ["email", "name"], false),
-    });
+    return await DatabaseServices.remove(getEntityProperties(this));
   };
 
   update = async (DatabaseServices: any, data:any) => {

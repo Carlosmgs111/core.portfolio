@@ -27,7 +27,8 @@ describe("Test for get all projects endpoint", () => {
   });
   afterAll(async () => {
     await server.close();
-    //  await sequelize.drop()
+    await Project.sync({force:true})
+    // await sequelize.drop()
     await sequelize.close()
   });
 
@@ -50,7 +51,7 @@ describe("Test for get all projects endpoint", () => {
 
       await console.log({ body });
       expect.arrayContaining(body);
-      // expect(body.length).toEqual(1);
+      expect(body.length).toEqual(1);
     });
   });
 });

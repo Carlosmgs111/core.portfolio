@@ -34,13 +34,13 @@ export class User extends Model {
   static associate(models: any) {
     this.belongsToMany(models.Certification, {
       through: models.Users_Certifications,
-      foreignKey: "certification_uuid",
-      otherKey: "userUUID",
+      foreignKey: "userUUID",
+      otherKey: "certificationUUID",
     });
     this.belongsToMany(models.Institution, {
       through: models.Users_Institutions,
-      foreignKey: "institution_uuid",
-      otherKey: "userUUID",
+      foreignKey: "userUUID",
+      otherKey: "institutionUUID",
     });
     this.hasMany(models.Project, {
       as: "projects",

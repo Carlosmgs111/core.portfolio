@@ -39,7 +39,7 @@ export const sequelize = new Sequelize(database, user, PASSWORD, {
   host,
   port,
   dialect: "postgres",
-  logging:false
+  logging: false//console.log
 });
 
 if (ENV !== "DEV")

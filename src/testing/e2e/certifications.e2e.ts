@@ -27,23 +27,24 @@ describe("Creation of a new certification", () => {
     Certification.sync({ alter: true });
     Users_Certifications.sync({ alter: true });
     user = generateOneUser();
-    await request(app).post("/api/v1/signup").send(user);
-    const { token }: any =( await request(app)
-      .get("/api/v1/signin")
-      .send(user)).body;
-    userToken = token
-    console.log({"TOKEN!: ": token})
-    institution = (await request(app)
-      .post("/api/v1/institutions")
-      .send(generateOneInstitution())
-      .set("Authorization", `Bearer ${userToken}`)).body;
-    console.log({"INSTITUTION!: ": institution})
-
+    await request(app).post("/api/v1/signup").send(user)
+    const { token }: any = (await request(app).get("/api/v1/signin").send(user))
+      .body;
+    userToken = token;
+    institution = (
+      await request(app)
+        .post("/api/v1/institutions")
+        .send(generateOneInstitution())
+        .set("Authorization", `Bearer ${userToken}`)
+    ).body;
   }, 12000);
 
   afterAll(async () => {
     await server.close();
-    //  await sequelize.drop();
+    await User.sync({ force: true });
+    await Institution.sync({ force: true });
+    await Certification.sync({ force: true });
+    await Users_Certifications.sync({ force: true });
     await sequelize.close();
     // connection.db.dropDatabase();
   });
