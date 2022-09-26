@@ -1,13 +1,31 @@
+import { setEnums } from "../../../utils";
 import DatabaseMongooseService from "./DatabaseMongooseService";
-import DatabaseSequelizeService from "./DatabaseSequelizeService"
+import DatabaseSequelizeService from "./DatabaseSequelizeService";
 
-export class DatabaseService extends DatabaseSequelizeService {
-  constructor(props: any) {
-    super(props);
-  }
+export const ServicesInterface: any = {
+  DatabaseMongooseService,
+  DatabaseSequelizeService,
+};
 
-  info(){
-    console.table({"Database Service": this.name})
-    return {databaseInterfaceName: this.name}
+export const ServicesInterfaceEnums: any = setEnums([
+  DatabaseSequelizeService.name,
+  DatabaseMongooseService.name,
+]);
+
+console.log({ ServicesInterface });
+
+export const DatabaseService = (
+  service:string = ServicesInterfaceEnums.DatabaseSequelizeService) => {
+  console.log({service})
+  class DatabaseService extends  ServicesInterface[service]{
+    constructor(props: any) {
+      super(props);
+    }
+
+    info() {
+      console.table({ "Database Service": this.serviceDescription });
+      return { databaseInterfaceName: this.serviceDescription };
+    }
   }
-}
+  return new DatabaseService({})
+};

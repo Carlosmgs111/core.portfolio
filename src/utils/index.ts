@@ -42,9 +42,9 @@ export const getActionTypes = (object:any) => {
   return actionTypes;
 };
 
-export const setEnums = (actions:string[], entity:any={}) => {
-  actions = [...actions, "reset"];
+export const setEnums = (enums:string[], entity:any={}) => {
+  // enums = [...enums, "reset"];
   const types:any = {};
-  actions.forEach((action:any) => (types[action] = action));
+  enums.forEach((E:any) => (types[E] = E));
   return Object.freeze({ ...types, });
 };

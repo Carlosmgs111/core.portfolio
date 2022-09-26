@@ -4,7 +4,7 @@ import { model } from "mongoose";
 
 export default class DatabaseMongooseService {
   Model: any;
-  name:string = "Mongoose Interface Database Service"
+  serviceDescription:string = "Mongoose Interface Database Service"
 
   constructor({ __identifier }: any) {
     this.Model = models[__identifier]

@@ -3,7 +3,7 @@ import { Model } from "sequelize";
 
 export default class DatabaseSequelizeService {
   Model: any;
-  name:string = "Sequelize Interface Database Service"
+  serviceDescription:string = "Sequelize Interface Database Service"
   
   constructor({ __identifier, env }: any) {
     this.Model = models[__identifier];
