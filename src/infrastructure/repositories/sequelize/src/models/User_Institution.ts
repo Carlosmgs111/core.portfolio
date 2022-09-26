@@ -3,7 +3,7 @@ import { sequelize } from "..";
 
 export const user_institution_table = "Users_Institutions";
 export const user_institution_schema = {
-  id: {
+  uuid: {
     primaryKey: true,
     allowNull: false,
     unique: true,

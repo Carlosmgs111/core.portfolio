@@ -1,8 +1,14 @@
 import { Institution } from "../../domain/entities/Institution";
 import { DatabaseService } from "../../config/dependencies";
+import { User_Institution } from "../../domain/entities/User_Institution";
 
 export const addNewInstitution = async (data: any) => {
-  return await Institution.create(DatabaseService, data);
+  const institution = await Institution.create(DatabaseService, data);
+  await User_Institution.create(DatabaseService, {
+    institutionUUID: institution.uuid,
+    userUUID: data.user.uuid,
+  });
+  return institution;
 };
 
 export const getAllInstitutions = async (data: any) => {

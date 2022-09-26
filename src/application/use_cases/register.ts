@@ -5,7 +5,6 @@ import config from "../../config";
 
 export const signup = async (credentials: any) => {
   const { password, username, email } = credentials;
-  const existAccount = await User.find(DatabaseService, { email });
   return await User.create(DatabaseService, { email, password, username });
 };
 

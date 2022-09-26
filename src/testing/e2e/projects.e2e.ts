@@ -19,17 +19,16 @@ describe("Test for get all projects endpoint", () => {
     );
     Project.sync({alter:true})
     const user = generateOneUser();
-    await request(app).post("/api/v1/signup").send(user);
+    const response = await request(app).post("/api/v1/signup").send(user);
     const { token}: any = (await request(app)
       .get("/api/v1/signin")
       .send(user)).body;
     userToken =token;
   });
   afterAll(async () => {
-    await server.close();
     await Project.sync({force:true})
-    // await sequelize.drop()
     await sequelize.close()
+    await server.close();
   });
 
   describe("test for create projects", () => {
