@@ -1,6 +1,7 @@
 import { Router } from "express";
 import {
   addNewCertification,
+  addManyCertifications,
   getCertifications,
   removeCertification,
   updateCertification,
@@ -11,6 +12,7 @@ const router = Router();
 
 router
   .post("/", expressHandlerAdapter(addNewCertification))
+  .post("/certifications", expressHandlerAdapter(addManyCertifications))
   .get("/", expressHandlerAdapter(getCertifications))
   .delete("/", expressHandlerAdapter(removeCertification))
   .patch("/", expressHandlerAdapter(updateCertification));
