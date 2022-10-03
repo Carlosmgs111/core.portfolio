@@ -20,6 +20,11 @@ router
     "/signin",
     validatorHandler(getUserSchema, "body"),
     expressHandlerAdapter(signin)
-  );
+  )
+  .post(
+    "/signin",
+    validatorHandler(getUserSchema, "body"),
+    expressHandlerAdapter(signin)
+  );;
 
 export default router;

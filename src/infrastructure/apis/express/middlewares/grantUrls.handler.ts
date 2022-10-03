@@ -1,21 +1,21 @@
 import { authMiddleware } from "./auth.handler";
 import { apiConfig } from "../../../../config/dependencies";
 
-export const grantUrls = (
-  urlsGranted: string[] = [],
-  methodsGranted: string[] = []
-) => {
-  methodsGranted = ["GET", ...methodsGranted];
+export const grantUrls = (urlsGranted: string[][][]) => {
   return (req: any, res: any, next: any) => {
-    if (
-      urlsGranted.includes(
-        req.url.replace(`/api/${apiConfig.version}/`, "").replace("/", "")
-      ) &&
-      methodsGranted.includes(req.method)
-    ) {
-      next();
-    } else {
-      authMiddleware(req, res, next);
+    let isGranted = false;
+    for (var urlGranted of urlsGranted) {
+      let [pathsGranted, methodsGranted = []]: any = urlGranted;
+      methodsGranted = ["GET", ...methodsGranted];
+      const isIncluded =
+        pathsGranted.includes(
+          req.url.replace(`/api/${apiConfig.version}/`, "").replace("/", "")
+        ) && methodsGranted.includes(req.method);
+      if (isIncluded) {
+        isGranted = true;
+        break;
+      }
     }
+    isGranted ? next() : authMiddleware(req, res, next);
   };
 };

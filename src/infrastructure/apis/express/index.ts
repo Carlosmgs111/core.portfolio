@@ -23,7 +23,12 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 // app.use(authRoutes);
 // app.use(passport);
-app.use(grantUrls(["signin", "signup"], ["POST"]));
+app.use(
+  grantUrls([
+    [["signin", "signup"], ["POST"]],
+    [["certifications","institutions"]],
+  ])
+);
 /* to check */
 app.use((req: any, res: any, next: any) => {
   // Dominio que tengan acceso (ej. 'http://example.com')
@@ -38,7 +43,6 @@ app.use((req: any, res: any, next: any) => {
   next();
 });
 app.use(routes);
-
 app.use(logErrors);
 app.use(ormErrorHandler);
 app.use(boomErrorHandler);

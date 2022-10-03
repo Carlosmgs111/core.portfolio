@@ -12,8 +12,6 @@ export const ServicesInterfaceEnums: any = setEnums([
   DatabaseMongooseService.name,
 ]);
 
-console.log({ ServicesInterface });
-
 export const DatabaseService = (
   service:string = ServicesInterfaceEnums.DatabaseSequelizeService) => {
   console.log({service})

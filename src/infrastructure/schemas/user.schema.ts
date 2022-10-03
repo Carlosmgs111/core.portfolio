@@ -20,6 +20,6 @@ export const updateUserSchema = Joi.object({
 
 export const getUserSchema = Joi.object({
   email,
-  username:username.required(),
+  username,
   password: password.required(),
 });
