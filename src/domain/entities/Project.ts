@@ -4,7 +4,8 @@ type IProject = {
   uuid: string;
   userUUID: string;
   name: string;
-  description: string;
+  descriptions: string[];
+  images: string[];
   uri: string;
   version: string;
 };
@@ -13,17 +14,19 @@ export class Project {
   uuid: string;
   userUUID: string;
   name: string;
-  description: string;
+  descriptions: string[];
+  images: string[];
   uri: string;
   version: string;
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({ uuid, userUUID, name, description, uri, version }: IProject) {
+  constructor({ uuid, userUUID, name, descriptions, images, uri, version }: IProject) {
     this.uuid = uuid;
     this.userUUID = userUUID;
     this.name = name;
-    this.description = description;
+    this.descriptions = descriptions;
+    this.images = images;
     this.uri = uri;
     this.version = version;
     this.createdAt = new Date().getTime();

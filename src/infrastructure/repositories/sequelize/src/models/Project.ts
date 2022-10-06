@@ -22,7 +22,8 @@ export const project_schema = {
     },
   },
   name: { allowNull: false, type: DataTypes.STRING, unique:true },
-  description: { allowNull: false, type: DataTypes.TEXT },
+  descriptions:{ type: DataTypes.ARRAY(DataTypes.TEXT), allowNull:true},
+  images:{ type: DataTypes.ARRAY(DataTypes.TEXT), allowNull:true},
   uri: { type: DataTypes.STRING },
   version: { type: DataTypes.STRING, allowNull: false },
   createdAt: { type: DataTypes.DATE, allowNull: false, field: "created_at" },
@@ -34,4 +35,4 @@ export class Project extends Model{
   }
 }
 
-Project.init(project_schema,{sequelize, modelName:project_table})
+Project.init(project_schema,{sequelize, modelName: project_table})
