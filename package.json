@@ -9,8 +9,8 @@
   "scripts": {
     "start": "node dist/index.js",
     "dev": "yarn copy && tsc-watch --onSuccess \"node dist/index.js DEV\" ",
-    "test": "cls && jest",
-    "test:e2e": "cls && jest --config ./src/testing/e2e/jest-e2e.json --detectOpenHandles",
+    "test": "jest",
+    "test:e2e": "jest --config ./src/testing/e2e/jest-e2e.json --detectOpenHandles",
     "build": "tsc",
     "postgres:migrations:generate": "cd \"src/infrastructure/repositories/sequelize\" && yarn build && sequelize-cli migration:generate --name",
     "postgres:migrations:run": "cd \"src/infrastructure/repositories/sequelize\" && yarn build  && sequelize-cli db:migrate",

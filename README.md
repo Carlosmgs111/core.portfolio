@@ -8,7 +8,7 @@ Here you will find my projects and my resume.
 - Portfolio platform (core.portfolio):
 - Portfolio application (app.portfolio - UI):
 
-  En si mismo este plataform es uno de mis proyectos, aqui encontrara la gran mayorria, sino es que todas mis habilidades tanto tecnicas como de manejo y planeacion de proyectos.
+  En si mismo este plataform es uno de mis proyectos, aqui encontrara la gran mayoria, sino es que todas mis habilidades tanto tecnicas como de manejo y planeacion de proyectos.
 
   Algunos ejemplos de estas habilidades son:
 
@@ -33,6 +33,7 @@ Here you will find my projects and my resume.
       - Sequelize (Postgres)
 
     - Database:
+    
       - MongoDB
       - Postgres
       - Neo4J
