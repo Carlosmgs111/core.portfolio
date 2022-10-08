@@ -123,7 +123,6 @@ out
 
 # Nuxt.js build / generate output
 .nuxt
-dist
 
 # Gatsby files
 .cache/
@@ -200,6 +199,8 @@ $RECYCLE.BIN/
 postgresdata
 data
 mysqldata
-dist
-
+src/infrastructure/repositories/sequelize/dist
+migrations
+seeders
+/yarn.lock
 # End of https://www.toptal.com/developers/gitignore/api/windows,git,node,linux

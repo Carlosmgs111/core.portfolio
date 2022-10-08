@@ -17,3 +17,9 @@ export const postgresUserTest = String(process.env.POSTGRES_USER_TEST);
 export const postgresPasswordTest = String(process.env.POSTGRES_PASSWORD_TEST);
 export const postgresHostTest = String(process.env.POSTGRES_HOST_TEST);
 export const postgresPortTest = String(process.env.POSTGRES_PORT_TEST);
+/*  */
+export const postgresDatabaseProd = String(process.env.POSTGRES_DATABASE_PROD);
+export const postgresUserProd = String(process.env.POSTGRES_USER_PROD);
+export const postgresPasswordProd = String(process.env.POSTGRES_PASSWORD_PROD);
+export const postgresHostProd = String(process.env.POSTGRES_HOST_PROD);
+export const postgresPortProd = String(process.env.POSTGRES_PORT_PROD);

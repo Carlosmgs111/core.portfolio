@@ -1,5 +1,10 @@
 import { Sequelize } from "sequelize";
 import {
+  postgresUserProd,
+  postgresPasswordProd,
+  postgresHostProd,
+  postgresPortProd,
+  postgresDatabaseProd,
   postgresDatabaseDev,
   postgresUserDev,
   postgresPasswordDev,
@@ -12,26 +17,33 @@ import {
   postgresPortTest,
 } from "./config.env";
 
-const ENV = process.argv.includes("DEV") ? "DEV" : "PROD";
+let ENV = "TEST"
+if(process.argv.includes("DEV")) ENV = "DEV" 
+if(process.argv.includes("PROD")) ENV = "PROD";
 
 let database: string = (() => {
   if (ENV === "DEV") return postgresDatabaseDev;
+  if (ENV === "PROD") return postgresDatabaseProd;
   return "test";
 })();
 let user: string = (() => {
   if (ENV === "DEV") return postgresUserDev;
+  if (ENV === "PROD") return postgresUserProd;
   return "tester";
 })();
 let PASSWORD: string = (() => {
   if (ENV === "DEV") return encodeURIComponent(postgresPasswordDev);
+  if (ENV === "PROD") return encodeURIComponent(postgresPasswordProd);
   return encodeURIComponent("password");
 })();
 let host: string = (() => {
   if (ENV === "DEV") return postgresHostDev;
+  if (ENV === "PROD") return postgresHostProd;
   return "127.0.0.1";
 })();
 let port: number = (() => {
   if (ENV === "DEV") return Number(postgresPortDev);
+  if (ENV === "PROD") return Number(postgresPortProd);
   return Number(5432);
 })();
 
@@ -42,7 +54,10 @@ export const sequelize = new Sequelize(database, user, PASSWORD, {
   logging: false//console.log
 });
 
-if (ENV !== "DEV")
+console.log({ENV})
+
+if (ENV === "TEST")
   (async () => {
+    console.log("ALTERING DATABASE!")
     await sequelize.sync({ alter: true });
   })();
