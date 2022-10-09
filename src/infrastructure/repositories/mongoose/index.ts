@@ -1,9 +1,9 @@
 import mongoose from "mongoose";
 import config from "../../../config";
 
-mongoose.connect(config.mongoDBLocalUrl);
+export const connect = ()=> mongoose.connect(config.mongoDBLocalUrl);
 
-export const {connection} = mongoose;
+export const { connection } = mongoose;
 
 // Callback once connection open
 connection.once("open", () => {

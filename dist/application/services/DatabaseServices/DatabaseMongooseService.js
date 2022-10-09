@@ -12,8 +12,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("../../../infrastructure/repositories/mongoose");
 const models_1 = __importDefault(require("../../../infrastructure/repositories/mongoose/models"));
+// connect()
 class DatabaseMongooseService {
     constructor({ __identifier }) {
         this.serviceDescription = "Mongoose Interface Database Service";

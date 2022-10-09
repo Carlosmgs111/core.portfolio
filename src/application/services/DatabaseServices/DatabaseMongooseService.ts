@@ -1,6 +1,8 @@
-import "../../../infrastructure/repositories/mongoose";
+import {connect} from "../../../infrastructure/repositories/mongoose";
 import models from "../../../infrastructure/repositories/mongoose/models";
 import { model } from "mongoose";
+
+// connect()
 
 export default class DatabaseMongooseService {
   Model: any;

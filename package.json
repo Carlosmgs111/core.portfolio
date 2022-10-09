@@ -41,6 +41,7 @@
   },
   "homepage": "https://github.com/Carlosmgs111/portfolio#readme",
   "dependencies": {
+    "@hapi/boom": "^10.0.0",
     "bcrypt": "^5.0.1",
     "copy": "^0.3.2",
     "cors": "^2.8.5",
