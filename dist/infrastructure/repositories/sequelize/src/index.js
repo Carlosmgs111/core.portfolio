@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.sequelize = void 0;
 const sequelize_1 = require("sequelize");
 const config_env_1 = require("./config.env");
-let ENV = "TEST";
+let ENV = "PROD";
 if (process.argv.includes("DEV"))
     ENV = "DEV";
 if (process.argv.includes("PROD"))

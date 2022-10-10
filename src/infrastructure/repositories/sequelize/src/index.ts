@@ -17,7 +17,7 @@ import {
   postgresPortTest,
 } from "./config.env";
 
-let ENV = "TEST"
+let ENV = "PROD"
 if(process.argv.includes("DEV")) ENV = "DEV" 
 if(process.argv.includes("PROD")) ENV = "PROD";
 

@@ -7,6 +7,6 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.removeTable(user_table);
+    // await queryInterface.removeTable(user_table);
   },
 };
