@@ -17,3 +17,4 @@ jobs:
           heroku_email: 'carlosmgs111@outlook.com'
           name: dist
           path: dist
+          dontuseforce: false
