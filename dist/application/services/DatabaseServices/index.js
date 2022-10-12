@@ -15,6 +15,7 @@ exports.ServicesInterfaceEnums = (0, utils_1.setEnums)([
     DatabaseSequelizeService_1.default.name,
     DatabaseMongooseService_1.default.name,
 ]);
+console.log({ ServicesInterface: exports.ServicesInterface });
 const DatabaseService = (service = exports.ServicesInterfaceEnums.DatabaseSequelizeService) => {
     console.log({ service });
     class DatabaseService extends exports.ServicesInterface[service] {

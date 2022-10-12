@@ -19,7 +19,8 @@ describe("Test for get all projects endpoint", () => {
     );
     Project.sync({alter:true})
     const user = generateOneUser();
-    const response = await request(app).post("/api/v1/signup").send(user);
+    /* const {status}:any = */ expect((await request(app).post("/api/v1/signup").send(user)).status).toBe(200);
+    // expect(status).toBe(200);
     const { token}: any = (await request(app)
       .get("/api/v1/signin")
       .send(user)).body;

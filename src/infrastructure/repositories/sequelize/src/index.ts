@@ -17,7 +17,7 @@ import {
   postgresPortTest,
 } from "./config.env";
 
-let ENV = "PROD"
+let ENV = "TEST"
 if(process.argv.includes("DEV")) ENV = "DEV" 
 if(process.argv.includes("PROD")) ENV = "PROD";
 
@@ -55,9 +55,3 @@ export const sequelize = new Sequelize(database, user, PASSWORD, {
 });
 
 console.log({ENV})
-
-if (ENV === "TEST")
-  (async () => {
-    console.log("ALTERING DATABASE!")
-    await sequelize.sync({ alter: true });
-  })();

@@ -9,6 +9,7 @@ import { User } from "../../infrastructure/repositories/sequelize/src/models/Use
 import { Institution } from "../../infrastructure/repositories/sequelize/src/models/Institution";
 import { Certification } from "../../infrastructure/repositories/sequelize/src/models/Certification";
 import { Users_Certifications } from "../../infrastructure/repositories/sequelize/src/models/User_Certification";
+import { Users_Institutions } from "../../infrastructure/repositories/sequelize/src/models/User_Institution";
 import { DatabaseService } from "../../config/dependencies";
 import { generateOneCertification } from "../fakers/certification.fake";
 
@@ -26,8 +27,11 @@ describe("Creation of a new certification", () => {
     Institution.sync({ alter: true });
     Certification.sync({ alter: true });
     Users_Certifications.sync({ alter: true });
+    Users_Institutions.sync({alter:true})
     user = generateOneUser();
-    const response = await request(app).post("/api/v1/signup").send(user)
+    expect((await request(app).post("/api/v1/signup").send(user)).status).toBe(200);
+    /* const {status}: any = await request(app).post("/api/v1/signup").send(user)
+    expect(status).toBe(200); */
     const { token }: any = (await request(app).get("/api/v1/signin").send(user))
       .body;
     userToken = token;
@@ -56,7 +60,7 @@ describe("Creation of a new certification", () => {
         .post("/api/v1/certifications/")
         .send({
           ...generateOneCertification(),
-          emitedBy: institution.businessName,
+          emitedBy: institution.name,
         })
         .set("Authorization", `Bearer ${userToken}`);
       await console.log({ body });

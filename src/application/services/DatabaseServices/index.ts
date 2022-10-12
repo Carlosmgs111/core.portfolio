@@ -12,10 +12,12 @@ export const ServicesInterfaceEnums: any = setEnums([
   DatabaseMongooseService.name,
 ]);
 
+console.log({ServicesInterface})
+
 export const DatabaseService = (
   service:string = ServicesInterfaceEnums.DatabaseSequelizeService) => {
   console.log({service})
-  class DatabaseService extends  ServicesInterface[service]{
+  class DatabaseService extends ServicesInterface[service]{
     constructor(props: any) {
       super(props);
     }

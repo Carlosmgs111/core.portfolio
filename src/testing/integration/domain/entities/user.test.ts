@@ -2,6 +2,7 @@ import "../../../mocks/DatabaseService.stub";
 import { User } from "../../../../domain/entities/User";
 import { DatabaseService } from "../../../../config/dependencies";
 
+console.log({DatabaseService})
 
 describe("Life cycle of user", () => {
   const userCredentials = {
