@@ -1,1 +1,37 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.Skill = exports.skill_schema = exports.skill_table = void 0;
+const sequelize_1 = require("sequelize");
+const __1 = require("..");
+exports.skill_table = "Skills";
+exports.skill_schema = {
+    uuid: {
+        primaryKey: true,
+        allowNull: false,
+        unique: true,
+        type: sequelize_1.DataTypes.STRING,
+    },
+    userUUID: {
+        field: "user_uuid",
+        unique: true,
+        allowNull: false,
+        type: sequelize_1.DataTypes.STRING,
+        references: {
+            model: "Users",
+            key: "uuid",
+            onDelete: "NO ACTION",
+            onUpdate: "NO ACTION",
+        },
+    },
+    name: { allowNull: false, type: sequelize_1.DataTypes.STRING, unique: true },
+    description: { type: sequelize_1.DataTypes.TEXT, allowNull: true },
+    image: { type: sequelize_1.DataTypes.STRING, allowNull: true },
+    tags: { allowNull: true, type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING) },
+    createdAt: { type: sequelize_1.DataTypes.DATE, allowNull: false, field: "created_at" },
+    updatedAt: { type: sequelize_1.DataTypes.DATE, allowNull: false, field: "updated_at" },
+};
+class Skill extends sequelize_1.Model {
+    static associate(models) { }
+}
+exports.Skill = Skill;
+Skill.init(exports.skill_schema, { sequelize: __1.sequelize, modelName: exports.skill_table });

@@ -24,6 +24,7 @@ export const project_schema = {
   name: { allowNull: false, type: DataTypes.STRING, unique:true },
   descriptions:{ type: DataTypes.ARRAY(DataTypes.TEXT), allowNull:true},
   images:{ type: DataTypes.ARRAY(DataTypes.TEXT), allowNull:true},
+  tags: {allowNull:true, type: DataTypes.ARRAY(DataTypes.STRING)},
   uri: { type: DataTypes.STRING },
   version: { type: DataTypes.STRING, allowNull: false },
   createdAt: { type: DataTypes.DATE, allowNull: false, field: "created_at" },

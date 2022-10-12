@@ -11,9 +11,18 @@ import {
   postgresDatabaseProd,
 } from "./config.env";
 
-const USER = encodeURIComponent(/* postgresUserDev || */ postgresUserProd);
-const PASSWORD = encodeURIComponent(/* postgresPasswordDev || */ postgresPasswordProd);
-const URI = `postgres://${USER}:${PASSWORD}@${/* postgresHostDev || */ postgresHostProd}:${/* postgresPortDev ||  */postgresPortProd}/${/* postgresDatabaseDev ||  */postgresDatabaseProd}`;
+const PROD = false;
+const USER = !PROD
+  ? encodeURIComponent(postgresUserDev)
+  : encodeURIComponent(postgresUserProd);
+const PASSWORD = !PROD
+  ? encodeURIComponent(postgresPasswordDev)
+  : encodeURIComponent(postgresPasswordProd);
+const URI = `postgres://${USER}:${PASSWORD}@${
+  !PROD ? postgresHostDev : postgresHostProd
+}:${!PROD ? postgresPortDev : postgresPortProd}/${
+  !PROD ? postgresDatabaseDev : postgresDatabaseProd
+}`;
 export = {
   development: {
     url: URI,
