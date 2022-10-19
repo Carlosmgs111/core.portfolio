@@ -8,8 +8,14 @@ export const DatabaseService =  DBS(/* ServicesInterfaceEnums.DatabaseMongooseSe
 export const AuthServices = new AS();
 
 const apiVersions = ["v1"];
+const uiVersions = ["v1"]
 
 export const apiConfig = {
   versions: apiVersions,
   version: apiVersions[apiVersions.length - 1],
+};
+
+export const uiConfig = {
+  versions: uiVersions,
+  version: uiVersions[uiVersions.length - 1],
 };

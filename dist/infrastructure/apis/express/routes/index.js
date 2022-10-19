@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dependencies_1 = require("../../../../config/dependencies");
 const express_1 = require("express");
 const api_routes_1 = __importDefault(require("./api.routes"));
+const ui_routes_1 = __importDefault(require("./ui.routes"));
 const router = (0, express_1.Router)();
 router.use(`/api/${dependencies_1.apiConfig.version}`, api_routes_1.default);
+router.use(`/ui/${dependencies_1.apiConfig.version}`, ui_routes_1.default);
 exports.default = router;

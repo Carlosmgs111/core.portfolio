@@ -9,7 +9,10 @@ const grantUrls = (urlsGranted) => {
         for (var urlGranted of urlsGranted) {
             let [pathsGranted, methodsGranted = []] = urlGranted;
             methodsGranted = ["GET", ...methodsGranted];
-            const isIncluded = pathsGranted.includes(req.url.replace(`/api/${dependencies_1.apiConfig.version}/`, "").replace("/", "")) && methodsGranted.includes(req.method);
+            const isIncluded = pathsGranted.includes(req.url
+                .replace(`/api/${dependencies_1.apiConfig.version}/`, "")
+                .replace(`/ui/${dependencies_1.uiConfig.version}/`, "")
+                .replace("/", "")) && methodsGranted.includes(req.method);
             if (isIncluded) {
                 isGranted = true;
                 break;

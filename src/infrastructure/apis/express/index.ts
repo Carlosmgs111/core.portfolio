@@ -3,6 +3,7 @@ import config from "../../../config";
 import morgan from "morgan";
 import cors from "cors";
 import routes from "./routes";
+import {join, dirname} from "path"
 import {
   logErrors,
   errorHandler,
@@ -21,12 +22,14 @@ app.use(morgan("dev"));
 app.use(cors({ origin: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
+app.set('view engine', 'pug') 
+app.set('views', join(dirname(dirname(__dirname)), 'templates'))
 // app.use(authRoutes);
 // app.use(passport);
 app.use(
   grantUrls([
     [["signin", "signup"], ["POST"]],
-    [["certifications","institutions"]],
+    [["certifications", "institutions", "hello"]],
   ])
 );
 /* to check */

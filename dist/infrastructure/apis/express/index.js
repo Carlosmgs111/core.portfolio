@@ -9,6 +9,7 @@ const config_1 = __importDefault(require("../../../config"));
 const morgan_1 = __importDefault(require("morgan"));
 const cors_1 = __importDefault(require("cors"));
 const routes_1 = __importDefault(require("./routes"));
+const path_1 = require("path");
 const error_handler_1 = require("./middlewares/error.handler");
 // import authRoutes from "./routes/auth.routes";
 // import passport from "../../auth/passport";
@@ -20,11 +21,13 @@ exports.app.use((0, morgan_1.default)("dev"));
 exports.app.use((0, cors_1.default)({ origin: true }));
 exports.app.use(express_1.default.json());
 exports.app.use(express_1.default.urlencoded({ extended: false }));
+exports.app.set('view engine', 'pug');
+exports.app.set('views', (0, path_1.join)((0, path_1.dirname)((0, path_1.dirname)(__dirname)), 'templates'));
 // app.use(authRoutes);
 // app.use(passport);
 exports.app.use((0, grantUrls_handler_1.grantUrls)([
     [["signin", "signup"], ["POST"]],
-    [["certifications", "institutions"]],
+    [["certifications", "institutions", "hello"]],
 ]));
 /* to check */
 exports.app.use((req, res, next) => {

@@ -1,5 +1,5 @@
 import { authMiddleware } from "./auth.handler";
-import { apiConfig } from "../../../../config/dependencies";
+import { apiConfig, uiConfig } from "../../../../config/dependencies";
 
 export const grantUrls = (urlsGranted: string[][][]) => {
   return (req: any, res: any, next: any) => {
@@ -9,7 +9,10 @@ export const grantUrls = (urlsGranted: string[][][]) => {
       methodsGranted = ["GET", ...methodsGranted];
       const isIncluded =
         pathsGranted.includes(
-          req.url.replace(`/api/${apiConfig.version}/`, "").replace("/", "")
+          req.url
+            .replace(`/api/${apiConfig.version}/`, "")
+            .replace(`/ui/${uiConfig.version}/`, "")
+            .replace("/", "")
         ) && methodsGranted.includes(req.method);
       if (isIncluded) {
         isGranted = true;

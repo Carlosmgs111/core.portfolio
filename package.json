@@ -12,7 +12,8 @@
   },
   "scripts": {
     "start": "node dist/index.js PROD",
-    "dev": "yarn copy && tsc-watch --onSuccess \"node dist/index.js DEV\" ",
+    "dev": "mkdir \"./dist/infrastructure/templates\" | yarn copy && tsc-watch --onSuccess \"node dist/index.js DEV\" ",
+    "copy": "ncp ./src/infrastructure/templates  ./dist/infrastructure/templates",
     "test": "jest",
     "test:e2e": "jest --config ./src/testing/e2e/jest-e2e.json --detectOpenHandles",
     "build": "tsc",
@@ -42,6 +43,7 @@
   "homepage": "https://github.com/Carlosmgs111/portfolio#readme",
   "dependencies": {
     "@hapi/boom": "^10.0.0",
+    "@types/pug": "^2.0.6",
     "bcrypt": "^5.0.1",
     "copy": "^0.3.2",
     "cors": "^2.8.5",
@@ -55,6 +57,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.6.1",
     "morgan": "^1.10.0",
+    "ncp": "^2.0.0",
     "nodemon": "^2.0.20",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
@@ -62,6 +65,7 @@
     "pg": "^8.8.0",
     "pg-hstore": "^2.3.4",
     "pluralize": "^8.0.0",
+    "pug": "^3.0.2",
     "sequelize": "^6.23.0",
     "sqlite3": "^5.1.1",
     "uuid": "^9.0.0"
