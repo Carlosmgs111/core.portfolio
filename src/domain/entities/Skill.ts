@@ -26,11 +26,11 @@ export class Skill {
     this.createdAt = new Date().getTime();
     this.updatedAt = new Date().getTime();
   }
-  static new = async (DatabaseServices: any, data: any): Promise<string> => {
+  static create = async (DatabaseServices: any, data: any): Promise<string> => {
     DatabaseServices.setupModel("Skill")
     const uuid = uuidv4();
-    const account = new Skill({ ...data, uuid, userUUID: data.user.uuid });
-    return await DatabaseServices.create(account);
+    const skill = new Skill({ ...data, uuid, userUUID: data.user.uuid });
+    return await DatabaseServices.create(skill);
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
@@ -38,17 +38,17 @@ export class Skill {
     const skill = await Skill.find(DatabaseServices, credentials);
     console.log({ Model: DatabaseServices.Model, credentials });
     if (!skill) throw new Error("Incorrect credentials!");
-    const account = new Skill(skill);
-    return account;
+    const loadedSkill = new Skill(skill);
+    return loadedSkill;
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Skill")
     const { uuid } = credentials;
-    const account: any = await DatabaseServices.findOne({
+    const skill: any = await DatabaseServices.findOne({
       uuid,
     });
-    return account;
+    return skill;
   };
 
   remove = async (DatabaseServices: any) => {

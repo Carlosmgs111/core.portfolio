@@ -5,7 +5,8 @@ import uiRoutes from "./ui.routes"
 
 const router = Router();
 
-router.use(`/api/${apiConfig.version}`, apiRoutes);
-router.use(`/ui/${apiConfig.version}`, uiRoutes);
+router
+  .use(`/api/${apiConfig.version}`, apiRoutes)
+  .use(`/ui/${apiConfig.version}`, uiRoutes);
 
 export default router;

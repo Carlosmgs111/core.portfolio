@@ -5,14 +5,14 @@ import {
   updateUser,
   signin,
   sayHello
-} from "../../../../application/use_cases/users";
-import { createUserSchema, getUserSchema, updateUserSchema } from "../../../schemas/user.schema";
-import { validatorHandler } from "../middlewares/validator.handler";
-import { expressHandlerAdapter } from "../../../../adapters/apis/express";
+} from "../../../../../application/use_cases/users";
+import { createUserSchema, getUserSchema, updateUserSchema } from "../../../../schemas/user.schema";
+import { validatorHandler } from "../../middlewares/validator.handler";
+import { expressHandlerAdapter } from "../../../../../adapters/apis/express";
 
 const router = Router();
 
-router
+export default router
   .get(
     "/",
     validatorHandler(getUserSchema, "body"),
@@ -39,5 +39,3 @@ router
     validatorHandler(getUserSchema, "body"),
     expressHandlerAdapter(removeUser)
   )
-
-export default router;

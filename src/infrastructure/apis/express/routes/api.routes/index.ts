@@ -5,14 +5,15 @@ import certificationRoutes from "./certification.routes";
 import institutionRoutes from "./institution.routes";
 import authRoutes from "./auth.routes"
 import postRoutes from "./post.routes"
+import skillRoutes from "./skill.routes"
 
 const router = Router();
 
-router.use("/projects", projectRoutes);
-router.use("/users", userRoutes);
-router.use("/certifications", certificationRoutes);
-router.use("/institutions", institutionRoutes);
-router.use("/posts", postRoutes);
-router.use("",authRoutes)
-
-export default router;
+export default router
+.use("/projects", projectRoutes)
+.use("/users", userRoutes)
+.use("/certifications", certificationRoutes)
+.use("/institutions", institutionRoutes)
+.use("/posts", postRoutes)
+.use("/skills", skillRoutes)
+.use("",authRoutes)

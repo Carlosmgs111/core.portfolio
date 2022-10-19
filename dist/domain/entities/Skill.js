@@ -36,11 +36,11 @@ class Skill {
 }
 exports.Skill = Skill;
 _a = Skill;
-Skill.new = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
+Skill.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Skill");
     const uuid = (0, uuid_1.v4)();
-    const account = new Skill(Object.assign(Object.assign({}, data), { uuid, userUUID: data.user.uuid }));
-    return yield DatabaseServices.create(account);
+    const skill = new Skill(Object.assign(Object.assign({}, data), { uuid, userUUID: data.user.uuid }));
+    return yield DatabaseServices.create(skill);
 });
 Skill.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Skill");
@@ -48,14 +48,14 @@ Skill.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0
     console.log({ Model: DatabaseServices.Model, credentials });
     if (!skill)
         throw new Error("Incorrect credentials!");
-    const account = new Skill(skill);
-    return account;
+    const loadedSkill = new Skill(skill);
+    return loadedSkill;
 });
 Skill.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Skill");
     const { uuid } = credentials;
-    const account = yield DatabaseServices.findOne({
+    const skill = yield DatabaseServices.findOne({
         uuid,
     });
-    return account;
+    return skill;
 });

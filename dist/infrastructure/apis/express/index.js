@@ -16,21 +16,22 @@ const error_handler_1 = require("./middlewares/error.handler");
 const grantUrls_handler_1 = require("./middlewares/grantUrls.handler");
 // Create a new app server
 exports.app = (0, express_1.default)();
-exports.app.set("port", config_1.default.serverPort);
-exports.app.use((0, morgan_1.default)("dev"));
-exports.app.use((0, cors_1.default)({ origin: true }));
-exports.app.use(express_1.default.json());
-exports.app.use(express_1.default.urlencoded({ extended: false }));
-exports.app.set('view engine', 'pug');
-exports.app.set('views', (0, path_1.join)((0, path_1.dirname)((0, path_1.dirname)(__dirname)), 'templates'));
-// app.use(authRoutes);
-// app.use(passport);
-exports.app.use((0, grantUrls_handler_1.grantUrls)([
+exports.app
+    .set("port", config_1.default.serverPort)
+    .use((0, morgan_1.default)("dev"))
+    .use((0, cors_1.default)({ origin: true }))
+    .use(express_1.default.json())
+    .use(express_1.default.urlencoded({ extended: false }))
+    .set("view engine", "pug")
+    .set("views", (0, path_1.join)((0, path_1.dirname)((0, path_1.dirname)(__dirname)), "templates"))
+    // .use(authRoutes)
+    // .use(passport)
+    .use((0, grantUrls_handler_1.grantUrls)([
     [["signin", "signup"], ["POST"]],
-    [["certifications", "institutions", "hello"]],
-]));
-/* to check */
-exports.app.use((req, res, next) => {
+    [["certifications", "institutions", "skills"]],
+]))
+    /* to check */
+    .use((req, res, next) => {
     // Dominio que tengan acceso (ej. 'http://example.com')
     res.setHeader("Access-Control-Allow-Origin", "*");
     // Metodos de solicitud que deseas permitir
@@ -38,12 +39,12 @@ exports.app.use((req, res, next) => {
     // Encabecedados que permites (ej. 'X-Requested-With,content-type')
     res.setHeader("Access-Control-Allow-Headers", "*");
     next();
-});
-exports.app.use(routes_1.default);
-exports.app.use(error_handler_1.logErrors);
-exports.app.use(error_handler_1.ormErrorHandler);
-exports.app.use(error_handler_1.boomErrorHandler);
-exports.app.use(error_handler_1.errorHandler);
+})
+    .use(routes_1.default)
+    .use(error_handler_1.logErrors)
+    .use(error_handler_1.ormErrorHandler)
+    .use(error_handler_1.boomErrorHandler)
+    .use(error_handler_1.errorHandler);
 exports.default = () => exports.app.listen(exports.app.get("port"), () => {
     console.log(`🚀💼 Portfolio app listening on port ${exports.app.get("port")}`);
 });

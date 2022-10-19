@@ -5,6 +5,7 @@ const Project_1 = require("./Project");
 const Institution_1 = require("./Institution");
 const Certification_1 = require("./Certification");
 const Post_1 = require("./Post");
+const Skill_1 = require("./Skill");
 const User_Institution_1 = require("./User_Institution");
 const User_Certification_1 = require("./User_Certification");
 const models = {
@@ -13,6 +14,7 @@ const models = {
     Institution: Institution_1.Institution,
     Certification: Certification_1.Certification,
     Post: Post_1.Post,
+    Skill: Skill_1.Skill,
     Users_Institutions: User_Institution_1.Users_Institutions,
     Users_Certifications: User_Certification_1.Users_Certifications,
 };
