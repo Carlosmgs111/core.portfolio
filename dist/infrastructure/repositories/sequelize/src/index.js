@@ -13,7 +13,7 @@ let database = (() => {
         return config_env_1.postgresDatabaseDev;
     if (ENV === "PROD")
         return config_env_1.postgresDatabaseProd;
-    return "test";
+    return "postgres";
 })();
 let user = (() => {
     if (ENV === "DEV")

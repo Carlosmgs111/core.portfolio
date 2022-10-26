@@ -65,8 +65,10 @@ jobs:
         shell: bash
         run: npm run test:e2e
         env:
+          MONGO_DB_NAME: test
+          MONGO_URL: mongodb://test:p%4055w0rd@localhost:27017/test?retryWrites=true&writeConcern=majority
+          POSTGRES_USER: tester
+          POSTGRES_PASSWORD: password
           POSTGRES_DATABASE: test
           POSTGRES_HOST: 127.0.0.1
           POSTGRES_PORT: 5432
-          POSTGRES_USER: tester
-          POSTGRES_PASSWORD: password
