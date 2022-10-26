@@ -6,6 +6,7 @@ type ISkill = {
   name: string;
   description: string;
   image: string;
+  tags: string[];
 };
 
 export class Skill {
@@ -14,15 +15,17 @@ export class Skill {
   name: string;
   description: string;
   image: string;
+  tags: string[];
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({ uuid, userUUID, name, description, image, }: ISkill) {
+  constructor({ uuid, userUUID, name, description, image, tags}: ISkill) {
     this.uuid = uuid;
     this.userUUID = userUUID;
     this.name = name;
     this.description = description;
     this.image = image;
+    this.tags = tags;
     this.createdAt = new Date().getTime();
     this.updatedAt = new Date().getTime();
   }

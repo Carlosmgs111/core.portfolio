@@ -11,7 +11,7 @@ export const project_schema = {
   },
   userUUID: {
     field:"user_uuid",
-    unique: true,
+    unique: false,
     allowNull: false,
     type: DataTypes.STRING,
     references: {

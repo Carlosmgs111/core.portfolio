@@ -11,7 +11,7 @@ export const skill_schema = {
   },
   userUUID: {
     field: "user_uuid",
-    unique: true,
+    unique: false,
     allowNull: false,
     type: DataTypes.STRING,
     references: {
@@ -21,8 +21,8 @@ export const skill_schema = {
       onUpdate: "NO ACTION",
     },
   },
-  name: { allowNull: false, type: DataTypes.STRING, unique: true },
-  description: { type: DataTypes.TEXT, allowNull: true },
+  name: { allowNull: false, type: DataTypes.STRING, unique: false },
+  description: { type: DataTypes.TEXT, allowNull: false },
   image: { type: DataTypes.STRING, allowNull: true },
   tags: { allowNull: true, type: DataTypes.ARRAY(DataTypes.STRING) },
   createdAt: { type: DataTypes.DATE, allowNull: false, field: "created_at" },

@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Skill = void 0;
 const uuid_1 = require("uuid");
 class Skill {
-    constructor({ uuid, userUUID, name, description, image, }) {
+    constructor({ uuid, userUUID, name, description, image, tags }) {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
@@ -30,6 +30,7 @@ class Skill {
         this.name = name;
         this.description = description;
         this.image = image;
+        this.tags = tags;
         this.createdAt = new Date().getTime();
         this.updatedAt = new Date().getTime();
     }

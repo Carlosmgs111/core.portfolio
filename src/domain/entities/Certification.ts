@@ -8,16 +8,18 @@ export class Certification {
   emitedAt: number = 0; // * timestamp
   image: string = ""; // * url to image
   url: string = ""; // * url to certificated course or institution
+  tags: string[];
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({ uuid, title, institutionUUID, emitedAt, image, url }: any) {
+  constructor({ uuid, title, institutionUUID, emitedAt, image, url, tags }: any) {
     this.uuid = uuid;
     this.title = title;
     this.institutionUUID = institutionUUID;
     this.emitedAt = emitedAt;
     this.image = image;
     this.url = url;
+    this.tags = tags;
     this.createdAt = new Date().getTime();
     this.updatedAt = new Date().getTime();
   }

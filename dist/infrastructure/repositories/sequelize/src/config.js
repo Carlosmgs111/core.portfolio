@@ -1,6 +1,6 @@
 "use strict";
 const config_env_1 = require("./config.env");
-const PROD = false;
+const PROD = false; // ? true for use in production
 const USER = !PROD
     ? encodeURIComponent(config_env_1.postgresUserDev)
     : encodeURIComponent(config_env_1.postgresUserProd);

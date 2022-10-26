@@ -14,7 +14,7 @@ exports.Certification = void 0;
 const uuid_1 = require("uuid");
 const utils_1 = require("../../utils");
 class Certification {
-    constructor({ uuid, title, institutionUUID, emitedAt, image, url }) {
+    constructor({ uuid, title, institutionUUID, emitedAt, image, url, tags }) {
         this.uuid = "";
         this.title = "";
         this.institutionUUID = ""; // * ID to institution
@@ -38,6 +38,7 @@ class Certification {
         this.emitedAt = emitedAt;
         this.image = image;
         this.url = url;
+        this.tags = tags;
         this.createdAt = new Date().getTime();
         this.updatedAt = new Date().getTime();
     }

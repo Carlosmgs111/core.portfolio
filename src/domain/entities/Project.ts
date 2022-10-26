@@ -6,6 +6,7 @@ type IProject = {
   name: string;
   descriptions: string[];
   images: string[];
+  tags: string[];
   uri: string;
   version: string;
 };
@@ -16,17 +17,19 @@ export class Project {
   name: string;
   descriptions: string[];
   images: string[];
+  tags: string[];
   uri: string;
   version: string;
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({ uuid, userUUID, name, descriptions, images, uri, version }: IProject) {
+  constructor({ uuid, userUUID, name, descriptions, images, tags, uri, version }: IProject) {
     this.uuid = uuid;
     this.userUUID = userUUID;
     this.name = name;
     this.descriptions = descriptions;
     this.images = images;
+    this.tags = tags;
     this.uri = uri;
     this.version = version;
     this.createdAt = new Date().getTime();

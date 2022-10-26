@@ -11,7 +11,7 @@ import {
   postgresDatabaseProd,
 } from "./config.env";
 
-const PROD = false;
+const PROD = false; // ? true for use in production
 const USER = !PROD
   ? encodeURIComponent(postgresUserDev)
   : encodeURIComponent(postgresUserProd);

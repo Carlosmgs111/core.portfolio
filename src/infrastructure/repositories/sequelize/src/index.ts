@@ -17,9 +17,9 @@ import {
   postgresPortTest,
 } from "./config.env";
 
-let ENV = "TEST"
-if(process.argv.includes("DEV")) ENV = "DEV" 
-if(process.argv.includes("PROD")) ENV = "PROD";
+let ENV = null;
+if (process.argv.includes("DEV")) ENV = "DEV";
+if (process.argv.includes("PROD")) ENV = "PROD";
 
 let database: string = (() => {
   if (ENV === "DEV") return postgresDatabaseDev;
@@ -51,7 +51,12 @@ export const sequelize = new Sequelize(database, user, PASSWORD, {
   host,
   port,
   dialect: "postgres",
-  logging: false//console.log
+  logging: false, //console.log
 });
 
-console.log({ENV})
+(async (ENV: any) => {
+  console.log({ ENV });
+  if (ENV === "DEV") return;
+  if (ENV === "PROD") return;
+  await sequelize.sync({ alter: true });
+})(ENV);

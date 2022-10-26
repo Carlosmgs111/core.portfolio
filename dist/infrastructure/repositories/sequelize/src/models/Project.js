@@ -13,7 +13,7 @@ exports.project_schema = {
     },
     userUUID: {
         field: "user_uuid",
-        unique: true,
+        unique: false,
         allowNull: false,
         type: sequelize_1.DataTypes.STRING,
         references: {

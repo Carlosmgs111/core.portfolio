@@ -13,7 +13,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Project = void 0;
 const uuid_1 = require("uuid");
 class Project {
-    constructor({ uuid, userUUID, name, descriptions, images, uri, version }) {
+    constructor({ uuid, userUUID, name, descriptions, images, tags, uri, version }) {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
@@ -30,6 +30,7 @@ class Project {
         this.name = name;
         this.descriptions = descriptions;
         this.images = images;
+        this.tags = tags;
         this.uri = uri;
         this.version = version;
         this.createdAt = new Date().getTime();

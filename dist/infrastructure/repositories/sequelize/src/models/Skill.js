@@ -13,7 +13,7 @@ exports.skill_schema = {
     },
     userUUID: {
         field: "user_uuid",
-        unique: true,
+        unique: false,
         allowNull: false,
         type: sequelize_1.DataTypes.STRING,
         references: {
@@ -23,8 +23,8 @@ exports.skill_schema = {
             onUpdate: "NO ACTION",
         },
     },
-    name: { allowNull: false, type: sequelize_1.DataTypes.STRING, unique: true },
-    description: { type: sequelize_1.DataTypes.TEXT, allowNull: true },
+    name: { allowNull: false, type: sequelize_1.DataTypes.STRING, unique: false },
+    description: { type: sequelize_1.DataTypes.TEXT, allowNull: false },
     image: { type: sequelize_1.DataTypes.STRING, allowNull: true },
     tags: { allowNull: true, type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING) },
     createdAt: { type: sequelize_1.DataTypes.DATE, allowNull: false, field: "created_at" },
