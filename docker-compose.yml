@@ -28,7 +28,7 @@ services:
       - POSTGRES_USER=tester
       - POSTGRES_PASSWORD=password
     ports:
-      - 5456:5432
+      - 5432:5432
   
   postgres-dev:
     image: postgres
