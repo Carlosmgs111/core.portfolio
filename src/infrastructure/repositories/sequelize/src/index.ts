@@ -53,10 +53,3 @@ export const sequelize = new Sequelize(database, user, PASSWORD, {
   dialect: "postgres",
   logging: false, //console.log
 });
-
-(async (ENV: any) => {
-  console.log({ ENV });
-  if (ENV === "DEV") return;
-  if (ENV === "PROD") return;
-  await sequelize.sync({ alter: true });
-})(ENV);

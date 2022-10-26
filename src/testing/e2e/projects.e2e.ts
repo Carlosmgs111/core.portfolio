@@ -9,26 +9,22 @@ import { connection } from "../../infrastructure/repositories/mongoose";
 import { sequelize } from "../../infrastructure/repositories/sequelize/src";
 
 describe("Test for get all projects endpoint", () => {
-  
   let server: any = null;
-  let userToken:string
+  let userToken: string;
 
   beforeAll(async () => {
     server = app.listen(4040, () =>
       console.log("Test server running at port 4040")
     );
-    Project.sync({alter:true})
+    await Project.sync({ force: true });
     const user = generateOneUser();
-    /* const {status}:any = */ expect((await request(app).post("/api/v1/signup").send(user)).status).toBe(200);
-    // expect(status).toBe(200);
-    const { token}: any = (await request(app)
-      .get("/api/v1/signin")
-      .send(user)).body;
-    userToken =token;
+    await request(app).post("/api/v1/signup").send(user);
+    const { token }: any = (await request(app).get("/api/v1/signin").send(user))
+      .body;
+    userToken = token;
   });
   afterAll(async () => {
-    await Project.sync({force:true})
-    await sequelize.close()
+    await sequelize.close();
     await server.close();
   });
 

@@ -23,15 +23,13 @@ describe("Creation of a new certification", () => {
     server = app.listen(4080, () =>
       console.log("Test server running at port 4080")
     );
-    User.sync({ alter: true });
-    Institution.sync({ alter: true });
-    Certification.sync({ alter: true });
-    Users_Certifications.sync({ alter: true });
-    Users_Institutions.sync({alter:true})
+    await User.sync({ force: true });
+    await Institution.sync({ force: true });
+    await Certification.sync({ force: true });
+    await Users_Certifications.sync({ force: true });
+    await Users_Institutions.sync({force:true})
     user = generateOneUser();
-    expect((await request(app).post("/api/v1/signup").send(user)).status).toBe(200);
-    /* const {status}: any = await request(app).post("/api/v1/signup").send(user)
-    expect(status).toBe(200); */
+    await request(app).post("/api/v1/signup").send(user)
     const { token }: any = (await request(app).get("/api/v1/signin").send(user))
       .body;
     userToken = token;
@@ -44,10 +42,6 @@ describe("Creation of a new certification", () => {
   });
 
   afterAll(async () => {
-    await User.sync({ force: true });
-    await Institution.sync({ force: true });
-    await Certification.sync({ force: true });
-    await Users_Certifications.sync({ force: true });
     await sequelize.close();
     await server.close();
   });

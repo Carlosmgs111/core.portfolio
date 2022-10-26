@@ -7,6 +7,7 @@ describe("Lifecycle of project entity",()=>{test("Create a new project", () => {
     name: "Test Project",
     descriptions: ["A test project"],
     images: ["https://images.com"],
+    tags: ["lorem", "ipsum"],
     uri: "https://test.project.com",
     version: "0.1.2",
   });

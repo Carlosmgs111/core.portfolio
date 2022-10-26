@@ -3,8 +3,10 @@ import { capitalize } from "../../utils";
 
 export const generateOneProject = () => ({
   name: capitalize(faker.company.bsBuzz()),
-  description: faker.commerce.productDescription(),
+  descriptions: [faker.commerce.productDescription()],
+  images:[faker.image.image(1234, 2345, true)],
   uri: faker.internet.url(),
+  tags: [faker.lorem.word(), faker.lorem.word(), faker.lorem.word()],
   version: `${faker.datatype.number(100)}.${faker.datatype.number(
     100
   )}.${faker.datatype.number(100)}`,
