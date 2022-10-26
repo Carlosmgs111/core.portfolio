@@ -24,7 +24,7 @@ if (process.argv.includes("PROD")) ENV = "PROD";
 let database: string = (() => {
   if (ENV === "DEV") return postgresDatabaseDev;
   if (ENV === "PROD") return postgresDatabaseProd;
-  return "postgres";
+  return "test";
 })();
 let user: string = (() => {
   if (ENV === "DEV") return postgresUserDev;
