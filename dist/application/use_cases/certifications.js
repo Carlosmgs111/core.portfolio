@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeCertification = exports.updateCertification = exports.addManyCertifications = exports.addNewCertification = exports.getCertifications = void 0;
+exports.removeCertification = exports.updateCertification = exports.addManyCertifications = exports.addNewCertification = exports.getCertificationByUUID = exports.getCertifications = void 0;
 const dependencies_1 = require("../../config/dependencies");
 const Certification_1 = require("../../domain/entities/Certification");
 const Institution_1 = require("../../domain/entities/Institution");
@@ -22,6 +22,10 @@ const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* 
     return yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, data);
 });
 exports.getCertifications = getCertifications;
+const getCertificationByUUID = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    return yield Certification_1.Certification.find(dependencies_1.DatabaseService, data);
+});
+exports.getCertificationByUUID = getCertificationByUUID;
 const addNewCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
     if (!data.user)
         throw boom_1.default.conflict("A user must be instanced!");
@@ -45,13 +49,16 @@ const addManyCertifications = (data) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.addManyCertifications = addManyCertifications;
 const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid: data.uuid })).update(dependencies_1.DatabaseService, data);
+    yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid: data.uuid })).update(dependencies_1.DatabaseService, data);
+    return yield (0, exports.getCertificationByUUID)({ uuid: data.uuid });
 });
 exports.updateCertification = updateCertification;
 const removeCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({ data });
     yield (yield User_Certification_1.User_Certification.load(dependencies_1.DatabaseService, {
         certificationUUID: data.uuid,
     })).remove(dependencies_1.DatabaseService);
-    return yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid: data.uuid })).remove(dependencies_1.DatabaseService);
+    yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid: data.uuid })).remove(dependencies_1.DatabaseService);
+    return { message: "Certification deleted", uuid: data.uuid };
 });
 exports.removeCertification = removeCertification;

@@ -7,13 +7,31 @@ import {
   updateCertification,
 } from "../../../../../application/use_cases/certifications";
 import { expressHandlerAdapter } from "../../../../../adapters/apis/express";
+import { validatorHandler } from "../../middlewares/validator.handler";
+import {
+  createCertification,
+  createCertifications,
+  updateCertification as updateCertificationSchema,
+} from "../../../../schemas/certification.schema";
 
 const router = Router();
 
 export default router
-  .post("/", expressHandlerAdapter(addNewCertification))
-  .post("/certifications", expressHandlerAdapter(addManyCertifications))
+  .post(
+    "/",
+    validatorHandler(createCertification, "body"),
+    expressHandlerAdapter(addNewCertification)
+  )
+  .post(
+    "/certifications",
+    // validatorHandler(createCertifications, "body"),
+    expressHandlerAdapter(addManyCertifications)
+  )
   .get("/", expressHandlerAdapter(getCertifications))
   .delete("/", expressHandlerAdapter(removeCertification))
-  .patch("/", expressHandlerAdapter(updateCertification));
-
+  .delete("/:uuid", expressHandlerAdapter(removeCertification))
+  .patch(
+    "/",
+    validatorHandler(updateCertificationSchema, "body"),
+    expressHandlerAdapter(updateCertification)
+  );

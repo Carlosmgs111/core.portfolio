@@ -1,5 +1,8 @@
 {
   "workbench.colorCustomizations": {
+    "vscode_custom_css.imports": [
+      "file:///C:/Users/Draupnir/.vscode/extensions/webrender.synthwave-x-fluoromachine-0.0.12/synthwave-x-fluoromachine.css"
+    ],
     "activityBar.activeBackground": "#d0f892",
     "activityBar.activeBorder": "#2da5f2",
     "activityBar.background": "#d0f892",
@@ -15,7 +18,29 @@
     "titleBar.activeForeground": "#15202b",
     "titleBar.inactiveBackground": "#bbf56299",
     "titleBar.inactiveForeground": "#15202b99",
-    "commandCenter.border": "#15202b99"
+    "commandCenter.border": "#15202b99",
+    "[Andromeda Italic Bordered]": {
+      "editor.background": "#232020",
+      "sideBar.background": "#232020",
+      "sideBar.foreground": "#ececec",
+      "sideBar.border": "#00ffc8",
+      "sideBarSectionHeader.background": "#404040",
+      "terminal.background": "#232020",
+      "terminal.border": "#00ffc8",
+      "tab.activeBorder": "#00ffc8",
+      "tab.activeForeground": "#04c39d",
+      "tab.hoverBackground": "#404040"
+    },
+    "[*Dark*]": {
+      "progressBar.background": "#0D9373",
+      "notificationsInfoIcon.foreground": "#0D9373",
+      "editor.selectionBackground": "#0D937333"
+    },
+    "[*Light*]": {
+      "progressBar.background": "#0D9373",
+      "notificationsInfoIcon.foreground": "#0D9373",
+      "editor.selectionBackground": "#0D937333"
+    }
   },
   "peacock.color": "#bbf562"
 }
