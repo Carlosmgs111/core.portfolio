@@ -21,8 +21,9 @@ exports.createCertification = joi_1.default.object({
 exports.updateCertification = joi_1.default.object({
     uuid,
     emitedAt,
-    title: title.required(),
-    image: image.required(),
+    emitedBy,
+    title,
+    image,
     url,
 });
 exports.createCertifications = joi_1.default.array().items(exports.createCertification);

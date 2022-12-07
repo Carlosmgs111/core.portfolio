@@ -31,27 +31,28 @@ export class Certification {
     const uuid = uuidv4();
     const certification = new Certification({ ...data, uuid });
     await DatabaseServices.create(certification);
+    // console.log({ certification })
     return certification;
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Certification");
-    const project = await Certification.find(DatabaseServices, credentials);
-    if (!project) throw new Error("Incorrect credentials!");
-    const certificate = new Certification(project);
-    return certificate;
+    const certification = await Certification.find(DatabaseServices, { uuid: credentials.uuid });
+    if (!certification) throw new Error("Incorrect credentials!");
+    const loadedCertification = new Certification(certification);
+    return loadedCertification;
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Certification");
     const certificate: any = await DatabaseServices.findOne(credentials)
-    ;
+      ;
     return certificate;
   };
 
   static findAll = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Certification");
-    console.log({credentials})
+    console.log({ credentials })
     const certificate: any = await DatabaseServices.findAll(
       credentials
     );
@@ -69,11 +70,11 @@ export class Certification {
     });
   };
 
-  update = async (DatabaseServices: any, data:any) => {
+  update = async (DatabaseServices: any, data: any) => {
     DatabaseServices.setupModel("Certification");
     this.updatedAt = new Date().getTime();
     return await DatabaseServices.update({
-      ...getEntityProperties({...this, ...data}),
+      ...getEntityProperties({ ...this, ...data }),
     });
   };
 }

@@ -14,6 +14,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = __importDefault(require("../../../infrastructure/repositories/sequelize/src/models"));
 class DatabaseSequelizeService {
+    // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
     constructor({ __identifier, env }) {
         this.serviceDescription = "Sequelize Interface Database Service";
         this.create = (Entity) => __awaiter(this, void 0, void 0, function* () {
@@ -38,21 +39,23 @@ class DatabaseSequelizeService {
             return yield this.Model.destroy({ where: { uuid: Entity.uuid } });
         });
         this.update = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            console.log({ Entity });
+            // console.log({Entity})
             const model = yield this.Model.update(Entity, {
                 where: { uuid: Entity.uuid },
             });
             return model;
         });
+        // * A function that is called in the constructor of the class. It is used to associate the models in
+        // * the database. 
         this.syncModels = () => {
             for (var model in models_1.default)
-                models_1.default[model].associate ? models_1.default[model].associate(models_1.default) : null;
+                models_1.default[model].associate && models_1.default[model].associate(models_1.default);
         };
         this.Model = models_1.default[__identifier];
         this.syncModels();
     }
-    setupModel(__identifier) {
-        this.Model = models_1.default[__identifier];
+    setupModel(__table) {
+        this.Model = models_1.default[__table];
         return this;
     }
 }

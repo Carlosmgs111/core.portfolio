@@ -24,7 +24,7 @@ export const certification_schema = {
   title: { allowNull: false, type: DataTypes.STRING, unique: true },
   image: { allowNull: false, type: DataTypes.STRING, unique: true },
   url: { allowNull: false, type: DataTypes.STRING },
-  tags: {allowNull:true, type: DataTypes.ARRAY(DataTypes.STRING)},
+  tags: { allowNull: true, type: DataTypes.ARRAY(DataTypes.STRING) },
   emitedAt: { type: DataTypes.DATE, allowNull: false, field: "emited_at" },
   createdAt: { type: DataTypes.DATE, allowNull: false, field: "created_at" },
   updatedAt: { type: DataTypes.DATE, allowNull: false, field: "updated_at" },

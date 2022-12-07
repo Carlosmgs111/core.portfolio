@@ -5,7 +5,14 @@ import { User_Certification } from "../../domain/entities/User_Certification";
 import boom from "@hapi/boom";
 
 export const getCertifications = async (data: any) => {
-  return await Certification.findAll(DatabaseService, data);
+  const institutions = (await Institution.findAll(DatabaseService, {})).map(
+    (institution: any) => institution.dataValues
+  );
+  return [
+    ...(await Certification.findAll(DatabaseService, data)).map((certification: any) => ({
+      ...certification.dataValues, emitedAt: new Date(certification.dataValues.emitedAt).getTime(), emitedBy: institutions.find((i: any) => i.uuid === certification.institutionUUID).name,
+    })).sort((a: any, b: any) => { if (a.emitedAt < b.emitedAt) return 1; return -1 }),
+  ];
 };
 
 export const getCertificationByUUID = async (data: any) => {
@@ -32,10 +39,11 @@ export const addNewCertification = async (data: any) => {
 
 export const addManyCertifications = async (data: any) => {
   const { certifications } = data;
+  const newCertifications = []
   for (var certification of certifications) {
-    await addNewCertification({ ...certification, user: data.user });
+    newCertifications.push(await addNewCertification({ ...certification, user: data.user }));
   }
-  return certifications;
+  return newCertifications;
 };
 
 export const updateCertification = async (data: any) => {
@@ -46,7 +54,7 @@ export const updateCertification = async (data: any) => {
 };
 
 export const removeCertification = async (data: any) => {
-  console.log({data})
+  console.log({ data });
   await (
     await User_Certification.load(DatabaseService, {
       certificationUUID: data.uuid,

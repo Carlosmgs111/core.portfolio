@@ -18,8 +18,9 @@ export const createCertification = Joi.object({
 export const updateCertification = Joi.object({
   uuid,
   emitedAt,
-  title: title.required(),
-  image: image.required(),
+  emitedBy,
+  title,
+  image,
   url,
 });
 

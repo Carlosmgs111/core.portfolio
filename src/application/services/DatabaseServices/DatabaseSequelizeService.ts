@@ -3,8 +3,9 @@ import { Model } from "sequelize";
 
 export default class DatabaseSequelizeService {
   Model: any;
-  serviceDescription:string = "Sequelize Interface Database Service"
-  
+  serviceDescription: string = "Sequelize Interface Database Service"
+
+  // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
   constructor({ __identifier, env }: any) {
     this.Model = models[__identifier];
     this.syncModels();
@@ -20,7 +21,7 @@ export default class DatabaseSequelizeService {
   };
 
   findOne = async (Entity: any) => {
-    await console.log({Entity})
+    await console.log({ Entity })
     try {
       const entity = await this.Model.findOne({ where: Entity });
       return entity;
@@ -34,21 +35,23 @@ export default class DatabaseSequelizeService {
   };
 
   update = async (Entity: any) => {
-    console.log({Entity})
+    // console.log({Entity})
     const model = await this.Model.update(Entity, {
       where: { uuid: Entity.uuid },
     });
     return model;
   };
 
-  setupModel(__identifier: string) {
-    this.Model = models[__identifier];
+  setupModel(__table: string) {
+    this.Model = models[__table];
     return this;
   }
 
+  // * A function that is called in the constructor of the class. It is used to associate the models in
+  // * the database. 
   syncModels = () => {
     for (var model in models)
-      models[model].associate ? models[model].associate(models) : null;
+      models[model].associate && models[model].associate(models);
   };
-  
+
 }

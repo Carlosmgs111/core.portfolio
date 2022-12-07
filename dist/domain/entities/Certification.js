@@ -50,15 +50,16 @@ Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, voi
     const uuid = (0, uuid_1.v4)();
     const certification = new Certification(Object.assign(Object.assign({}, data), { uuid }));
     yield DatabaseServices.create(certification);
+    // console.log({ certification })
     return certification;
 });
 Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Certification");
-    const project = yield Certification.find(DatabaseServices, credentials);
-    if (!project)
+    const certification = yield Certification.find(DatabaseServices, { uuid: credentials.uuid });
+    if (!certification)
         throw new Error("Incorrect credentials!");
-    const certificate = new Certification(project);
-    return certificate;
+    const loadedCertification = new Certification(certification);
+    return loadedCertification;
 });
 Certification.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Certification");

@@ -19,7 +19,11 @@ const Institution_1 = require("../../domain/entities/Institution");
 const User_Certification_1 = require("../../domain/entities/User_Certification");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, data);
+    const institutions = (yield Institution_1.Institution.findAll(dependencies_1.DatabaseService, {})).map((institution) => institution.dataValues);
+    return [
+        ...(yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, data)).map((certification) => (Object.assign(Object.assign({}, certification.dataValues), { emitedAt: new Date(certification.dataValues.emitedAt).getTime(), emitedBy: institutions.find((i) => i.uuid === certification.institutionUUID).name }))).sort((a, b) => { if (a.emitedAt < b.emitedAt)
+            return 1; return -1; }),
+    ];
 });
 exports.getCertifications = getCertifications;
 const getCertificationByUUID = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -42,10 +46,11 @@ const addNewCertification = (data) => __awaiter(void 0, void 0, void 0, function
 exports.addNewCertification = addNewCertification;
 const addManyCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { certifications } = data;
+    const newCertifications = [];
     for (var certification of certifications) {
-        yield (0, exports.addNewCertification)(Object.assign(Object.assign({}, certification), { user: data.user }));
+        newCertifications.push(yield (0, exports.addNewCertification)(Object.assign(Object.assign({}, certification), { user: data.user })));
     }
-    return certifications;
+    return newCertifications;
 });
 exports.addManyCertifications = addManyCertifications;
 const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
