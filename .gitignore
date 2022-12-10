@@ -202,5 +202,4 @@ mysqldata
 src/infrastructure/repositories/sequelize/dist
 src/infrastructure/repositories/sequelize/migrations
 seeders
-/yarn.lock
 # End of https://www.toptal.com/developers/gitignore/api/windows,git,node,linux
