@@ -28,6 +28,7 @@ export default router
     expressHandlerAdapter(addManyCertifications)
   )
   .get("/", expressHandlerAdapter(getCertifications))
+  .get("/:username", expressHandlerAdapter(getCertifications))
   .delete("/", expressHandlerAdapter(removeCertification))
   .delete("/:uuid", expressHandlerAdapter(removeCertification))
   .patch(

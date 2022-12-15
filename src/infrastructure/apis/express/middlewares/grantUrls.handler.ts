@@ -3,17 +3,18 @@ import { apiConfig, uiConfig } from "../../../../config/dependencies";
 
 export const grantUrls = (urlsGranted: string[][][]) => {
   return (req: any, res: any, next: any) => {
+    const { url, method } = req;
     let isGranted = false;
     for (var urlGranted of urlsGranted) {
       let [pathsGranted, methodsGranted = []]: any = urlGranted;
       methodsGranted = ["GET", ...methodsGranted];
       const isIncluded =
         pathsGranted.includes(
-          req.url
+          url
             .replace(`/api/${apiConfig.version}/`, "")
             .replace(`/ui/${uiConfig.version}/`, "")
-            .replace("/", "")
-        ) && methodsGranted.includes(req.method);
+            .split("/")[0]
+        ) && methodsGranted.includes(method);
       if (isIncluded) {
         isGranted = true;
         break;
