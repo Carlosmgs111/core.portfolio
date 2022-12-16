@@ -55,8 +55,14 @@ export const Enumfy = (object: Array<String> | Object) => {
   return Object.freeze(enumObj);
 };
 
-export const execFunc = async(func: Function | any) => {
-  typeof func === "function"
-    ? await func()
-    : console.log("Not implemented yet!".red);
+export const execFunc = async (func: Function | any) => {
+  if (typeof func !== "function") {
+    console.log("Not implemented yet!".red);
+    return;
+  }
+  try {
+    await func();
+  } catch (e: any) {
+    console.log(e.message.red);
+  }
 };

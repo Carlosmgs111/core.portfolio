@@ -13,7 +13,8 @@ const grantUrls = (urlsGranted) => {
             const isIncluded = pathsGranted.includes(url
                 .replace(`/api/${dependencies_1.apiConfig.version}/`, "")
                 .replace(`/ui/${dependencies_1.uiConfig.version}/`, "")
-                .split("/")[0]) && methodsGranted.includes(method);
+                .split("/")[0]
+                .split("?")[0]) && methodsGranted.includes(method);
             if (isIncluded) {
                 isGranted = true;
                 break;

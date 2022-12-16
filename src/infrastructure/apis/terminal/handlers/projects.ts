@@ -1,17 +1,16 @@
-import { getCertifications } from "../../../../../application/use_cases/certifications";
-import { DatabaseService } from "../../../../../config/dependencies";
+import { getAllProjects } from "../../../../application/use_cases/projects";
+import { DatabaseService } from "../../../../config/dependencies";
 import inquirer from "inquirer";
-import { Enumfy, execFunc } from "../../../../../utils";
+import { Enumfy, execFunc } from "../../../../utils";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 
-export const certificationsHandler = async () => {
+export const projectsHandler = async () => {
   let running = true;
   const choices = ["Agregar", "Actualizar", "Eliminar", "Listar", "Salir"];
   const EChoices = Enumfy(choices);
   const options = {
-    [EChoices.Listar]: async () =>
-      console.log(await getCertifications(DatabaseService)),
+    [EChoices.Listar]: async () => console.log(await getAllProjects()),
     [EChoices.Salir]: async () => (running = false),
   };
   while (running) {
@@ -19,7 +18,7 @@ export const certificationsHandler = async () => {
       {
         name: "option",
         type: "list",
-        message: "Certification".cyan,
+        message: "Projects".cyan,
         choices,
       },
     ]);

@@ -14,6 +14,7 @@ export const grantUrls = (urlsGranted: string[][][]) => {
             .replace(`/api/${apiConfig.version}/`, "")
             .replace(`/ui/${uiConfig.version}/`, "")
             .split("/")[0]
+            .split("?")[0]
         ) && methodsGranted.includes(method);
       if (isIncluded) {
         isGranted = true;

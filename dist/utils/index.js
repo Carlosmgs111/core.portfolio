@@ -63,8 +63,15 @@ const Enumfy = (object) => {
 };
 exports.Enumfy = Enumfy;
 const execFunc = (func) => __awaiter(void 0, void 0, void 0, function* () {
-    typeof func === "function"
-        ? yield func()
-        : console.log("Not implemented yet!".red);
+    if (typeof func !== "function") {
+        console.log("Not implemented yet!".red);
+        return;
+    }
+    try {
+        yield func();
+    }
+    catch (e) {
+        console.log(e.message.red);
+    }
 });
 exports.execFunc = execFunc;
