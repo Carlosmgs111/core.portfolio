@@ -10,11 +10,11 @@ export const post_schema = {
     type: DataTypes.STRING,
   },
   userUUID: {
-    field:"user_uuid",
+    field: "user_uuid",
     unique: true,
     allowNull: false,
     type: DataTypes.STRING,
-    foreignKey:true
+    foreignKey: true,
   },
   title: { allowNull: false, type: DataTypes.STRING },
   content: { allowNull: false, type: DataTypes.TEXT },
@@ -22,8 +22,8 @@ export const post_schema = {
   updatedAt: { type: DataTypes.DATE, allowNull: false, field: "updated_at" },
 };
 
-export class Post extends Model{
-  static associate(models: any){}
+export class Post extends Model {
+  static associate(models: any) {}
 }
 
-Post.init(post_schema, {sequelize, tableName:post_table})
+Post.init(post_schema, { sequelize, tableName: post_table });

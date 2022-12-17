@@ -12,7 +12,7 @@ export const user_institution_schema = {
   userUUID: {
     unique: false,
     allowNull: false,
-    field:"user_uuid",
+    field: "user_uuid",
     type: DataTypes.STRING,
     references: {
       model: "Users",
@@ -24,7 +24,7 @@ export const user_institution_schema = {
   institutionUUID: {
     unique: false,
     allowNull: false,
-    field:"institution_uuid",
+    field: "institution_uuid",
     type: DataTypes.STRING,
     references: {
       model: "Institutions",
@@ -35,6 +35,8 @@ export const user_institution_schema = {
   },
 };
 
-export const Users_Institutions = sequelize.define(user_institution_table, user_institution_schema, 
-  {createdAt:false,
-  updatedAt:false});
+export const Users_Institutions = sequelize.define(
+  user_institution_table,
+  user_institution_schema,
+  { createdAt: false, updatedAt: false }
+);

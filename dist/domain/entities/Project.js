@@ -48,7 +48,6 @@ Project.new = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, func
 Project.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Project");
     const project = yield Project.find(DatabaseServices, credentials);
-    console.log({ Model: DatabaseServices.Model, credentials });
     if (!project)
         throw new Error("Incorrect credentials!");
     const account = new Project(project);

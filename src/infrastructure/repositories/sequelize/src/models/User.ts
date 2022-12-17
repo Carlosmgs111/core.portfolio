@@ -43,11 +43,11 @@ export class User extends Model {
       otherKey: "institutionUUID",
     });
     this.hasMany(models.Project, {
-      as: "projects",
+      as: "Projects",
       foreignKey: "userUUID",
     });
     this.hasMany(models.Post, {
-      as: "posts",
+      as: "Posts",
       foreignKey: "userUUID",
     });
   }

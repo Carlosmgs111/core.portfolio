@@ -12,7 +12,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.migrateDescriptionToDescriptions = exports.updateProject = exports.deleteProject = exports.addProject = exports.getAllProjects = void 0;
 const dependencies_1 = require("../../config/dependencies");
 const Project_1 = require("../../domain/entities/Project");
-const getAllProjects = () => __awaiter(void 0, void 0, void 0, function* () { return yield dependencies_1.DatabaseService.setupModel("Project").findAll(); });
+const User_1 = require("../../domain/entities/User");
+const getAllProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username } = data;
+    const projects = username
+        ? yield User_1.User.projects(dependencies_1.DatabaseService, { username })
+        : yield dependencies_1.DatabaseService.setupModel("Project").findAll();
+    return projects;
+});
 exports.getAllProjects = getAllProjects;
 const addProject = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield Project_1.Project.new(dependencies_1.DatabaseService, data); });
 exports.addProject = addProject;

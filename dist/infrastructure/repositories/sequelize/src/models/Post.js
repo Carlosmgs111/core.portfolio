@@ -16,7 +16,7 @@ exports.post_schema = {
         unique: true,
         allowNull: false,
         type: sequelize_1.DataTypes.STRING,
-        foreignKey: true
+        foreignKey: true,
     },
     title: { allowNull: false, type: sequelize_1.DataTypes.STRING },
     content: { allowNull: false, type: sequelize_1.DataTypes.TEXT },

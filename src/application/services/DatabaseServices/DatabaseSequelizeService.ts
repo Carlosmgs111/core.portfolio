@@ -1,12 +1,15 @@
 import models from "../../../infrastructure/repositories/sequelize/src/models";
+import { labelCases } from "../../../utils";
 import { Model } from "sequelize";
+import boom from "@hapi/boom";
 
 export default class DatabaseSequelizeService {
+  serviceDescription: string = "Sequelize Interface Database Service";
   Model: any;
-  serviceDescription: string = "Sequelize Interface Database Service"
+  options: any = { include: [] };
 
   // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
-  constructor({ __identifier, env }: any) {
+  constructor({ __identifier }: any) {
     this.Model = models[__identifier];
     this.syncModels();
   }
@@ -16,17 +19,22 @@ export default class DatabaseSequelizeService {
   };
 
   findAll = async () => {
-    const entities = await this.Model.findAll();
+    const entities = await this.Model.findAll(this.options);
     return entities;
   };
 
   findOne = async (Entity: any) => {
-    await console.log({ Entity })
     try {
-      const entity = await this.Model.findOne({ where: Entity });
+      const entity = await this.Model.findOne({
+        where: Entity,
+        ...this.options,
+      });
       return entity;
-    } catch (e) {
-      return null;
+    } catch (e: any) {
+      console.log(e.message.red);
+      throw boom.internal(e.message);
+    } finally {
+      this.clear();
     }
   };
 
@@ -35,23 +43,40 @@ export default class DatabaseSequelizeService {
   };
 
   update = async (Entity: any) => {
-    // console.log({Entity})
     const model = await this.Model.update(Entity, {
       where: { uuid: Entity.uuid },
     });
     return model;
   };
 
+  hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
+
   setupModel(__table: string) {
     this.Model = models[__table];
     return this;
   }
 
+  include(entitiesLabel: string[] = []) {
+    entitiesLabel.forEach(
+      (e: any) =>
+        (this.options.include = [
+          ...this.options.include,
+          { model: models[e], as: labelCases(e).CP },
+        ])
+    );
+    return this;
+  }
+
+  clear() {
+    this.options = { include: [] };
+    this.Model = undefined;
+    return this;
+  }
+
   // * A function that is called in the constructor of the class. It is used to associate the models in
-  // * the database. 
+  // * the database.
   syncModels = () => {
     for (var model in models)
       models[model].associate && models[model].associate(models);
   };
-
 }

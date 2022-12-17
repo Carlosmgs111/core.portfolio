@@ -36,5 +36,4 @@ exports.user_institution_schema = {
         },
     },
 };
-exports.Users_Institutions = __1.sequelize.define(exports.user_institution_table, exports.user_institution_schema, { createdAt: false,
-    updatedAt: false });
+exports.Users_Institutions = __1.sequelize.define(exports.user_institution_table, exports.user_institution_schema, { createdAt: false, updatedAt: false });

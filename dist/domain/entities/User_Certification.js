@@ -61,3 +61,9 @@ User_Certification.find = (DatabaseServices, credentials) => __awaiter(void 0, v
     console.log({ userCertification });
     return userCertification;
 });
+User_Certification.findAll = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    DatabaseServices.setupModel("Users_Certifications");
+    console.log({ credentials });
+    const userCertification = yield DatabaseServices.findAll(Object.assign({}, credentials));
+    return userCertification;
+});

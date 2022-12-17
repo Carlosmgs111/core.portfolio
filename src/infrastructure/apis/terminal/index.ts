@@ -33,8 +33,8 @@ export default async () => {
         name: "option",
         type: "list",
         message: `
-Core Blogfolio
-${token ? "Logged".green : "Unlogged".red}
+  Core Blogfolio
+  ${token ? "Logged".green : "Unlogged".red}
         `.cyan,
         choices,
       },

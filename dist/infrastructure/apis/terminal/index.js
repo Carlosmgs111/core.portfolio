@@ -45,8 +45,8 @@ exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
                 name: "option",
                 type: "list",
                 message: `
-Core Blogfolio
-${token ? "Logged".green : "Unlogged".red}
+  Core Blogfolio
+  ${token ? "Logged".green : "Unlogged".red}
         `.cyan,
                 choices,
             },

@@ -45,7 +45,6 @@ export class Project {
   static load = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Project")
     const project = await Project.find(DatabaseServices, credentials);
-    console.log({ Model: DatabaseServices.Model, credentials });
     if (!project) throw new Error("Incorrect credentials!");
     const account = new Project(project);
     return account;

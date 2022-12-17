@@ -4,17 +4,26 @@ exports.grantUrls = void 0;
 const auth_handler_1 = require("./auth.handler");
 const dependencies_1 = require("../../../../config/dependencies");
 const grantUrls = (urlsGranted) => {
+    const urls = [
+        { urls: [{ urls: [], methods: [] }], methods: [] },
+        { urls: [], methods: [] },
+    ];
     return (req, res, next) => {
-        const { url, method } = req;
+        const { url, method, params, headers } = req;
+        // const { authorization } = headers;
+        // const token = (authorization || "").replace("Bearer ", "");
+        // console.log({ params, token });
+        // if (token) authMiddleware(req, res, next);
+        let toGrantUrl = url
+            .replace(`/api/${dependencies_1.apiConfig.version}/`, "")
+            .replace(`/ui/${dependencies_1.uiConfig.version}/`, "")
+            .split("/")[0]
+            .split("?")[0];
         let isGranted = false;
         for (var urlGranted of urlsGranted) {
             let [pathsGranted, methodsGranted = []] = urlGranted;
             methodsGranted = ["GET", ...methodsGranted];
-            const isIncluded = pathsGranted.includes(url
-                .replace(`/api/${dependencies_1.apiConfig.version}/`, "")
-                .replace(`/ui/${dependencies_1.uiConfig.version}/`, "")
-                .split("/")[0]
-                .split("?")[0]) && methodsGranted.includes(method);
+            const isIncluded = pathsGranted.includes(toGrantUrl) && methodsGranted.includes(method);
             if (isIncluded) {
                 isGranted = true;
                 break;

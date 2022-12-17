@@ -13,40 +13,46 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = __importDefault(require("../../../infrastructure/repositories/sequelize/src/models"));
+const utils_1 = require("../../../utils");
+const boom_1 = __importDefault(require("@hapi/boom"));
 class DatabaseSequelizeService {
     // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
-    constructor({ __identifier, env }) {
+    constructor({ __identifier }) {
         this.serviceDescription = "Sequelize Interface Database Service";
+        this.options = { include: [] };
         this.create = (Entity) => __awaiter(this, void 0, void 0, function* () {
             const entity = yield this.Model.create(Entity);
             return entity;
         });
         this.findAll = () => __awaiter(this, void 0, void 0, function* () {
-            const entities = yield this.Model.findAll();
+            const entities = yield this.Model.findAll(this.options);
             return entities;
         });
         this.findOne = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            yield console.log({ Entity });
             try {
-                const entity = yield this.Model.findOne({ where: Entity });
+                const entity = yield this.Model.findOne(Object.assign({ where: Entity }, this.options));
                 return entity;
             }
             catch (e) {
-                return null;
+                console.log(e.message.red);
+                throw boom_1.default.internal(e.message);
+            }
+            finally {
+                this.clear();
             }
         });
         this.remove = (Entity) => __awaiter(this, void 0, void 0, function* () {
             return yield this.Model.destroy({ where: { uuid: Entity.uuid } });
         });
         this.update = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            // console.log({Entity})
             const model = yield this.Model.update(Entity, {
                 where: { uuid: Entity.uuid },
             });
             return model;
         });
+        this.hasMany = (Entity, label) => __awaiter(this, void 0, void 0, function* () { return Entity[`get${label}`](); });
         // * A function that is called in the constructor of the class. It is used to associate the models in
-        // * the database. 
+        // * the database.
         this.syncModels = () => {
             for (var model in models_1.default)
                 models_1.default[model].associate && models_1.default[model].associate(models_1.default);
@@ -56,6 +62,18 @@ class DatabaseSequelizeService {
     }
     setupModel(__table) {
         this.Model = models_1.default[__table];
+        return this;
+    }
+    include(entitiesLabel = []) {
+        entitiesLabel.forEach((e) => (this.options.include = [
+            ...this.options.include,
+            { model: models_1.default[e], as: (0, utils_1.labelCases)(e).CP },
+        ]));
+        return this;
+    }
+    clear() {
+        this.options = { include: [] };
+        this.Model = undefined;
         return this;
     }
 }

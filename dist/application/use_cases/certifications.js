@@ -12,20 +12,41 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeCertification = exports.updateCertification = exports.addManyCertifications = exports.addNewCertification = exports.getCertificationByUUID = exports.getCertifications = void 0;
+exports.removeCertification = exports.updateCertification = exports.addManyCertifications = exports.addNewCertification = exports.getCertificationByUUID = exports.getOwnCertifications = exports.getCertificationsByUsername = exports.getCertifications = void 0;
 const dependencies_1 = require("../../config/dependencies");
 const Certification_1 = require("../../domain/entities/Certification");
 const Institution_1 = require("../../domain/entities/Institution");
+const User_1 = require("../../domain/entities/User");
 const User_Certification_1 = require("../../domain/entities/User_Certification");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username, user } = data;
+    const certifications = username
+        ? yield User_1.User.certifications(dependencies_1.DatabaseService, {
+            username,
+        })
+        : yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, data);
     const institutions = (yield Institution_1.Institution.findAll(dependencies_1.DatabaseService, {})).map((institution) => institution.dataValues);
-    return [
-        ...(yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, data)).map((certification) => (Object.assign(Object.assign({}, certification.dataValues), { emitedAt: new Date(certification.dataValues.emitedAt).getTime(), emitedBy: institutions.find((i) => i.uuid === certification.institutionUUID).name }))).sort((a, b) => { if (a.emitedAt < b.emitedAt)
-            return 1; return -1; }),
-    ];
+    return certifications
+        .map((certification) => (Object.assign(Object.assign({}, certification.dataValues), { emitedAt: new Date(certification.dataValues.emitedAt).getTime(), emitedBy: institutions.find((i) => i.uuid === certification.institutionUUID).name, grantedTo: user === null || user === void 0 ? void 0 : user.username })))
+        .sort((a, b) => {
+        if (a.emitedAt < b.emitedAt)
+            return 1;
+        return -1;
+    });
 });
 exports.getCertifications = getCertifications;
+const getCertificationsByUsername = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username } = data;
+    const user = yield User_1.User.find(dependencies_1.DatabaseService, { username });
+    if (!user && username)
+        throw boom_1.default.conflict("Username don't register!");
+    console.log({ user });
+    return user;
+});
+exports.getCertificationsByUsername = getCertificationsByUsername;
+const getOwnCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.getOwnCertifications = getOwnCertifications;
 const getCertificationByUUID = (data) => __awaiter(void 0, void 0, void 0, function* () {
     return yield Certification_1.Certification.find(dependencies_1.DatabaseService, data);
 });
@@ -54,8 +75,14 @@ const addManyCertifications = (data) => __awaiter(void 0, void 0, void 0, functi
 });
 exports.addManyCertifications = addManyCertifications;
 const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid: data.uuid })).update(dependencies_1.DatabaseService, data);
-    return yield (0, exports.getCertificationByUUID)({ uuid: data.uuid });
+    const { user, uuid } = data;
+    const user_certification = yield User_Certification_1.User_Certification.find(dependencies_1.DatabaseService, {
+        certificationUUID: uuid,
+    });
+    if (user_certification.userUUID !== user.uuid)
+        throw boom_1.default.conflict("You are not the owner!");
+    yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid })).update(dependencies_1.DatabaseService, data);
+    return yield (0, exports.getCertificationByUUID)({ uuid });
 });
 exports.updateCertification = updateCertification;
 const removeCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {

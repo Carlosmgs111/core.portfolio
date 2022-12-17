@@ -58,14 +58,11 @@ Institution.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, 
 });
 Institution.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Institution");
-    console.log({ credentials });
     const institution = yield DatabaseServices.findOne(Object.assign({}, credentials));
-    console.log({ institution });
     return institution;
 });
 Institution.findAll = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Institution");
-    console.log({ credentials });
     const institutions = yield DatabaseServices.findAll(credentials);
     return institutions;
 });

@@ -46,17 +46,14 @@ export class Institution {
 
   static find = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Institution")
-    console.log({ credentials });
     const institution: any = await DatabaseServices.findOne({
       ...credentials,
     });
-    console.log({ institution });
     return institution;
   };
 
   static findAll = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Institution");
-    console.log({credentials})
     const institutions: any = await DatabaseServices.findAll(
       credentials
     );

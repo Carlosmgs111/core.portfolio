@@ -22,7 +22,7 @@ const projectsHandler = () => __awaiter(void 0, void 0, void 0, function* () {
     const choices = ["Agregar", "Actualizar", "Eliminar", "Listar", "Salir"];
     const EChoices = (0, utils_1.Enumfy)(choices);
     const options = {
-        [EChoices.Listar]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, projects_1.getAllProjects)()); }),
+        [EChoices.Listar]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, projects_1.getAllProjects)({})); }),
         [EChoices.Salir]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),
     };
     while (running) {

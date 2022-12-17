@@ -44,11 +44,11 @@ class User extends sequelize_1.Model {
             otherKey: "institutionUUID",
         });
         this.hasMany(models.Project, {
-            as: "projects",
+            as: "Projects",
             foreignKey: "userUUID",
         });
         this.hasMany(models.Post, {
-            as: "posts",
+            as: "Posts",
             foreignKey: "userUUID",
         });
     }

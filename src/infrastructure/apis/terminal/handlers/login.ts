@@ -1,9 +1,41 @@
-import { signin } from "../../../../application/use_cases/register";
-import { DatabaseService } from "../../../../config/dependencies";
+import {
+  signin,
+  signup,
+  unsubscribe,
+} from "../../../../application/use_cases/register";
 import inquirer from "inquirer";
 import { Enumfy, execFunc } from "../../../../utils";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
+
+const signupHandler = async (state: any) => {
+  const { email, password, rePassword, username } = await inquirer.prompt([
+    { name: "email", message: "Email: " },
+    { name: "username", message: "Username: " },
+    {
+      name: "password",
+      message: "Password: ",
+      type: "password",
+      mask: "*".magenta,
+    },
+    {
+      name: "rePassword",
+      message: "Retype Password: ",
+      type: "password",
+      mask: "*".magenta,
+    },
+  ]);
+
+  if (rePassword !== password) throw new Error("Password doesn't match");
+
+  console.log(
+    await signup({
+      email,
+      password,
+      username,
+    })
+  );
+};
 
 const signinHandler = async (state: any) => {
   const { email, password } = await inquirer.prompt([
@@ -23,15 +55,35 @@ const signinHandler = async (state: any) => {
   state["token"] = token;
 };
 
+const unsubscribeHandler = async () => {
+  const { email, password, confirm } = await inquirer.prompt([
+    { name: "email", message: "Email: " },
+    {
+      name: "password",
+      message: "Password: ",
+      type: "password",
+      mask: "*".magenta,
+    },
+    {
+      type: "confirm",
+      name: "confirm",
+      message: "Are you sure you want to signout?",
+    },
+  ]);
+  if (confirm) await unsubscribe({ email, password });
+};
+
 export const loginHandler = async (state: any) => {
   let running = true;
-  const choices = ["Signin", "Signup", "Salir"];
+  const choices = ["Signin", "Signup", "Signout", "Salir"];
   const EChoices = Enumfy(choices);
   const options = {
     [EChoices.Signin]: async () => {
       await signinHandler(state);
       running = false;
     },
+    [EChoices.Signup]: async () => signupHandler(state),
+    [EChoices.Signout]: async () => unsubscribeHandler(),
     [EChoices.Salir]: async () => (running = false),
   };
   while (running) {

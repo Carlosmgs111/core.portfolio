@@ -52,7 +52,6 @@ export class Certification {
 
   static findAll = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Certification");
-    console.log({ credentials })
     const certificate: any = await DatabaseServices.findAll(
       credentials
     );

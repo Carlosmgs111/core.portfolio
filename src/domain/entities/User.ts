@@ -1,7 +1,7 @@
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import { getEntityProperties, filterAttrs } from "../../utils";
-import boom from "@hapi/boom"
+import boom from "@hapi/boom";
 
 export class User {
   uuid: string;
@@ -38,13 +38,11 @@ export class User {
     this.updatedAt = updatedAt;
   }
   static create = async (DatabaseServices: any, data: any): Promise<any> => {
-    DatabaseServices.setupModel("User")
+    DatabaseServices.setupModel("User");
     const exist = await DatabaseServices.findOne({
       ...filterAttrs(data, ["email", "username"], false),
-    })
-    console.log({exist})
+    });
     if (exist) throw boom.conflict("Entity exist yet!");
-    
     const uuid = uuidv4();
     const account = new User({
       ...data,
@@ -61,7 +59,7 @@ export class User {
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User")
+    DatabaseServices.setupModel("User");
     const user = await User.find(
       DatabaseServices,
       filterAttrs(credentials, ["email", "username"], false)
@@ -72,7 +70,7 @@ export class User {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User")
+    DatabaseServices.setupModel("User");
     const account: any = await DatabaseServices.findOne({
       ...filterAttrs(
         getEntityProperties(credentials),
@@ -83,16 +81,28 @@ export class User {
     return account;
   };
 
+  static certifications = async (DatabaseServices: any, credentials: any) => {
+    DatabaseServices.setupModel("User").include(["Certification"]);
+    const user = await User.find(DatabaseServices, credentials);
+    return user.Certifications;
+  };
+
+  static projects = async (DatabaseServices: any, credentials: any) => {
+    DatabaseServices.setupModel("User").include(["Project"]);
+    const user = await User.find(DatabaseServices, credentials);
+    return DatabaseServices.hasMany(user, "Projects");
+  };
+
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("User")
+    DatabaseServices.setupModel("User");
     return await DatabaseServices.remove(getEntityProperties(this));
   };
 
-  update = async (DatabaseServices: any, data:any) => {
-    DatabaseServices.setupModel("User")
+  update = async (DatabaseServices: any, data: any) => {
+    DatabaseServices.setupModel("User");
     this.updatedAt = new Date().getTime();
     return await DatabaseServices.update({
-      ...getEntityProperties({...this, ...data}),
+      ...getEntityProperties({ ...this, ...data }),
     });
   };
 

@@ -3,6 +3,7 @@ import {
   addNewCertification,
   addManyCertifications,
   getCertifications,
+  getCertificationsByUsername,
   removeCertification,
   updateCertification,
 } from "../../../../../application/use_cases/certifications";
@@ -28,7 +29,11 @@ export default router
     expressHandlerAdapter(addManyCertifications)
   )
   .get("/", expressHandlerAdapter(getCertifications))
-  .get("/:username", expressHandlerAdapter(getCertifications))
+  .get("/hello", (req: any, res: any) => {
+    console.log("hello");
+    res.send("Hello");
+  })
+  .get("/:username", expressHandlerAdapter(getCertificationsByUsername))
   .delete("/", expressHandlerAdapter(removeCertification))
   .delete("/:uuid", expressHandlerAdapter(removeCertification))
   .patch(
