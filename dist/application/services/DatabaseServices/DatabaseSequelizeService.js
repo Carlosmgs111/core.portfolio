@@ -30,6 +30,7 @@ class DatabaseSequelizeService {
             return entities;
         });
         this.findOne = (Entity) => __awaiter(this, void 0, void 0, function* () {
+            console.log({ thisOptions: this.options });
             try {
                 const entity = yield this.Model.findOne(Object.assign({ where: Entity }, this.options));
                 return entity;
@@ -65,10 +66,13 @@ class DatabaseSequelizeService {
         this.Model = models_1.default[__table];
         return this;
     }
-    include(entitiesLabel = []) {
+    setInclude(entitiesLabel = []) {
         entitiesLabel.forEach((e) => (this.options.include = [
             ...this.options.include,
-            { model: models_1.default[e], as: (0, utils_1.labelCases)(e).CP },
+            {
+                model: models_1.default[e],
+                as: (0, utils_1.labelCases)(e).CP,
+            },
         ]));
         return this;
     }

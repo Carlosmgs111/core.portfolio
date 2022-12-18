@@ -25,6 +25,7 @@ export default class DatabaseSequelizeService {
   };
 
   findOne = async (Entity: any) => {
+    console.log({ thisOptions: this.options });
     try {
       const entity = await this.Model.findOne({
         where: Entity,
@@ -57,12 +58,15 @@ export default class DatabaseSequelizeService {
     return this;
   }
 
-  include(entitiesLabel: string[] = []) {
+  setInclude(entitiesLabel: string[] = []) {
     entitiesLabel.forEach(
       (e: any) =>
         (this.options.include = [
           ...this.options.include,
-          { model: models[e], as: labelCases(e).CP },
+          {
+            model: models[e],
+            as: labelCases(e).CP,
+          },
         ])
     );
     return this;

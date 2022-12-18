@@ -20,12 +20,12 @@ const User_1 = require("../../domain/entities/User");
 const User_Certification_1 = require("../../domain/entities/User_Certification");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, user } = data;
+    const { username, user, size, page } = data;
     const certifications = username
-        ? yield User_1.User.certifications(dependencies_1.DatabaseService, {
+        ? yield User_1.User.certifications(dependencies_1.DatabaseService.setOptions({ limit: size, offset: page }), {
             username,
         })
-        : yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setOptions({ limit: 1 }), data);
+        : yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setOptions({ limit: size, offset: page }), data);
     const institutions = (yield Institution_1.Institution.findAll(dependencies_1.DatabaseService, {})).map((institution) => institution.dataValues);
     console.log({ institutions });
     return certifications

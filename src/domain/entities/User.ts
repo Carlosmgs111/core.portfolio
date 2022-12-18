@@ -82,13 +82,17 @@ export class User {
   };
 
   static certifications = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User").include(["Certification"]);
+    DatabaseServices.setupModel("User")
+      .setInclude(["Certification"])
+      .setOptions({ limit: 5 });
     const user = await User.find(DatabaseServices, credentials);
     return user.Certifications;
   };
 
   static projects = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User").include(["Project"]);
+    DatabaseServices.setupModel("User")
+      .setInclude(["Project"])
+      .setOptions({ limit: 5 });
     const user = await User.find(DatabaseServices, credentials);
     return DatabaseServices.hasMany(user, "Projects");
   };

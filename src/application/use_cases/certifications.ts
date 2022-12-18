@@ -6,13 +6,16 @@ import { User_Certification } from "../../domain/entities/User_Certification";
 import boom from "@hapi/boom";
 
 export const getCertifications = async (data: any) => {
-  const { username, user } = data;
+  const { username, user, size, page } = data;
   const certifications = username
-    ? await User.certifications(DatabaseService, {
-        username,
-      })
+    ? await User.certifications(
+        DatabaseService.setOptions({ limit: size, offset: page }),
+        {
+          username,
+        }
+      )
     : await Certification.findAll(
-        DatabaseService.setOptions({ limit: 1 }),
+        DatabaseService.setOptions({ limit: size, offset: page }),
         data
       );
   const institutions = (await Institution.findAll(DatabaseService, {})).map(

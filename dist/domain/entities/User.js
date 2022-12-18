@@ -76,12 +76,16 @@ User.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0,
     return account;
 });
 User.certifications = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("User").include(["Certification"]);
+    DatabaseServices.setupModel("User")
+        .setInclude(["Certification"])
+        .setOptions({ limit: 5 });
     const user = yield User.find(DatabaseServices, credentials);
     return user.Certifications;
 });
 User.projects = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("User").include(["Project"]);
+    DatabaseServices.setupModel("User")
+        .setInclude(["Project"])
+        .setOptions({ limit: 5 });
     const user = yield User.find(DatabaseServices, credentials);
     return DatabaseServices.hasMany(user, "Projects");
 });
