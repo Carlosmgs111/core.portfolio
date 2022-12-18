@@ -19,13 +19,14 @@ class DatabaseSequelizeService {
     // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
     constructor({ __identifier }) {
         this.serviceDescription = "Sequelize Interface Database Service";
-        this.options = { include: [] };
+        this.options = { include: [], limit: 100, offset: 0 };
         this.create = (Entity) => __awaiter(this, void 0, void 0, function* () {
             const entity = yield this.Model.create(Entity);
             return entity;
         });
         this.findAll = () => __awaiter(this, void 0, void 0, function* () {
             const entities = yield this.Model.findAll(this.options);
+            this.clear();
             return entities;
         });
         this.findOne = (Entity) => __awaiter(this, void 0, void 0, function* () {
@@ -69,6 +70,10 @@ class DatabaseSequelizeService {
             ...this.options.include,
             { model: models_1.default[e], as: (0, utils_1.labelCases)(e).CP },
         ]));
+        return this;
+    }
+    setOptions(options = {}) {
+        this.options = Object.assign(Object.assign({}, this.options), options);
         return this;
     }
     clear() {

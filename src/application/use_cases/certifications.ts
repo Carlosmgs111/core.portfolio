@@ -11,18 +11,21 @@ export const getCertifications = async (data: any) => {
     ? await User.certifications(DatabaseService, {
         username,
       })
-    : await Certification.findAll(DatabaseService, data);
+    : await Certification.findAll(
+        DatabaseService.setOptions({ limit: 1 }),
+        data
+      );
   const institutions = (await Institution.findAll(DatabaseService, {})).map(
     (institution: any) => institution.dataValues
   );
-
+  console.log({ institutions });
   return certifications
     .map((certification: any) => ({
       ...certification.dataValues,
       emitedAt: new Date(certification.dataValues.emitedAt).getTime(),
       emitedBy: institutions.find(
         (i: any) => i.uuid === certification.institutionUUID
-      ).name,
+      )?.name,
       grantedTo: user?.username,
     }))
     .sort((a: any, b: any) => {

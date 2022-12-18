@@ -25,10 +25,14 @@ const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* 
         ? yield User_1.User.certifications(dependencies_1.DatabaseService, {
             username,
         })
-        : yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, data);
+        : yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setOptions({ limit: 1 }), data);
     const institutions = (yield Institution_1.Institution.findAll(dependencies_1.DatabaseService, {})).map((institution) => institution.dataValues);
+    console.log({ institutions });
     return certifications
-        .map((certification) => (Object.assign(Object.assign({}, certification.dataValues), { emitedAt: new Date(certification.dataValues.emitedAt).getTime(), emitedBy: institutions.find((i) => i.uuid === certification.institutionUUID).name, grantedTo: user === null || user === void 0 ? void 0 : user.username })))
+        .map((certification) => {
+        var _a;
+        return (Object.assign(Object.assign({}, certification.dataValues), { emitedAt: new Date(certification.dataValues.emitedAt).getTime(), emitedBy: (_a = institutions.find((i) => i.uuid === certification.institutionUUID)) === null || _a === void 0 ? void 0 : _a.name, grantedTo: user === null || user === void 0 ? void 0 : user.username }));
+    })
         .sort((a, b) => {
         if (a.emitedAt < b.emitedAt)
             return 1;

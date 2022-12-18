@@ -6,7 +6,7 @@ import boom from "@hapi/boom";
 export default class DatabaseSequelizeService {
   serviceDescription: string = "Sequelize Interface Database Service";
   Model: any;
-  options: any = { include: [] };
+  options: any = { include: [], limit: 100, offset: 0 };
 
   // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
   constructor({ __identifier }: any) {
@@ -20,6 +20,7 @@ export default class DatabaseSequelizeService {
 
   findAll = async () => {
     const entities = await this.Model.findAll(this.options);
+    this.clear();
     return entities;
   };
 
@@ -64,6 +65,11 @@ export default class DatabaseSequelizeService {
           { model: models[e], as: labelCases(e).CP },
         ])
     );
+    return this;
+  }
+
+  setOptions(options: any = {}) {
+    this.options = { ...this.options, ...options };
     return this;
   }
 
