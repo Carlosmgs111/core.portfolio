@@ -34,7 +34,7 @@ export class User_Certification {
       uuid,
     });
     console.log({ userCertification });
-    await DatabaseServices.create(userCertification);
+    await DatabaseServices.setupModel("Users_Certifications").create(userCertification);
     return userCertification;
   };
 

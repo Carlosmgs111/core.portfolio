@@ -78,6 +78,7 @@ export class User {
         false
       ),
     });
+    if (!account) throw boom.conflict("Account doesn´t exist!");
     return account;
   };
 
@@ -93,7 +94,10 @@ export class User {
   static projects = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("User").setInclude([["Project"]]);
     const user = await User.find(DatabaseServices, credentials);
-    return DatabaseServices.hasMany(user, "Projects");
+    return (await DatabaseServices.hasMany(user, "Projects")).map((c: any) => ({
+      ...c.dataValues,
+      createdBy: user.username,
+    }));
   };
 
   remove = async (DatabaseServices: any) => {

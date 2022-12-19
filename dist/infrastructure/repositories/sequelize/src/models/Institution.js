@@ -12,7 +12,12 @@ exports.institution_schema = {
         type: sequelize_1.DataTypes.STRING,
     },
     name: { allowNull: false, type: sequelize_1.DataTypes.STRING, unique: true },
-    businessName: { allowNull: false, unique: true, type: sequelize_1.DataTypes.STRING, field: "business_name" },
+    businessName: {
+        allowNull: false,
+        unique: true,
+        type: sequelize_1.DataTypes.STRING,
+        field: "business_name",
+    },
     descriptions: { type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.TEXT) },
     urls: { type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING) },
     createdAt: { type: sequelize_1.DataTypes.DATE, allowNull: false, field: "created_at" },
@@ -20,11 +25,19 @@ exports.institution_schema = {
 };
 class Institution extends sequelize_1.Model {
     static associate(models) {
+        this.belongsToMany(models.User, {
+            through: models.Users_Institutions,
+            foreignKey: "institutionUUID",
+            otherKey: "userUUID",
+        });
         this.hasMany(models.Certification, {
             as: "certifications",
-            foreignKey: "institutionUUID"
+            foreignKey: "institutionUUID",
         });
     }
 }
 exports.Institution = Institution;
-Institution.init(exports.institution_schema, { sequelize: __1.sequelize, modelName: exports.institution_table });
+Institution.init(exports.institution_schema, {
+    sequelize: __1.sequelize,
+    modelName: exports.institution_table,
+});

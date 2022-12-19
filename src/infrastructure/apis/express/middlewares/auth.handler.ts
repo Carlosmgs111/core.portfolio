@@ -1,7 +1,6 @@
-
 import boom from "@hapi/boom";
 import config from "../../../../config";
-import { SignJWT, jwtVerify } from "jose";
+import { SignJWT, jwtVerify, decodeJwt } from "jose";
 import { findBy } from "../../../../application/use_cases/CRUD";
 
 interface UserJwtPayload {
@@ -14,7 +13,7 @@ interface UserJwtPayload {
 export const verifyToken = async (req: any) => {
   const { authorization } = req.headers;
   const token = (authorization || "").replace("Bearer ", "");
-
+  console.log({ decoded: decodeJwt(token) });
   try {
     const verified = await jwtVerify(
       token,
@@ -62,11 +61,7 @@ export function checkRoles(...roles: string[]) {
   };
 }
 
-export async function authMiddleware(
-  req: any,
-  res: any,
-  next: Function
-) {
+export async function authMiddleware(req: any, res: any, next: Function) {
   try {
     const payload = await verifyToken(req);
     req.user = await findBy("User", {
@@ -74,7 +69,7 @@ export async function authMiddleware(
       email: payload.email,
     });
   } catch (e: any) {
-    console.log({e})
+    console.log({ e });
     next(boom.unauthorized());
   } finally {
     next();

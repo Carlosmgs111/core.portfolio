@@ -20,6 +20,7 @@ const CRUD_1 = require("../../../../application/use_cases/CRUD");
 const verifyToken = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const { authorization } = req.headers;
     const token = (authorization || "").replace("Bearer ", "");
+    console.log({ decoded: (0, jose_1.decodeJwt)(token) });
     try {
         const verified = yield (0, jose_1.jwtVerify)(token, new TextEncoder().encode(config_1.default.jwtAccessSecret));
         //console.log({verified})

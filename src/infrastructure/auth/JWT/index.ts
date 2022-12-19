@@ -18,9 +18,11 @@ export const verifyToken = (
 ) => {
   try {
     const payload: any = jwt.verify(token, signature);
+    console.log({payload})
     if (!payload) throw new Error("Invalid Payload!");
     return payload;
   } catch (e: any) {
+    console.log()
     throw new Error("Invalid Token!");
   }
 };

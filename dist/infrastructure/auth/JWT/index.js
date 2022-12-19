@@ -16,11 +16,13 @@ exports.createToken = createToken;
 const verifyToken = (token, signature = config_1.default.jwtSignupSecret) => {
     try {
         const payload = jsonwebtoken_1.default.verify(token, signature);
+        console.log({ payload });
         if (!payload)
             throw new Error("Invalid Payload!");
         return payload;
     }
     catch (e) {
+        console.log();
         throw new Error("Invalid Token!");
     }
 };

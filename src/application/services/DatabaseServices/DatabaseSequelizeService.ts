@@ -14,6 +14,8 @@ export default class DatabaseSequelizeService {
     this.syncModels();
   }
   create = async (Entity: any): Promise<typeof Model | null> => {
+    console.log({ Entity })
+    console.log({models})
     const entity = await this.Model.create(Entity);
     return entity;
   };
@@ -55,12 +57,12 @@ export default class DatabaseSequelizeService {
     this.Model = models[__table];
     return this;
   }
-  
+
   // ? Pending to check if it can be implmented as agnosthic way for be using at least with Sequelize and Mongoose
   hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
 
   // ? Pending to check if it can be implmented as agnosthic way for be using at least with Sequelize and Mongoose
-  setInclude(entitiesToInclude: any[][] = []) {
+  setInclude(entitiesToInclude: any = []) {
     entitiesToInclude.forEach((e: any) => {
       const [entityLabel, attributes = null] = e;
       this.options.include = [

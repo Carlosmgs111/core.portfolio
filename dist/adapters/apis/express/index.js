@@ -12,9 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.expressHandlerAdapter = void 0;
 const expressHandlerAdapter = (handler) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-        const { body, params, query, user } = req;
+        const { body, params, query, user, token } = req;
         try {
-            return res.send(yield handler(Object.assign(Object.assign(Object.assign(Object.assign({}, body), params), query), { user })));
+            return res.send(yield handler(Object.assign(Object.assign(Object.assign(Object.assign({}, body), params), query), { user, token })));
         }
         catch (e) {
             next(e);

@@ -9,11 +9,8 @@ const grantUrls = (urlsGranted) => {
         { urls: [], methods: [] },
     ];
     return (req, res, next) => {
-        const { url, method, params, headers } = req;
-        // const { authorization } = headers;
-        // const token = (authorization || "").replace("Bearer ", "");
-        // console.log({ params, token });
-        // if (token) authMiddleware(req, res, next);
+        const { url, method, params, headers: { authorization }, } = req;
+        req.token = (authorization || "").replace("Bearer ", "");
         let toGrantUrl = url
             .replace(`/api/${dependencies_1.apiConfig.version}/`, "")
             .replace(`/ui/${dependencies_1.uiConfig.version}/`, "")

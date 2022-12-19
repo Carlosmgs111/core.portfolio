@@ -21,6 +21,8 @@ class DatabaseSequelizeService {
         this.serviceDescription = "Sequelize Interface Database Service";
         this.options = { include: [], limit: 100, offset: 0 };
         this.create = (Entity) => __awaiter(this, void 0, void 0, function* () {
+            console.log({ Entity });
+            console.log({ models: models_1.default });
             const entity = yield this.Model.create(Entity);
             return entity;
         });

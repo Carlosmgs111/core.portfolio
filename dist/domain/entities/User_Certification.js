@@ -43,7 +43,7 @@ User_Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0
     const uuid = (0, uuid_1.v4)();
     const userCertification = new User_Certification(Object.assign(Object.assign({}, data), { uuid }));
     console.log({ userCertification });
-    yield DatabaseServices.create(userCertification);
+    yield DatabaseServices.setupModel("Users_Certifications").create(userCertification);
     return userCertification;
 });
 User_Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {

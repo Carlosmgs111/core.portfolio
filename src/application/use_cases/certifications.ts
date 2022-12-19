@@ -5,22 +5,9 @@ import { User } from "../../domain/entities/User";
 import { User_Certification } from "../../domain/entities/User_Certification";
 import boom from "@hapi/boom";
 import { filterAttrs } from "../../utils";
+import userRoutes from "../../infrastructure/apis/express/routes/api.routes/user.routes";
 
-export const getCertifications = async (data: any) => {
-  const { username, user, size, page } = data;
-  const certifications = username
-    ? await User.certifications(DatabaseService, {
-        username,
-      })
-    : (
-        await Certification.findAll(
-          DatabaseService.setInclude([["User", ["username"]]]).setOptions({
-            limit: size,
-            offset: page,
-          }),
-          data
-        )
-      ).map((c: any) => ({ ...c.dataValues, grantedTo: c.Users[0].username }));
+const formatCertifications = async (certifications: Object[]) => {
   const institutions = (await Institution.findAll(DatabaseService, {})).map(
     (institution: any) => institution.dataValues
   );
@@ -38,18 +25,36 @@ export const getCertifications = async (data: any) => {
     });
 };
 
-export const getCertificationsByUsername = async (data: any) => {
-  const { username } = data;
-  const user = await User.find(
-    DatabaseService.setOptions({ limit: 2, offset: 0 }),
-    { username }
-  );
-  if (!user && username) throw boom.conflict("Username don't register!");
-  console.log({ user });
-  return user;
+export const getCertifications = async (data: any) => {
+  const { username, user } = data;
+  const certifications = username
+    ? await getCertificationsByUsername(data)
+    : await getAllCertifications(data);
+  return await formatCertifications(certifications);
 };
 
-export const getOwnCertifications = async (data: any) => {};
+export const getCertificationsByUsername = async (data: any) => {
+  const { username } = data;
+  console.log({ username });
+  return await User.certifications(DatabaseService, {
+    username,
+  });
+};
+
+export const getAllCertifications = async (data: any) => {
+  const { size, page } = data;
+  return (
+    await Certification.findAll(
+      DatabaseService.setInclude([["User", ["username"]]]).setOptions({
+        limit: size,
+        offset: page,
+      }),
+      data
+    )
+  ).map((c: any) => ({ ...c.dataValues, grantedTo: c.Users[0].username }));
+};
+
+export const getOwnCertifications = async (data: any) => { };
 
 export const getCertificationByUUID = async (data: any) => {
   return await Certification.find(DatabaseService, data);
@@ -66,11 +71,12 @@ export const addNewCertification = async (data: any) => {
     ...data,
     institutionUUID,
   });
+  console.log({ certification })
   await User_Certification.create(DatabaseService, {
     userUUID: data.user.uuid,
     certificationUUID: certification.uuid,
   });
-  return certification;
+  return { ...certification, emitedBy: data.emitedBy, grantedTo: data.user.username };
 };
 
 export const addManyCertifications = async (data: any) => {
@@ -94,7 +100,9 @@ export const updateCertification = async (data: any) => {
   await (
     await Certification.load(DatabaseService, { uuid })
   ).update(DatabaseService, data);
-  return await getCertificationByUUID({ uuid });
+  return {
+    ...(await getCertificationByUUID({ uuid })).dataValues, emitedBy: data.emitedBy, grantedTo: data.user.username
+  };
 };
 
 export const removeCertification = async (data: any) => {

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeCertification = exports.updateCertification = exports.addManyCertifications = exports.addNewCertification = exports.getCertificationByUUID = exports.getOwnCertifications = exports.getCertificationsByUsername = exports.getCertifications = void 0;
+exports.removeCertification = exports.updateCertification = exports.addManyCertifications = exports.addNewCertification = exports.getCertificationByUUID = exports.getOwnCertifications = exports.getAllCertifications = exports.getCertificationsByUsername = exports.getCertifications = void 0;
 const dependencies_1 = require("../../config/dependencies");
 const Certification_1 = require("../../domain/entities/Certification");
 const Institution_1 = require("../../domain/entities/Institution");
@@ -20,16 +20,7 @@ const User_1 = require("../../domain/entities/User");
 const User_Certification_1 = require("../../domain/entities/User_Certification");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const utils_1 = require("../../utils");
-const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, user, size, page } = data;
-    const certifications = username
-        ? yield User_1.User.certifications(dependencies_1.DatabaseService, {
-            username,
-        })
-        : (yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setInclude([["User", ["username"]]]).setOptions({
-            limit: size,
-            offset: page,
-        }), data)).map((c) => (Object.assign(Object.assign({}, c.dataValues), { grantedTo: c.Users[0].username })));
+const formatCertifications = (certifications) => __awaiter(void 0, void 0, void 0, function* () {
     const institutions = (yield Institution_1.Institution.findAll(dependencies_1.DatabaseService, {})).map((institution) => institution.dataValues);
     return certifications
         .map((certification) => {
@@ -42,16 +33,30 @@ const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* 
         return -1;
     });
 });
+const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username, user } = data;
+    const certifications = username
+        ? yield (0, exports.getCertificationsByUsername)(data)
+        : yield (0, exports.getAllCertifications)(data);
+    return yield formatCertifications(certifications);
+});
 exports.getCertifications = getCertifications;
 const getCertificationsByUsername = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = data;
-    const user = yield User_1.User.find(dependencies_1.DatabaseService.setOptions({ limit: 2, offset: 0 }), { username });
-    if (!user && username)
-        throw boom_1.default.conflict("Username don't register!");
-    console.log({ user });
-    return user;
+    console.log({ username });
+    return yield User_1.User.certifications(dependencies_1.DatabaseService, {
+        username,
+    });
 });
 exports.getCertificationsByUsername = getCertificationsByUsername;
+const getAllCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const { size, page } = data;
+    return (yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setInclude([["User", ["username"]]]).setOptions({
+        limit: size,
+        offset: page,
+    }), data)).map((c) => (Object.assign(Object.assign({}, c.dataValues), { grantedTo: c.Users[0].username })));
+});
+exports.getAllCertifications = getAllCertifications;
 const getOwnCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () { });
 exports.getOwnCertifications = getOwnCertifications;
 const getCertificationByUUID = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -65,11 +70,12 @@ const addNewCertification = (data) => __awaiter(void 0, void 0, void 0, function
         name: data.emitedBy,
     })).uuid;
     const certification = yield Certification_1.Certification.create(dependencies_1.DatabaseService, Object.assign(Object.assign({}, data), { institutionUUID }));
+    console.log({ certification });
     yield User_Certification_1.User_Certification.create(dependencies_1.DatabaseService, {
         userUUID: data.user.uuid,
         certificationUUID: certification.uuid,
     });
-    return certification;
+    return Object.assign(Object.assign({}, certification), { emitedBy: data.emitedBy, grantedTo: data.user.username });
 });
 exports.addNewCertification = addNewCertification;
 const addManyCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -89,7 +95,7 @@ const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function
     if (user_certification.userUUID !== user.uuid)
         throw boom_1.default.conflict("You are not the owner!");
     yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid })).update(dependencies_1.DatabaseService, data);
-    return yield (0, exports.getCertificationByUUID)({ uuid });
+    return Object.assign(Object.assign({}, (yield (0, exports.getCertificationByUUID)({ uuid })).dataValues), { emitedBy: data.emitedBy, grantedTo: data.user.username });
 });
 exports.updateCertification = updateCertification;
 const removeCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {

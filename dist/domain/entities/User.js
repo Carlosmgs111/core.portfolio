@@ -73,6 +73,8 @@ User.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0,
 User.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("User");
     const account = yield DatabaseServices.findOne(Object.assign({}, (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["email", "username"], false)));
+    if (!account)
+        throw boom_1.default.conflict("Account doesn´t exist!");
     return account;
 });
 User.certifications = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
@@ -83,5 +85,5 @@ User.certifications = (DatabaseServices, credentials) => __awaiter(void 0, void 
 User.projects = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("User").setInclude([["Project"]]);
     const user = yield User.find(DatabaseServices, credentials);
-    return DatabaseServices.hasMany(user, "Projects");
+    return (yield DatabaseServices.hasMany(user, "Projects")).map((c) => (Object.assign(Object.assign({}, c.dataValues), { createdBy: user.username })));
 });
