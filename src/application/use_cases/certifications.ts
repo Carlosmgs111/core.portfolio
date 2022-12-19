@@ -4,32 +4,33 @@ import { Institution } from "../../domain/entities/Institution";
 import { User } from "../../domain/entities/User";
 import { User_Certification } from "../../domain/entities/User_Certification";
 import boom from "@hapi/boom";
+import { filterAttrs } from "../../utils";
 
 export const getCertifications = async (data: any) => {
   const { username, user, size, page } = data;
   const certifications = username
-    ? await User.certifications(
-        DatabaseService.setOptions({ limit: size, offset: page }),
-        {
-          username,
-        }
-      )
-    : await Certification.findAll(
-        DatabaseService.setOptions({ limit: size, offset: page }),
-        data
-      );
+    ? await User.certifications(DatabaseService, {
+        username,
+      })
+    : (
+        await Certification.findAll(
+          DatabaseService.setInclude([["User", ["username"]]]).setOptions({
+            limit: size,
+            offset: page,
+          }),
+          data
+        )
+      ).map((c: any) => ({ ...c.dataValues, grantedTo: c.Users[0].username }));
   const institutions = (await Institution.findAll(DatabaseService, {})).map(
     (institution: any) => institution.dataValues
   );
-  console.log({ institutions });
   return certifications
     .map((certification: any) => ({
-      ...certification.dataValues,
-      emitedAt: new Date(certification.dataValues.emitedAt).getTime(),
+      ...filterAttrs(certification, ["Users", "Users_Certifications"]),
+      emitedAt: new Date(certification.emitedAt).getTime(),
       emitedBy: institutions.find(
         (i: any) => i.uuid === certification.institutionUUID
       )?.name,
-      grantedTo: user?.username,
     }))
     .sort((a: any, b: any) => {
       if (a.emitedAt < b.emitedAt) return 1;
@@ -39,7 +40,10 @@ export const getCertifications = async (data: any) => {
 
 export const getCertificationsByUsername = async (data: any) => {
   const { username } = data;
-  const user = await User.find(DatabaseService, { username });
+  const user = await User.find(
+    DatabaseService.setOptions({ limit: 2, offset: 0 }),
+    { username }
+  );
   if (!user && username) throw boom.conflict("Username don't register!");
   console.log({ user });
   return user;

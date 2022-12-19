@@ -33,6 +33,11 @@ exports.certification_schema = {
 };
 class Certification extends sequelize_1.Model {
     static associate(models) {
+        this.belongsToMany(models.User, {
+            through: models.Users_Certifications,
+            foreignKey: "certificationUUID",
+            otherKey: "userUUID",
+        });
     }
 }
 exports.Certification = Certification;

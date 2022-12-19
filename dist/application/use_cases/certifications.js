@@ -19,19 +19,22 @@ const Institution_1 = require("../../domain/entities/Institution");
 const User_1 = require("../../domain/entities/User");
 const User_Certification_1 = require("../../domain/entities/User_Certification");
 const boom_1 = __importDefault(require("@hapi/boom"));
+const utils_1 = require("../../utils");
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
     const certifications = username
-        ? yield User_1.User.certifications(dependencies_1.DatabaseService.setOptions({ limit: size, offset: page }), {
+        ? yield User_1.User.certifications(dependencies_1.DatabaseService, {
             username,
         })
-        : yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setOptions({ limit: size, offset: page }), data);
+        : (yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setInclude([["User", ["username"]]]).setOptions({
+            limit: size,
+            offset: page,
+        }), data)).map((c) => (Object.assign(Object.assign({}, c.dataValues), { grantedTo: c.Users[0].username })));
     const institutions = (yield Institution_1.Institution.findAll(dependencies_1.DatabaseService, {})).map((institution) => institution.dataValues);
-    console.log({ institutions });
     return certifications
         .map((certification) => {
         var _a;
-        return (Object.assign(Object.assign({}, certification.dataValues), { emitedAt: new Date(certification.dataValues.emitedAt).getTime(), emitedBy: (_a = institutions.find((i) => i.uuid === certification.institutionUUID)) === null || _a === void 0 ? void 0 : _a.name, grantedTo: user === null || user === void 0 ? void 0 : user.username }));
+        return (Object.assign(Object.assign({}, (0, utils_1.filterAttrs)(certification, ["Users", "Users_Certifications"])), { emitedAt: new Date(certification.emitedAt).getTime(), emitedBy: (_a = institutions.find((i) => i.uuid === certification.institutionUUID)) === null || _a === void 0 ? void 0 : _a.name }));
     })
         .sort((a, b) => {
         if (a.emitedAt < b.emitedAt)
@@ -42,7 +45,7 @@ const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* 
 exports.getCertifications = getCertifications;
 const getCertificationsByUsername = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = data;
-    const user = yield User_1.User.find(dependencies_1.DatabaseService, { username });
+    const user = yield User_1.User.find(dependencies_1.DatabaseService.setOptions({ limit: 2, offset: 0 }), { username });
     if (!user && username)
         throw boom_1.default.conflict("Username don't register!");
     console.log({ user });

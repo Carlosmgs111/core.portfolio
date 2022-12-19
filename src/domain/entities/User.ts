@@ -82,17 +82,16 @@ export class User {
   };
 
   static certifications = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User")
-      .setInclude(["Certification"])
-      .setOptions({ limit: 5 });
+    DatabaseServices.setupModel("User").setInclude([["Certification"]]);
     const user = await User.find(DatabaseServices, credentials);
-    return user.Certifications;
+    return user.Certifications.map((c: any) => ({
+      ...c.dataValues,
+      grantedTo: user.username,
+    }));
   };
 
   static projects = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User")
-      .setInclude(["Project"])
-      .setOptions({ limit: 5 });
+    DatabaseServices.setupModel("User").setInclude([["Project"]]);
     const user = await User.find(DatabaseServices, credentials);
     return DatabaseServices.hasMany(user, "Projects");
   };

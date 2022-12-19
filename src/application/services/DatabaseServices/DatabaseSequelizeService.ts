@@ -51,27 +51,31 @@ export default class DatabaseSequelizeService {
     return model;
   };
 
-  hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
-
   setupModel(__table: string) {
     this.Model = models[__table];
     return this;
   }
+  
+  // ? Pending to check if it can be implmented as agnosthic way for be using at least with Sequelize and Mongoose
+  hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
 
-  setInclude(entitiesLabel: string[] = []) {
-    entitiesLabel.forEach(
-      (e: any) =>
-        (this.options.include = [
-          ...this.options.include,
-          {
-            model: models[e],
-            as: labelCases(e).CP,
-          },
-        ])
-    );
+  // ? Pending to check if it can be implmented as agnosthic way for be using at least with Sequelize and Mongoose
+  setInclude(entitiesToInclude: any[][] = []) {
+    entitiesToInclude.forEach((e: any) => {
+      const [entityLabel, attributes = null] = e;
+      this.options.include = [
+        ...this.options.include,
+        {
+          model: models[entityLabel],
+          as: labelCases(entityLabel).CP,
+          attributes,
+        },
+      ];
+    });
     return this;
   }
 
+  // ? Pending to check if it can be implmented as agnosthic way for be using at least with Sequelize and Mongoose
   setOptions(options: any = {}) {
     this.options = { ...this.options, ...options };
     return this;

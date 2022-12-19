@@ -32,6 +32,11 @@ export const certification_schema = {
 
 export class Certification extends Model {
   static associate(models: any) {
+    this.belongsToMany(models.User, {
+      through: models.Users_Certifications,
+      foreignKey: "certificationUUID",
+      otherKey: "userUUID",
+    });
   }
 }
 

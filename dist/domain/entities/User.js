@@ -76,16 +76,12 @@ User.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0,
     return account;
 });
 User.certifications = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("User")
-        .setInclude(["Certification"])
-        .setOptions({ limit: 5 });
+    DatabaseServices.setupModel("User").setInclude([["Certification"]]);
     const user = yield User.find(DatabaseServices, credentials);
-    return user.Certifications;
+    return user.Certifications.map((c) => (Object.assign(Object.assign({}, c.dataValues), { grantedTo: user.username })));
 });
 User.projects = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("User")
-        .setInclude(["Project"])
-        .setOptions({ limit: 5 });
+    DatabaseServices.setupModel("User").setInclude([["Project"]]);
     const user = yield User.find(DatabaseServices, credentials);
     return DatabaseServices.hasMany(user, "Projects");
 });
