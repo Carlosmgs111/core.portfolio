@@ -34,6 +34,11 @@ exports.project_schema = {
 };
 class Project extends sequelize_1.Model {
     static associate(models) {
+        this.belongsTo(models.User, {
+            as: "User",
+            targetKey: "uuid",
+            foreignKey: "userUUID",
+        });
     }
 }
 exports.Project = Project;

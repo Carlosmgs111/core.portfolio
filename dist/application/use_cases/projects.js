@@ -17,7 +17,9 @@ const getAllProjects = (data) => __awaiter(void 0, void 0, void 0, function* () 
     const { username } = data;
     const projects = username
         ? yield User_1.User.projects(dependencies_1.DatabaseService, { username })
-        : yield dependencies_1.DatabaseService.setupModel("Project").findAll();
+        : yield dependencies_1.DatabaseService.setInclude([["User", { alias: "User" }]])
+            .setupModel("Project")
+            .findAll();
     return projects;
 });
 exports.getAllProjects = getAllProjects;

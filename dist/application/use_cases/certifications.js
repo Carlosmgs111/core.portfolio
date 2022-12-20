@@ -12,21 +12,17 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.removeCertification = exports.updateCertification = exports.addManyCertifications = exports.addNewCertification = exports.getCertificationByUUID = exports.getOwnCertifications = exports.getAllCertifications = exports.getCertificationsByUsername = exports.getCertifications = void 0;
+exports.removeCertification = exports.updateCertification = exports.addManyCertifications = exports.addNewCertification = exports.getCertificationByUUID = exports.getOwnCertifications = exports.getCertifications = void 0;
 const dependencies_1 = require("../../config/dependencies");
 const Certification_1 = require("../../domain/entities/Certification");
 const Institution_1 = require("../../domain/entities/Institution");
-const User_1 = require("../../domain/entities/User");
 const User_Certification_1 = require("../../domain/entities/User_Certification");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const utils_1 = require("../../utils");
+const JWT_1 = require("../../infrastructure/auth/JWT");
 const formatCertifications = (certifications) => __awaiter(void 0, void 0, void 0, function* () {
-    const institutions = (yield Institution_1.Institution.findAll(dependencies_1.DatabaseService, {})).map((institution) => institution.dataValues);
     return certifications
-        .map((certification) => {
-        var _a;
-        return (Object.assign(Object.assign({}, (0, utils_1.filterAttrs)(certification, ["Users", "Users_Certifications"])), { emitedAt: new Date(certification.emitedAt).getTime(), emitedBy: (_a = institutions.find((i) => i.uuid === certification.institutionUUID)) === null || _a === void 0 ? void 0 : _a.name }));
-    })
+        .map((c) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, c.dataValues), { emitedAt: new Date(c.dataValues.emitedAt).getTime(), grantedTo: c.Users[0].username, emitedBy: c.Institution.name }), ["Users", "Institution"]))
         .sort((a, b) => {
         if (a.emitedAt < b.emitedAt)
             return 1;
@@ -34,30 +30,27 @@ const formatCertifications = (certifications) => __awaiter(void 0, void 0, void 
     });
 });
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, user } = data;
-    const certifications = username
-        ? yield (0, exports.getCertificationsByUsername)(data)
-        : yield (0, exports.getAllCertifications)(data);
-    return yield formatCertifications(certifications);
+    const { username, user, size: limit, page: offset } = data;
+    return yield formatCertifications((yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setInclude([
+        [
+            "User",
+            {
+                attributes: ["username"],
+                where: username && { username },
+            },
+        ],
+        ["Institution", { attributes: ["name"], alias: "Institution" }],
+    ]).setOptions({
+        limit,
+        offset,
+    }), {})).map((c) => (Object.assign(Object.assign({}, c), { grantedTo: c.Users[0].username }))));
 });
 exports.getCertifications = getCertifications;
-const getCertificationsByUsername = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username } = data;
-    console.log({ username });
-    return yield User_1.User.certifications(dependencies_1.DatabaseService, {
-        username,
-    });
+const getOwnCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const { user } = yield (0, JWT_1.verifyToken2)(data);
+    //  console.log({user})
+    return yield user.certifications(dependencies_1.DatabaseService, {});
 });
-exports.getCertificationsByUsername = getCertificationsByUsername;
-const getAllCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { size, page } = data;
-    return (yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setInclude([["User", ["username"]]]).setOptions({
-        limit: size,
-        offset: page,
-    }), data)).map((c) => (Object.assign(Object.assign({}, c.dataValues), { grantedTo: c.Users[0].username })));
-});
-exports.getAllCertifications = getAllCertifications;
-const getOwnCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () { });
 exports.getOwnCertifications = getOwnCertifications;
 const getCertificationByUUID = (data) => __awaiter(void 0, void 0, void 0, function* () {
     return yield Certification_1.Certification.find(dependencies_1.DatabaseService, data);

@@ -16,7 +16,7 @@ exports.default = router
     console.log("hello");
     res.send("Hello");
 })
-    .get("/:username", (0, express_2.expressHandlerAdapter)(certifications_1.getCertificationsByUsername))
+    .get("/:username", (0, express_2.expressHandlerAdapter)(certifications_1.getCertifications))
     .delete("/", (0, express_2.expressHandlerAdapter)(certifications_1.removeCertification))
     .delete("/:uuid", (0, express_2.expressHandlerAdapter)(certifications_1.removeCertification))
     .patch("/", (0, validator_handler_1.validatorHandler)(certification_schema_1.updateCertification, "body"), (0, express_2.expressHandlerAdapter)(certifications_1.updateCertification));

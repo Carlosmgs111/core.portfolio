@@ -6,7 +6,9 @@ export const getAllProjects = async (data: any) => {
   const { username } = data;
   const projects = username
     ? await User.projects(DatabaseService, { username })
-    : await DatabaseService.setupModel("Project").findAll();
+    : await DatabaseService.setInclude([["User", { alias: "User" }]])
+        .setupModel("Project")
+        .findAll();
   return projects;
 };
 

@@ -37,6 +37,11 @@ export class Certification extends Model {
       foreignKey: "certificationUUID",
       otherKey: "userUUID",
     });
+    this.belongsTo(models.Institution, {
+      as: "Institution",
+      targetKey: "uuid",
+      foreignKey: "institutionUUID",
+    });
   }
 }
 

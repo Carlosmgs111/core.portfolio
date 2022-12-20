@@ -32,7 +32,8 @@ class DatabaseSequelizeService {
             return entities;
         });
         this.findOne = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            console.log({ thisOptions: this.options });
+            console.log({ include: this.options.include });
+            console.log({ Entity, ThisModel: this.Model });
             try {
                 const entity = yield this.Model.findOne(Object.assign({ where: Entity }, this.options));
                 return entity;
@@ -54,7 +55,7 @@ class DatabaseSequelizeService {
             });
             return model;
         });
-        // ? Pending to check if it can be implmented as agnosthic way for be using at least with Sequelize and Mongoose
+        // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
         this.hasMany = (Entity, label) => __awaiter(this, void 0, void 0, function* () { return Entity[`get${label}`](); });
         // * A function that is called in the constructor of the class. It is used to associate the models in
         // * the database.
@@ -69,22 +70,23 @@ class DatabaseSequelizeService {
         this.Model = models_1.default[__table];
         return this;
     }
-    // ? Pending to check if it can be implmented as agnosthic way for be using at least with Sequelize and Mongoose
+    // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
     setInclude(entitiesToInclude = []) {
         entitiesToInclude.forEach((e) => {
-            const [entityLabel, attributes = null] = e;
+            const [label, { attributes = null, where = {}, alias = null, singular = false } = {},] = e;
             this.options.include = [
                 ...this.options.include,
                 {
-                    model: models_1.default[entityLabel],
-                    as: (0, utils_1.labelCases)(entityLabel).CP,
+                    model: models_1.default[label],
+                    as: alias || (0, utils_1.labelCases)(label)[singular ? "CS" : "CP"],
                     attributes,
+                    where,
                 },
             ];
         });
         return this;
     }
-    // ? Pending to check if it can be implmented as agnosthic way for be using at least with Sequelize and Mongoose
+    // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
     setOptions(options = {}) {
         this.options = Object.assign(Object.assign({}, this.options), options);
         return this;

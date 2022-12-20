@@ -1,24 +1,24 @@
 import { DatabaseService } from "../../config/dependencies";
 import { Certification } from "../../domain/entities/Certification";
 import { Institution } from "../../domain/entities/Institution";
-import { User } from "../../domain/entities/User";
 import { User_Certification } from "../../domain/entities/User_Certification";
 import boom from "@hapi/boom";
 import { filterAttrs } from "../../utils";
-import userRoutes from "../../infrastructure/apis/express/routes/api.routes/user.routes";
+import { verifyToken2 } from "../../infrastructure/auth/JWT";
 
 const formatCertifications = async (certifications: Object[]) => {
-  const institutions = (await Institution.findAll(DatabaseService, {})).map(
-    (institution: any) => institution.dataValues
-  );
   return certifications
-    .map((certification: any) => ({
-      ...filterAttrs(certification, ["Users", "Users_Certifications"]),
-      emitedAt: new Date(certification.emitedAt).getTime(),
-      emitedBy: institutions.find(
-        (i: any) => i.uuid === certification.institutionUUID
-      )?.name,
-    }))
+    .map((c: any) =>
+      filterAttrs(
+        {
+          ...c.dataValues,
+          emitedAt: new Date(c.dataValues.emitedAt).getTime(),
+          grantedTo: c.Users[0].username,
+          emitedBy: c.Institution.name,
+        },
+        ["Users", "Institution"]
+      )
+    )
     .sort((a: any, b: any) => {
       if (a.emitedAt < b.emitedAt) return 1;
       return -1;
@@ -26,35 +26,34 @@ const formatCertifications = async (certifications: Object[]) => {
 };
 
 export const getCertifications = async (data: any) => {
-  const { username, user } = data;
-  const certifications = username
-    ? await getCertificationsByUsername(data)
-    : await getAllCertifications(data);
-  return await formatCertifications(certifications);
+  const { username, user, size: limit, page: offset } = data;
+  return await formatCertifications(
+    (
+      await Certification.findAll(
+        DatabaseService.setInclude([
+          [
+            "User",
+            {
+              attributes: ["username"],
+              where: username && { username },
+            },
+          ],
+          ["Institution", { attributes: ["name"], alias: "Institution" }],
+        ]).setOptions({
+          limit,
+          offset,
+        }),
+        {}
+      )
+    ).map((c: any) => ({ ...c, grantedTo: c.Users[0].username }))
+  );
 };
 
-export const getCertificationsByUsername = async (data: any) => {
-  const { username } = data;
-  console.log({ username });
-  return await User.certifications(DatabaseService, {
-    username,
-  });
+export const getOwnCertifications = async (data: any) => {
+  const { user } = await verifyToken2(data);
+  //  console.log({user})
+  return await user.certifications(DatabaseService, {});
 };
-
-export const getAllCertifications = async (data: any) => {
-  const { size, page } = data;
-  return (
-    await Certification.findAll(
-      DatabaseService.setInclude([["User", ["username"]]]).setOptions({
-        limit: size,
-        offset: page,
-      }),
-      data
-    )
-  ).map((c: any) => ({ ...c.dataValues, grantedTo: c.Users[0].username }));
-};
-
-export const getOwnCertifications = async (data: any) => { };
 
 export const getCertificationByUUID = async (data: any) => {
   return await Certification.find(DatabaseService, data);
@@ -71,12 +70,16 @@ export const addNewCertification = async (data: any) => {
     ...data,
     institutionUUID,
   });
-  console.log({ certification })
+  console.log({ certification });
   await User_Certification.create(DatabaseService, {
     userUUID: data.user.uuid,
     certificationUUID: certification.uuid,
   });
-  return { ...certification, emitedBy: data.emitedBy, grantedTo: data.user.username };
+  return {
+    ...certification,
+    emitedBy: data.emitedBy,
+    grantedTo: data.user.username,
+  };
 };
 
 export const addManyCertifications = async (data: any) => {
@@ -101,7 +104,9 @@ export const updateCertification = async (data: any) => {
     await Certification.load(DatabaseService, { uuid })
   ).update(DatabaseService, data);
   return {
-    ...(await getCertificationByUUID({ uuid })).dataValues, emitedBy: data.emitedBy, grantedTo: data.user.username
+    ...(await getCertificationByUUID({ uuid })).dataValues,
+    emitedBy: data.emitedBy,
+    grantedTo: data.user.username,
   };
 };
 

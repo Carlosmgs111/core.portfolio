@@ -33,6 +33,11 @@ export const project_schema = {
 
 export class Project extends Model{
   static associate(models: any){
+    this.belongsTo(models.User, {
+      as: "User",
+      targetKey: "uuid",
+      foreignKey: "userUUID",
+    });
   }
 }
 

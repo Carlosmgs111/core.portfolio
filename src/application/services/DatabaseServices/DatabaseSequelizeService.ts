@@ -14,8 +14,8 @@ export default class DatabaseSequelizeService {
     this.syncModels();
   }
   create = async (Entity: any): Promise<typeof Model | null> => {
-    console.log({ Entity })
-    console.log({models})
+    console.log({ Entity });
+    console.log({ models });
     const entity = await this.Model.create(Entity);
     return entity;
   };
@@ -27,7 +27,8 @@ export default class DatabaseSequelizeService {
   };
 
   findOne = async (Entity: any) => {
-    console.log({ thisOptions: this.options });
+    console.log({ include: this.options.include });
+    console.log({ Entity, ThisModel: this.Model });
     try {
       const entity = await this.Model.findOne({
         where: Entity,
@@ -58,26 +59,30 @@ export default class DatabaseSequelizeService {
     return this;
   }
 
-  // ? Pending to check if it can be implmented as agnosthic way for be using at least with Sequelize and Mongoose
+  // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
   hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
 
-  // ? Pending to check if it can be implmented as agnosthic way for be using at least with Sequelize and Mongoose
+  // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
   setInclude(entitiesToInclude: any = []) {
     entitiesToInclude.forEach((e: any) => {
-      const [entityLabel, attributes = null] = e;
+      const [
+        label,
+        { attributes = null, where = {}, alias = null, singular = false } = {},
+      ] = e;
       this.options.include = [
         ...this.options.include,
         {
-          model: models[entityLabel],
-          as: labelCases(entityLabel).CP,
+          model: models[label],
+          as: alias || labelCases(label)[singular ? "CS" : "CP"],
           attributes,
+          where,
         },
       ];
     });
     return this;
   }
 
-  // ? Pending to check if it can be implmented as agnosthic way for be using at least with Sequelize and Mongoose
+  // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
   setOptions(options: any = {}) {
     this.options = { ...this.options, ...options };
     return this;

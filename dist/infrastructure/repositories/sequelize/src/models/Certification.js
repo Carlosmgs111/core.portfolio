@@ -38,6 +38,11 @@ class Certification extends sequelize_1.Model {
             foreignKey: "certificationUUID",
             otherKey: "userUUID",
         });
+        this.belongsTo(models.Institution, {
+            as: "Institution",
+            targetKey: "uuid",
+            foreignKey: "institutionUUID",
+        });
     }
 }
 exports.Certification = Certification;
