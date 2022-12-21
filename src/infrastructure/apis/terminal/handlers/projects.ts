@@ -1,4 +1,4 @@
-import { getAllProjects } from "../../../../application/use_cases/projects";
+import { getProjects } from "../../../../application/use_cases/projects";
 import inquirer from "inquirer";
 import { Enumfy, execFunc } from "../../../../utils";
 
@@ -9,7 +9,7 @@ export const projectsHandler = async () => {
   const choices = ["Agregar", "Actualizar", "Eliminar", "Listar", "Salir"];
   const EChoices = Enumfy(choices);
   const options = {
-    [EChoices.Listar]: async () => console.log(await getAllProjects({})),
+    [EChoices.Listar]: async () => console.log(await getProjects({})),
     [EChoices.Salir]: async () => (running = false),
   };
   while (running) {

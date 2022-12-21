@@ -3,8 +3,7 @@ import colors from "colors";
 import { loginHandler } from "./handlers/login";
 import { certificationsHandler } from "./handlers/certifications";
 import { projectsHandler } from "./handlers/projects";
-import { Enumfy, execFunc } from "../../../utils";
-import { token } from "morgan";
+import { execFunc } from "../../../utils";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 colors;
@@ -15,34 +14,45 @@ export default async () => {
     cm: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDU3NDI3YjQtNmU5MC00OTI3LWI3OWYtODc4MzBmN2UxODMwIiwidXNlcm5hbWUiOiJjbWdzMTExIiwiZW1haWwiOiJjYXJsb3NtZ3MxMTFAb3V0bG9vay5jb20iLCJpYXQiOjE2NzE1NTg3NTEsImV4cCI6MTY3NDE1MDc1MX0.bXXYbEEu0nbr7nYUHDZXnOIiZcFz0x9lDbW6lkAWeg8",
     no: null,
   };
+  const usernames = { re: "reapern7", cm: "cmgs111" };
   const state: any = {
-    token: tokens.cm,
+    token: tokens.re,
+    username: usernames.re,
+    exp: 0,
   };
-  const choices = ["Login", "Certifications", "Institutions", "Projects"];
-  const EChoices = Enumfy(choices);
+  const [login, logout, certifications, institutions, projects] = [
+    "Login".bgGreen,
+    "Logout".bgRed,
+    "Certifications",
+    "Institutions",
+    "Projects",
+  ];
+  const choices = [certifications, institutions, projects];
   const options = {
-    [EChoices.Login]: () => loginHandler(state),
-    ["Logout"]: () => (state.token = undefined),
-    [EChoices.Certifications]: () => certificationsHandler(state),
-    [EChoices.Projects]: projectsHandler,
+    [login]: () => loginHandler(state),
+    [logout]: () => (state.token = undefined),
+    [certifications]: () => certificationsHandler(state),
+    [projects]: projectsHandler,
   };
   while (true) {
     const { token } = state;
-    if (token) {
-      choices.shift();
-      choices.unshift("Logout");
+    if (token && choices[choices.length - 1] !== logout) {
+      choices.length > 3 && choices.shift();
+      choices.push(logout);
     }
-    if (!token) {
-      choices.shift();
-      choices.unshift("Login");
+    if (!token && choices[0] !== login) {
+      choices.length > 3 && choices.pop();
+      choices.unshift(login);
     }
     const { option } = await inquirer.prompt([
       {
         name: "option",
         type: "list",
         message: `
-  Core Blogfolio
-  ${token ? "Logged".green : "Unlogged".red}
+        
+  Blogfolio
+
+  ${token ? `🔓 Logged: ${state.username} 🤖`.green : "🔒 Unlogged ".red}
         `.cyan,
         choices,
       },

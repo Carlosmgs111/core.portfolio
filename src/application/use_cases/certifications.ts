@@ -2,19 +2,20 @@ import { DatabaseService } from "../../config/dependencies";
 import { Certification } from "../../domain/entities/Certification";
 import { Institution } from "../../domain/entities/Institution";
 import { User_Certification } from "../../domain/entities/User_Certification";
+import { User } from "../../domain/entities/User";
 import boom from "@hapi/boom";
 import { filterAttrs } from "../../utils";
 import { verifyToken2 } from "../../infrastructure/auth/JWT";
 
-const formatCertifications = async (certifications: Object[]) => {
-  return certifications
-    .map((c: any) =>
+const formatCertifications = (certifications: [Certification]) =>
+  certifications
+    .map((certification: any) =>
       filterAttrs(
         {
-          ...c.dataValues,
-          emitedAt: new Date(c.dataValues.emitedAt).getTime(),
-          grantedTo: c.Users[0].username,
-          emitedBy: c.Institution.name,
+          ...certification.dataValues,
+          emitedAt: new Date(certification.dataValues.emitedAt).getTime(),
+          grantedTo: certification.Users[0].username,
+          emitedBy: certification.Institution.name,
         },
         ["Users", "Institution"]
       )
@@ -23,11 +24,10 @@ const formatCertifications = async (certifications: Object[]) => {
       if (a.emitedAt < b.emitedAt) return 1;
       return -1;
     });
-};
 
 export const getCertifications = async (data: any) => {
   const { username, user, size: limit, page: offset } = data;
-  return await formatCertifications(
+  return formatCertifications(
     (
       await Certification.findAll(
         DatabaseService.setInclude([
@@ -51,8 +51,9 @@ export const getCertifications = async (data: any) => {
 
 export const getOwnCertifications = async (data: any) => {
   const { user } = await verifyToken2(data);
-  //  console.log({user})
-  return await user.certifications(DatabaseService, {});
+  return await User.certifications(DatabaseService, {
+    username: user.username,
+  });
 };
 
 export const getCertificationByUUID = async (data: any) => {

@@ -22,22 +22,6 @@ class User {
     constructor({ uuid, username, email, password, privilege, createdAt, updatedAt, }) {
         this.createdAt = 0;
         this.updatedAt = 0;
-        this.certifications = (DatabaseServices, credentials) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("User").setInclude([
-                ["Certification"],
-                // ["Institution", { attributes: ["name"], singular: true }],
-            ]);
-            console.log({ this: this });
-            /* const user = await User.find(DatabaseServices, {
-              where: { username: this.username },
-            });
-            console.log({ user });
-            return user.Certifications.map((c: any) => ({
-              ...c.dataValues,
-              grantedTo: user.username,
-              emitedBy: c.Institution.name,
-            })); */
-        });
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("User");
             return yield DatabaseServices.remove((0, utils_1.getEntityProperties)(this));
@@ -79,10 +63,6 @@ User.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, func
     return account;
 });
 User.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("User").setInclude([
-        ["Certification"],
-        ["Project"],
-    ]);
     const user = yield User.find(DatabaseServices, (0, utils_1.filterAttrs)(credentials, ["email", "username"], false));
     if (!user)
         throw boom_1.default.notFound("Incorrect credentials!");
@@ -92,10 +72,14 @@ User.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0,
 User.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("User");
     const account = yield DatabaseServices.findOne(Object.assign({}, (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["email", "username"], false)));
-    console.log({ account });
     if (!account)
         throw boom_1.default.conflict("Account doesn´t exist!");
     return account;
+});
+User.certifications = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    DatabaseServices.setupModel("User").setInclude([["Certification"]]);
+    const user = yield User.find(DatabaseServices, credentials);
+    return user.Certifications.map((c) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, c.dataValues), { grantedTo: user.username }), ["Users_Certifications"]));
 });
 User.projects = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("User").setInclude([["Project"]]);

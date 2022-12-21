@@ -59,10 +59,6 @@ export class User {
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User").setInclude([
-      ["Certification"],
-      ["Project"],
-    ]);
     const user = await User.find(
       DatabaseServices,
       filterAttrs(credentials, ["email", "username"], false)
@@ -81,26 +77,22 @@ export class User {
         false
       ),
     });
-    console.log({ account });
     if (!account) throw boom.conflict("Account doesn´t exist!");
     return account;
   };
 
-  certifications = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User").setInclude([
-      ["Certification"],
-      // ["Institution", { attributes: ["name"], singular: true }],
-    ]);
-    console.log({ this: this });
-    /* const user = await User.find(DatabaseServices, {
-      where: { username: this.username },
-    });
-    console.log({ user });
-    return user.Certifications.map((c: any) => ({
-      ...c.dataValues,
-      grantedTo: user.username,
-      emitedBy: c.Institution.name,
-    })); */
+  static certifications = async (DatabaseServices: any, credentials: any) => {
+    DatabaseServices.setupModel("User").setInclude([["Certification"]]);
+    const user: any = await User.find(DatabaseServices, credentials);
+    return user.Certifications.map((c: any) =>
+      filterAttrs(
+        {
+          ...c.dataValues,
+          grantedTo: user.username,
+        },
+        ["Users_Certifications"]
+      )
+    );
   };
 
   static projects = async (DatabaseServices: any, credentials: any) => {

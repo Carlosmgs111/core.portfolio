@@ -1,15 +1,26 @@
 import { DatabaseService } from "../../config/dependencies";
 import { Project } from "../../domain/entities/Project";
-import { User } from "../../domain/entities/User";
+import { filterAttrs } from "../../utils";
 
-export const getAllProjects = async (data: any) => {
-  const { username } = data;
-  const projects = username
-    ? await User.projects(DatabaseService, { username })
-    : await DatabaseService.setInclude([["User", { alias: "User" }]])
-        .setupModel("Project")
-        .findAll();
-  return projects;
+const formatProjects = (projects: [Project]) =>
+  projects.map((project: any) =>
+    filterAttrs({ ...project.dataValues, createdBy: project.User.username }, [
+      "User",
+    ])
+  );
+
+export const getProjects = async (data: any) => {
+  const { username, user, size: limit, page: offset } = data;
+  const projects = await DatabaseService.setInclude([
+    ["User", { alias: "User", where: username && { username } }],
+  ])
+    .setOptions({
+      limit,
+      offset,
+    })
+    .setupModel("Project")
+    .findAll();
+  return formatProjects(projects);
 };
 
 export const addProject = async (data: any) =>

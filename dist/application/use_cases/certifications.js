@@ -17,21 +17,20 @@ const dependencies_1 = require("../../config/dependencies");
 const Certification_1 = require("../../domain/entities/Certification");
 const Institution_1 = require("../../domain/entities/Institution");
 const User_Certification_1 = require("../../domain/entities/User_Certification");
+const User_1 = require("../../domain/entities/User");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const utils_1 = require("../../utils");
 const JWT_1 = require("../../infrastructure/auth/JWT");
-const formatCertifications = (certifications) => __awaiter(void 0, void 0, void 0, function* () {
-    return certifications
-        .map((c) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, c.dataValues), { emitedAt: new Date(c.dataValues.emitedAt).getTime(), grantedTo: c.Users[0].username, emitedBy: c.Institution.name }), ["Users", "Institution"]))
-        .sort((a, b) => {
-        if (a.emitedAt < b.emitedAt)
-            return 1;
-        return -1;
-    });
+const formatCertifications = (certifications) => certifications
+    .map((certification) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, certification.dataValues), { emitedAt: new Date(certification.dataValues.emitedAt).getTime(), grantedTo: certification.Users[0].username, emitedBy: certification.Institution.name }), ["Users", "Institution"]))
+    .sort((a, b) => {
+    if (a.emitedAt < b.emitedAt)
+        return 1;
+    return -1;
 });
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size: limit, page: offset } = data;
-    return yield formatCertifications((yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setInclude([
+    return formatCertifications((yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setInclude([
         [
             "User",
             {
@@ -48,8 +47,9 @@ const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* 
 exports.getCertifications = getCertifications;
 const getOwnCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user } = yield (0, JWT_1.verifyToken2)(data);
-    //  console.log({user})
-    return yield user.certifications(dependencies_1.DatabaseService, {});
+    return yield User_1.User.certifications(dependencies_1.DatabaseService, {
+        username: user.username,
+    });
 });
 exports.getOwnCertifications = getOwnCertifications;
 const getCertificationByUUID = (data) => __awaiter(void 0, void 0, void 0, function* () {

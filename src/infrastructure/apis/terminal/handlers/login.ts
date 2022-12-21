@@ -5,6 +5,7 @@ import {
 } from "../../../../application/use_cases/register";
 import inquirer from "inquirer";
 import { Enumfy, execFunc } from "../../../../utils";
+import { decodeJwt } from "jose";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 
@@ -52,7 +53,12 @@ const signinHandler = async (state: any) => {
     email,
     password,
   });
-  state["token"] = token;
+
+  const { exp, username }: any = decodeJwt(token);
+
+  state.token = token;
+  state.exp = exp;
+  state.username = username;
 };
 
 const unsubscribeHandler = async () => {

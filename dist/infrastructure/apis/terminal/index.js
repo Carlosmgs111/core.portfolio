@@ -26,34 +26,45 @@ exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
         cm: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDU3NDI3YjQtNmU5MC00OTI3LWI3OWYtODc4MzBmN2UxODMwIiwidXNlcm5hbWUiOiJjbWdzMTExIiwiZW1haWwiOiJjYXJsb3NtZ3MxMTFAb3V0bG9vay5jb20iLCJpYXQiOjE2NzE1NTg3NTEsImV4cCI6MTY3NDE1MDc1MX0.bXXYbEEu0nbr7nYUHDZXnOIiZcFz0x9lDbW6lkAWeg8",
         no: null,
     };
+    const usernames = { re: "reapern7", cm: "cmgs111" };
     const state = {
-        token: tokens.cm,
+        token: tokens.re,
+        username: usernames.re,
+        exp: 0,
     };
-    const choices = ["Login", "Certifications", "Institutions", "Projects"];
-    const EChoices = (0, utils_1.Enumfy)(choices);
+    const [login, logout, certifications, institutions, projects] = [
+        "Login".bgGreen,
+        "Logout".bgRed,
+        "Certifications",
+        "Institutions",
+        "Projects",
+    ];
+    const choices = [certifications, institutions, projects];
     const options = {
-        [EChoices.Login]: () => (0, login_1.loginHandler)(state),
-        ["Logout"]: () => (state.token = undefined),
-        [EChoices.Certifications]: () => (0, certifications_1.certificationsHandler)(state),
-        [EChoices.Projects]: projects_1.projectsHandler,
+        [login]: () => (0, login_1.loginHandler)(state),
+        [logout]: () => (state.token = undefined),
+        [certifications]: () => (0, certifications_1.certificationsHandler)(state),
+        [projects]: projects_1.projectsHandler,
     };
     while (true) {
         const { token } = state;
-        if (token) {
-            choices.shift();
-            choices.unshift("Logout");
+        if (token && choices[choices.length - 1] !== logout) {
+            choices.length > 3 && choices.shift();
+            choices.push(logout);
         }
-        if (!token) {
-            choices.shift();
-            choices.unshift("Login");
+        if (!token && choices[0] !== login) {
+            choices.length > 3 && choices.pop();
+            choices.unshift(login);
         }
         const { option } = yield inquirer_1.default.prompt([
             {
                 name: "option",
                 type: "list",
                 message: `
-  Core Blogfolio
-  ${token ? "Logged".green : "Unlogged".red}
+        
+  Blogfolio
+
+  ${token ? `🔓 Logged: ${state.username} 🤖`.green : "🔒 Unlogged ".red}
         `.cyan,
                 choices,
             },

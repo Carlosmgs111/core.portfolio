@@ -20,20 +20,25 @@ class DatabaseSequelizeService {
     constructor({ __identifier }) {
         this.serviceDescription = "Sequelize Interface Database Service";
         this.options = { include: [], limit: 100, offset: 0 };
+        // ? to cache
+        this.sessions = {
+            cmgs111: {
+                models: {
+                    model: "",
+                    options: { include: [], limit: 100, offset: 100 },
+                },
+            },
+        };
         this.create = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            console.log({ Entity });
-            console.log({ models: models_1.default });
             const entity = yield this.Model.create(Entity);
             return entity;
         });
         this.findAll = () => __awaiter(this, void 0, void 0, function* () {
             const entities = yield this.Model.findAll(this.options);
-            this.clear();
+            yield this.clear();
             return entities;
         });
         this.findOne = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            console.log({ include: this.options.include });
-            console.log({ Entity, ThisModel: this.Model });
             try {
                 const entity = yield this.Model.findOne(Object.assign({ where: Entity }, this.options));
                 return entity;
@@ -43,7 +48,7 @@ class DatabaseSequelizeService {
                 throw boom_1.default.internal(e.message);
             }
             finally {
-                this.clear();
+                yield this.clear();
             }
         });
         this.remove = (Entity) => __awaiter(this, void 0, void 0, function* () {
@@ -92,9 +97,11 @@ class DatabaseSequelizeService {
         return this;
     }
     clear() {
-        this.options = { include: [] };
-        this.Model = undefined;
-        return this;
+        return __awaiter(this, void 0, void 0, function* () {
+            this.options = { include: [] };
+            this.Model = undefined;
+            return this;
+        });
     }
 }
 exports.default = DatabaseSequelizeService;

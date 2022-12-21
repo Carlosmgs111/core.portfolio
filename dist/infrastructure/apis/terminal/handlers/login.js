@@ -16,6 +16,7 @@ exports.loginHandler = void 0;
 const register_1 = require("../../../../application/use_cases/register");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
+const jose_1 = require("jose");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
 const signupHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, rePassword, username } = yield inquirer_1.default.prompt([
@@ -56,7 +57,10 @@ const signinHandler = (state) => __awaiter(void 0, void 0, void 0, function* () 
         email,
         password,
     });
-    state["token"] = token;
+    const { exp, username } = (0, jose_1.decodeJwt)(token);
+    state.token = token;
+    state.exp = exp;
+    state.username = username;
 });
 const unsubscribeHandler = () => __awaiter(void 0, void 0, void 0, function* () {
     const { email, password, confirm } = yield inquirer_1.default.prompt([

@@ -9,20 +9,27 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.migrateDescriptionToDescriptions = exports.updateProject = exports.deleteProject = exports.addProject = exports.getAllProjects = void 0;
+exports.migrateDescriptionToDescriptions = exports.updateProject = exports.deleteProject = exports.addProject = exports.getProjects = void 0;
 const dependencies_1 = require("../../config/dependencies");
 const Project_1 = require("../../domain/entities/Project");
-const User_1 = require("../../domain/entities/User");
-const getAllProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username } = data;
-    const projects = username
-        ? yield User_1.User.projects(dependencies_1.DatabaseService, { username })
-        : yield dependencies_1.DatabaseService.setInclude([["User", { alias: "User" }]])
-            .setupModel("Project")
-            .findAll();
-    return projects;
+const utils_1 = require("../../utils");
+const formatProjects = (projects) => projects.map((project) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project.dataValues), { createdBy: project.User.username }), [
+    "User",
+]));
+const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username, user, size: limit, page: offset } = data;
+    const projects = yield dependencies_1.DatabaseService.setInclude([
+        ["User", { alias: "User", where: username && { username } }],
+    ])
+        .setOptions({
+        limit,
+        offset,
+    })
+        .setupModel("Project")
+        .findAll();
+    return formatProjects(projects);
 });
-exports.getAllProjects = getAllProjects;
+exports.getProjects = getProjects;
 const addProject = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield Project_1.Project.new(dependencies_1.DatabaseService, data); });
 exports.addProject = addProject;
 const deleteProject = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield (yield Project_1.Project.load(dependencies_1.DatabaseService, data)).remove(dependencies_1.DatabaseService); });

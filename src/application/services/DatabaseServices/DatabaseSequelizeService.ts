@@ -7,6 +7,16 @@ export default class DatabaseSequelizeService {
   serviceDescription: string = "Sequelize Interface Database Service";
   Model: any;
   options: any = { include: [], limit: 100, offset: 0 };
+  
+  // ? to cache
+  sessions = {
+    cmgs111: {
+      models: {
+        model: "",
+        options: { include: [], limit: 100, offset: 100 },
+      },
+    },
+  };
 
   // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
   constructor({ __identifier }: any) {
@@ -14,21 +24,17 @@ export default class DatabaseSequelizeService {
     this.syncModels();
   }
   create = async (Entity: any): Promise<typeof Model | null> => {
-    console.log({ Entity });
-    console.log({ models });
     const entity = await this.Model.create(Entity);
     return entity;
   };
 
   findAll = async () => {
     const entities = await this.Model.findAll(this.options);
-    this.clear();
+    await this.clear();
     return entities;
   };
 
   findOne = async (Entity: any) => {
-    console.log({ include: this.options.include });
-    console.log({ Entity, ThisModel: this.Model });
     try {
       const entity = await this.Model.findOne({
         where: Entity,
@@ -39,7 +45,7 @@ export default class DatabaseSequelizeService {
       console.log(e.message.red);
       throw boom.internal(e.message);
     } finally {
-      this.clear();
+      await this.clear();
     }
   };
 
@@ -88,7 +94,7 @@ export default class DatabaseSequelizeService {
     return this;
   }
 
-  clear() {
+  async clear() {
     this.options = { include: [] };
     this.Model = undefined;
     return this;
