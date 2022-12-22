@@ -6,17 +6,6 @@ import boom from "@hapi/boom";
 export default class DatabaseSequelizeService {
   serviceDescription: string = "Sequelize Interface Database Service";
   Model: any;
-  options: any = { include: [], limit: 100, offset: 0 };
-  
-  // ? to cache
-  sessions = {
-    cmgs111: {
-      models: {
-        model: "",
-        options: { include: [], limit: 100, offset: 100 },
-      },
-    },
-  };
 
   // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
   constructor({ __identifier }: any) {
@@ -28,24 +17,21 @@ export default class DatabaseSequelizeService {
     return entity;
   };
 
-  findAll = async () => {
-    const entities = await this.Model.findAll(this.options);
-    await this.clear();
+  findAll = async ({ options }: any = {}) => {
+    const entities = await this.Model.findAll(options);
     return entities;
   };
 
-  findOne = async (Entity: any) => {
+  findOne = async ({ credentials, options }: any = {}) => {
     try {
       const entity = await this.Model.findOne({
-        where: Entity,
-        ...this.options,
+        where: credentials,
+        ...options,
       });
       return entity;
     } catch (e: any) {
       console.log(e.message.red);
       throw boom.internal(e.message);
-    } finally {
-      await this.clear();
     }
   };
 
@@ -60,6 +46,24 @@ export default class DatabaseSequelizeService {
     return model;
   };
 
+  // ? pending to find an appropiated agnosthic name
+  getInclude(entitiesToInclude: any = []) {
+    const include: Object[] = [];
+    entitiesToInclude.forEach((e: any) => {
+      const [
+        label,
+        { attributes = null, where = {}, alias = null, singular = false } = {},
+      ] = e;
+      include.push({
+        model: models[label],
+        as: alias || labelCases(label)[singular ? "CS" : "CP"],
+        attributes,
+        where,
+      });
+    });
+    return include;
+  }
+
   setupModel(__table: string) {
     this.Model = models[__table];
     return this;
@@ -67,38 +71,6 @@ export default class DatabaseSequelizeService {
 
   // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
   hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
-
-  // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
-  setInclude(entitiesToInclude: any = []) {
-    entitiesToInclude.forEach((e: any) => {
-      const [
-        label,
-        { attributes = null, where = {}, alias = null, singular = false } = {},
-      ] = e;
-      this.options.include = [
-        ...this.options.include,
-        {
-          model: models[label],
-          as: alias || labelCases(label)[singular ? "CS" : "CP"],
-          attributes,
-          where,
-        },
-      ];
-    });
-    return this;
-  }
-
-  // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
-  setOptions(options: any = {}) {
-    this.options = { ...this.options, ...options };
-    return this;
-  }
-
-  async clear() {
-    this.options = { include: [] };
-    this.Model = undefined;
-    return this;
-  }
 
   // * A function that is called in the constructor of the class. It is used to associate the models in
   // * the database.

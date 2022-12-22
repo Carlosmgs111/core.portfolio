@@ -29,28 +29,30 @@ export const getCertifications = async (data: any) => {
   const { username, user, size: limit, page: offset } = data;
   return formatCertifications(
     (
-      await Certification.findAll(
-        DatabaseService.setInclude([
-          [
-            "User",
-            {
-              attributes: ["username"],
-              where: username && { username },
-            },
-          ],
-          ["Institution", { attributes: ["name"], alias: "Institution" }],
-        ]).setOptions({
+      await Certification.findAll(DatabaseService, {
+        options: {
+          include: DatabaseService.getInclude([
+            [
+              "User",
+              {
+                attributes: ["username"],
+                where: username && { username },
+              },
+            ],
+            ["Institution", { attributes: ["name"], alias: "Institution" }],
+          ]),
           limit,
           offset,
-        }),
-        {}
-      )
+        },
+      })
     ).map((c: any) => ({ ...c, grantedTo: c.Users[0].username }))
   );
 };
 
 export const getOwnCertifications = async (data: any) => {
-  const { user } = await verifyToken2(data);
+  const { token } = data;
+  const { user } = await verifyToken2(token);
+  console.log({ getOwnCertifications: user });
   return await User.certifications(DatabaseService, {
     username: user.username,
   });

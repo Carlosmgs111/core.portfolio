@@ -58,32 +58,40 @@ export class User {
     return account;
   };
 
-  static load = async (DatabaseServices: any, credentials: any) => {
-    const user = await User.find(
-      DatabaseServices,
-      filterAttrs(credentials, ["email", "username"], false)
-    );
+  static load = async (
+    DatabaseServices: any,
+    { credentials, options }: any
+  ) => {
+    const user = await User.find(DatabaseServices, {
+      credentials,
+      options,
+    });
     if (!user) throw boom.notFound("Incorrect credentials!");
     const account = new User(user);
     return account;
   };
 
-  static find = async (DatabaseServices: any, credentials: any) => {
+  static find = async (DatabaseServices: any, data: any) => {
     DatabaseServices.setupModel("User");
+    const { options, credentials } = data;
     const account: any = await DatabaseServices.findOne({
-      ...filterAttrs(
+      credentials: filterAttrs(
         getEntityProperties(credentials),
         ["email", "username"],
         false
       ),
+      options,
     });
     if (!account) throw boom.conflict("Account doesn´t exist!");
     return account;
   };
 
   static certifications = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User").setInclude([["Certification"]]);
-    const user: any = await User.find(DatabaseServices, credentials);
+    DatabaseServices.setupModel("User");
+    const user: any = await User.find(DatabaseServices, {
+      credentials,
+      options: { include: DatabaseServices.getInclude([["Certification"]]) },
+    });
     return user.Certifications.map((c: any) =>
       filterAttrs(
         {
@@ -96,8 +104,11 @@ export class User {
   };
 
   static projects = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User").setInclude([["Project"]]);
-    const user = await User.find(DatabaseServices, credentials);
+    DatabaseServices.setupModel("User");
+    const user = await User.find(DatabaseServices, {
+      credentials,
+      options: { include: DatabaseServices.getInclude([["Project"]]) },
+    });
     return (await DatabaseServices.hasMany(user, "Projects")).map((c: any) => ({
       ...c.dataValues,
       createdBy: user.username,

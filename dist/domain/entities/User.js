@@ -62,27 +62,40 @@ User.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, func
     yield DatabaseServices.create(Object.assign({}, (0, utils_1.getEntityProperties)(account)));
     return account;
 });
-User.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield User.find(DatabaseServices, (0, utils_1.filterAttrs)(credentials, ["email", "username"], false));
+User.load = (DatabaseServices, { credentials, options }) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield User.find(DatabaseServices, {
+        credentials,
+        options,
+    });
     if (!user)
         throw boom_1.default.notFound("Incorrect credentials!");
     const account = new User(user);
     return account;
 });
-User.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
+User.find = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("User");
-    const account = yield DatabaseServices.findOne(Object.assign({}, (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["email", "username"], false)));
+    const { options, credentials } = data;
+    const account = yield DatabaseServices.findOne({
+        credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["email", "username"], false),
+        options,
+    });
     if (!account)
         throw boom_1.default.conflict("Account doesn´t exist!");
     return account;
 });
 User.certifications = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("User").setInclude([["Certification"]]);
-    const user = yield User.find(DatabaseServices, credentials);
+    DatabaseServices.setupModel("User");
+    const user = yield User.find(DatabaseServices, {
+        credentials,
+        options: { include: DatabaseServices.getInclude([["Certification"]]) },
+    });
     return user.Certifications.map((c) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, c.dataValues), { grantedTo: user.username }), ["Users_Certifications"]));
 });
 User.projects = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("User").setInclude([["Project"]]);
-    const user = yield User.find(DatabaseServices, credentials);
+    DatabaseServices.setupModel("User");
+    const user = yield User.find(DatabaseServices, {
+        credentials,
+        options: { include: DatabaseServices.getInclude([["Project"]]) },
+    });
     return (yield DatabaseServices.hasMany(user, "Projects")).map((c) => (Object.assign(Object.assign({}, c.dataValues), { createdBy: user.username })));
 });

@@ -9,7 +9,9 @@ export const signup = async (credentials: any) => {
 };
 
 export const signin = async (credentials: any) => {
-  const account = await User.load(DatabaseService, credentials);
+  console.log({ signinCredentials: credentials });
+  const account = await User.load(DatabaseService, { credentials });
+  console.log({ signinAccount: account });
   if (!account) throw new Error("The account doesn't exist!");
   let response = AuthServices.getAuthPackage(
     filterAttrs(account, ["uuid", "email", "username"], false)

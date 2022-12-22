@@ -23,7 +23,9 @@ const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.signup = signup;
 const signin = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const account = yield User_1.User.load(dependencies_1.DatabaseService, credentials);
+    console.log({ signinCredentials: credentials });
+    const account = yield User_1.User.load(dependencies_1.DatabaseService, { credentials });
+    console.log({ signinAccount: account });
     if (!account)
         throw new Error("The account doesn't exist!");
     let response = dependencies_1.AuthServices.getAuthPackage((0, utils_1.filterAttrs)(account, ["uuid", "email", "username"], false));

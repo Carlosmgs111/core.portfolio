@@ -30,23 +30,28 @@ const formatCertifications = (certifications) => certifications
 });
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size: limit, page: offset } = data;
-    return formatCertifications((yield Certification_1.Certification.findAll(dependencies_1.DatabaseService.setInclude([
-        [
-            "User",
-            {
-                attributes: ["username"],
-                where: username && { username },
-            },
-        ],
-        ["Institution", { attributes: ["name"], alias: "Institution" }],
-    ]).setOptions({
-        limit,
-        offset,
-    }), {})).map((c) => (Object.assign(Object.assign({}, c), { grantedTo: c.Users[0].username }))));
+    return formatCertifications((yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, {
+        options: {
+            include: dependencies_1.DatabaseService.getInclude([
+                [
+                    "User",
+                    {
+                        attributes: ["username"],
+                        where: username && { username },
+                    },
+                ],
+                ["Institution", { attributes: ["name"], alias: "Institution" }],
+            ]),
+            limit,
+            offset,
+        },
+    })).map((c) => (Object.assign(Object.assign({}, c), { grantedTo: c.Users[0].username }))));
 });
 exports.getCertifications = getCertifications;
 const getOwnCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { user } = yield (0, JWT_1.verifyToken2)(data);
+    const { token } = data;
+    const { user } = yield (0, JWT_1.verifyToken2)(token);
+    console.log({ getOwnCertifications: user });
     return yield User_1.User.certifications(dependencies_1.DatabaseService, {
         username: user.username,
     });

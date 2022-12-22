@@ -19,36 +19,22 @@ class DatabaseSequelizeService {
     // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
     constructor({ __identifier }) {
         this.serviceDescription = "Sequelize Interface Database Service";
-        this.options = { include: [], limit: 100, offset: 0 };
-        // ? to cache
-        this.sessions = {
-            cmgs111: {
-                models: {
-                    model: "",
-                    options: { include: [], limit: 100, offset: 100 },
-                },
-            },
-        };
         this.create = (Entity) => __awaiter(this, void 0, void 0, function* () {
             const entity = yield this.Model.create(Entity);
             return entity;
         });
-        this.findAll = () => __awaiter(this, void 0, void 0, function* () {
-            const entities = yield this.Model.findAll(this.options);
-            yield this.clear();
+        this.findAll = ({ options } = {}) => __awaiter(this, void 0, void 0, function* () {
+            const entities = yield this.Model.findAll(options);
             return entities;
         });
-        this.findOne = (Entity) => __awaiter(this, void 0, void 0, function* () {
+        this.findOne = ({ credentials, options } = {}) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const entity = yield this.Model.findOne(Object.assign({ where: Entity }, this.options));
+                const entity = yield this.Model.findOne(Object.assign({ where: credentials }, options));
                 return entity;
             }
             catch (e) {
                 console.log(e.message.red);
                 throw boom_1.default.internal(e.message);
-            }
-            finally {
-                yield this.clear();
             }
         });
         this.remove = (Entity) => __awaiter(this, void 0, void 0, function* () {
@@ -71,37 +57,23 @@ class DatabaseSequelizeService {
         this.Model = models_1.default[__identifier];
         this.syncModels();
     }
+    // ? pending to find an appropiated agnosthic name
+    getInclude(entitiesToInclude = []) {
+        const include = [];
+        entitiesToInclude.forEach((e) => {
+            const [label, { attributes = null, where = {}, alias = null, singular = false } = {},] = e;
+            include.push({
+                model: models_1.default[label],
+                as: alias || (0, utils_1.labelCases)(label)[singular ? "CS" : "CP"],
+                attributes,
+                where,
+            });
+        });
+        return include;
+    }
     setupModel(__table) {
         this.Model = models_1.default[__table];
         return this;
-    }
-    // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
-    setInclude(entitiesToInclude = []) {
-        entitiesToInclude.forEach((e) => {
-            const [label, { attributes = null, where = {}, alias = null, singular = false } = {},] = e;
-            this.options.include = [
-                ...this.options.include,
-                {
-                    model: models_1.default[label],
-                    as: alias || (0, utils_1.labelCases)(label)[singular ? "CS" : "CP"],
-                    attributes,
-                    where,
-                },
-            ];
-        });
-        return this;
-    }
-    // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
-    setOptions(options = {}) {
-        this.options = Object.assign(Object.assign({}, this.options), options);
-        return this;
-    }
-    clear() {
-        return __awaiter(this, void 0, void 0, function* () {
-            this.options = { include: [] };
-            this.Model = undefined;
-            return this;
-        });
     }
 }
 exports.default = DatabaseSequelizeService;

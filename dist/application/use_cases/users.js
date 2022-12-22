@@ -25,7 +25,7 @@ const signin = (data) => __awaiter(void 0, void 0, void 0, function* () {
     if (!(new Map(Object.entries(data)).has("email") ||
         new Map(Object.entries(data)).has("username")))
         throw boom_1.default.badRequest("Require username or email!");
-    return yield User_1.User.load(dependencies_1.DatabaseService, data);
+    return yield User_1.User.load(dependencies_1.DatabaseService, { credentials: data });
 });
 exports.signin = signin;
 const removeUser = (data) => __awaiter(void 0, void 0, void 0, function* () {

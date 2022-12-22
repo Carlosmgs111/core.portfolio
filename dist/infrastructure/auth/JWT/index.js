@@ -38,10 +38,11 @@ const verifyToken = (token, signature = config_1.default.jwtSignupSecret) => {
     }
 };
 exports.verifyToken = verifyToken;
-const verifyToken2 = ({ token }) => __awaiter(void 0, void 0, void 0, function* () {
+const verifyToken2 = (token) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const verified = yield (0, jose_1.jwtVerify)(token, new TextEncoder().encode(config_1.default.jwtAccessSecret));
         const { uuid, email, username } = verified.payload;
+        console.log({ uuid, email, username });
         return {
             user: yield (0, users_1.signin)({
                 uuid,

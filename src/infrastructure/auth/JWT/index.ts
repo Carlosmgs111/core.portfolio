@@ -29,13 +29,14 @@ export const verifyToken = (
   }
 };
 
-export const verifyToken2 = async ({ token }: any) => {
+export const verifyToken2 = async (token: any) => {
   try {
     const verified = await jwtVerify(
       token,
       new TextEncoder().encode(config.jwtAccessSecret)
     );
     const { uuid, email, username } = verified.payload;
+    console.log({ uuid, email, username });
     return {
       user: await signin({
         uuid,
