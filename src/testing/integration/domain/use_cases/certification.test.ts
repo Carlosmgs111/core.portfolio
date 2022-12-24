@@ -23,7 +23,6 @@ describe("Aggregates of certificates", () => {
   let institution: Institution;
   let certification: Certification;
 
-  
   // const DBS = new DatabaseService({});
 
   beforeAll(async () => {

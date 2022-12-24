@@ -38,6 +38,7 @@ export class User {
     this.updatedAt = updatedAt;
   }
   static create = async (DatabaseServices: any, data: any): Promise<any> => {
+    console.log({ data });
     DatabaseServices.setupModel("User");
     const exist = await DatabaseServices.findOne({
       credentials: filterAttrs(
@@ -70,7 +71,6 @@ export class User {
   };
 
   static find = async (DatabaseServices: any, options: any = {}) => {
-    DatabaseServices.setupModel("User");
     const account: any = await DatabaseServices.findOne({
       ...options,
       credentials: filterAttrs(

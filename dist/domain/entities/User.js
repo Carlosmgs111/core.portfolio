@@ -54,6 +54,7 @@ class User {
 exports.User = User;
 _a = User;
 User.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({ data });
     DatabaseServices.setupModel("User");
     const exist = yield DatabaseServices.findOne({
         credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(data), ["email", "username"], false),
@@ -74,7 +75,6 @@ User.load = (DatabaseServices, options = {}) => __awaiter(void 0, void 0, void 0
     return account;
 });
 User.find = (DatabaseServices, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("User");
     const account = yield DatabaseServices.findOne(Object.assign(Object.assign({}, options), { credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(options.credentials), ["email", "username"], false) }));
     if (!account)
         throw boom_1.default.conflict("Account doesn´t exist!");

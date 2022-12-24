@@ -1,8 +1,8 @@
-import "../../../mocks/DatabaseService.stub";
+import { fakeDatabase } from "../../../mocks/DatabaseService.stub";
 import { User } from "../../../../domain/entities/User";
 import { DatabaseService } from "../../../../config/dependencies";
 
-console.log({DatabaseService})
+// console.log({ DatabaseService });
 
 describe("Life cycle of user", () => {
   const userCredentials = {
@@ -14,10 +14,9 @@ describe("Life cycle of user", () => {
   // const DatabaseService = new DatabaseService({});
 
   test("Create a new user with static method `new`", async () => {
-    DatabaseService.setupModel("User")
-    user = await User.create(DatabaseService, {
-      ...userCredentials,
-    });
+    DatabaseService.setupModel("User");
+    user = await User.create(DatabaseService, userCredentials);
+    console.log({ user });
     expect(user.password).not.toBe(userCredentials.password);
   });
 
@@ -29,14 +28,17 @@ describe("Life cycle of user", () => {
   });
 
   afterAll(async () => {
-    DatabaseService.setupModel("User")
+    DatabaseService.setupModel("User");
+    console.log({ fakeDatabaseUser: fakeDatabase.User });
     const user = await User.load(DatabaseService, {
-      email: "test@email.com",
-      password: "p@55w0rd",
+      credentials: {
+        email: "test@email.com",
+        password: "p@55w0rd",
+      },
     });
     await user.remove(DatabaseService);
     const loadedUser = await User.find(DatabaseService, {
-      email: "test@email.com",
+      credentiasl: { email: "test@email.com" },
     });
     expect(loadedUser).toBe(null);
   });

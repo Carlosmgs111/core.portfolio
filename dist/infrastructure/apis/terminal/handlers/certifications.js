@@ -18,19 +18,20 @@ const dependencies_1 = require("../../../../config/dependencies");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
-const getCertificationsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
+const listCertificationsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const { token } = state;
-    const choices = ["Todos", "Propios", "Por Usuario"];
-    const EChoices = (0, utils_1.Enumfy)(choices);
+    const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
+    const choices = [all, owns, byUser, test];
     const options = {
-        [EChoices.Todos]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getCertifications)(dependencies_1.DatabaseService)); }),
-        [EChoices.Propios]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getOwnCertifications)({ token })); }),
+        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getCertifications)(dependencies_1.DatabaseService)); }),
+        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getOwnCertifications)({ token })); }),
+        [test]: () => { },
     };
     const { option } = yield inquirer_1.default.prompt([
         {
             type: "list",
             name: "option",
-            choices: ["Todos", "Propios", "Por Usuario"],
+            choices,
         },
     ]);
     (0, utils_1.execFunc)(options[option]);
@@ -40,7 +41,7 @@ const certificationsHandler = (state) => __awaiter(void 0, void 0, void 0, funct
     const choices = ["Agregar", "Actualizar", "Eliminar", "Listar", "Salir"];
     const EChoices = (0, utils_1.Enumfy)(choices);
     const options = {
-        [EChoices.Listar]: () => __awaiter(void 0, void 0, void 0, function* () { return yield getCertificationsHandler(state); }),
+        [EChoices.Listar]: () => __awaiter(void 0, void 0, void 0, function* () { return yield listCertificationsHandler(state); }),
         [EChoices.Salir]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),
     };
     while (running) {

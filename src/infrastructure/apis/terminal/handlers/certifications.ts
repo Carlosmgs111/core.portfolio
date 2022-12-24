@@ -9,21 +9,20 @@ import { Enumfy, execFunc } from "../../../../utils";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 
-const getCertificationsHandler = async (state: any) => {
+const listCertificationsHandler = async (state: any) => {
   const { token } = state;
-  const choices = ["Todos", "Propios", "Por Usuario"];
-  const EChoices = Enumfy(choices);
+  const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
+  const choices = [all, owns, byUser, test];
   const options = {
-    [EChoices.Todos]: async () =>
-      console.log(await getCertifications(DatabaseService)),
-    [EChoices.Propios]: async () =>
-      console.log(await getOwnCertifications({ token })),
+    [all]: async () => console.log(await getCertifications(DatabaseService)),
+    [owns]: async () => console.log(await getOwnCertifications({ token })),
+    [test]: () => {},
   };
   const { option } = await inquirer.prompt([
     {
       type: "list",
       name: "option",
-      choices: ["Todos", "Propios", "Por Usuario"],
+      choices,
     },
   ]);
   execFunc(options[option]);
@@ -34,7 +33,7 @@ export const certificationsHandler = async (state: any) => {
   const choices = ["Agregar", "Actualizar", "Eliminar", "Listar", "Salir"];
   const EChoices = Enumfy(choices);
   const options = {
-    [EChoices.Listar]: async () => await getCertificationsHandler(state),
+    [EChoices.Listar]: async () => await listCertificationsHandler(state),
     [EChoices.Salir]: async () => (running = false),
   };
   while (running) {
