@@ -4,14 +4,13 @@ import { filterAttrs, encryptData, decryptData } from "../../domain/utils";
 import config from "../../config";
 
 export const signup = async (credentials: any) => {
-  const { password, username, email } = credentials;
-  return await User.create(DatabaseService, { email, password, username });
+  return await User.create(DatabaseService, credentials);
 };
 
 export const signin = async (credentials: any) => {
-  console.log({ signinCredentials: credentials });
-  const account = await User.load(DatabaseService, { credentials });
-  console.log({ signinAccount: account });
+  const account = await User.load(DatabaseService, {
+    credentials,
+  });
   if (!account) throw new Error("The account doesn't exist!");
   let response = AuthServices.getAuthPackage(
     filterAttrs(account, ["uuid", "email", "username"], false)

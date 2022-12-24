@@ -18,12 +18,12 @@ class Skill {
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Skill");
-            return yield DatabaseServices.remove(this);
+            return yield DatabaseServices.remove({ credentials: { uuid: this.uuid } });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Skill");
             this.updatedAt = new Date().getTime();
-            return yield DatabaseServices.update(Object.assign(Object.assign({}, this), data));
+            return yield DatabaseServices.update(Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.userUUID = userUUID;
@@ -54,9 +54,8 @@ Skill.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0
 });
 Skill.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Skill");
-    const { uuid } = credentials;
     const skill = yield DatabaseServices.findOne({
-        uuid,
+        credentials,
     });
     return skill;
 });

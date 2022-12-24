@@ -25,7 +25,7 @@ class User_Institution {
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Users_Institutions");
-            return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))));
+            return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.userUUID = userUUID;
@@ -57,7 +57,9 @@ User_Institution.load = (DatabaseServices, credentials) => __awaiter(void 0, voi
 });
 User_Institution.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Users_Institutions");
-    const userInstitution = yield DatabaseServices.findOne(credentials);
+    const userInstitution = yield DatabaseServices.findOne({
+        credentials,
+    });
     console.log({ userInstitution });
     return userInstitution;
 });

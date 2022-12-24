@@ -29,22 +29,20 @@ const formatCertifications = (certifications) => certifications
     return -1;
 });
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, user, size: limit, page: offset } = data;
+    const { username, user, size, page } = data;
     return formatCertifications((yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, {
-        options: {
-            include: dependencies_1.DatabaseService.getInclude([
-                [
-                    "User",
-                    {
-                        attributes: ["username"],
-                        where: username && { username },
-                    },
-                ],
-                ["Institution", { attributes: ["name"], alias: "Institution" }],
-            ]),
-            limit,
-            offset,
-        },
+        related: dependencies_1.DatabaseService.getRelated([
+            [
+                "User",
+                {
+                    attributes: ["username"],
+                    credentials: username && { username },
+                },
+            ],
+            ["Institution", { attributes: ["name"], as: "Institution" }],
+        ]),
+        size,
+        page,
     })).map((c) => (Object.assign(Object.assign({}, c), { grantedTo: c.Users[0].username }))));
 });
 exports.getCertifications = getCertifications;

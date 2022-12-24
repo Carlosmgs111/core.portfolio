@@ -32,7 +32,7 @@ export default async () => {
     [login]: () => loginHandler(state),
     [logout]: () => (state.token = undefined),
     [certifications]: () => certificationsHandler(state),
-    [projects]: projectsHandler,
+    [projects]: () => projectsHandler(state),
   };
   while (true) {
     const { token } = state;

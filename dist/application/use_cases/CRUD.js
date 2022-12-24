@@ -15,7 +15,7 @@ const dependencies_1 = require("../../config/dependencies");
 const entities = { User: User_1.User };
 const findBy = (label, findBy) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log({ findBy });
-    return yield entities[label].find(dependencies_1.DatabaseService, findBy);
+    return yield entities[label].find(dependencies_1.DatabaseService, { credentials: findBy });
 });
 exports.findBy = findBy;
 const createOne = (label, args) => __awaiter(void 0, void 0, void 0, function* () {

@@ -19,7 +19,7 @@ export class Skill {
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({ uuid, userUUID, name, description, image, tags}: ISkill) {
+  constructor({ uuid, userUUID, name, description, image, tags }: ISkill) {
     this.uuid = uuid;
     this.userUUID = userUUID;
     this.name = name;
@@ -30,14 +30,14 @@ export class Skill {
     this.updatedAt = new Date().getTime();
   }
   static create = async (DatabaseServices: any, data: any): Promise<string> => {
-    DatabaseServices.setupModel("Skill")
+    DatabaseServices.setupModel("Skill");
     const uuid = uuidv4();
     const skill = new Skill({ ...data, uuid, userUUID: data.user.uuid });
     return await DatabaseServices.create(skill);
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Skill")
+    DatabaseServices.setupModel("Skill");
     const skill = await Skill.find(DatabaseServices, credentials);
     console.log({ Model: DatabaseServices.Model, credentials });
     if (!skill) throw new Error("Incorrect credentials!");
@@ -46,22 +46,24 @@ export class Skill {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Skill")
-    const { uuid } = credentials;
+    DatabaseServices.setupModel("Skill");
     const skill: any = await DatabaseServices.findOne({
-      uuid,
+      credentials,
     });
     return skill;
   };
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("Skill")
-    return await DatabaseServices.remove(this);
+    DatabaseServices.setupModel("Skill");
+    return await DatabaseServices.remove({ credentials: { uuid: this.uuid } });
   };
 
-  update = async (DatabaseServices: any, data:any) => {
-    DatabaseServices.setupModel("Skill")
+  update = async (DatabaseServices: any, data: any) => {
+    DatabaseServices.setupModel("Skill");
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update({...this, ...data});
+    return await DatabaseServices.update(
+      { ...this, ...data },
+      { credentials: { uuid: this.uuid } }
+    );
   };
 }

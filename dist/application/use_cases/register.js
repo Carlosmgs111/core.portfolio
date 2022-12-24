@@ -18,14 +18,13 @@ const dependencies_1 = require("../../config/dependencies");
 const utils_1 = require("../../domain/utils");
 const config_1 = __importDefault(require("../../config"));
 const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const { password, username, email } = credentials;
-    return yield User_1.User.create(dependencies_1.DatabaseService, { email, password, username });
+    return yield User_1.User.create(dependencies_1.DatabaseService, credentials);
 });
 exports.signup = signup;
 const signin = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ signinCredentials: credentials });
-    const account = yield User_1.User.load(dependencies_1.DatabaseService, { credentials });
-    console.log({ signinAccount: account });
+    const account = yield User_1.User.load(dependencies_1.DatabaseService, {
+        credentials,
+    });
     if (!account)
         throw new Error("The account doesn't exist!");
     let response = dependencies_1.AuthServices.getAuthPackage((0, utils_1.filterAttrs)(account, ["uuid", "email", "username"], false));

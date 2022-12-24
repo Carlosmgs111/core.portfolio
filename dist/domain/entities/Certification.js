@@ -14,7 +14,7 @@ exports.Certification = void 0;
 const uuid_1 = require("uuid");
 const utils_1 = require("../../utils");
 class Certification {
-    constructor({ uuid, title, institutionUUID, emitedAt, image, url, tags }) {
+    constructor({ uuid, title, institutionUUID, emitedAt, image, url, tags, }) {
         this.uuid = "";
         this.title = "";
         this.institutionUUID = ""; // * ID to institution
@@ -25,12 +25,14 @@ class Certification {
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Certification");
-            return yield DatabaseServices.remove(Object.assign({}, (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["businessName", "title", "uuid"], false)));
+            return yield DatabaseServices.remove({
+                credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["businessName", "title", "uuid"], false),
+            });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Certification");
             this.updatedAt = new Date().getTime();
-            return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))));
+            return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.title = title;
@@ -55,7 +57,9 @@ Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, voi
 });
 Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Certification");
-    const certification = yield Certification.find(DatabaseServices, { uuid: credentials.uuid });
+    const certification = yield Certification.find(DatabaseServices, {
+        uuid: credentials.uuid,
+    });
     if (!certification)
         throw new Error("Incorrect credentials!");
     const loadedCertification = new Certification(certification);
@@ -63,11 +67,11 @@ Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0
 });
 Certification.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Certification");
-    const certificate = yield DatabaseServices.findOne(credentials);
+    const certificate = yield DatabaseServices.findOne({ credentials });
     return certificate;
 });
-Certification.findAll = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
+Certification.findAll = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Certification");
-    const certificate = yield DatabaseServices.findAll(credentials);
+    const certificate = yield DatabaseServices.findAll(options);
     return certificate;
 });

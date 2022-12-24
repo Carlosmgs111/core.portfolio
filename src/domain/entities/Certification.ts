@@ -12,7 +12,15 @@ export class Certification {
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({ uuid, title, institutionUUID, emitedAt, image, url, tags }: any) {
+  constructor({
+    uuid,
+    title,
+    institutionUUID,
+    emitedAt,
+    image,
+    url,
+    tags,
+  }: any) {
     this.uuid = uuid;
     this.title = title;
     this.institutionUUID = institutionUUID;
@@ -37,7 +45,9 @@ export class Certification {
 
   static load = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Certification");
-    const certification = await Certification.find(DatabaseServices, { uuid: credentials.uuid });
+    const certification = await Certification.find(DatabaseServices, {
+      uuid: credentials.uuid,
+    });
     if (!certification) throw new Error("Incorrect credentials!");
     const loadedCertification = new Certification(certification);
     return loadedCertification;
@@ -45,23 +55,20 @@ export class Certification {
 
   static find = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Certification");
-    const certificate: any = await DatabaseServices.findOne(credentials)
-      ;
+    const certificate: any = await DatabaseServices.findOne({ credentials });
     return certificate;
   };
 
-  static findAll = async (DatabaseServices: any, credentials: any) => {
+  static findAll = async (DatabaseServices: any, options: any) => {
     DatabaseServices.setupModel("Certification");
-    const certificate: any = await DatabaseServices.findAll(
-      credentials
-    );
+    const certificate: any = await DatabaseServices.findAll(options);
     return certificate;
   };
 
   remove = async (DatabaseServices: any) => {
     DatabaseServices.setupModel("Certification");
     return await DatabaseServices.remove({
-      ...filterAttrs(
+      credentials: filterAttrs(
         getEntityProperties(this),
         ["businessName", "title", "uuid"],
         false
@@ -72,8 +79,11 @@ export class Certification {
   update = async (DatabaseServices: any, data: any) => {
     DatabaseServices.setupModel("Certification");
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update({
-      ...getEntityProperties({ ...this, ...data }),
-    });
+    return await DatabaseServices.update(
+      {
+        ...getEntityProperties({ ...this, ...data }),
+      },
+      { credentials: { uuid: this.uuid } }
+    );
   };
 }

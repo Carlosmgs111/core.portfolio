@@ -26,24 +26,22 @@ const formatCertifications = (certifications: [Certification]) =>
     });
 
 export const getCertifications = async (data: any) => {
-  const { username, user, size: limit, page: offset } = data;
+  const { username, user, size, page } = data;
   return formatCertifications(
     (
       await Certification.findAll(DatabaseService, {
-        options: {
-          include: DatabaseService.getInclude([
-            [
-              "User",
-              {
-                attributes: ["username"],
-                where: username && { username },
-              },
-            ],
-            ["Institution", { attributes: ["name"], alias: "Institution" }],
-          ]),
-          limit,
-          offset,
-        },
+        related: DatabaseService.getRelated([
+          [
+            "User",
+            {
+              attributes: ["username"],
+              credentials: username && { username },
+            },
+          ],
+          ["Institution", { attributes: ["name"], as: "Institution" }],
+        ]),
+        size,
+        page,
       })
     ).map((c: any) => ({ ...c, grantedTo: c.Users[0].username }))
   );

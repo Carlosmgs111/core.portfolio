@@ -19,17 +19,18 @@ class DatabaseSequelizeService {
     // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
     constructor({ __identifier }) {
         this.serviceDescription = "Sequelize Interface Database Service";
-        this.create = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            const entity = yield this.Model.create(Entity);
+        this.create = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const entity = yield this.Model.create(Entity, this.adapter(options));
             return entity;
         });
-        this.findAll = ({ options } = {}) => __awaiter(this, void 0, void 0, function* () {
-            const entities = yield this.Model.findAll(options);
+        this.findAll = (options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const entities = yield this.Model.findAll(this.adapter(options));
             return entities;
         });
-        this.findOne = ({ credentials, options } = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.findOne = (options = {}) => __awaiter(this, void 0, void 0, function* () {
+            console.log({ options });
             try {
-                const entity = yield this.Model.findOne(Object.assign({ where: credentials }, options));
+                const entity = yield this.Model.findOne(this.adapter(options));
                 return entity;
             }
             catch (e) {
@@ -37,15 +38,17 @@ class DatabaseSequelizeService {
                 throw boom_1.default.internal(e.message);
             }
         });
-        this.remove = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.Model.destroy({ where: { uuid: Entity.uuid } });
+        this.remove = (options) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.Model.destroy(this.adapter(options));
         });
-        this.update = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            const model = yield this.Model.update(Entity, {
-                where: { uuid: Entity.uuid },
-            });
+        this.update = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const model = yield this.Model.update(Entity, this.adapter(options));
             return model;
         });
+        this.adapter = (OPS) => {
+            const { credentials = {}, related = [], size = 100, page = 0, as = null, } = OPS;
+            return Object.assign(Object.assign({}, OPS), { where: credentials, include: related, limit: size, offset: page, alias: as });
+        };
         // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
         this.hasMany = (Entity, label) => __awaiter(this, void 0, void 0, function* () { return Entity[`get${label}`](); });
         // * A function that is called in the constructor of the class. It is used to associate the models in
@@ -58,13 +61,15 @@ class DatabaseSequelizeService {
         this.syncModels();
     }
     // ? pending to find an appropiated agnosthic name
-    getInclude(entitiesToInclude = []) {
+    getRelated(entitiesToInclude = []) {
         const include = [];
         entitiesToInclude.forEach((e) => {
-            const [label, { attributes = null, where = {}, alias = null, singular = false } = {},] = e;
+            const [model, queryOps = {}, options = {}] = e;
+            const { singular = false } = options;
+            const { attributes = null, where = {}, as = null, } = this.adapter(queryOps);
             include.push({
-                model: models_1.default[label],
-                as: alias || (0, utils_1.labelCases)(label)[singular ? "CS" : "CP"],
+                model: models_1.default[model],
+                as: as || (0, utils_1.labelCases)(model)[singular ? "CS" : "CP"],
                 attributes,
                 where,
             });

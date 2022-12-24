@@ -29,7 +29,7 @@ export class Institution {
     DatabaseServices: any,
     data: any
   ): Promise<Institution> => {
-    DatabaseServices.setupModel("Institution")
+    DatabaseServices.setupModel("Institution");
     const uuid = uuidv4();
     const institution = new Institution({ ...data, uuid });
     await DatabaseServices.create(institution);
@@ -37,7 +37,7 @@ export class Institution {
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Institution")
+    DatabaseServices.setupModel("Institution");
     const project = await Institution.find(DatabaseServices, credentials);
     if (!project) throw new Error("Incorrect credentials!");
     const institution = new Institution(project);
@@ -45,29 +45,30 @@ export class Institution {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Institution")
+    DatabaseServices.setupModel("Institution");
     const institution: any = await DatabaseServices.findOne({
-      ...credentials,
+      credentials,
     });
     return institution;
   };
 
-  static findAll = async (DatabaseServices: any, credentials: any) => {
+  static findAll = async (DatabaseServices: any, options: any) => {
     DatabaseServices.setupModel("Institution");
-    const institutions: any = await DatabaseServices.findAll(
-      credentials
-    );
+    const institutions: any = await DatabaseServices.findAll(options);
     return institutions;
   };
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("Institution")
-    return await DatabaseServices.remove(this);
+    DatabaseServices.setupModel("Institution");
+    return await DatabaseServices.remove({ credentials: { uuid: this.uuid } });
   };
 
-  update = async (DatabaseServices: any, data:any) => {
-    DatabaseServices.setupModel("Institution")
+  update = async (DatabaseServices: any, data: any) => {
+    DatabaseServices.setupModel("Institution");
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update({...this, ...data});
+    return await DatabaseServices.update(
+      { ...this, ...data },
+      { credentials: { uuid: this.uuid } }
+    );
   };
 }

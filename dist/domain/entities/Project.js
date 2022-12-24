@@ -13,17 +13,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.Project = void 0;
 const uuid_1 = require("uuid");
 class Project {
-    constructor({ uuid, userUUID, name, descriptions, images, tags, uri, version }) {
+    constructor({ uuid, userUUID, name, descriptions, images, tags, uri, version, }) {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Project");
-            return yield DatabaseServices.remove(this);
+            return yield DatabaseServices.remove({ credentials: { uuid: this.uuid } });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Project");
             this.updatedAt = new Date().getTime();
-            return yield DatabaseServices.update(Object.assign(Object.assign({}, this), data));
+            return yield DatabaseServices.update(Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.userUUID = userUUID;
@@ -53,11 +53,8 @@ Project.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void
     const account = new Project(project);
     return account;
 });
-Project.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
+Project.find = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Project");
-    const { uuid } = credentials;
-    const account = yield DatabaseServices.findOne({
-        uuid,
-    });
+    const account = yield DatabaseServices.findOne(options);
     return account;
 });

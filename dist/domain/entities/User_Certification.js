@@ -21,11 +21,14 @@ class User_Certification {
     constructor({ uuid, userUUID, certificationUUID, }) {
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Users_Certifications");
-            return yield DatabaseServices.remove((0, utils_1.getEntityProperties)(this));
+            console.log({ credentials: (0, utils_1.getEntityProperties)(this) });
+            return yield DatabaseServices.remove({
+                credentials: (0, utils_1.getEntityProperties)(this),
+            });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Users_Certifications");
-            return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))));
+            return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.userUUID = userUUID;
@@ -36,7 +39,9 @@ exports.User_Certification = User_Certification;
 _a = User_Certification;
 User_Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Users_Certifications");
-    const exist = yield DatabaseServices.findOne(Object.assign({}, (0, utils_1.filterAttrs)(data, ["certificationUUID", "userUUID"], false)));
+    const exist = yield DatabaseServices.findOne({
+        credentials: (0, utils_1.filterAttrs)(data, ["certificationUUID", "userUUID"], false),
+    });
     console.log({ UCExist: exist });
     if (exist)
         throw boom_1.default.conflict("Entity exist yet!");
@@ -57,13 +62,18 @@ User_Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, v
 });
 User_Certification.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Users_Certifications");
-    const userCertification = yield DatabaseServices.findOne(credentials);
+    const userCertification = yield DatabaseServices.findOne({
+        credentials,
+    });
     console.log({ userCertification });
     return userCertification;
 });
 User_Certification.findAll = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Users_Certifications");
     console.log({ credentials });
-    const userCertification = yield DatabaseServices.findAll(Object.assign({}, credentials));
+    const userCertification = yield DatabaseServices.findAll({
+        credentials,
+        // model: "Certification",
+    });
     return userCertification;
 });

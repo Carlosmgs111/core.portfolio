@@ -23,12 +23,12 @@ class Institution {
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Institution");
-            return yield DatabaseServices.remove(this);
+            return yield DatabaseServices.remove({ credentials: { uuid: this.uuid } });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Institution");
             this.updatedAt = new Date().getTime();
-            return yield DatabaseServices.update(Object.assign(Object.assign({}, this), data));
+            return yield DatabaseServices.update(Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.name = name;
@@ -58,11 +58,13 @@ Institution.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, 
 });
 Institution.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Institution");
-    const institution = yield DatabaseServices.findOne(Object.assign({}, credentials));
+    const institution = yield DatabaseServices.findOne({
+        credentials,
+    });
     return institution;
 });
-Institution.findAll = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
+Institution.findAll = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Institution");
-    const institutions = yield DatabaseServices.findAll(credentials);
+    const institutions = yield DatabaseServices.findAll(options);
     return institutions;
 });

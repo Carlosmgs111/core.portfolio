@@ -10,16 +10,14 @@ const formatProjects = (projects: [Project]) =>
   );
 
 export const getProjects = async (data: any) => {
-  const { username, user, size: limit, page: offset } = data;
-  const projects = await DatabaseService.setInclude([
-    ["User", { alias: "User", where: username && { username } }],
-  ])
-    .setOptions({
-      limit,
-      offset,
-    })
-    .setupModel("Project")
-    .findAll();
+  const { username, user, size, page } = data;
+  const projects = await DatabaseService.setupModel("Project").findAll({
+    related: DatabaseService.getRelated([
+      ["User", { as: "User", where: username && { username } }],
+    ]),
+    size,
+    page,
+  });
   return formatProjects(projects);
 };
 

@@ -17,12 +17,13 @@ const projects_1 = require("../../../../application/use_cases/projects");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
-const projectsHandler = () => __awaiter(void 0, void 0, void 0, function* () {
+const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username } = state;
     let running = true;
     const choices = ["Agregar", "Actualizar", "Eliminar", "Listar", "Salir"];
     const EChoices = (0, utils_1.Enumfy)(choices);
     const options = {
-        [EChoices.Listar]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, projects_1.getProjects)({})); }),
+        [EChoices.Listar]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, projects_1.getProjects)({ username })); }),
         [EChoices.Salir]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),
     };
     while (running) {

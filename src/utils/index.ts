@@ -7,7 +7,8 @@ export const filterAttrs = (
 ) => {
   const newObj: any = {};
   for (var attr in obj) {
-    if (!oclusive === toRemove.includes(attr)) {
+    // if (!obj[attr]) console.log(`⚠️ ${attr}: Its null or undefined ⚠️`.yellow);
+    if (!oclusive === toRemove.includes(attr) && obj[attr]) {
       newObj[attr] = obj[attr];
     }
   }

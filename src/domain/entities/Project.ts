@@ -23,7 +23,16 @@ export class Project {
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({ uuid, userUUID, name, descriptions, images, tags, uri, version }: IProject) {
+  constructor({
+    uuid,
+    userUUID,
+    name,
+    descriptions,
+    images,
+    tags,
+    uri,
+    version,
+  }: IProject) {
     this.uuid = uuid;
     this.userUUID = userUUID;
     this.name = name;
@@ -36,37 +45,37 @@ export class Project {
     this.updatedAt = new Date().getTime();
   }
   static new = async (DatabaseServices: any, data: any): Promise<string> => {
-    DatabaseServices.setupModel("Project")
+    DatabaseServices.setupModel("Project");
     const uuid = uuidv4();
     const account = new Project({ ...data, uuid, userUUID: data.user.uuid });
     return await DatabaseServices.create(account);
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Project")
+    DatabaseServices.setupModel("Project");
     const project = await Project.find(DatabaseServices, credentials);
     if (!project) throw new Error("Incorrect credentials!");
     const account = new Project(project);
     return account;
   };
 
-  static find = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Project")
-    const { uuid } = credentials;
-    const account: any = await DatabaseServices.findOne({
-      uuid,
-    });
+  static find = async (DatabaseServices: any, options: any) => {
+    DatabaseServices.setupModel("Project");
+    const account: any = await DatabaseServices.findOne(options);
     return account;
   };
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("Project")
-    return await DatabaseServices.remove(this);
+    DatabaseServices.setupModel("Project");
+    return await DatabaseServices.remove({ credentials: { uuid: this.uuid } });
   };
 
-  update = async (DatabaseServices: any, data:any) => {
-    DatabaseServices.setupModel("Project")
+  update = async (DatabaseServices: any, data: any) => {
+    DatabaseServices.setupModel("Project");
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update({...this, ...data});
+    return await DatabaseServices.update(
+      { ...this, ...data },
+      { credentials: { uuid: this.uuid } }
+    );
   };
 }

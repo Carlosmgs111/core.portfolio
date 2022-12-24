@@ -62,7 +62,7 @@ export class Post {
   static find = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupModel("Post");
     const account: any = await DatabaseServices.findOne({
-      ...filterAttrs(
+      credentials: filterAttrs(
         getEntityProperties(credentials),
         ["title", "userUUID"],
         false
@@ -73,14 +73,19 @@ export class Post {
 
   remove = async (DatabaseServices: any) => {
     DatabaseServices.setupModel("Post");
-    return await DatabaseServices.remove(getEntityProperties(this));
+    return await DatabaseServices.remove({
+      credentials: { uuid: this.uuid },
+    });
   };
 
   update = async (DatabaseServices: any, data: any) => {
     DatabaseServices.setupModel("Post");
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update({
-      ...getEntityProperties({ ...this, ...data }),
-    });
+    return await DatabaseServices.update(
+      {
+        ...getEntityProperties({ ...this, ...data }),
+      },
+      { credentials: { uuid: this.uuid } }
+    );
   };
 }

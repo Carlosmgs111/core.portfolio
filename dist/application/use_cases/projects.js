@@ -17,16 +17,14 @@ const formatProjects = (projects) => projects.map((project) => (0, utils_1.filte
     "User",
 ]));
 const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username, user, size: limit, page: offset } = data;
-    const projects = yield dependencies_1.DatabaseService.setInclude([
-        ["User", { alias: "User", where: username && { username } }],
-    ])
-        .setOptions({
-        limit,
-        offset,
-    })
-        .setupModel("Project")
-        .findAll();
+    const { username, user, size, page } = data;
+    const projects = yield dependencies_1.DatabaseService.setupModel("Project").findAll({
+        related: dependencies_1.DatabaseService.getRelated([
+            ["User", { as: "User", where: username && { username } }],
+        ]),
+        size,
+        page,
+    });
     return formatProjects(projects);
 });
 exports.getProjects = getProjects;

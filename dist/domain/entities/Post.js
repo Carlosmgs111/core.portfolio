@@ -23,12 +23,14 @@ class Post {
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Post");
-            return yield DatabaseServices.remove((0, utils_1.getEntityProperties)(this));
+            return yield DatabaseServices.remove({
+                credentials: { uuid: this.uuid },
+            });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
             DatabaseServices.setupModel("Post");
             this.updatedAt = new Date().getTime();
-            return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))));
+            return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.userUUID = userUUID;
@@ -61,6 +63,8 @@ Post.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0,
 });
 Post.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupModel("Post");
-    const account = yield DatabaseServices.findOne(Object.assign({}, (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["title", "userUUID"], false)));
+    const account = yield DatabaseServices.findOne({
+        credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["title", "userUUID"], false),
+    });
     return account;
 });

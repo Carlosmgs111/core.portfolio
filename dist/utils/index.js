@@ -14,7 +14,8 @@ const pluralize_1 = require("pluralize");
 const filterAttrs = (obj, toRemove, oclusive = true) => {
     const newObj = {};
     for (var attr in obj) {
-        if (!oclusive === toRemove.includes(attr)) {
+        // if (!obj[attr]) console.log(`⚠️ ${attr}: Its null or undefined ⚠️`.yellow);
+        if (!oclusive === toRemove.includes(attr) && obj[attr]) {
             newObj[attr] = obj[attr];
         }
     }

@@ -44,7 +44,7 @@ exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
         [login]: () => (0, login_1.loginHandler)(state),
         [logout]: () => (state.token = undefined),
         [certifications]: () => (0, certifications_1.certificationsHandler)(state),
-        [projects]: projects_1.projectsHandler,
+        [projects]: () => (0, projects_1.projectsHandler)(state),
     };
     while (true) {
         const { token } = state;
