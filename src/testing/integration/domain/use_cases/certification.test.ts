@@ -27,10 +27,9 @@ describe("Aggregates of certificates", () => {
 
   beforeAll(async () => {
     // spyFindOne.mockResolvedValue(userCredentials);
-    DatabaseService.setupModel("User");
+    DatabaseService.setupEntity("User");
     user = await User.create(DatabaseService, userCredentials);
-    console.log({ user });
-    DatabaseService.setupModel("Institution");
+    DatabaseService.setupEntity("Institution");
     institution = await Institution.create(DatabaseService, institutionData);
     // jest.clearAllMocks() / ? for clear all mocks
   });
@@ -56,11 +55,11 @@ describe("Aggregates of certificates", () => {
   });
 
   afterAll(async () => {
-    DatabaseService.setupModel("User");
+    DatabaseService.setupEntity("User");
     await user.remove(DatabaseService);
-    DatabaseService.setupModel("Institution");
+    DatabaseService.setupEntity("Institution");
     await institution.remove(DatabaseService);
-    DatabaseService.setupModel("Certification");
+    DatabaseService.setupEntity("Certification");
     await certification.remove(DatabaseService);
   });
 });

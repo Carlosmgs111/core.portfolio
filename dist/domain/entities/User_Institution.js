@@ -20,11 +20,11 @@ const boom_1 = __importDefault(require("@hapi/boom"));
 class User_Institution {
     constructor({ uuid, userUUID, institutionUUID, }) {
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Users_Institutions");
+            DatabaseServices.setupEntity("Users_Institutions");
             return yield DatabaseServices.remove((0, utils_1.getEntityProperties)(this));
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Users_Institutions");
+            DatabaseServices.setupEntity("Users_Institutions");
             return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
@@ -35,7 +35,7 @@ class User_Institution {
 exports.User_Institution = User_Institution;
 _a = User_Institution;
 User_Institution.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Users_Institutions");
+    DatabaseServices.setupEntity("Users_Institutions");
     const exist = yield DatabaseServices.findOne(Object.assign({}, (0, utils_1.filterAttrs)(data, ["institutionUUID", "userUUID"], false)));
     console.log({ UIExist: exist });
     if (exist)
@@ -47,7 +47,7 @@ User_Institution.create = (DatabaseServices, data) => __awaiter(void 0, void 0, 
     return userInstitution;
 });
 User_Institution.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Users_Institutions");
+    DatabaseServices.setupEntity("Users_Institutions");
     const user = yield User_Institution.find(DatabaseServices, credentials);
     if (!user)
         throw boom_1.default.notFound("Incorrect credentials!");
@@ -56,7 +56,7 @@ User_Institution.load = (DatabaseServices, credentials) => __awaiter(void 0, voi
     return account;
 });
 User_Institution.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Users_Institutions");
+    DatabaseServices.setupEntity("Users_Institutions");
     const userInstitution = yield DatabaseServices.findOne({
         credentials,
     });

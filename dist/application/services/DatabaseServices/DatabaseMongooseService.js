@@ -12,37 +12,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const mongoose_1 = require("../../../infrastructure/repositories/mongoose");
 const models_1 = __importDefault(require("../../../infrastructure/repositories/mongoose/models"));
-// connect()
 class DatabaseMongooseService {
-    constructor({ __identifier }) {
+    constructor({}) {
         this.serviceDescription = "Mongoose Interface Database Service";
-        this.create = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            const entity = new this.Model(Entity);
+        this.create = (Entity, options) => __awaiter(this, void 0, void 0, function* () {
+            const entity = new this.Entity(Entity);
             yield entity.save();
             return entity;
         });
-        this.findAll = () => __awaiter(this, void 0, void 0, function* () {
-            const entities = yield this.Model.find();
+        this.findAll = (options) => __awaiter(this, void 0, void 0, function* () {
+            const entities = yield this.Entity.find(this.adapter(options));
             return entities;
         });
         this.findOne = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            const entity = yield this.Model.findOne(Entity);
+            const { credentials } = Entity;
+            console.log({ models: models_1.default });
+            const entity = yield this.Entity.findOne(credentials);
             return entity;
         });
         this.remove = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.Model.deleteOne(Entity);
+            return yield this.Entity.deleteOne(Entity);
         });
         this.update = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            const model = yield this.Model.updateOne({ uuid: Entity.uuid }, Entity);
+            const model = yield this.Entity.updateOne({ uuid: Entity.uuid }, Entity);
             return model;
         });
-        this.Model = models_1.default[__identifier];
+        this.getRelated = () => __awaiter(this, void 0, void 0, function* () { });
+        this.adapter = (options) => {
+            const { credentials } = options;
+            return { where: credentials };
+        };
+        this.hasMany = () => { };
+        this.syncModels = () => { };
+        (0, mongoose_1.connect)();
     }
-    setupModel(__identifier) {
-        this.Model = models_1.default[__identifier];
+    setupEntity(entityLabel) {
+        this.Entity = models_1.default[entityLabel];
         return this;
     }
-    ;
 }
 exports.default = DatabaseMongooseService;

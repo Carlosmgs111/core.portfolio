@@ -4,7 +4,7 @@ import {
   AuthServices as AS,
 } from "../application/services";
 
-export const DatabaseService = DBS(/* ServicesInterfaceEnums.DatabaseMongooseService */);
+export const DatabaseService = DBS(ServicesInterfaceEnums.DatabaseMongooseService);
 export const AuthServices = new AS();
 
 const apiVersions = ["v1"];

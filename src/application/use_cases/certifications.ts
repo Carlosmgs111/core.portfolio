@@ -61,12 +61,14 @@ export const getCertificationByUUID = async (data: any) => {
 };
 
 export const addNewCertification = async (data: any) => {
+  console.log({ dataUser: data.user, data });
   if (!data.user) throw boom.conflict("A user must be instanced!");
   const institutionUUID = (
     await Institution.find(DatabaseService, {
       name: data.emitedBy,
     })
   ).uuid;
+  console.log({ institutionUUID });
   const certification = await Certification.create(DatabaseService, {
     ...data,
     institutionUUID,

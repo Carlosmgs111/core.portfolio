@@ -1,42 +1,55 @@
-import {connect} from "../../../infrastructure/repositories/mongoose";
+import { connect } from "../../../infrastructure/repositories/mongoose";
 import models from "../../../infrastructure/repositories/mongoose/models";
 import { model } from "mongoose";
 
-// connect()
-
 export default class DatabaseMongooseService {
-  Model: any;
-  serviceDescription:string = "Mongoose Interface Database Service"
+  serviceDescription: string = "Mongoose Interface Database Service";
+  Entity: any;
 
-  constructor({ __identifier }: any) {
-    this.Model = models[__identifier]
+  constructor({}: any) {
+    connect();
   }
-  create = async (Entity: any): Promise<typeof model | null> => {
-    const entity = new this.Model(Entity);
+
+  create = async (Entity: any, options: any): Promise<typeof model | null> => {
+    const entity = new this.Entity(Entity);
     await entity.save();
     return entity;
   };
 
-  findAll = async () => {
-    const entities = await this.Model.find();
+  findAll = async (options: any) => {
+    const entities = await this.Entity.find(this.adapter(options));
     return entities;
   };
 
   findOne = async (Entity: any) => {
-    const entity = await this.Model.findOne(Entity);
+    const { credentials } = Entity;
+    console.log({ models });
+    const entity = await this.Entity.findOne(credentials);
     return entity;
   };
 
   remove = async (Entity: any) => {
-    return await this.Model.deleteOne(Entity);
+    return await this.Entity.deleteOne(Entity);
   };
 
   update = async (Entity: any) => {
-    const model = await this.Model.updateOne({ uuid: Entity.uuid }, Entity);
+    const model = await this.Entity.updateOne({ uuid: Entity.uuid }, Entity);
     return model;
   };
-  setupModel(__identifier: string) {
-    this.Model = models[__identifier]
-    return this;
+
+  getRelated = async () => {};
+
+  adapter = (options: any) => {
+    const { credentials } = options;
+    return { where: credentials };
   };
+
+  hasMany = () => {};
+
+  setupEntity(entityLabel: string) {
+    this.Entity = models[entityLabel];
+    return this;
+  }
+
+  syncModels = () => {};
 }

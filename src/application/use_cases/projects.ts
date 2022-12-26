@@ -11,9 +11,9 @@ const formatProjects = (projects: [Project]) =>
 
 export const getProjects = async (data: any) => {
   const { username, user, size, page } = data;
-  const projects = await DatabaseService.setupModel("Project").findAll({
+  const projects = await DatabaseService.setupEntity("Project").findAll({
     related: DatabaseService.getRelated([
-      ["User", { as: "User", where: username && { username } }],
+      ["User", { as: "User", credentials: username && { username } }],
     ]),
     size,
     page,
@@ -34,7 +34,7 @@ export const updateProject = async (data: any) =>
 
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
 export const migrateDescriptionToDescriptions = async (data: any) => {
-  const projects = await DatabaseService.setupModel("Project").findAll();
+  const projects = await DatabaseService.setupEntity("Project").findAll();
   console.log({ projects });
   for (var project of projects) {
     const descriptions = project.description.split(". ");

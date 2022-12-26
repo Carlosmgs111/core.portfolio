@@ -45,14 +45,14 @@ export class Project {
     this.updatedAt = new Date().getTime();
   }
   static new = async (DatabaseServices: any, data: any): Promise<string> => {
-    DatabaseServices.setupModel("Project");
+    DatabaseServices.setupEntity("Project");
     const uuid = uuidv4();
     const account = new Project({ ...data, uuid, userUUID: data.user.uuid });
     return await DatabaseServices.create(account);
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Project");
+    DatabaseServices.setupEntity("Project");
     const project = await Project.find(DatabaseServices, credentials);
     if (!project) throw new Error("Incorrect credentials!");
     const account = new Project(project);
@@ -60,18 +60,18 @@ export class Project {
   };
 
   static find = async (DatabaseServices: any, options: any) => {
-    DatabaseServices.setupModel("Project");
+    DatabaseServices.setupEntity("Project");
     const account: any = await DatabaseServices.findOne(options);
     return account;
   };
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("Project");
+    DatabaseServices.setupEntity("Project");
     return await DatabaseServices.remove({ credentials: { uuid: this.uuid } });
   };
 
   update = async (DatabaseServices: any, data: any) => {
-    DatabaseServices.setupModel("Project");
+    DatabaseServices.setupEntity("Project");
     this.updatedAt = new Date().getTime();
     return await DatabaseServices.update(
       { ...this, ...data },

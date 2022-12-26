@@ -5,6 +5,7 @@ export interface IUser extends Document {
   username: string;
   email: string;
   password: string;
+  Certifications: Array<any>;
   privilege: string;
   createdAt: number;
   updatedAt: number;
@@ -38,6 +39,7 @@ const userSchema = new Schema<IUser>({
     type: String,
     required: true,
   },
+  Certifications: [{ type: Schema.Types.String, ref: "Certification" }],
   createdAt: {
     type: Number,
     required: true,

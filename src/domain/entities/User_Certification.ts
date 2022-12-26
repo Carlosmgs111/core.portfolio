@@ -21,7 +21,7 @@ export class User_Certification {
     this.certificationUUID = certificationUUID;
   }
   static create = async (DatabaseServices: any, data: any): Promise<any> => {
-    DatabaseServices.setupModel("Users_Certifications");
+    DatabaseServices.setupEntity("Users_Certifications");
     const exist = await DatabaseServices.findOne({
       credentials: filterAttrs(data, ["certificationUUID", "userUUID"], false),
     });
@@ -34,14 +34,14 @@ export class User_Certification {
       uuid,
     });
     console.log({ userCertification });
-    await DatabaseServices.setupModel("Users_Certifications").create(
+    await DatabaseServices.setupEntity("Users_Certifications").create(
       userCertification
     );
     return userCertification;
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Users_Certifications");
+    DatabaseServices.setupEntity("Users_Certifications");
     const user = await User_Certification.find(DatabaseServices, credentials);
     if (!user) throw boom.notFound("Incorrect credentials!");
     console.log({ user });
@@ -50,7 +50,7 @@ export class User_Certification {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Users_Certifications");
+    DatabaseServices.setupEntity("Users_Certifications");
     const userCertification: any = await DatabaseServices.findOne({
       credentials,
     });
@@ -59,7 +59,7 @@ export class User_Certification {
   };
 
   static findAll = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Users_Certifications");
+    DatabaseServices.setupEntity("Users_Certifications");
     console.log({ credentials });
     const userCertification: any = await DatabaseServices.findAll({
       credentials,
@@ -69,7 +69,7 @@ export class User_Certification {
   };
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("Users_Certifications");
+    DatabaseServices.setupEntity("Users_Certifications");
     console.log({ credentials: getEntityProperties(this) });
     return await DatabaseServices.remove({
       credentials: getEntityProperties(this),
@@ -77,7 +77,7 @@ export class User_Certification {
   };
 
   update = async (DatabaseServices: any, data: any) => {
-    DatabaseServices.setupModel("Users_Certifications");
+    DatabaseServices.setupEntity("Users_Certifications");
     return await DatabaseServices.update(
       {
         ...getEntityProperties({ ...this, ...data }),

@@ -1,34 +1,32 @@
 import models from "../../../infrastructure/repositories/sequelize/src/models";
 import { labelCases } from "../../../utils";
-import { Model } from "sequelize";
 import boom from "@hapi/boom";
 
 export default class DatabaseSequelizeService {
   serviceDescription: string = "Sequelize Interface Database Service";
-  Model: any;
+  Entity: any;
 
   // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
-  constructor({ __identifier }: any) {
-    this.Model = models[__identifier];
+  constructor({}: any) {
     this.syncModels();
   }
+
   create = async (
     Entity: any,
     options: any = {}
-  ): Promise<typeof Model | null> => {
-    const entity = await this.Model.create(Entity, this.adapter(options));
+  ): Promise<typeof Entity | null> => {
+    const entity = await this.Entity.create(Entity, this.adapter(options));
     return entity;
   };
 
   findAll = async (options: any = {}) => {
-    const entities = await this.Model.findAll(this.adapter(options));
+    const entities = await this.Entity.findAll(this.adapter(options));
     return entities;
   };
 
   findOne = async (options: any = {}) => {
-    console.log({ options });
     try {
-      const entity = await this.Model.findOne(this.adapter(options));
+      const entity = await this.Entity.findOne(this.adapter(options));
       return entity;
     } catch (e: any) {
       console.log(e.message.red);
@@ -37,11 +35,11 @@ export default class DatabaseSequelizeService {
   };
 
   remove = async (options: any) => {
-    return await this.Model.destroy(this.adapter(options));
+    return await this.Entity.destroy(this.adapter(options));
   };
 
   update = async (Entity: any, options: any = {}) => {
-    const model = await this.Model.update(Entity, this.adapter(options));
+    const model = await this.Entity.update(Entity, this.adapter(options));
     return model;
   };
 
@@ -84,13 +82,13 @@ export default class DatabaseSequelizeService {
     };
   };
 
-  setupModel(__table: string) {
-    this.Model = models[__table];
-    return this;
-  }
-
   // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
   hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
+
+  setupEntity(entityLabel: string) {
+    this.Entity = models[entityLabel];
+    return this;
+  }
 
   // * A function that is called in the constructor of the class. It is used to associate the models in
   // * the database.

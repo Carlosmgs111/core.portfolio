@@ -22,13 +22,13 @@ class Post {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Post");
+            DatabaseServices.setupEntity("Post");
             return yield DatabaseServices.remove({
                 credentials: { uuid: this.uuid },
             });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Post");
+            DatabaseServices.setupEntity("Post");
             this.updatedAt = new Date().getTime();
             return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
         });
@@ -43,7 +43,7 @@ class Post {
 exports.Post = Post;
 _a = Post;
 Post.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Post");
+    DatabaseServices.setupEntity("Post");
     const exist = yield DatabaseServices.findOne(data);
     console.log({ exist });
     if (exist)
@@ -54,7 +54,7 @@ Post.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, func
     return account;
 });
 Post.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Post");
+    DatabaseServices.setupEntity("Post");
     const user = yield Post.find(DatabaseServices, { uuid: credentials.uuid });
     if (!user)
         throw boom_1.default.notFound("Incorrect credentials!");
@@ -62,7 +62,7 @@ Post.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0,
     return account;
 });
 Post.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Post");
+    DatabaseServices.setupEntity("Post");
     const account = yield DatabaseServices.findOne({
         credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["title", "userUUID"], false),
     });

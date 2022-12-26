@@ -14,9 +14,8 @@ describe("Life cycle of user", () => {
   // const DatabaseService = new DatabaseService({});
 
   test("Create a new user with static method `new`", async () => {
-    DatabaseService.setupModel("User");
+    DatabaseService.setupEntity("User");
     user = await User.create(DatabaseService, userCredentials);
-    console.log({ user });
     expect(user.password).not.toBe(userCredentials.password);
   });
 
@@ -28,8 +27,7 @@ describe("Life cycle of user", () => {
   });
 
   afterAll(async () => {
-    DatabaseService.setupModel("User");
-    console.log({ fakeDatabaseUser: fakeDatabase.User });
+    DatabaseService.setupEntity("User");
     const user = await User.load(DatabaseService, {
       credentials: {
         email: "test@email.com",
@@ -37,9 +35,12 @@ describe("Life cycle of user", () => {
       },
     });
     await user.remove(DatabaseService);
-    const loadedUser = await User.find(DatabaseService, {
-      credentiasl: { email: "test@email.com" },
-    });
-    expect(loadedUser).toBe(null);
+    let loadedUser;
+    try {
+      loadedUser = await User.find(DatabaseService, {
+        credentials: { email: "test@email.com" },
+      });
+    } catch (e: any) {}
+    expect(loadedUser).toBe(undefined);
   });
 });

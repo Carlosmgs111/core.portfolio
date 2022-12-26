@@ -33,7 +33,7 @@ export class Post {
     this.updatedAt = updatedAt;
   }
   static create = async (DatabaseServices: any, data: any): Promise<any> => {
-    DatabaseServices.setupModel("Post");
+    DatabaseServices.setupEntity("Post");
     const exist = await DatabaseServices.findOne(data);
     console.log({ exist });
     if (exist) throw boom.conflict("Entity exist yet!");
@@ -52,7 +52,7 @@ export class Post {
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Post");
+    DatabaseServices.setupEntity("Post");
     const user = await Post.find(DatabaseServices, { uuid: credentials.uuid });
     if (!user) throw boom.notFound("Incorrect credentials!");
     const account = new Post(user);
@@ -60,7 +60,7 @@ export class Post {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Post");
+    DatabaseServices.setupEntity("Post");
     const account: any = await DatabaseServices.findOne({
       credentials: filterAttrs(
         getEntityProperties(credentials),
@@ -72,14 +72,14 @@ export class Post {
   };
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("Post");
+    DatabaseServices.setupEntity("Post");
     return await DatabaseServices.remove({
       credentials: { uuid: this.uuid },
     });
   };
 
   update = async (DatabaseServices: any, data: any) => {
-    DatabaseServices.setupModel("Post");
+    DatabaseServices.setupEntity("Post");
     this.updatedAt = new Date().getTime();
     return await DatabaseServices.update(
       {

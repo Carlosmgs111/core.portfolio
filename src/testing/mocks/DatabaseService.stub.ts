@@ -9,34 +9,36 @@ export const fakeDatabase: any = {
 };
 
 async function create(this: any, fake: any) {
-  console.log({ fake });
   fakeDatabase[this.Model].push(fake);
 }
 
 async function findOne(this: any, fake: any) {
   const { credentials } = fake;
-  console.log({ CREDENTIALS: credentials });
-  return (
+  const recovered =
     fakeDatabase[this.Model].filter((value: any) => {
       for (let attr in credentials) {
         for (let val in value) {
           if (credentials[attr] === value[val]) return value;
         }
       }
-    })[0] || null
-  );
+    })[0] || null;
+  return recovered;
 }
 
 async function remove(this: any, fake: any) {
   let index = 0;
+  const { credentials } = fake;
   fakeDatabase[this.Model].forEach((value: any, idx: any) => {
-    for (let attr in fake) {
+    for (let attr in credentials) {
       for (let val in value) {
-        if (fake[attr] === value[val]) index = idx;
+        if (credentials[attr] === value[val]) {
+          index = idx;
+          return;
+        }
       }
     }
   });
-  await delete fakeDatabase[this.Model][index];
+  fakeDatabase[this.Model].splice(index, 1);
   return null;
 }
 
@@ -49,16 +51,15 @@ export const DatabaseServiceStub = {
   },
   remove,
   update: async () => {},
-  setupModel: async function (model: string) {
+  setupModel: function (model: string) {
     this.Model = model;
+    return this;
   },
 };
 
 export const spyCreate = jest.spyOn(DatabaseServiceStub, "create");
 export const spyFindOne = jest.spyOn(DatabaseServiceStub, "findOne");
 export const spyFind = jest.spyOn(DatabaseServiceStub, "find");
-
-console.log({ fakeDatabase });
 
 export default jest.mock("../../config/dependencies", () => {
   // jest.fn().mockImplementation(() => DatabaseServiceStub)

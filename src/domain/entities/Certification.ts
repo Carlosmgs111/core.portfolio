@@ -35,7 +35,7 @@ export class Certification {
     DatabaseServices: any,
     data: any
   ): Promise<Certification> => {
-    DatabaseServices.setupModel("Certification");
+    DatabaseServices.setupEntity("Certification");
     const uuid = uuidv4();
     const certification = new Certification({ ...data, uuid });
     await DatabaseServices.create(certification);
@@ -44,7 +44,7 @@ export class Certification {
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Certification");
+    DatabaseServices.setupEntity("Certification");
     const certification = await Certification.find(DatabaseServices, {
       uuid: credentials.uuid,
     });
@@ -54,19 +54,19 @@ export class Certification {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Certification");
+    DatabaseServices.setupEntity("Certification");
     const certificate: any = await DatabaseServices.findOne({ credentials });
     return certificate;
   };
 
   static findAll = async (DatabaseServices: any, options: any) => {
-    DatabaseServices.setupModel("Certification");
+    DatabaseServices.setupEntity("Certification");
     const certificate: any = await DatabaseServices.findAll(options);
     return certificate;
   };
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("Certification");
+    DatabaseServices.setupEntity("Certification");
     return await DatabaseServices.remove({
       credentials: filterAttrs(
         getEntityProperties(this),
@@ -77,7 +77,7 @@ export class Certification {
   };
 
   update = async (DatabaseServices: any, data: any) => {
-    DatabaseServices.setupModel("Certification");
+    DatabaseServices.setupEntity("Certification");
     this.updatedAt = new Date().getTime();
     return await DatabaseServices.update(
       {

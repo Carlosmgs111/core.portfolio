@@ -17,20 +17,19 @@ const utils_1 = require("../../../utils");
 const boom_1 = __importDefault(require("@hapi/boom"));
 class DatabaseSequelizeService {
     // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
-    constructor({ __identifier }) {
+    constructor({}) {
         this.serviceDescription = "Sequelize Interface Database Service";
         this.create = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const entity = yield this.Model.create(Entity, this.adapter(options));
+            const entity = yield this.Entity.create(Entity, this.adapter(options));
             return entity;
         });
         this.findAll = (options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const entities = yield this.Model.findAll(this.adapter(options));
+            const entities = yield this.Entity.findAll(this.adapter(options));
             return entities;
         });
         this.findOne = (options = {}) => __awaiter(this, void 0, void 0, function* () {
-            console.log({ options });
             try {
-                const entity = yield this.Model.findOne(this.adapter(options));
+                const entity = yield this.Entity.findOne(this.adapter(options));
                 return entity;
             }
             catch (e) {
@@ -39,10 +38,10 @@ class DatabaseSequelizeService {
             }
         });
         this.remove = (options) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.Model.destroy(this.adapter(options));
+            return yield this.Entity.destroy(this.adapter(options));
         });
         this.update = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const model = yield this.Model.update(Entity, this.adapter(options));
+            const model = yield this.Entity.update(Entity, this.adapter(options));
             return model;
         });
         this.adapter = (OPS) => {
@@ -57,7 +56,6 @@ class DatabaseSequelizeService {
             for (var model in models_1.default)
                 models_1.default[model].associate && models_1.default[model].associate(models_1.default);
         };
-        this.Model = models_1.default[__identifier];
         this.syncModels();
     }
     // ? pending to find an appropiated agnosthic name
@@ -76,8 +74,8 @@ class DatabaseSequelizeService {
         });
         return include;
     }
-    setupModel(__table) {
-        this.Model = models_1.default[__table];
+    setupEntity(entityLabel) {
+        this.Entity = models_1.default[entityLabel];
         return this;
     }
 }

@@ -24,13 +24,13 @@ class Certification {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Certification");
+            DatabaseServices.setupEntity("Certification");
             return yield DatabaseServices.remove({
                 credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["businessName", "title", "uuid"], false),
             });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Certification");
+            DatabaseServices.setupEntity("Certification");
             this.updatedAt = new Date().getTime();
             return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
         });
@@ -48,7 +48,7 @@ class Certification {
 exports.Certification = Certification;
 _a = Certification;
 Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Certification");
+    DatabaseServices.setupEntity("Certification");
     const uuid = (0, uuid_1.v4)();
     const certification = new Certification(Object.assign(Object.assign({}, data), { uuid }));
     yield DatabaseServices.create(certification);
@@ -56,7 +56,7 @@ Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, voi
     return certification;
 });
 Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Certification");
+    DatabaseServices.setupEntity("Certification");
     const certification = yield Certification.find(DatabaseServices, {
         uuid: credentials.uuid,
     });
@@ -66,12 +66,12 @@ Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0
     return loadedCertification;
 });
 Certification.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Certification");
+    DatabaseServices.setupEntity("Certification");
     const certificate = yield DatabaseServices.findOne({ credentials });
     return certificate;
 });
 Certification.findAll = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Certification");
+    DatabaseServices.setupEntity("Certification");
     const certificate = yield DatabaseServices.findAll(options);
     return certificate;
 });

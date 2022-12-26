@@ -22,11 +22,11 @@ class Institution {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Institution");
+            DatabaseServices.setupEntity("Institution");
             return yield DatabaseServices.remove({ credentials: { uuid: this.uuid } });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Institution");
+            DatabaseServices.setupEntity("Institution");
             this.updatedAt = new Date().getTime();
             return yield DatabaseServices.update(Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
         });
@@ -42,14 +42,14 @@ class Institution {
 exports.Institution = Institution;
 _a = Institution;
 Institution.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Institution");
+    DatabaseServices.setupEntity("Institution");
     const uuid = (0, uuid_1.v4)();
     const institution = new Institution(Object.assign(Object.assign({}, data), { uuid }));
     yield DatabaseServices.create(institution);
     return institution;
 });
 Institution.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Institution");
+    DatabaseServices.setupEntity("Institution");
     const project = yield Institution.find(DatabaseServices, credentials);
     if (!project)
         throw new Error("Incorrect credentials!");
@@ -57,14 +57,14 @@ Institution.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, 
     return institution;
 });
 Institution.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Institution");
+    DatabaseServices.setupEntity("Institution");
     const institution = yield DatabaseServices.findOne({
         credentials,
     });
     return institution;
 });
 Institution.findAll = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Institution");
+    DatabaseServices.setupEntity("Institution");
     const institutions = yield DatabaseServices.findAll(options);
     return institutions;
 });

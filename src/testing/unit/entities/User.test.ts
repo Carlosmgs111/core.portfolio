@@ -11,7 +11,7 @@ describe("User entity behavior", () => {
   });
   describe("User entity life cycle", () => {
     test("Creation of new entity", async () => {
-      /* DatabaseService.setupModel("User")
+      /* DatabaseService.setupEntity("User")
       const newUser = await User.create(
         DatabaseService,
         fakeUser

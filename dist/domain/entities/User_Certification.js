@@ -20,14 +20,14 @@ const boom_1 = __importDefault(require("@hapi/boom"));
 class User_Certification {
     constructor({ uuid, userUUID, certificationUUID, }) {
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Users_Certifications");
+            DatabaseServices.setupEntity("Users_Certifications");
             console.log({ credentials: (0, utils_1.getEntityProperties)(this) });
             return yield DatabaseServices.remove({
                 credentials: (0, utils_1.getEntityProperties)(this),
             });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Users_Certifications");
+            DatabaseServices.setupEntity("Users_Certifications");
             return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
@@ -38,7 +38,7 @@ class User_Certification {
 exports.User_Certification = User_Certification;
 _a = User_Certification;
 User_Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Users_Certifications");
+    DatabaseServices.setupEntity("Users_Certifications");
     const exist = yield DatabaseServices.findOne({
         credentials: (0, utils_1.filterAttrs)(data, ["certificationUUID", "userUUID"], false),
     });
@@ -48,11 +48,11 @@ User_Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0
     const uuid = (0, uuid_1.v4)();
     const userCertification = new User_Certification(Object.assign(Object.assign({}, data), { uuid }));
     console.log({ userCertification });
-    yield DatabaseServices.setupModel("Users_Certifications").create(userCertification);
+    yield DatabaseServices.setupEntity("Users_Certifications").create(userCertification);
     return userCertification;
 });
 User_Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Users_Certifications");
+    DatabaseServices.setupEntity("Users_Certifications");
     const user = yield User_Certification.find(DatabaseServices, credentials);
     if (!user)
         throw boom_1.default.notFound("Incorrect credentials!");
@@ -61,7 +61,7 @@ User_Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, v
     return account;
 });
 User_Certification.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Users_Certifications");
+    DatabaseServices.setupEntity("Users_Certifications");
     const userCertification = yield DatabaseServices.findOne({
         credentials,
     });
@@ -69,7 +69,7 @@ User_Certification.find = (DatabaseServices, credentials) => __awaiter(void 0, v
     return userCertification;
 });
 User_Certification.findAll = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Users_Certifications");
+    DatabaseServices.setupEntity("Users_Certifications");
     console.log({ credentials });
     const userCertification = yield DatabaseServices.findAll({
         credentials,

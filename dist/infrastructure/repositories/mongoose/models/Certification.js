@@ -14,21 +14,21 @@ const certificationSchema = new mongoose_1.Schema({
         lowercase: false,
         trim: false,
     },
-    certificatedTo: {
+    grantedTo: {
         type: String,
         unique: false,
         required: true,
         lowercase: true,
         trim: true,
-        ref: "User"
+        ref: "User",
     },
-    emitedBy: {
+    institutionUUID: {
         type: String,
         unique: false,
         required: true,
         lowercase: true,
         trim: true,
-        ref: "Institution"
+        ref: "Institution",
     },
     image: {
         type: String,

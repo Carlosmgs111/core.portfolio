@@ -37,9 +37,9 @@ export class User {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
+
   static create = async (DatabaseServices: any, data: any): Promise<any> => {
-    console.log({ data });
-    DatabaseServices.setupModel("User");
+    DatabaseServices.setupEntity("User");
     const exist = await DatabaseServices.findOne({
       credentials: filterAttrs(
         getEntityProperties(data),
@@ -64,14 +64,14 @@ export class User {
   };
 
   static load = async (DatabaseServices: any, options: any = {}) => {
-    const user = await User.find(DatabaseServices, options);
+    const user = await User.find(DatabaseServices.setupEntity("User"), options);
     if (!user) throw boom.notFound("Incorrect credentials!");
     const account = new User(user);
     return account;
   };
 
   static find = async (DatabaseServices: any, options: any = {}) => {
-    const account: any = await DatabaseServices.findOne({
+    const account: any = await DatabaseServices.setupEntity("User").findOne({
       ...options,
       credentials: filterAttrs(
         getEntityProperties(options.credentials),
@@ -83,8 +83,26 @@ export class User {
     return account;
   };
 
+  remove = async (DatabaseServices: any) => {
+    DatabaseServices.setupEntity("User");
+    return await DatabaseServices.remove({
+      credentials: { uuid: this.uuid },
+    });
+  };
+
+  update = async (DatabaseServices: any, data: any) => {
+    DatabaseServices.setupEntity("User");
+    this.updatedAt = new Date().getTime();
+    return await DatabaseServices.update(
+      {
+        ...getEntityProperties({ ...this, ...data }),
+      },
+      { credentials: { uuid: this.uuid } }
+    );
+  };
+
   static certifications = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User");
+    DatabaseServices.setupEntity("User");
     const user: any = await User.find(DatabaseServices, {
       credentials,
       related: DatabaseServices.getRelated([["Certification"]]),
@@ -101,7 +119,7 @@ export class User {
   };
 
   static projects = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("User");
+    DatabaseServices.setupEntity("User");
     const user = await User.find(DatabaseServices, {
       credentials,
       related: DatabaseServices.getRelated([["Project"]]),
@@ -110,24 +128,6 @@ export class User {
       ...c.dataValues,
       createdBy: user.username,
     }));
-  };
-
-  remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("User");
-    return await DatabaseServices.remove({
-      credentials: { uuid: this.uuid },
-    });
-  };
-
-  update = async (DatabaseServices: any, data: any) => {
-    DatabaseServices.setupModel("User");
-    this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update(
-      {
-        ...getEntityProperties({ ...this, ...data }),
-      },
-      { credentials: { uuid: this.uuid } }
-    );
   };
 
   hashPassword = async (password: string | undefined) => {

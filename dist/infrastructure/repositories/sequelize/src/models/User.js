@@ -52,10 +52,6 @@ class User extends sequelize_1.Model {
             foreignKey: "userUUID",
         });
     }
-    sayHello(name) {
-        console.log("Hello ", name);
-        return `Hello ${name}`;
-    }
 }
 exports.User = User;
 User.init(exports.user_schema, { sequelize: __1.sequelize, modelName: exports.user_table });

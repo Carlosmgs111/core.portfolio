@@ -18,9 +18,9 @@ const formatProjects = (projects) => projects.map((project) => (0, utils_1.filte
 ]));
 const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
-    const projects = yield dependencies_1.DatabaseService.setupModel("Project").findAll({
+    const projects = yield dependencies_1.DatabaseService.setupEntity("Project").findAll({
         related: dependencies_1.DatabaseService.getRelated([
-            ["User", { as: "User", where: username && { username } }],
+            ["User", { as: "User", credentials: username && { username } }],
         ]),
         size,
         page,
@@ -38,7 +38,7 @@ const updateProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.updateProject = updateProject;
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
 const migrateDescriptionToDescriptions = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const projects = yield dependencies_1.DatabaseService.setupModel("Project").findAll();
+    const projects = yield dependencies_1.DatabaseService.setupEntity("Project").findAll();
     console.log({ projects });
     for (var project of projects) {
         const descriptions = project.description.split(". ");

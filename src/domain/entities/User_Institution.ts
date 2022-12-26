@@ -21,7 +21,7 @@ export class User_Institution {
     this.institutionUUID = institutionUUID;
   }
   static create = async (DatabaseServices: any, data: any): Promise<any> => {
-    DatabaseServices.setupModel("Users_Institutions");
+    DatabaseServices.setupEntity("Users_Institutions");
     const exist = await DatabaseServices.findOne({
       ...filterAttrs(data, ["institutionUUID", "userUUID"], false),
     });
@@ -39,7 +39,7 @@ export class User_Institution {
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Users_Institutions");
+    DatabaseServices.setupEntity("Users_Institutions");
     const user = await User_Institution.find(DatabaseServices, credentials);
     if (!user) throw boom.notFound("Incorrect credentials!");
     console.log({ user });
@@ -48,7 +48,7 @@ export class User_Institution {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupModel("Users_Institutions");
+    DatabaseServices.setupEntity("Users_Institutions");
     const userInstitution: any = await DatabaseServices.findOne({
       credentials,
     });
@@ -57,12 +57,12 @@ export class User_Institution {
   };
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupModel("Users_Institutions");
+    DatabaseServices.setupEntity("Users_Institutions");
     return await DatabaseServices.remove(getEntityProperties(this));
   };
 
   update = async (DatabaseServices: any, data: any) => {
-    DatabaseServices.setupModel("Users_Institutions");
+    DatabaseServices.setupEntity("Users_Institutions");
     return await DatabaseServices.update(
       {
         ...getEntityProperties({ ...this, ...data }),

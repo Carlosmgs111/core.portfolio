@@ -17,11 +17,11 @@ class Project {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Project");
+            DatabaseServices.setupEntity("Project");
             return yield DatabaseServices.remove({ credentials: { uuid: this.uuid } });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Project");
+            DatabaseServices.setupEntity("Project");
             this.updatedAt = new Date().getTime();
             return yield DatabaseServices.update(Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
         });
@@ -40,13 +40,13 @@ class Project {
 exports.Project = Project;
 _a = Project;
 Project.new = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Project");
+    DatabaseServices.setupEntity("Project");
     const uuid = (0, uuid_1.v4)();
     const account = new Project(Object.assign(Object.assign({}, data), { uuid, userUUID: data.user.uuid }));
     return yield DatabaseServices.create(account);
 });
 Project.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Project");
+    DatabaseServices.setupEntity("Project");
     const project = yield Project.find(DatabaseServices, credentials);
     if (!project)
         throw new Error("Incorrect credentials!");
@@ -54,7 +54,7 @@ Project.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void
     return account;
 });
 Project.find = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Project");
+    DatabaseServices.setupEntity("Project");
     const account = yield DatabaseServices.findOne(options);
     return account;
 });

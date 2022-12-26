@@ -17,11 +17,11 @@ class Skill {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Skill");
+            DatabaseServices.setupEntity("Skill");
             return yield DatabaseServices.remove({ credentials: { uuid: this.uuid } });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupModel("Skill");
+            DatabaseServices.setupEntity("Skill");
             this.updatedAt = new Date().getTime();
             return yield DatabaseServices.update(Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
         });
@@ -38,13 +38,13 @@ class Skill {
 exports.Skill = Skill;
 _a = Skill;
 Skill.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Skill");
+    DatabaseServices.setupEntity("Skill");
     const uuid = (0, uuid_1.v4)();
     const skill = new Skill(Object.assign(Object.assign({}, data), { uuid, userUUID: data.user.uuid }));
     return yield DatabaseServices.create(skill);
 });
 Skill.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Skill");
+    DatabaseServices.setupEntity("Skill");
     const skill = yield Skill.find(DatabaseServices, credentials);
     console.log({ Model: DatabaseServices.Model, credentials });
     if (!skill)
@@ -53,7 +53,7 @@ Skill.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0
     return loadedSkill;
 });
 Skill.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupModel("Skill");
+    DatabaseServices.setupEntity("Skill");
     const skill = yield DatabaseServices.findOne({
         credentials,
     });
