@@ -21,16 +21,21 @@ const User_1 = require("../../domain/entities/User");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const utils_1 = require("../../utils");
 const JWT_1 = require("../../infrastructure/auth/JWT");
-const formatCertifications = (certifications) => certifications
+const sequelizeFormatCertifications = (certifications) => certifications
     .map((certification) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, certification.dataValues), { emitedAt: new Date(certification.dataValues.emitedAt).getTime(), grantedTo: certification.Users[0].username, emitedBy: certification.Institution.name }), ["Users", "Institution"]))
     .sort((a, b) => {
     if (a.emitedAt < b.emitedAt)
         return 1;
     return -1;
 });
+const mongooseFormatCertifications = (certifications) => certifications.map((certification) => (Object.assign(Object.assign({}, certification._doc), { grantedTo: "cmgs111" })));
+const formats = {
+    se: sequelizeFormatCertifications,
+    mo: mongooseFormatCertifications,
+};
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
-    return formatCertifications((yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, {
+    return formats.se(yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, {
         related: dependencies_1.DatabaseService.getRelated([
             [
                 "User",
@@ -43,7 +48,7 @@ const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* 
         ]),
         size,
         page,
-    })).map((c) => (Object.assign(Object.assign({}, c), { grantedTo: c.Users[0].username }))));
+    }));
 });
 exports.getCertifications = getCertifications;
 const getOwnCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -69,10 +74,6 @@ const addNewCertification = (data) => __awaiter(void 0, void 0, void 0, function
     console.log({ institutionUUID });
     const certification = yield Certification_1.Certification.create(dependencies_1.DatabaseService, Object.assign(Object.assign({}, data), { institutionUUID }));
     console.log({ certification });
-    yield User_Certification_1.User_Certification.create(dependencies_1.DatabaseService, {
-        userUUID: data.user.uuid,
-        certificationUUID: certification.uuid,
-    });
     return Object.assign(Object.assign({}, certification), { emitedBy: data.emitedBy, grantedTo: data.user.username });
 });
 exports.addNewCertification = addNewCertification;
@@ -97,11 +98,7 @@ const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function
 });
 exports.updateCertification = updateCertification;
 const removeCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ data });
-    yield (yield User_Certification_1.User_Certification.load(dependencies_1.DatabaseService, {
-        certificationUUID: data.uuid,
-    })).remove(dependencies_1.DatabaseService);
-    yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid: data.uuid })).remove(dependencies_1.DatabaseService);
+    yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid: data.uuid })).remove(dependencies_1.DatabaseService, { userUUID: data.user.uuid });
     return { message: "Certification deleted", uuid: data.uuid };
 });
 exports.removeCertification = removeCertification;

@@ -35,10 +35,13 @@ export class Certification {
     DatabaseServices: any,
     data: any
   ): Promise<Certification> => {
-    DatabaseServices.setupEntity("Certification");
     const uuid = uuidv4();
     const certification = new Certification({ ...data, uuid });
-    await DatabaseServices.create(certification);
+    await DatabaseServices.setupEntity("Certification").create(certification);
+    await DatabaseServices.relate(
+      { label: "certification", uuid },
+      { label: "user", uuid: data.user.uuid }
+    );
     // console.log({ certification })
     return certification;
   };
@@ -65,9 +68,12 @@ export class Certification {
     return certificate;
   };
 
-  remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupEntity("Certification");
-    return await DatabaseServices.remove({
+  remove = async (DatabaseServices: any, options: any) => {
+    await DatabaseServices.unrelate(
+      { label: "user", uuid: options.userUUID },
+      { label: "certification", uuid: this.uuid }
+    );
+    return await DatabaseServices.setupEntity("Certification").remove({
       credentials: filterAttrs(
         getEntityProperties(this),
         ["businessName", "title", "uuid"],

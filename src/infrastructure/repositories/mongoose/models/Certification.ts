@@ -8,6 +8,8 @@ export interface ICertification extends Document {
   emitedDate: number;
   image: string;
   url: string;
+  tags: String[];
+  emitedAt: number;
   createdAt: number;
   updatedAt: number;
 }
@@ -25,14 +27,7 @@ const certificationSchema = new Schema<ICertification>({
     lowercase: false,
     trim: false,
   },
-  grantedTo: {
-    type: String,
-    unique: false,
-    required: true,
-    lowercase: true,
-    trim: true,
-    ref: "User",
-  },
+  grantedTo: { type: Schema.Types.String, ref: "User" },
   institutionUUID: {
     type: String,
     unique: false,
@@ -51,6 +46,8 @@ const certificationSchema = new Schema<ICertification>({
     required: true,
     unique: true,
   },
+  tags: { type: [String] },
+  emitedAt: { type: Number },
   createdAt: {
     type: Number,
     required: true,

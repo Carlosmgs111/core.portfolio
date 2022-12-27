@@ -1,5 +1,7 @@
 import models from "../../../infrastructure/repositories/sequelize/src/models";
 import { labelCases } from "../../../utils";
+import { filterAttrs } from "../../../utils";
+import { v4 as uuidv4 } from "uuid";
 import boom from "@hapi/boom";
 
 export default class DatabaseSequelizeService {
@@ -35,6 +37,7 @@ export default class DatabaseSequelizeService {
   };
 
   remove = async (options: any) => {
+    console.log({ thisAdapter: this.adapter(options) });
     return await this.Entity.destroy(this.adapter(options));
   };
 
@@ -63,6 +66,56 @@ export default class DatabaseSequelizeService {
     });
     return include;
   }
+
+  composeRelationshipLabel = (from: string, to: string) => {
+    if (models[`${labelCases(from).CP}_${labelCases(to).CP}`])
+      return `${labelCases(from).CP}_${labelCases(to).CP}`;
+    if (models[`${labelCases(to).CP}_${labelCases(from).CP}`])
+      return `${labelCases(to).CP}_${labelCases(from).CP}`;
+  };
+
+  relate = async (from: any, to: any) => {
+    let relationshipLabel: string | undefined = this.composeRelationshipLabel(
+      from.label,
+      to.label
+    );
+    if (!relationshipLabel) throw new Error("Invalid labels");
+
+    const data = {
+      uuid: uuidv4(),
+      [`${from.label}UUID`]: from.uuid,
+      [`${to.label}UUID`]: to.uuid,
+    };
+
+    this.setupEntity(relationshipLabel);
+    const exist = await this.findOne({
+      credentials: data,
+    });
+    if (exist) throw boom.conflict("Entity exist yet!");
+
+    const newSupportEntity = await this.create(data);
+    console.log({ newSupportEntity });
+    if (!newSupportEntity) throw boom.conflict("Support table doesn't created");
+  };
+
+  unrelate = async (from: any, to: any) => {
+    let relationshipLabel: string | undefined = this.composeRelationshipLabel(
+      from.label,
+      to.label
+    );
+    if (!relationshipLabel) throw new Error("Invalid labels");
+
+    const data = {
+      [`${from.label}UUID`]: from.uuid,
+      [`${to.label}UUID`]: to.uuid,
+    };
+    const exist = await this.setupEntity(relationshipLabel).findOne({
+      credentials: data,
+    });
+    console.log({ exist });
+    if (!exist) throw boom.conflict("Entity doesn't exist!");
+    return await this.remove({ credentials: data });
+  };
 
   adapter = (OPS: any) => {
     const {

@@ -14,14 +14,7 @@ const certificationSchema = new mongoose_1.Schema({
         lowercase: false,
         trim: false,
     },
-    grantedTo: {
-        type: String,
-        unique: false,
-        required: true,
-        lowercase: true,
-        trim: true,
-        ref: "User",
-    },
+    grantedTo: { type: mongoose_1.Schema.Types.String, ref: "User" },
     institutionUUID: {
         type: String,
         unique: false,
@@ -40,6 +33,8 @@ const certificationSchema = new mongoose_1.Schema({
         required: true,
         unique: true,
     },
+    tags: { type: [String] },
+    emitedAt: { type: Number },
     createdAt: {
         type: Number,
         required: true,

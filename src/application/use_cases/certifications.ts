@@ -7,7 +7,7 @@ import boom from "@hapi/boom";
 import { filterAttrs } from "../../utils";
 import { verifyToken2 } from "../../infrastructure/auth/JWT";
 
-const formatCertifications = (certifications: [Certification]) =>
+const sequelizeFormatCertifications = (certifications: [Certification]) =>
   certifications
     .map((certification: any) =>
       filterAttrs(
@@ -25,25 +25,34 @@ const formatCertifications = (certifications: [Certification]) =>
       return -1;
     });
 
+const mongooseFormatCertifications = (certifications: [Certification]) =>
+  certifications.map((certification: any) => ({
+    ...certification._doc,
+    grantedTo: "cmgs111",
+  }));
+
+const formats = {
+  se: sequelizeFormatCertifications,
+  mo: mongooseFormatCertifications,
+};
+
 export const getCertifications = async (data: any) => {
   const { username, user, size, page } = data;
-  return formatCertifications(
-    (
-      await Certification.findAll(DatabaseService, {
-        related: DatabaseService.getRelated([
-          [
-            "User",
-            {
-              attributes: ["username"],
-              credentials: username && { username },
-            },
-          ],
-          ["Institution", { attributes: ["name"], as: "Institution" }],
-        ]),
-        size,
-        page,
-      })
-    ).map((c: any) => ({ ...c, grantedTo: c.Users[0].username }))
+  return formats.se(
+    await Certification.findAll(DatabaseService, {
+      related: DatabaseService.getRelated([
+        [
+          "User",
+          {
+            attributes: ["username"],
+            credentials: username && { username },
+          },
+        ],
+        ["Institution", { attributes: ["name"], as: "Institution" }],
+      ]),
+      size,
+      page,
+    })
   );
 };
 
@@ -74,10 +83,7 @@ export const addNewCertification = async (data: any) => {
     institutionUUID,
   });
   console.log({ certification });
-  await User_Certification.create(DatabaseService, {
-    userUUID: data.user.uuid,
-    certificationUUID: certification.uuid,
-  });
+
   return {
     ...certification,
     emitedBy: data.emitedBy,
@@ -114,14 +120,8 @@ export const updateCertification = async (data: any) => {
 };
 
 export const removeCertification = async (data: any) => {
-  console.log({ data });
-  await (
-    await User_Certification.load(DatabaseService, {
-      certificationUUID: data.uuid,
-    })
-  ).remove(DatabaseService);
   await (
     await Certification.load(DatabaseService, { uuid: data.uuid })
-  ).remove(DatabaseService);
+  ).remove(DatabaseService, { userUUID: data.user.uuid });
   return { message: "Certification deleted", uuid: data.uuid };
 };

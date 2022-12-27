@@ -23,9 +23,9 @@ class Certification {
         this.url = ""; // * url to certificated course or institution
         this.createdAt = 0;
         this.updatedAt = 0;
-        this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupEntity("Certification");
-            return yield DatabaseServices.remove({
+        this.remove = (DatabaseServices, options) => __awaiter(this, void 0, void 0, function* () {
+            yield DatabaseServices.unrelate({ label: "user", uuid: options.userUUID }, { label: "certification", uuid: this.uuid });
+            return yield DatabaseServices.setupEntity("Certification").remove({
                 credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["businessName", "title", "uuid"], false),
             });
         });
@@ -48,10 +48,10 @@ class Certification {
 exports.Certification = Certification;
 _a = Certification;
 Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("Certification");
     const uuid = (0, uuid_1.v4)();
     const certification = new Certification(Object.assign(Object.assign({}, data), { uuid }));
-    yield DatabaseServices.create(certification);
+    yield DatabaseServices.setupEntity("Certification").create(certification);
+    yield DatabaseServices.relate({ label: "certification", uuid }, { label: "user", uuid: data.user.uuid });
     // console.log({ certification })
     return certification;
 });
