@@ -16,7 +16,6 @@ exports.removeCertification = exports.updateCertification = exports.addManyCerti
 const dependencies_1 = require("../../config/dependencies");
 const Certification_1 = require("../../domain/entities/Certification");
 const Institution_1 = require("../../domain/entities/Institution");
-const User_Certification_1 = require("../../domain/entities/User_Certification");
 const User_1 = require("../../domain/entities/User");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const utils_1 = require("../../utils");
@@ -88,13 +87,15 @@ const addManyCertifications = (data) => __awaiter(void 0, void 0, void 0, functi
 exports.addManyCertifications = addManyCertifications;
 const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, uuid } = data;
-    const user_certification = yield User_Certification_1.User_Certification.find(dependencies_1.DatabaseService, {
-        certificationUUID: uuid,
-    });
-    if (user_certification.userUUID !== user.uuid)
-        throw boom_1.default.conflict("You are not the owner!");
     yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid })).update(dependencies_1.DatabaseService, data);
-    return Object.assign(Object.assign({}, (yield (0, exports.getCertificationByUUID)({ uuid })).dataValues), { emitedBy: data.emitedBy, grantedTo: data.user.username });
+    return formats.se([
+        Object.assign(Object.assign({}, (yield (0, exports.getCertificationByUUID)({
+            credentials: { uuid },
+            related: dependencies_1.DatabaseService.getRelated([
+                ["Institution", { attributes: ["name"], as: "Institution" }],
+            ]),
+        }))), { Users: [user] }),
+    ])[0];
 });
 exports.updateCertification = updateCertification;
 const removeCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {

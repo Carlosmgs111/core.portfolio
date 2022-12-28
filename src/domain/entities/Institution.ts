@@ -29,10 +29,14 @@ export class Institution {
     DatabaseServices: any,
     data: any
   ): Promise<Institution> => {
-    DatabaseServices.setupEntity("Institution");
     const uuid = uuidv4();
     const institution = new Institution({ ...data, uuid });
-    await DatabaseServices.create(institution);
+    await DatabaseServices.setupEntity("Institution").create(institution);
+    // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
+    await DatabaseServices.relate(
+      { label: "institution", uuid },
+      { label: "user", uuid: data.user.uuid }
+    );
     return institution;
   };
 
@@ -58,9 +62,18 @@ export class Institution {
     return institutions;
   };
 
-  remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupEntity("Institution");
-    return await DatabaseServices.remove({ credentials: { uuid: this.uuid } });
+  link = async (DatabaseServices: any, options: any) => {};
+
+  unlink = async (DatabaseServices: any, options: any) => {};
+
+  remove = async (DatabaseServices: any, options: any = {}) => {
+    await DatabaseServices.unrelate(
+      { label: "user", uuid: options.userUUID },
+      { label: "institution", uuid: this.uuid }
+    );
+    return await DatabaseServices.setupEntity("Institution").remove({
+      credentials: { uuid: this.uuid },
+    });
   };
 
   update = async (DatabaseServices: any, data: any) => {

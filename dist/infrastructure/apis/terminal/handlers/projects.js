@@ -16,6 +16,9 @@ exports.projectsHandler = void 0;
 const projects_1 = require("../../../../application/use_cases/projects");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
+/*  */
+const institutions_1 = require("../../../../application/use_cases/institutions");
+/*  */
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
 const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = state;
@@ -24,6 +27,12 @@ const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* (
     const EChoices = (0, utils_1.Enumfy)(choices);
     const options = {
         [EChoices.Listar]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, projects_1.getProjects)({ username })); }),
+        [EChoices.Actualizar]: () => __awaiter(void 0, void 0, void 0, function* () {
+            return (0, institutions_1.linkToIntitution)({
+                token: state.token,
+                institutionUUID: "163d5854-6fc5-46fa-9e0b-ebe2b5115a51",
+            });
+        }),
         [EChoices.Salir]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),
     };
     while (running) {

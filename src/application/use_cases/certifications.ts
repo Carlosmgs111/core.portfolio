@@ -1,7 +1,6 @@
 import { DatabaseService } from "../../config/dependencies";
 import { Certification } from "../../domain/entities/Certification";
 import { Institution } from "../../domain/entities/Institution";
-import { User_Certification } from "../../domain/entities/User_Certification";
 import { User } from "../../domain/entities/User";
 import boom from "@hapi/boom";
 import { filterAttrs } from "../../utils";
@@ -104,19 +103,20 @@ export const addManyCertifications = async (data: any) => {
 
 export const updateCertification = async (data: any) => {
   const { user, uuid } = data;
-  const user_certification = await User_Certification.find(DatabaseService, {
-    certificationUUID: uuid,
-  });
-  if (user_certification.userUUID !== user.uuid)
-    throw boom.conflict("You are not the owner!");
   await (
     await Certification.load(DatabaseService, { uuid })
   ).update(DatabaseService, data);
-  return {
-    ...(await getCertificationByUUID({ uuid })).dataValues,
-    emitedBy: data.emitedBy,
-    grantedTo: data.user.username,
-  };
+  return formats.se([
+    {
+      ...(await getCertificationByUUID({
+        credentials: { uuid },
+        related: DatabaseService.getRelated([
+          ["Institution", { attributes: ["name"], as: "Institution" }],
+        ]),
+      })),
+      Users: [user],
+    },
+  ])[0];
 };
 
 export const removeCertification = async (data: any) => {

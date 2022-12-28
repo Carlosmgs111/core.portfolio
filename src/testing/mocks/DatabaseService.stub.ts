@@ -6,16 +6,17 @@ export const fakeDatabase: any = {
   Institution: [],
   Users_Certifications: [],
   Users_Institutions: [],
+  Users_Skills: [],
 };
 
 async function create(this: any, fake: any) {
-  fakeDatabase[this.Model].push(fake);
+  fakeDatabase[this.Entity].push(fake);
 }
 
 async function findOne(this: any, fake: any) {
   const { credentials } = fake;
   const recovered =
-    fakeDatabase[this.Model].filter((value: any) => {
+    fakeDatabase[this.Entity].filter((value: any) => {
       for (let attr in credentials) {
         for (let val in value) {
           if (credentials[attr] === value[val]) return value;
@@ -28,7 +29,7 @@ async function findOne(this: any, fake: any) {
 async function remove(this: any, fake: any) {
   let index = 0;
   const { credentials } = fake;
-  fakeDatabase[this.Model].forEach((value: any, idx: any) => {
+  fakeDatabase[this.Entity].forEach((value: any, idx: any) => {
     for (let attr in credentials) {
       for (let val in value) {
         if (credentials[attr] === value[val]) {
@@ -38,23 +39,25 @@ async function remove(this: any, fake: any) {
       }
     }
   });
-  fakeDatabase[this.Model].splice(index, 1);
+  fakeDatabase[this.Entity].splice(index, 1);
   return null;
 }
 
 export const DatabaseServiceStub = {
-  Model: "",
+  Entity: "",
   create,
   findOne,
   find: async function () {
-    return fakeDatabase[this.Model];
+    return fakeDatabase[this.Entity];
   },
   remove,
   update: async () => {},
-  setupModel: function (model: string) {
-    this.Model = model;
+  setupEntity: function (entityLabel: string) {
+    this.Entity = entityLabel;
     return this;
   },
+  relate: () => {},
+  unrelate: () => {},
 };
 
 export const spyCreate = jest.spyOn(DatabaseServiceStub, "create");

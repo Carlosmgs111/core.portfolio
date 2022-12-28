@@ -1,5 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import { getEntityProperties, filterAttrs } from "../../utils";
+import boom from "@hapi/boom";
 
 export class Certification {
   uuid: string = "";
@@ -42,7 +43,6 @@ export class Certification {
       { label: "certification", uuid },
       { label: "user", uuid: data.user.uuid }
     );
-    // console.log({ certification })
     return certification;
   };
 
@@ -58,17 +58,17 @@ export class Certification {
 
   static find = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupEntity("Certification");
-    const certificate: any = await DatabaseServices.findOne({ credentials });
+    const certificate: any = await DatabaseServices.findOne(credentials);
     return certificate;
   };
 
-  static findAll = async (DatabaseServices: any, options: any) => {
+  static findAll = async (DatabaseServices: any, options: any = {}) => {
     DatabaseServices.setupEntity("Certification");
     const certificate: any = await DatabaseServices.findAll(options);
     return certificate;
   };
 
-  remove = async (DatabaseServices: any, options: any) => {
+  remove = async (DatabaseServices: any, options: any = {}) => {
     await DatabaseServices.unrelate(
       { label: "user", uuid: options.userUUID },
       { label: "certification", uuid: this.uuid }
@@ -83,13 +83,19 @@ export class Certification {
   };
 
   update = async (DatabaseServices: any, data: any) => {
+    const [exist] = await DatabaseServices.checkRelationship(
+      { label: "certification", uuid: this.uuid },
+      { label: "user", uuid: data.user.uuid }
+    );
+    if (!exist) throw boom.conflict("Relationship doesn't exist!");
     DatabaseServices.setupEntity("Certification");
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update(
+    await DatabaseServices.update(
       {
         ...getEntityProperties({ ...this, ...data }),
       },
       { credentials: { uuid: this.uuid } }
     );
+    return this;
   };
 }

@@ -8,11 +8,15 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Certification = void 0;
 const uuid_1 = require("uuid");
 const utils_1 = require("../../utils");
+const boom_1 = __importDefault(require("@hapi/boom"));
 class Certification {
     constructor({ uuid, title, institutionUUID, emitedAt, image, url, tags, }) {
         this.uuid = "";
@@ -23,16 +27,20 @@ class Certification {
         this.url = ""; // * url to certificated course or institution
         this.createdAt = 0;
         this.updatedAt = 0;
-        this.remove = (DatabaseServices, options) => __awaiter(this, void 0, void 0, function* () {
+        this.remove = (DatabaseServices, options = {}) => __awaiter(this, void 0, void 0, function* () {
             yield DatabaseServices.unrelate({ label: "user", uuid: options.userUUID }, { label: "certification", uuid: this.uuid });
             return yield DatabaseServices.setupEntity("Certification").remove({
                 credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["businessName", "title", "uuid"], false),
             });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
+            const [exist] = yield DatabaseServices.checkRelationship({ label: "certification", uuid: this.uuid }, { label: "user", uuid: data.user.uuid });
+            if (!exist)
+                throw boom_1.default.conflict("Relationship doesn't exist!");
             DatabaseServices.setupEntity("Certification");
             this.updatedAt = new Date().getTime();
-            return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
+            yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
+            return this;
         });
         this.uuid = uuid;
         this.title = title;
@@ -52,7 +60,6 @@ Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, voi
     const certification = new Certification(Object.assign(Object.assign({}, data), { uuid }));
     yield DatabaseServices.setupEntity("Certification").create(certification);
     yield DatabaseServices.relate({ label: "certification", uuid }, { label: "user", uuid: data.user.uuid });
-    // console.log({ certification })
     return certification;
 });
 Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
@@ -67,10 +74,10 @@ Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0
 });
 Certification.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupEntity("Certification");
-    const certificate = yield DatabaseServices.findOne({ credentials });
+    const certificate = yield DatabaseServices.findOne(credentials);
     return certificate;
 });
-Certification.findAll = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
+Certification.findAll = (DatabaseServices, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupEntity("Certification");
     const certificate = yield DatabaseServices.findAll(options);
     return certificate;

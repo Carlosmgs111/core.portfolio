@@ -39,6 +39,12 @@ export default class DatabaseMongooseService {
 
   getRelated = async () => {};
 
+  relate = async () => {};
+
+  unrelate = async () => {};
+
+  checkRelationship = async () => {};
+
   adapter = (options: any) => {
     const { credentials } = options;
     return { where: credentials };

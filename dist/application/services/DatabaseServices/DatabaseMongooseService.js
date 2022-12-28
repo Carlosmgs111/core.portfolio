@@ -40,6 +40,9 @@ class DatabaseMongooseService {
             return model;
         });
         this.getRelated = () => __awaiter(this, void 0, void 0, function* () { });
+        this.relate = () => __awaiter(this, void 0, void 0, function* () { });
+        this.unrelate = () => __awaiter(this, void 0, void 0, function* () { });
+        this.checkRelationship = () => __awaiter(this, void 0, void 0, function* () { });
         this.adapter = (options) => {
             const { credentials } = options;
             return { where: credentials };
