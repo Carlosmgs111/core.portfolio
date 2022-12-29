@@ -27,10 +27,15 @@ describe("Aggregates of certificates", () => {
 
   beforeAll(async () => {
     // spyFindOne.mockResolvedValue(userCredentials);
-    DatabaseService.setupEntity("User");
-    user = await User.create(DatabaseService, userCredentials);
-    DatabaseService.setupEntity("Institution");
-    institution = await Institution.create(DatabaseService, institutionData);
+    user = await User.create(
+      DatabaseService.setupEntity("User"),
+      userCredentials
+    );
+    console.log({ user });
+    institution = await Institution.create(
+      DatabaseService.setupEntity("Institution"),
+      { ...institutionData, user }
+    );
     // jest.clearAllMocks() / ? for clear all mocks
   });
 
