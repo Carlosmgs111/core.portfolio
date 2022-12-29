@@ -39,7 +39,7 @@ export const getCertifications = async (data: any) => {
   const { username, user, size, page } = data;
   return formats.se(
     await Certification.findAll(DatabaseService, {
-      related: DatabaseService.getRelated([
+      related: [
         [
           "User",
           {
@@ -47,8 +47,8 @@ export const getCertifications = async (data: any) => {
             credentials: username && { username },
           },
         ],
-        ["Institution", { attributes: ["name"], as: "Institution" }],
-      ]),
+        ["Institution", { attributes: ["name"] }, { singular: true }],
+      ],
       size,
       page,
     })
@@ -58,7 +58,6 @@ export const getCertifications = async (data: any) => {
 export const getOwnCertifications = async (data: any) => {
   const { token } = data;
   const { user } = await verifyToken2(token);
-  console.log({ getOwnCertifications: user });
   return await User.certifications(DatabaseService, {
     username: user.username,
   });
@@ -69,20 +68,16 @@ export const getCertificationByUUID = async (data: any) => {
 };
 
 export const addNewCertification = async (data: any) => {
-  console.log({ dataUser: data.user, data });
   if (!data.user) throw boom.conflict("A user must be instanced!");
   const institutionUUID = (
     await Institution.find(DatabaseService, {
       name: data.emitedBy,
     })
   ).uuid;
-  console.log({ institutionUUID });
   const certification = await Certification.create(DatabaseService, {
     ...data,
     institutionUUID,
   });
-  console.log({ certification });
-
   return {
     ...certification,
     emitedBy: data.emitedBy,
@@ -104,15 +99,13 @@ export const addManyCertifications = async (data: any) => {
 export const updateCertification = async (data: any) => {
   const { user, uuid } = data;
   await (
-    await Certification.load(DatabaseService, { uuid })
+    await Certification.load(DatabaseService, { credentials: { uuid } })
   ).update(DatabaseService, data);
   return formats.se([
     {
       ...(await getCertificationByUUID({
         credentials: { uuid },
-        related: DatabaseService.getRelated([
-          ["Institution", { attributes: ["name"], as: "Institution" }],
-        ]),
+        related: [["Institution", { attributes: ["name"], as: "Institution" }]],
       })),
       Users: [user],
     },

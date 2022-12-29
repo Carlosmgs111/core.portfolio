@@ -3,6 +3,7 @@ import colors from "colors";
 import { loginHandler } from "./handlers/login";
 import { certificationsHandler } from "./handlers/certifications";
 import { projectsHandler } from "./handlers/projects";
+import { institutionsHandler } from "./handlers/institutions";
 import { execFunc } from "../../../utils";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
@@ -20,28 +21,30 @@ export default async () => {
     username: usernames.re,
     exp: 0,
   };
-  const [login, logout, certifications, institutions, projects] = [
+  const [login, logout, user, certifications, institutions, projects] = [
     "Login".bgGreen,
     "Logout".bgRed,
+    "User",
     "Certifications",
     "Institutions",
     "Projects",
   ];
-  const choices = [certifications, institutions, projects];
+  const choices = [user, certifications, institutions, projects];
   const options = {
     [login]: () => loginHandler(state),
     [logout]: () => (state.token = undefined),
     [certifications]: () => certificationsHandler(state),
+    [institutions]: () => institutionsHandler(state),
     [projects]: () => projectsHandler(state),
   };
   while (true) {
     const { token } = state;
     if (token && choices[choices.length - 1] !== logout) {
-      choices.length > 3 && choices.shift();
+      choices.length > 4 && choices.shift();
       choices.push(logout);
     }
     if (!token && choices[0] !== login) {
-      choices.length > 3 && choices.pop();
+      choices.length > 4 && choices.pop();
       choices.unshift(login);
     }
     const { option } = await inquirer.prompt([

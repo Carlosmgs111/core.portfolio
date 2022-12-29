@@ -14,17 +14,37 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.certificationsHandler = void 0;
 const certifications_1 = require("../../../../application/use_cases/certifications");
-const dependencies_1 = require("../../../../config/dependencies");
+const users_1 = require("../../../../application/use_cases/users");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
+const listByUsernameHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
+    let running = true;
+    const usernames = yield (0, users_1.getAllUsername)();
+    const exit = "Salir";
+    const choices = [...usernames, exit];
+    while (running) {
+        const { option } = yield inquirer_1.default.prompt([
+            {
+                name: "option",
+                type: "list",
+                message: "Certification".cyan,
+                choices,
+            },
+        ]);
+        console.log(yield (0, certifications_1.getCertifications)({ username: option }));
+        if (option === exit)
+            running = false;
+    }
+});
 const listCertificationsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const { token } = state;
     const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
     const choices = [all, owns, byUser, test];
     const options = {
-        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getCertifications)(dependencies_1.DatabaseService)); }),
+        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getCertifications)({})); }),
         [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getOwnCertifications)({ token })); }),
+        [byUser]: () => __awaiter(void 0, void 0, void 0, function* () { return yield listByUsernameHandler(state); }),
         [test]: () => { },
     };
     const { option } = yield inquirer_1.default.prompt([
@@ -34,15 +54,21 @@ const listCertificationsHandler = (state) => __awaiter(void 0, void 0, void 0, f
             choices,
         },
     ]);
-    (0, utils_1.execFunc)(options[option]);
+    yield (0, utils_1.execFunc)(options[option]);
 });
 const certificationsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     let running = true;
-    const choices = ["Agregar", "Actualizar", "Eliminar", "Listar", "Salir"];
-    const EChoices = (0, utils_1.Enumfy)(choices);
+    const [add, update, remove, read, exit] = [
+        "Agregar",
+        "Actualizar",
+        "Eliminar",
+        "Listar",
+        "Salir",
+    ];
+    const choices = [add, update, remove, read, exit];
     const options = {
-        [EChoices.Listar]: () => __awaiter(void 0, void 0, void 0, function* () { return yield listCertificationsHandler(state); }),
-        [EChoices.Salir]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),
+        [read]: () => __awaiter(void 0, void 0, void 0, function* () { return yield listCertificationsHandler(state); }),
+        [exit]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),
     };
     while (running) {
         const { option } = yield inquirer_1.default.prompt([

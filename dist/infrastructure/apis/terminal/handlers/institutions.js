@@ -12,13 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.projectsHandler = void 0;
-const projects_1 = require("../../../../application/use_cases/projects");
+exports.institutionsHandler = void 0;
+const institutions_1 = require("../../../../application/use_cases/institutions");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
-const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username } = state;
+const institutionsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     let running = true;
     const [add, update, remove, read, exit] = [
         "Agregar",
@@ -29,7 +28,7 @@ const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* (
     ];
     const choices = [add, update, remove, read, exit];
     const options = {
-        [read]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, projects_1.getProjects)({ username })); }),
+        [read]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, institutions_1.getAllInstitutions)({})); }),
         [exit]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),
     };
     while (running) {
@@ -37,11 +36,11 @@ const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* (
             {
                 name: "option",
                 type: "list",
-                message: "Projects".cyan,
+                message: "Certification".cyan,
                 choices,
             },
         ]);
         yield (0, utils_1.execFunc)(options[option]);
     }
 });
-exports.projectsHandler = projectsHandler;
+exports.institutionsHandler = institutionsHandler;

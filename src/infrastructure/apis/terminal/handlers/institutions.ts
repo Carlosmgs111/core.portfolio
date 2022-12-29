@@ -1,11 +1,15 @@
-import { getProjects } from "../../../../application/use_cases/projects";
+import {
+  getAllInstitutions,
+  addNewInstitution,
+  linkToIntitution,
+} from "../../../../application/use_cases/institutions";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 
-export const projectsHandler = async (state: any) => {
-  const { username } = state;
+
+export const institutionsHandler = async (state: any) => {
   let running = true;
   const [add, update, remove, read, exit] = [
     "Agregar",
@@ -16,7 +20,7 @@ export const projectsHandler = async (state: any) => {
   ];
   const choices = [add, update, remove, read, exit];
   const options = {
-    [read]: async () => console.log(await getProjects({ username })),
+    [read]: async () => console.log(await getAllInstitutions({})),
     [exit]: async () => (running = false),
   };
   while (running) {
@@ -24,7 +28,7 @@ export const projectsHandler = async (state: any) => {
       {
         name: "option",
         type: "list",
-        message: "Projects".cyan,
+        message: "Certification".cyan,
         choices,
       },
     ]);

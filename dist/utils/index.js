@@ -15,7 +15,7 @@ const filterAttrs = (obj, toRemove, oclusive = true) => {
     const newObj = {};
     for (var attr in obj) {
         // if (!obj[attr]) console.log(`⚠️ ${attr}: Its null or undefined ⚠️`.yellow);
-        if (!oclusive === toRemove.includes(attr) && obj[attr]) {
+        if (!oclusive === toRemove.includes(attr)) {
             newObj[attr] = obj[attr];
         }
     }

@@ -17,7 +17,6 @@ class AuthServices {
         };
         this.getAuthPackage = (params) => {
             const token = (0, JWT_1.createToken)(params, expires_1.expiresIn1Month);
-            console.log({ token });
             return {
                 token,
                 expire: expires_1.expiresIn1Month,

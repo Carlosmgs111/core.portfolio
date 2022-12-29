@@ -1,7 +1,6 @@
 import cryptojs from "crypto-js";
 import { plural, singular } from "pluralize";
 
-
 export function encryptData(data: string, key: string) {
   return cryptojs.RC4.encrypt(data, key).toString();
 }
@@ -11,8 +10,12 @@ export function decryptData(data: string, key: string) {
   return bytes.toString(cryptojs.enc.Utf8);
 }
 
-export const filterAttrs = (obj:any, toRemove:any, oclusive:boolean=true) => {
-  const newObj:any = {};
+export const filterAttrs = (
+  obj: any,
+  toRemove: any,
+  oclusive: boolean = true
+) => {
+  const newObj: any = {};
   for (var attr in obj) {
     if (!oclusive === toRemove.includes(attr)) {
       newObj[attr] = obj[attr];
@@ -29,7 +32,7 @@ export const filterAttrs = (obj:any, toRemove:any, oclusive:boolean=true) => {
  * @UP Upper Case Plural (UpperPlural)
  * @US Upper Case Singular (UpperSingle)
  */
- export const labelCases = (label:string, normal:boolean = true) => {
+export const labelCases = (label: string, normal: boolean = true) => {
   label = normal ? normalize(label) : label;
   return Object.defineProperties(Object(String(label)), {
     LP: { value: plural(label.toLowerCase()), writable: false },
@@ -43,12 +46,12 @@ export const filterAttrs = (obj:any, toRemove:any, oclusive:boolean=true) => {
   });
 };
 
-export const normalize = (str:any) => {
+export const normalize = (str: any) => {
   const from = "ÃÀÁÄÂÈÉËÊÌÍÏÎÒÓÖÔÙÚÜÛãàáäâèéëêìíïîòóöôùúüûÑñÇç",
     to = "AAAAAEEEEIIIIOOOOUUUUaaaaaeeeeiiiioooouuuunncc",
-    mapping:any = {};
+    mapping: any = {};
 
-  for (var i = 0, j:any = from.length; i < j; i++)
+  for (var i = 0, j: any = from.length; i < j; i++)
     mapping[from.charAt(i)] = to.charAt(i);
 
   var ret = [];
@@ -60,7 +63,7 @@ export const normalize = (str:any) => {
   return ret.join("");
 };
 
-export const capitalize = (label:any, pluralize:boolean = false) => {
+export const capitalize = (label: any, pluralize: boolean = false) => {
   return (
     label[0].toUpperCase() +
     label.slice(1).toLowerCase() +

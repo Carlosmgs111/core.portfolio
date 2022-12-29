@@ -79,19 +79,20 @@ User.find = (DatabaseServices, options = {}) => __awaiter(void 0, void 0, void 0
         throw boom_1.default.conflict("Account doesn´t exist!");
     return account;
 });
+User.findAll = (DatabaseService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
+    return (yield DatabaseService.setupEntity("User").findAll(options)).map((user) => user.dataValues.username);
+});
 User.certifications = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("User");
-    const user = yield User.find(DatabaseServices, {
+    const user = yield User.find(DatabaseServices.setupEntity("User"), {
         credentials,
-        related: DatabaseServices.getRelated([["Certification"]]),
+        related: [["Certification"]],
     });
     return user.Certifications.map((c) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, c.dataValues), { grantedTo: user.username }), ["Users_Certifications"]));
 });
 User.projects = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("User");
-    const user = yield User.find(DatabaseServices, {
+    const user = yield User.find(DatabaseServices.setupEntity("User"), {
         credentials,
-        related: DatabaseServices.getRelated([["Project"]]),
+        related: [["Project"]],
     });
     return (yield DatabaseServices.hasMany(user, "Projects")).map((c) => (Object.assign(Object.assign({}, c.dataValues), { createdBy: user.username })));
 });

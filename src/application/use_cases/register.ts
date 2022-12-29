@@ -21,7 +21,6 @@ export const signin = async (credentials: any) => {
 export const authSignin = async (credentials: any) => {
   DatabaseService;
   const entity = await User.load(DatabaseService, credentials);
-  // console.log({ entity });
   if (!entity) throw new Error("The account doesn't exist!");
   const isMatch = entity.comparePassword(credentials.password);
   if (!isMatch) throw new Error("The account doesn't exist!");

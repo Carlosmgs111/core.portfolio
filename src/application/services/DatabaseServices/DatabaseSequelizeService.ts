@@ -49,27 +49,6 @@ export default class DatabaseSequelizeService {
     return model;
   };
 
-  // ? pending to find an appropiated agnosthic name
-  getRelated(entitiesToInclude: any = []) {
-    const include: Object[] = [];
-    entitiesToInclude.forEach((e: any) => {
-      const [model, queryOps = {}, options = {}] = e;
-      const { singular = false } = options;
-      const {
-        attributes = null,
-        where = {},
-        as = null,
-      } = this.adapter(queryOps);
-      include.push({
-        model: models[model],
-        as: as || labelCases(model)[singular ? "CS" : "CP"],
-        attributes,
-        where,
-      });
-    });
-    return include;
-  }
-
   // TODO rename to createRelationship
   relate = async (from: any, to: any) => {
     const [exist, data]: any = await this.checkRelationship(from, to);
@@ -91,21 +70,25 @@ export default class DatabaseSequelizeService {
         return `${labelCases(from).CP}_${labelCases(to).CP}`;
       if (models[`${labelCases(to).CP}_${labelCases(from).CP}`])
         return `${labelCases(to).CP}_${labelCases(from).CP}`;
+      throw boom.internal("Invalid labels");
     };
-    let relationshipLabel: string | undefined = composeRelationshipLabel(
+    let relationshipLabel: string = composeRelationshipLabel(
       from.label,
       to.label
     );
-    if (!relationshipLabel) throw new Error("Invalid labels");
     const relationshipUUIDS = {
       [`${from.label}UUID`]: from.uuid,
       [`${to.label}UUID`]: to.uuid,
     };
+    console.log({ relationshipUUIDS });
     const exist = await this.setupEntity(relationshipLabel).findOne({
       credentials: relationshipUUIDS,
     });
     return [exist, relationshipUUIDS];
   };
+
+  // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
+  hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
 
   adapter = (OPS: any) => {
     const {
@@ -118,15 +101,33 @@ export default class DatabaseSequelizeService {
     return {
       ...OPS,
       where: credentials,
-      include: related,
+      include: this.formatIncludeClosure(related),
       limit: size,
       offset: page,
       alias: as,
     };
   };
 
-  // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
-  hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
+  // ? pending to find an appropiated agnosthic name
+  formatIncludeClosure(entitiesToInclude: any = []) {
+    const include: Object[] = [];
+    entitiesToInclude.forEach((e: any) => {
+      const [model, queryOps = {}, options = {}] = e;
+      const { singular = false } = options;
+      const {
+        attributes = null,
+        where = {},
+        as = null,
+      } = this.adapter(queryOps);
+      include.push({
+        model: models[model],
+        as: as || labelCases(model)[singular ? "CS" : "CP"],
+        attributes,
+        where,
+      });
+    });
+    return include;
+  }
 
   setupEntity(entityLabel: string) {
     this.Entity = models[entityLabel];

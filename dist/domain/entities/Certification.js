@@ -38,8 +38,7 @@ class Certification {
             if (!exist)
                 throw boom_1.default.conflict("Relationship doesn't exist!");
             DatabaseServices.setupEntity("Certification");
-            this.updatedAt = new Date().getTime();
-            yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
+            yield DatabaseServices.update(Object.assign({ updatedAt: new Date().getTime() }, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
             return this;
         });
         this.uuid = uuid;
@@ -62,19 +61,17 @@ Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, voi
     yield DatabaseServices.relate({ label: "certification", uuid }, { label: "user", uuid: data.user.uuid });
     return certification;
 });
-Certification.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
+Certification.load = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupEntity("Certification");
-    const certification = yield Certification.find(DatabaseServices, {
-        uuid: credentials.uuid,
-    });
+    const certification = yield Certification.find(DatabaseServices, options);
     if (!certification)
         throw new Error("Incorrect credentials!");
     const loadedCertification = new Certification(certification);
     return loadedCertification;
 });
-Certification.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
+Certification.find = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupEntity("Certification");
-    const certificate = yield DatabaseServices.findOne(credentials);
+    const certificate = yield DatabaseServices.findOne(options);
     return certificate;
 });
 Certification.findAll = (DatabaseServices, options = {}) => __awaiter(void 0, void 0, void 0, function* () {

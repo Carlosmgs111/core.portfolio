@@ -35,7 +35,7 @@ const formats = {
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
     return formats.se(yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, {
-        related: dependencies_1.DatabaseService.getRelated([
+        related: [
             [
                 "User",
                 {
@@ -43,8 +43,8 @@ const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* 
                     credentials: username && { username },
                 },
             ],
-            ["Institution", { attributes: ["name"], as: "Institution" }],
-        ]),
+            ["Institution", { attributes: ["name"] }, { singular: true }],
+        ],
         size,
         page,
     }));
@@ -53,7 +53,6 @@ exports.getCertifications = getCertifications;
 const getOwnCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { token } = data;
     const { user } = yield (0, JWT_1.verifyToken2)(token);
-    console.log({ getOwnCertifications: user });
     return yield User_1.User.certifications(dependencies_1.DatabaseService, {
         username: user.username,
     });
@@ -64,15 +63,12 @@ const getCertificationByUUID = (data) => __awaiter(void 0, void 0, void 0, funct
 });
 exports.getCertificationByUUID = getCertificationByUUID;
 const addNewCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ dataUser: data.user, data });
     if (!data.user)
         throw boom_1.default.conflict("A user must be instanced!");
     const institutionUUID = (yield Institution_1.Institution.find(dependencies_1.DatabaseService, {
         name: data.emitedBy,
     })).uuid;
-    console.log({ institutionUUID });
     const certification = yield Certification_1.Certification.create(dependencies_1.DatabaseService, Object.assign(Object.assign({}, data), { institutionUUID }));
-    console.log({ certification });
     return Object.assign(Object.assign({}, certification), { emitedBy: data.emitedBy, grantedTo: data.user.username });
 });
 exports.addNewCertification = addNewCertification;
@@ -87,13 +83,11 @@ const addManyCertifications = (data) => __awaiter(void 0, void 0, void 0, functi
 exports.addManyCertifications = addManyCertifications;
 const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, uuid } = data;
-    yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid })).update(dependencies_1.DatabaseService, data);
+    yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { credentials: { uuid } })).update(dependencies_1.DatabaseService, data);
     return formats.se([
         Object.assign(Object.assign({}, (yield (0, exports.getCertificationByUUID)({
             credentials: { uuid },
-            related: dependencies_1.DatabaseService.getRelated([
-                ["Institution", { attributes: ["name"], as: "Institution" }],
-            ]),
+            related: [["Institution", { attributes: ["name"], as: "Institution" }]],
         }))), { Users: [user] }),
     ])[0];
 });

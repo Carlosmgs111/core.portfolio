@@ -17,6 +17,7 @@ const colors_1 = __importDefault(require("colors"));
 const login_1 = require("./handlers/login");
 const certifications_1 = require("./handlers/certifications");
 const projects_1 = require("./handlers/projects");
+const institutions_1 = require("./handlers/institutions");
 const utils_1 = require("../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
 colors_1.default;
@@ -32,28 +33,30 @@ exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
         username: usernames.re,
         exp: 0,
     };
-    const [login, logout, certifications, institutions, projects] = [
+    const [login, logout, user, certifications, institutions, projects] = [
         "Login".bgGreen,
         "Logout".bgRed,
+        "User",
         "Certifications",
         "Institutions",
         "Projects",
     ];
-    const choices = [certifications, institutions, projects];
+    const choices = [user, certifications, institutions, projects];
     const options = {
         [login]: () => (0, login_1.loginHandler)(state),
         [logout]: () => (state.token = undefined),
         [certifications]: () => (0, certifications_1.certificationsHandler)(state),
+        [institutions]: () => (0, institutions_1.institutionsHandler)(state),
         [projects]: () => (0, projects_1.projectsHandler)(state),
     };
     while (true) {
         const { token } = state;
         if (token && choices[choices.length - 1] !== logout) {
-            choices.length > 3 && choices.shift();
+            choices.length > 4 && choices.shift();
             choices.push(logout);
         }
         if (!token && choices[0] !== login) {
-            choices.length > 3 && choices.pop();
+            choices.length > 4 && choices.pop();
             choices.unshift(login);
         }
         const { option } = yield inquirer_1.default.prompt([

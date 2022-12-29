@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.sayHello = exports.updateUser = exports.removeUser = exports.signin = exports.registerUser = void 0;
+exports.getAllUsername = exports.sayHello = exports.updateUser = exports.removeUser = exports.signin = exports.registerUser = void 0;
 const User_1 = require("../../domain/entities/User");
 const dependencies_1 = require("../../config/dependencies");
 // ! implementar el uso de ´boom´ a traves de un ´interface´
@@ -41,3 +41,5 @@ const updateUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.updateUser = updateUser;
 const sayHello = (data) => data.user.sayHello(data.name);
 exports.sayHello = sayHello;
+const getAllUsername = () => __awaiter(void 0, void 0, void 0, function* () { return yield User_1.User.findAll(dependencies_1.DatabaseService); });
+exports.getAllUsername = getAllUsername;

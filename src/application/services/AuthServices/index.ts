@@ -18,7 +18,6 @@ export class AuthServices {
 
   getAuthPackage = (params: any) => {
     const token = createToken(params, expiresIn1Month);
-    console.log({ token });
     return {
       token,
       expire: expiresIn1Month,

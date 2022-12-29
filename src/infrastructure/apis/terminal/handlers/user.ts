@@ -3,30 +3,10 @@ import {
   updateCertification,
   getOwnCertifications,
 } from "../../../../application/use_cases/certifications";
-import { getAllUsername } from "../../../../application/use_cases/users";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
-
-const listByUsernameHandler = async (state: any) => {
-  let running = true;
-  const usernames = await getAllUsername();
-  const exit = "Salir";
-  const choices = [...usernames, exit];
-  while (running) {
-    const { option } = await inquirer.prompt([
-      {
-        name: "option",
-        type: "list",
-        message: "Certification".cyan,
-        choices,
-      },
-    ]);
-    console.log(await getCertifications({ username: option }));
-    if (option === exit) running = false;
-  }
-};
 
 const listCertificationsHandler = async (state: any) => {
   const { token } = state;
@@ -35,7 +15,6 @@ const listCertificationsHandler = async (state: any) => {
   const options = {
     [all]: async () => console.log(await getCertifications({})),
     [owns]: async () => console.log(await getOwnCertifications({ token })),
-    [byUser]: async () => await listByUsernameHandler(state),
     [test]: () => {},
   };
   const { option } = await inquirer.prompt([
@@ -45,10 +24,10 @@ const listCertificationsHandler = async (state: any) => {
       choices,
     },
   ]);
-  await execFunc(options[option]);
+  execFunc(options[option]);
 };
 
-export const certificationsHandler = async (state: any) => {
+export const userHandler = async (state: any) => {
   let running = true;
   const [add, update, remove, read, exit] = [
     "Agregar",

@@ -28,3 +28,5 @@ export const updateUser = async (data: any) => {
   ).update(DatabaseService, data);
 };
 export const sayHello = (data: any) => data.user.sayHello(data.name);
+
+export const getAllUsername = async () => await User.findAll(DatabaseService);

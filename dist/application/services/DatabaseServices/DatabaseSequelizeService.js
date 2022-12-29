@@ -69,25 +69,25 @@ class DatabaseSequelizeService {
                     return `${(0, utils_1.labelCases)(from).CP}_${(0, utils_1.labelCases)(to).CP}`;
                 if (models_1.default[`${(0, utils_1.labelCases)(to).CP}_${(0, utils_1.labelCases)(from).CP}`])
                     return `${(0, utils_1.labelCases)(to).CP}_${(0, utils_1.labelCases)(from).CP}`;
+                throw boom_1.default.internal("Invalid labels");
             };
             let relationshipLabel = composeRelationshipLabel(from.label, to.label);
-            if (!relationshipLabel)
-                throw new Error("Invalid labels");
             const relationshipUUIDS = {
                 [`${from.label}UUID`]: from.uuid,
                 [`${to.label}UUID`]: to.uuid,
             };
+            console.log({ relationshipUUIDS });
             const exist = yield this.setupEntity(relationshipLabel).findOne({
                 credentials: relationshipUUIDS,
             });
             return [exist, relationshipUUIDS];
         });
-        this.adapter = (OPS) => {
-            const { credentials = {}, related = [], size = 100, page = 0, as = null, } = OPS;
-            return Object.assign(Object.assign({}, OPS), { where: credentials, include: related, limit: size, offset: page, alias: as });
-        };
         // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
         this.hasMany = (Entity, label) => __awaiter(this, void 0, void 0, function* () { return Entity[`get${label}`](); });
+        this.adapter = (OPS) => {
+            const { credentials = {}, related = [], size = 100, page = 0, as = null, } = OPS;
+            return Object.assign(Object.assign({}, OPS), { where: credentials, include: this.formatIncludeClosure(related), limit: size, offset: page, alias: as });
+        };
         // * A function that is called in the constructor of the class. It is used to associate the models in
         // * the database.
         this.syncModels = () => {
@@ -97,7 +97,7 @@ class DatabaseSequelizeService {
         this.syncModels();
     }
     // ? pending to find an appropiated agnosthic name
-    getRelated(entitiesToInclude = []) {
+    formatIncludeClosure(entitiesToInclude = []) {
         const include = [];
         entitiesToInclude.forEach((e) => {
             const [model, queryOps = {}, options = {}] = e;

@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import { getEntityProperties, filterAttrs } from "../../utils";
 import boom from "@hapi/boom";
+import { DatabaseService } from "../../application/services";
 
 export class User {
   uuid: string;
@@ -83,6 +84,11 @@ export class User {
     return account;
   };
 
+  static findAll = async (DatabaseService: any, options: any = {}) =>
+    (await DatabaseService.setupEntity("User").findAll(options)).map(
+      (user: any) => user.dataValues.username
+    );
+
   remove = async (DatabaseServices: any) => {
     DatabaseServices.setupEntity("User");
     return await DatabaseServices.remove({
@@ -102,10 +108,9 @@ export class User {
   };
 
   static certifications = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupEntity("User");
-    const user: any = await User.find(DatabaseServices, {
+    const user: any = await User.find(DatabaseServices.setupEntity("User"), {
       credentials,
-      related: DatabaseServices.getRelated([["Certification"]]),
+      related: [["Certification"]],
     });
     return user.Certifications.map((c: any) =>
       filterAttrs(
@@ -119,10 +124,9 @@ export class User {
   };
 
   static projects = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupEntity("User");
-    const user = await User.find(DatabaseServices, {
+    const user = await User.find(DatabaseServices.setupEntity("User"), {
       credentials,
-      related: DatabaseServices.getRelated([["Project"]]),
+      related: [["Project"]],
     });
     return (await DatabaseServices.hasMany(user, "Projects")).map((c: any) => ({
       ...c.dataValues,

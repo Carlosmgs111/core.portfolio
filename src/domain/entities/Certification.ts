@@ -46,19 +46,17 @@ export class Certification {
     return certification;
   };
 
-  static load = async (DatabaseServices: any, credentials: any) => {
+  static load = async (DatabaseServices: any, options: any) => {
     DatabaseServices.setupEntity("Certification");
-    const certification = await Certification.find(DatabaseServices, {
-      uuid: credentials.uuid,
-    });
+    const certification = await Certification.find(DatabaseServices, options);
     if (!certification) throw new Error("Incorrect credentials!");
     const loadedCertification = new Certification(certification);
     return loadedCertification;
   };
 
-  static find = async (DatabaseServices: any, credentials: any) => {
+  static find = async (DatabaseServices: any, options: any) => {
     DatabaseServices.setupEntity("Certification");
-    const certificate: any = await DatabaseServices.findOne(credentials);
+    const certificate: any = await DatabaseServices.findOne(options);
     return certificate;
   };
 
@@ -89,10 +87,10 @@ export class Certification {
     );
     if (!exist) throw boom.conflict("Relationship doesn't exist!");
     DatabaseServices.setupEntity("Certification");
-    this.updatedAt = new Date().getTime();
     await DatabaseServices.update(
       {
-        ...getEntityProperties({ ...this, ...data }),
+        updatedAt: new Date().getTime(),
+        ...filterAttrs(data, ["uuid", "user", "token"]),
       },
       { credentials: { uuid: this.uuid } }
     );

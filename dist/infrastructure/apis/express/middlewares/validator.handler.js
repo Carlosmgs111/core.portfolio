@@ -8,7 +8,6 @@ const boom_1 = __importDefault(require("@hapi/boom"));
 function validatorHandler(schema, property) {
     return (req, res, next) => {
         const data = req[property];
-        console.log({ data });
         const { error } = schema.validate(data, { abortEarly: false });
         if (error) {
             next(boom_1.default.badRequest(error));

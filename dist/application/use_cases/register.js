@@ -34,7 +34,6 @@ exports.signin = signin;
 const authSignin = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     dependencies_1.DatabaseService;
     const entity = yield User_1.User.load(dependencies_1.DatabaseService, credentials);
-    // console.log({ entity });
     if (!entity)
         throw new Error("The account doesn't exist!");
     const isMatch = entity.comparePassword(credentials.password);

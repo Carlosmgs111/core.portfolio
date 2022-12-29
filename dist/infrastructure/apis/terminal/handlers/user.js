@@ -12,13 +12,30 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.projectsHandler = void 0;
-const projects_1 = require("../../../../application/use_cases/projects");
+exports.userHandler = void 0;
+const certifications_1 = require("../../../../application/use_cases/certifications");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
-const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
-    const { username } = state;
+const listCertificationsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
+    const { token } = state;
+    const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
+    const choices = [all, owns, byUser, test];
+    const options = {
+        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getCertifications)({})); }),
+        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getOwnCertifications)({ token })); }),
+        [test]: () => { },
+    };
+    const { option } = yield inquirer_1.default.prompt([
+        {
+            type: "list",
+            name: "option",
+            choices,
+        },
+    ]);
+    (0, utils_1.execFunc)(options[option]);
+});
+const userHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     let running = true;
     const [add, update, remove, read, exit] = [
         "Agregar",
@@ -29,7 +46,7 @@ const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* (
     ];
     const choices = [add, update, remove, read, exit];
     const options = {
-        [read]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, projects_1.getProjects)({ username })); }),
+        [read]: () => __awaiter(void 0, void 0, void 0, function* () { return yield listCertificationsHandler(state); }),
         [exit]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),
     };
     while (running) {
@@ -37,11 +54,11 @@ const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* (
             {
                 name: "option",
                 type: "list",
-                message: "Projects".cyan,
+                message: "Certification".cyan,
                 choices,
             },
         ]);
         yield (0, utils_1.execFunc)(options[option]);
     }
 });
-exports.projectsHandler = projectsHandler;
+exports.userHandler = userHandler;
