@@ -2,7 +2,6 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import { getEntityProperties, filterAttrs } from "../../utils";
 import boom from "@hapi/boom";
-import { DatabaseService } from "../../application/services";
 
 export class User {
   uuid: string;
@@ -141,7 +140,6 @@ export class User {
     return hash;
   };
 
-  comparePassword = async (password: string): Promise<Boolean> => {
-    return await bcrypt.compare(password, this.password);
-  };
+  comparePassword = async (password: string): Promise<Boolean> =>
+    await bcrypt.compare(password, this.password);
 }

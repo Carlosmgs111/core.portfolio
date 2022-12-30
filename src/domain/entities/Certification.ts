@@ -74,7 +74,7 @@ export class Certification {
     return await DatabaseServices.setupEntity("Certification").remove({
       credentials: filterAttrs(
         getEntityProperties(this),
-        ["businessName", "title", "uuid"],
+        ["title", "uuid"],
         false
       ),
     });

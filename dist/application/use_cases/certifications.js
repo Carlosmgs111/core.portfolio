@@ -32,9 +32,10 @@ const formats = {
     se: sequelizeFormatCertifications,
     mo: mongooseFormatCertifications,
 };
+// ! ---------------------------------------------------------------------------------------------
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
-    return formats.se(yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, {
+    return formats.mo(yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, {
         related: [
             [
                 "User",
@@ -84,7 +85,7 @@ exports.addManyCertifications = addManyCertifications;
 const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, uuid } = data;
     yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { credentials: { uuid } })).update(dependencies_1.DatabaseService, data);
-    return formats.se([
+    return formats.mo([
         Object.assign(Object.assign({}, (yield (0, exports.getCertificationByUUID)({
             credentials: { uuid },
             related: [["Institution", { attributes: ["name"], as: "Institution" }]],
@@ -93,7 +94,9 @@ const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function
 });
 exports.updateCertification = updateCertification;
 const removeCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { uuid: data.uuid })).remove(dependencies_1.DatabaseService, { userUUID: data.user.uuid });
+    yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, {
+        credentials: { uuid: data.uuid },
+    })).remove(dependencies_1.DatabaseService, { userUUID: data.user.uuid });
     return { message: "Certification deleted", uuid: data.uuid };
 });
 exports.removeCertification = removeCertification;

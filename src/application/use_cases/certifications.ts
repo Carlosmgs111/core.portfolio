@@ -35,9 +35,11 @@ const formats = {
   mo: mongooseFormatCertifications,
 };
 
+// ! ---------------------------------------------------------------------------------------------
+
 export const getCertifications = async (data: any) => {
   const { username, user, size, page } = data;
-  return formats.se(
+  return formats.mo(
     await Certification.findAll(DatabaseService, {
       related: [
         [
@@ -101,7 +103,7 @@ export const updateCertification = async (data: any) => {
   await (
     await Certification.load(DatabaseService, { credentials: { uuid } })
   ).update(DatabaseService, data);
-  return formats.se([
+  return formats.mo([
     {
       ...(await getCertificationByUUID({
         credentials: { uuid },
@@ -114,7 +116,9 @@ export const updateCertification = async (data: any) => {
 
 export const removeCertification = async (data: any) => {
   await (
-    await Certification.load(DatabaseService, { uuid: data.uuid })
+    await Certification.load(DatabaseService, {
+      credentials: { uuid: data.uuid },
+    })
   ).remove(DatabaseService, { userUUID: data.user.uuid });
   return { message: "Certification deleted", uuid: data.uuid };
 };

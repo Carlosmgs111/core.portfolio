@@ -27,8 +27,10 @@ export default class DatabaseSequelizeService {
   };
 
   findOne = async (options: any = {}) => {
+    console.log({ options });
     try {
       const entity = await this.Entity.findOne(this.adapter(options));
+      console.log({ entity });
       return entity;
     } catch (e: any) {
       console.log(e.message.red);

@@ -39,9 +39,7 @@ class User {
             this.password = hash;
             return hash;
         });
-        this.comparePassword = (password) => __awaiter(this, void 0, void 0, function* () {
-            return yield bcrypt_1.default.compare(password, this.password);
-        });
+        this.comparePassword = (password) => __awaiter(this, void 0, void 0, function* () { return yield bcrypt_1.default.compare(password, this.password); });
         this.uuid = uuid;
         this.username = username;
         this.email = email;

@@ -29,8 +29,10 @@ class DatabaseSequelizeService {
             return entities;
         });
         this.findOne = (options = {}) => __awaiter(this, void 0, void 0, function* () {
+            console.log({ options });
             try {
                 const entity = yield this.Entity.findOne(this.adapter(options));
+                console.log({ entity });
                 return entity;
             }
             catch (e) {

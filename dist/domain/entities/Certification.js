@@ -30,7 +30,7 @@ class Certification {
         this.remove = (DatabaseServices, options = {}) => __awaiter(this, void 0, void 0, function* () {
             yield DatabaseServices.unrelate({ label: "user", uuid: options.userUUID }, { label: "certification", uuid: this.uuid });
             return yield DatabaseServices.setupEntity("Certification").remove({
-                credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["businessName", "title", "uuid"], false),
+                credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["title", "uuid"], false),
             });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
