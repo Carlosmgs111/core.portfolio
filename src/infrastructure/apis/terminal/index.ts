@@ -17,8 +17,8 @@ export default async () => {
   };
   const usernames = { re: "reapern7", cm: "cmgs111" };
   const state: any = {
-    token: tokens.re,
-    username: usernames.re,
+    token: tokens.cm,
+    username: usernames.cm,
     exp: 0,
   };
   const [login, logout, user, certifications, institutions, projects] = [

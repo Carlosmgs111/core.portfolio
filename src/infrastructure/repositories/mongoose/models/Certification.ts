@@ -4,6 +4,7 @@ export interface ICertification extends Document {
   uuid: string;
   title: string;
   Users: Array<any>;
+  Institution: string;
   institutionUUID: string;
   emitedDate: number;
   image: string;
@@ -27,7 +28,8 @@ const certificationSchema = new Schema<ICertification>({
     lowercase: false,
     trim: false,
   },
-  Users: [{ type: Schema.Types.String, ref: "User" }],
+  Users: [{ type: String, ref: "User" }],
+  Institution: { type: String, ref: "Institution" },
   institutionUUID: {
     type: String,
     unique: false,

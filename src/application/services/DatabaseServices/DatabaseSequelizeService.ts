@@ -79,8 +79,8 @@ export default class DatabaseSequelizeService {
       to.label
     );
     const relationshipUUIDS = {
-      [`${from.label}UUID`]: from.uuid,
-      [`${to.label}UUID`]: to.uuid,
+      [`${from.label}UUID`]: from.pk,
+      [`${to.label}UUID`]: to.pk,
     };
     console.log({ relationshipUUIDS });
     const exist = await this.setupEntity(relationshipLabel).findOne({

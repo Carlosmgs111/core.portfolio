@@ -75,8 +75,8 @@ class DatabaseSequelizeService {
             };
             let relationshipLabel = composeRelationshipLabel(from.label, to.label);
             const relationshipUUIDS = {
-                [`${from.label}UUID`]: from.uuid,
-                [`${to.label}UUID`]: to.uuid,
+                [`${from.label}UUID`]: from.pk,
+                [`${to.label}UUID`]: to.pk,
             };
             console.log({ relationshipUUIDS });
             const exist = yield this.setupEntity(relationshipLabel).findOne({

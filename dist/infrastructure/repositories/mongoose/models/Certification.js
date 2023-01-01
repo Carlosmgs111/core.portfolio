@@ -14,7 +14,8 @@ const certificationSchema = new mongoose_1.Schema({
         lowercase: false,
         trim: false,
     },
-    Users: [{ type: mongoose_1.Schema.Types.String, ref: "User" }],
+    Users: [{ type: String, ref: "User" }],
+    Institution: { type: String, ref: "Institution" },
     institutionUUID: {
         type: String,
         unique: false,

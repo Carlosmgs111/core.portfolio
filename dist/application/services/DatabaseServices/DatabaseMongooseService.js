@@ -16,6 +16,7 @@ const mongoose_1 = require("../../../infrastructure/repositories/mongoose");
 const models_1 = __importDefault(require("../../../infrastructure/repositories/mongoose/models"));
 const utils_1 = require("../../../utils");
 const boom_1 = __importDefault(require("@hapi/boom"));
+console.log({ models: models_1.default });
 class DatabaseMongooseService {
     constructor({}) {
         this.serviceDescription = "Mongoose Interface Database Service";
@@ -25,17 +26,19 @@ class DatabaseMongooseService {
             return entity;
         });
         this.findAll = (options) => __awaiter(this, void 0, void 0, function* () {
-            const entities = yield this.Entity.find(this.adapter(options));
+            const { related = [] } = options;
+            const entities = yield this.Entity.find(this.adapter(options)).populate(this.getPopulateMap(related));
+            console.log({ entities });
             return entities;
         });
-        this.findOne = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            const { credentials } = Entity;
-            const entity = yield this.Entity.findOne(credentials);
-            console.log({ entity });
+        this.findOne = (options) => __awaiter(this, void 0, void 0, function* () {
+            const { credentials, related = [] } = options;
+            const entity = yield this.Entity.findOne(credentials).populate(this.getPopulateMap(related));
+            yield console.log({ entity });
             return entity;
         });
-        this.remove = (Entity) => __awaiter(this, void 0, void 0, function* () {
-            return yield this.Entity.deleteOne(this.adapter(Entity));
+        this.remove = (options) => __awaiter(this, void 0, void 0, function* () {
+            return yield this.Entity.deleteOne(this.adapter(options));
         });
         this.update = (Entity, options) => __awaiter(this, void 0, void 0, function* () {
             const model = yield this.Entity.updateOne(this.adapter(options), Entity);
@@ -45,40 +48,40 @@ class DatabaseMongooseService {
         // ? add a check method that search for a uuid similar to be introduced
         this.relate = (from, to) => __awaiter(this, void 0, void 0, function* () {
             const fromModel = yield models_1.default[(0, utils_1.labelCases)(from.label).CS].findOne({
-                uuid: from.uuid,
+                uuid: from.pk,
             });
             const toModel = yield models_1.default[(0, utils_1.labelCases)(to.label).CS].findOne({
-                uuid: to.uuid,
+                uuid: to.pk,
             });
             yield fromModel.updateOne({
                 [(0, utils_1.labelCases)(to.label).CP]: [
                     ...fromModel[(0, utils_1.labelCases)(to.label).CP],
-                    to.uuid,
+                    toModel._id,
                 ],
             }, {
-                uuid: from.uuid,
+                uuid: from.pk,
             });
             yield toModel.updateOne({
                 [(0, utils_1.labelCases)(from.label).CP]: [
                     ...toModel[(0, utils_1.labelCases)(from.label).CP],
-                    from.uuid,
+                    fromModel._id,
                 ],
             }, {
-                uuid: to.uuid,
+                uuid: to.pk,
             });
         });
         // TODO rename to removeRelationship
         this.unrelate = (from, to) => __awaiter(this, void 0, void 0, function* () {
             const fromModel = yield models_1.default[(0, utils_1.labelCases)(from.label).CS].findOne({
-                uuid: from.uuid,
+                uuid: from.pk,
             });
             const toModel = yield models_1.default[(0, utils_1.labelCases)(to.label).CS].findOne({
-                uuid: to.uuid,
+                uuid: to.pk,
             });
             const fromRelated = fromModel[(0, utils_1.labelCases)(to.label).CP];
-            const fromRelatedIndex = fromModel[(0, utils_1.labelCases)(to.label).CP].indexOf(to.uuid);
+            const fromRelatedIndex = fromModel[(0, utils_1.labelCases)(to.label).CP].indexOf(toModel._id);
             const toRelated = toModel[(0, utils_1.labelCases)(from.label).CP];
-            const toRelatedIndex = toModel[(0, utils_1.labelCases)(from.label).CP].indexOf(from.uuid);
+            const toRelatedIndex = toModel[(0, utils_1.labelCases)(from.label).CP].indexOf(fromModel._id);
             if (fromRelatedIndex === -1 || toRelatedIndex === -1)
                 throw boom_1.default.internal("Entity related was not found!");
             fromRelated.splice(fromRelatedIndex, 1);
@@ -86,21 +89,31 @@ class DatabaseMongooseService {
             yield fromModel.updateOne({
                 [(0, utils_1.labelCases)(to.label).CP]: [...fromRelated],
             }, {
-                uuid: from.uuid,
+                uuid: from.pk,
             });
             yield toModel.updateOne({
                 [(0, utils_1.labelCases)(from.label).CP]: [...toRelated],
             }, {
-                uuid: to.uuid,
+                uuid: to.pk,
             });
         });
         this.checkRelationship = ({}, {}) => __awaiter(this, void 0, void 0, function* () { return [true]; });
         this.hasMany = () => { };
         this.adapter = (options) => {
-            const { credentials } = options;
+            const { credentials, related } = options;
             return credentials;
         };
-        this.formatIncludeClosure = () => __awaiter(this, void 0, void 0, function* () { });
+        this.getPopulateMap = (related) => {
+            const populates = [];
+            related.forEach((r) => {
+                const [label, { as = null } = {}] = r;
+                console.log();
+                populates.push({ path: as || (0, utils_1.labelCases)(label).CP });
+            });
+            console.log({ populates });
+            return populates;
+        };
+        this.formatIncludeClosure = (entitiesToInclude) => __awaiter(this, void 0, void 0, function* () { });
         this.syncModels = () => { };
         (0, mongoose_1.connect)();
     }

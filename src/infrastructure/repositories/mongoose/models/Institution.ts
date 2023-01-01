@@ -4,6 +4,7 @@ export interface IInstitution extends Document {
   uuid: string;
   name: string;
   businessName: string;
+  Users: Array<any>;
   descriptions: Array<string>;
   urls: Array<string>;
   createdAt: number;
@@ -30,6 +31,7 @@ const institutionSchema = new Schema<IInstitution>({
     lowercase: true,
     trim: true,
   },
+  Users: [{ type: String, ref: "User" }],
   descriptions: {
     type: [String],
     unique: false,
@@ -42,7 +44,7 @@ const institutionSchema = new Schema<IInstitution>({
     type: [String],
     required: false,
     unique: false,
-    default:[]
+    default: [],
   },
   createdAt: {
     type: Number,

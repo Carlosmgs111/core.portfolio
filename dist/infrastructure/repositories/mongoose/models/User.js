@@ -29,7 +29,8 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
-    Certifications: [{ type: mongoose_1.Schema.Types.String, ref: "Certification" }],
+    Certifications: [{ type: String, ref: "Certification" }],
+    Institutions: [{ type: String, ref: "Institution" }],
     createdAt: {
         type: Number,
         required: true,

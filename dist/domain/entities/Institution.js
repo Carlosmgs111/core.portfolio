@@ -50,7 +50,7 @@ Institution.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 
     const institution = new Institution(Object.assign(Object.assign({}, data), { uuid }));
     yield DatabaseServices.setupEntity("Institution").create(institution);
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
-    yield DatabaseServices.relate({ label: "institution", uuid }, { label: "user", uuid: data.user.uuid });
+    yield DatabaseServices.relate({ label: "institution", pk: uuid }, { label: "user", pk: data.user.uuid });
     return institution;
 });
 Institution.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {

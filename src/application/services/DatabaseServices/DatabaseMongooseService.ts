@@ -1,9 +1,10 @@
 import { connect } from "../../../infrastructure/repositories/mongoose";
 import models from "../../../infrastructure/repositories/mongoose/models";
 import { model } from "mongoose";
-import { labelCases } from "../../../utils";
+import { labelCases, Mapfy } from "../../../utils";
 import boom from "@hapi/boom";
 
+console.log({ models });
 export default class DatabaseMongooseService {
   serviceDescription: string = "Mongoose Interface Database Service";
   Entity: any;
@@ -22,19 +23,25 @@ export default class DatabaseMongooseService {
   };
 
   findAll = async (options: any) => {
-    const entities = await this.Entity.find(this.adapter(options));
+    const { related = [] } = options;
+    const entities = await this.Entity.find(this.adapter(options)).populate(
+      this.getPopulateMap(related)
+    );
+    console.log({ entities });
     return entities;
   };
 
-  findOne = async (Entity: any) => {
-    const { credentials } = Entity;
-    const entity = await this.Entity.findOne(credentials);
-    console.log({ entity });
+  findOne = async (options: any) => {
+    const { credentials, related = [] } = options;
+    const entity = await this.Entity.findOne(credentials).populate(
+      this.getPopulateMap(related)
+    );
+    await console.log({ entity });
     return entity;
   };
 
-  remove = async (Entity: any) => {
-    return await this.Entity.deleteOne(this.adapter(Entity));
+  remove = async (options: any) => {
+    return await this.Entity.deleteOne(this.adapter(options));
   };
 
   update = async (Entity: any, options: any) => {
@@ -46,32 +53,32 @@ export default class DatabaseMongooseService {
   // ? add a check method that search for a uuid similar to be introduced
   relate = async (from: any, to: any) => {
     const fromModel = await models[labelCases(from.label).CS].findOne({
-      uuid: from.uuid,
+      uuid: from.pk,
     });
     const toModel = await models[labelCases(to.label).CS].findOne({
-      uuid: to.uuid,
+      uuid: to.pk,
     });
 
     await fromModel.updateOne(
       {
         [labelCases(to.label).CP]: [
           ...fromModel[labelCases(to.label).CP],
-          to.uuid,
+          toModel._id,
         ],
       },
       {
-        uuid: from.uuid,
+        uuid: from.pk,
       }
     );
     await toModel.updateOne(
       {
         [labelCases(from.label).CP]: [
           ...toModel[labelCases(from.label).CP],
-          from.uuid,
+          fromModel._id,
         ],
       },
       {
-        uuid: to.uuid,
+        uuid: to.pk,
       }
     );
   };
@@ -79,19 +86,19 @@ export default class DatabaseMongooseService {
   // TODO rename to removeRelationship
   unrelate = async (from: any, to: any) => {
     const fromModel = await models[labelCases(from.label).CS].findOne({
-      uuid: from.uuid,
+      uuid: from.pk,
     });
     const toModel = await models[labelCases(to.label).CS].findOne({
-      uuid: to.uuid,
+      uuid: to.pk,
     });
     const fromRelated = fromModel[labelCases(to.label).CP];
     const fromRelatedIndex = fromModel[labelCases(to.label).CP].indexOf(
-      to.uuid
+      toModel._id
     );
 
     const toRelated = toModel[labelCases(from.label).CP];
     const toRelatedIndex = toModel[labelCases(from.label).CP].indexOf(
-      from.uuid
+      fromModel._id
     );
 
     if (fromRelatedIndex === -1 || toRelatedIndex === -1)
@@ -105,7 +112,7 @@ export default class DatabaseMongooseService {
         [labelCases(to.label).CP]: [...fromRelated],
       },
       {
-        uuid: from.uuid,
+        uuid: from.pk,
       }
     );
     await toModel.updateOne(
@@ -113,7 +120,7 @@ export default class DatabaseMongooseService {
         [labelCases(from.label).CP]: [...toRelated],
       },
       {
-        uuid: to.uuid,
+        uuid: to.pk,
       }
     );
   };
@@ -123,11 +130,22 @@ export default class DatabaseMongooseService {
   hasMany = () => {};
 
   adapter = (options: any) => {
-    const { credentials } = options;
+    const { credentials, related } = options;
     return credentials;
   };
 
-  formatIncludeClosure = async () => {};
+  getPopulateMap = (related: any) => {
+    const populates: any = [];
+    related.forEach((r: any) => {
+      const [label, { as = null } = {}] = r;
+      console.log();
+      populates.push({ path: as || labelCases(label).CP });
+    });
+    console.log({ populates });
+    return populates;
+  };
+
+  formatIncludeClosure = async (entitiesToInclude: any) => {};
 
   setupEntity(entityLabel: string) {
     this.Entity = models[entityLabel];

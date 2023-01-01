@@ -21,6 +21,7 @@ const institutionSchema = new mongoose_1.Schema({
         lowercase: true,
         trim: true,
     },
+    Users: [{ type: String, ref: "User" }],
     descriptions: {
         type: [String],
         unique: false,
@@ -33,7 +34,7 @@ const institutionSchema = new mongoose_1.Schema({
         type: [String],
         required: false,
         unique: false,
-        default: []
+        default: [],
     },
     createdAt: {
         type: Number,

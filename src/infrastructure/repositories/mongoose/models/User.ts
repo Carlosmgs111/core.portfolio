@@ -6,6 +6,7 @@ export interface IUser extends Document {
   email: string;
   password: string;
   Certifications: Array<any>;
+  Institutions: Array<any>;
   privilege: string;
   createdAt: number;
   updatedAt: number;
@@ -39,7 +40,8 @@ const userSchema = new Schema<IUser>({
     type: String,
     required: true,
   },
-  Certifications: [{ type: Schema.Types.String, ref: "Certification" }],
+  Certifications: [{ type: String, ref: "Certification" }],
+  Institutions: [{ type: String, ref: "Institution" }],
   createdAt: {
     type: Number,
     required: true,

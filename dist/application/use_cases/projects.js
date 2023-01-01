@@ -19,9 +19,7 @@ const formatProjects = (projects) => projects.map((project) => (0, utils_1.filte
 const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
     const projects = yield dependencies_1.DatabaseService.setupEntity("Project").findAll({
-        related: dependencies_1.DatabaseService.getRelated([
-            ["User", { as: "User", credentials: username && { username } }],
-        ]),
+        related: [["User", { as: "User", credentials: username && { username } }]],
         size,
         page,
     });

@@ -29,8 +29,8 @@ exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
     };
     const usernames = { re: "reapern7", cm: "cmgs111" };
     const state = {
-        token: tokens.re,
-        username: usernames.re,
+        token: tokens.cm,
+        username: usernames.cm,
         exp: 0,
     };
     const [login, logout, user, certifications, institutions, projects] = [

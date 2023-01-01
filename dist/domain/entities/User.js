@@ -85,7 +85,8 @@ User.certifications = (DatabaseServices, credentials) => __awaiter(void 0, void 
         credentials,
         related: [["Certification"]],
     });
-    return user.Certifications.map((c) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, c.dataValues), { grantedTo: user.username }), ["Users_Certifications"]));
+    console.log({ user });
+    return user.Certifications.map((c) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, (c.dataValues ? c.dataValues : c._doc)), { grantedTo: user.username }), ["Users_Certifications"]));
 });
 User.projects = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield User.find(DatabaseServices.setupEntity("User"), {

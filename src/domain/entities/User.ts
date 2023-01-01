@@ -111,10 +111,11 @@ export class User {
       credentials,
       related: [["Certification"]],
     });
+    console.log({user})
     return user.Certifications.map((c: any) =>
       filterAttrs(
         {
-          ...c.dataValues,
+          ...(c.dataValues ? c.dataValues : c._doc),
           grantedTo: user.username,
         },
         ["Users_Certifications"]

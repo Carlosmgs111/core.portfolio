@@ -24,6 +24,7 @@ exports.signup = signup;
 const signin = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const account = yield User_1.User.load(dependencies_1.DatabaseService, {
         credentials,
+        // related: [["Institution"], ["Certification"]],
     });
     if (!account)
         throw new Error("The account doesn't exist!");

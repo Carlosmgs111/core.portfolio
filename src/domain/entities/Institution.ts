@@ -34,8 +34,8 @@ export class Institution {
     await DatabaseServices.setupEntity("Institution").create(institution);
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
     await DatabaseServices.relate(
-      { label: "institution", uuid },
-      { label: "user", uuid: data.user.uuid }
+      { label: "institution", pk: uuid },
+      { label: "user", pk: data.user.uuid }
     );
     return institution;
   };

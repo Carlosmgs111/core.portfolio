@@ -49,7 +49,11 @@ export const getCertifications = async (data: any) => {
             credentials: username && { username },
           },
         ],
-        ["Institution", { attributes: ["name"] }, { singular: true }],
+        [
+          "Institution",
+          { attributes: ["name"], as: "Institution" },
+          // { singular: true },
+        ],
       ],
       size,
       page,
@@ -107,7 +111,7 @@ export const updateCertification = async (data: any) => {
     {
       ...(await getCertificationByUUID({
         credentials: { uuid },
-        related: [["Institution", { attributes: ["name"], as: "Institution" }]],
+        // related: [["Institution", { attributes: ["name"], as: "Institution" }]],
       })),
       Users: [user],
     },

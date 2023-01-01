@@ -12,9 +12,7 @@ const formatProjects = (projects: [Project]) =>
 export const getProjects = async (data: any) => {
   const { username, user, size, page } = data;
   const projects = await DatabaseService.setupEntity("Project").findAll({
-    related: DatabaseService.getRelated([
-      ["User", { as: "User", credentials: username && { username } }],
-    ]),
+    related: [["User", { as: "User", credentials: username && { username } }]],
     size,
     page,
   });

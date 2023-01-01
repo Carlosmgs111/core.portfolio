@@ -28,17 +28,18 @@ class Certification {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (DatabaseServices, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            yield DatabaseServices.unrelate({ label: "user", uuid: options.userUUID }, { label: "certification", uuid: this.uuid });
+            yield DatabaseServices.unrelate({ label: "user", pk: options.userUUID }, { label: "certification", pk: this.uuid });
             return yield DatabaseServices.setupEntity("Certification").remove({
                 credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["title", "uuid"], false),
             });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
-            const [exist] = yield DatabaseServices.checkRelationship({ label: "certification", uuid: this.uuid }, { label: "user", uuid: data.user.uuid });
+            const [exist] = yield DatabaseServices.checkRelationship({ label: "certification", pk: this.uuid }, { label: "user", pk: data.user.uuid });
             if (!exist)
                 throw boom_1.default.conflict("Relationship doesn't exist!");
             DatabaseServices.setupEntity("Certification");
-            yield DatabaseServices.update(Object.assign({ updatedAt: new Date().getTime() }, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
+            this.updatedAt = new Date().getTime();
+            yield DatabaseServices.update(Object.assign({ updatedAt: this.updatedAt }, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
             return this;
         });
         this.uuid = uuid;
@@ -58,7 +59,8 @@ Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, voi
     const uuid = (0, uuid_1.v4)();
     const certification = new Certification(Object.assign(Object.assign({}, data), { uuid }));
     yield DatabaseServices.setupEntity("Certification").create(certification);
-    yield DatabaseServices.relate({ label: "certification", uuid }, { label: "user", uuid: data.user.uuid });
+    yield DatabaseServices.relate({ label: "certification", pk: uuid }, { label: "user", pk: data.user.uuid });
+    console.log({ data });
     return certification;
 });
 Certification.load = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {

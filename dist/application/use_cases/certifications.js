@@ -44,7 +44,11 @@ const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* 
                     credentials: username && { username },
                 },
             ],
-            ["Institution", { attributes: ["name"] }, { singular: true }],
+            [
+                "Institution",
+                { attributes: ["name"], as: "Institution" },
+                // { singular: true },
+            ],
         ],
         size,
         page,
@@ -88,7 +92,7 @@ const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function
     return formats.mo([
         Object.assign(Object.assign({}, (yield (0, exports.getCertificationByUUID)({
             credentials: { uuid },
-            related: [["Institution", { attributes: ["name"], as: "Institution" }]],
+            // related: [["Institution", { attributes: ["name"], as: "Institution" }]],
         }))), { Users: [user] }),
     ])[0];
 });

@@ -40,9 +40,10 @@ export class Certification {
     const certification = new Certification({ ...data, uuid });
     await DatabaseServices.setupEntity("Certification").create(certification);
     await DatabaseServices.relate(
-      { label: "certification", uuid },
-      { label: "user", uuid: data.user.uuid }
+      { label: "certification", pk: uuid },
+      { label: "user", pk: data.user.uuid }
     );
+    console.log({ data });
     return certification;
   };
 
@@ -68,8 +69,8 @@ export class Certification {
 
   remove = async (DatabaseServices: any, options: any = {}) => {
     await DatabaseServices.unrelate(
-      { label: "user", uuid: options.userUUID },
-      { label: "certification", uuid: this.uuid }
+      { label: "user", pk: options.userUUID },
+      { label: "certification", pk: this.uuid }
     );
     return await DatabaseServices.setupEntity("Certification").remove({
       credentials: filterAttrs(
@@ -82,14 +83,15 @@ export class Certification {
 
   update = async (DatabaseServices: any, data: any) => {
     const [exist] = await DatabaseServices.checkRelationship(
-      { label: "certification", uuid: this.uuid },
-      { label: "user", uuid: data.user.uuid }
+      { label: "certification", pk: this.uuid },
+      { label: "user", pk: data.user.uuid }
     );
     if (!exist) throw boom.conflict("Relationship doesn't exist!");
     DatabaseServices.setupEntity("Certification");
+    this.updatedAt = new Date().getTime();
     await DatabaseServices.update(
       {
-        updatedAt: new Date().getTime(),
+        updatedAt: this.updatedAt,
         ...filterAttrs(data, ["uuid", "user", "token"]),
       },
       { credentials: { uuid: this.uuid } }
