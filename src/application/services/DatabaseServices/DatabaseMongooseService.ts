@@ -51,7 +51,7 @@ export default class DatabaseMongooseService {
 
   // TODO rename to createRelationship
   // ? add a check method that search for a uuid similar to be introduced
-  relate = async (from: any, to: any) => {
+  relateN2N = async (from: any, to: any) => {
     const fromModel = await models[labelCases(from.label).CS].findOne({
       uuid: from.pk,
     });
@@ -84,7 +84,7 @@ export default class DatabaseMongooseService {
   };
 
   // TODO rename to removeRelationship
-  unrelate = async (from: any, to: any) => {
+  unrelateN2N = async (from: any, to: any) => {
     const fromModel = await models[labelCases(from.label).CS].findOne({
       uuid: from.pk,
     });
@@ -123,6 +123,10 @@ export default class DatabaseMongooseService {
         uuid: to.pk,
       }
     );
+  };
+
+  relate2One = async (entity: any, ref: any) => {
+    return entity;
   };
 
   checkRelationship = async ({}: any, {}: any) => [true];

@@ -5,7 +5,7 @@ import {
 } from "../application/services";
 
 export const DatabaseService = DBS(
-  ServicesInterfaceEnums.DatabaseMongooseService
+  //ServicesInterfaceEnums.DatabaseMongooseService
 );
 export const AuthServices = new AS();
 

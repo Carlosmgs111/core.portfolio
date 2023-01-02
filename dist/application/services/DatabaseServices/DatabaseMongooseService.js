@@ -46,7 +46,7 @@ class DatabaseMongooseService {
         });
         // TODO rename to createRelationship
         // ? add a check method that search for a uuid similar to be introduced
-        this.relate = (from, to) => __awaiter(this, void 0, void 0, function* () {
+        this.relateN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
             const fromModel = yield models_1.default[(0, utils_1.labelCases)(from.label).CS].findOne({
                 uuid: from.pk,
             });
@@ -71,7 +71,7 @@ class DatabaseMongooseService {
             });
         });
         // TODO rename to removeRelationship
-        this.unrelate = (from, to) => __awaiter(this, void 0, void 0, function* () {
+        this.unrelateN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
             const fromModel = yield models_1.default[(0, utils_1.labelCases)(from.label).CS].findOne({
                 uuid: from.pk,
             });
@@ -96,6 +96,9 @@ class DatabaseMongooseService {
             }, {
                 uuid: to.pk,
             });
+        });
+        this.relate2One = (entity, ref) => __awaiter(this, void 0, void 0, function* () {
+            return entity;
         });
         this.checkRelationship = ({}, {}) => __awaiter(this, void 0, void 0, function* () { return [true]; });
         this.hasMany = () => { };

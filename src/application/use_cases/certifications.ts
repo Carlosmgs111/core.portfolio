@@ -39,7 +39,7 @@ const formats = {
 
 export const getCertifications = async (data: any) => {
   const { username, user, size, page } = data;
-  return formats.mo(
+  return formats.se(
     await Certification.findAll(DatabaseService, {
       related: [
         [
@@ -75,15 +75,7 @@ export const getCertificationByUUID = async (data: any) => {
 
 export const addNewCertification = async (data: any) => {
   if (!data.user) throw boom.conflict("A user must be instanced!");
-  const institutionUUID = (
-    await Institution.find(DatabaseService, {
-      name: data.emitedBy,
-    })
-  ).uuid;
-  const certification = await Certification.create(DatabaseService, {
-    ...data,
-    institutionUUID,
-  });
+  const certification = await Certification.create(DatabaseService, data);
   return {
     ...certification,
     emitedBy: data.emitedBy,
@@ -107,11 +99,11 @@ export const updateCertification = async (data: any) => {
   await (
     await Certification.load(DatabaseService, { credentials: { uuid } })
   ).update(DatabaseService, data);
-  return formats.mo([
+  return formats.se([
     {
       ...(await getCertificationByUUID({
         credentials: { uuid },
-        // related: [["Institution", { attributes: ["name"], as: "Institution" }]],
+        related: [["Institution", { attributes: ["name"], as: "Institution" }]],
       })),
       Users: [user],
     },

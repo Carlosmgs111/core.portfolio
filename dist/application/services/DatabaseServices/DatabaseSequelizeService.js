@@ -21,6 +21,7 @@ class DatabaseSequelizeService {
     constructor({}) {
         this.serviceDescription = "Sequelize Interface Database Service";
         this.create = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            console.log({ Entity });
             const entity = yield this.Entity.create(Entity, this.adapter(options));
             return entity;
         });
@@ -50,7 +51,7 @@ class DatabaseSequelizeService {
             return model;
         });
         // TODO rename to createRelationship
-        this.relate = (from, to) => __awaiter(this, void 0, void 0, function* () {
+        this.relateN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
             const [exist, data] = yield this.checkRelationship(from, to);
             if (exist)
                 throw boom_1.default.conflict("Entity exist yet!");
@@ -59,11 +60,23 @@ class DatabaseSequelizeService {
                 throw boom_1.default.conflict("Support table doesn't created");
         });
         // TODO rename to removeRelationship
-        this.unrelate = (from, to) => __awaiter(this, void 0, void 0, function* () {
+        this.unrelateN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
             const [exist, data] = yield this.checkRelationship(from, to);
             if (!exist)
                 throw boom_1.default.conflict("Relationship doesn't exist!");
             return yield this.remove({ credentials: data });
+        });
+        this.relate2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
+            const relations2One = {};
+            for (let ref of refs) {
+                const key = (0, utils_1.Mapfy)(ref).keys().next().value;
+                const value = (0, utils_1.Mapfy)(ref).values().next().value;
+                const referenced = yield models_1.default[(0, utils_1.labelCases)(key).CS].findOne({
+                    where: value,
+                });
+                relations2One[`${key}UUID`] = referenced.uuid;
+            }
+            return Object.assign(Object.assign({}, entity), relations2One);
         });
         this.checkRelationship = (from, to) => __awaiter(this, void 0, void 0, function* () {
             const composeRelationshipLabel = (from, to) => {

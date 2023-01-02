@@ -1,5 +1,5 @@
 import models from "../../../infrastructure/repositories/sequelize/src/models";
-import { labelCases } from "../../../utils";
+import { labelCases, Mapfy } from "../../../utils";
 import { filterAttrs } from "../../../utils";
 import { v4 as uuidv4 } from "uuid";
 import boom from "@hapi/boom";
@@ -17,6 +17,7 @@ export default class DatabaseSequelizeService {
     Entity: any,
     options: any = {}
   ): Promise<typeof Entity | null> => {
+    console.log({ Entity });
     const entity = await this.Entity.create(Entity, this.adapter(options));
     return entity;
   };
@@ -52,7 +53,7 @@ export default class DatabaseSequelizeService {
   };
 
   // TODO rename to createRelationship
-  relate = async (from: any, to: any) => {
+  relateN2N = async (from: any, to: any) => {
     const [exist, data]: any = await this.checkRelationship(from, to);
     if (exist) throw boom.conflict("Entity exist yet!");
     const newSupportEntity = await this.create({ ...data, uuid: uuidv4() });
@@ -60,10 +61,23 @@ export default class DatabaseSequelizeService {
   };
 
   // TODO rename to removeRelationship
-  unrelate = async (from: any, to: any) => {
+  unrelateN2N = async (from: any, to: any) => {
     const [exist, data] = await this.checkRelationship(from, to);
     if (!exist) throw boom.conflict("Relationship doesn't exist!");
     return await this.remove({ credentials: data });
+  };
+
+  relate2One = async (entity: any, refs: any) => {
+    const relations2One: any = {};
+    for (let ref of refs) {
+      const key = Mapfy(ref).keys().next().value;
+      const value = Mapfy(ref).values().next().value;
+      const referenced = await models[labelCases(key).CS].findOne({
+        where: value,
+      });
+      relations2One[`${key}UUID`] = referenced.uuid;
+    }
+    return { ...entity, ...relations2One };
   };
 
   checkRelationship = async (from: any, to: any) => {

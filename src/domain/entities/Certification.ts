@@ -5,7 +5,6 @@ import boom from "@hapi/boom";
 export class Certification {
   uuid: string = "";
   title: string = "";
-  institutionUUID: string = ""; // * ID to institution
   emitedAt: number = 0; // * timestamp
   image: string = ""; // * url to image
   url: string = ""; // * url to certificated course or institution
@@ -13,18 +12,9 @@ export class Certification {
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({
-    uuid,
-    title,
-    institutionUUID,
-    emitedAt,
-    image,
-    url,
-    tags,
-  }: any) {
+  constructor({ uuid, title, emitedAt, image, url, tags }: any) {
     this.uuid = uuid;
     this.title = title;
-    this.institutionUUID = institutionUUID;
     this.emitedAt = emitedAt;
     this.image = image;
     this.url = url;
@@ -37,9 +27,18 @@ export class Certification {
     data: any
   ): Promise<Certification> => {
     const uuid = uuidv4();
-    const certification = new Certification({ ...data, uuid });
-    await DatabaseServices.setupEntity("Certification").create(certification);
-    await DatabaseServices.relate(
+    console.log({ data });
+    const { emitedBy } = data;
+    const certification = await DatabaseServices.setupEntity(
+      "Certification"
+    ).relate2One(new Certification({ ...data, uuid }), [
+      {
+        institution: { name: emitedBy },
+      },
+    ]);
+    console.log({ certification });
+    await DatabaseServices.create(certification);
+    await DatabaseServices.relateN2N(
       { label: "certification", pk: uuid },
       { label: "user", pk: data.user.uuid }
     );
@@ -68,7 +67,7 @@ export class Certification {
   };
 
   remove = async (DatabaseServices: any, options: any = {}) => {
-    await DatabaseServices.unrelate(
+    await DatabaseServices.unrelateN2N(
       { label: "user", pk: options.userUUID },
       { label: "certification", pk: this.uuid }
     );
