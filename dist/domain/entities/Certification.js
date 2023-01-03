@@ -83,6 +83,6 @@ Certification.find = (DatabaseServices, options) => __awaiter(void 0, void 0, vo
 });
 Certification.findAll = (DatabaseServices, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
     DatabaseServices.setupEntity("Certification");
-    const certificate = yield DatabaseServices.findAll(options);
-    return certificate;
+    const certificates = yield DatabaseServices.findAll(options);
+    return certificates;
 });

@@ -7,6 +7,7 @@ const projectSchema = new mongoose_1.Schema({
         required: true,
         unique: true,
     },
+    User: { type: String, ref: 'User' },
     name: {
         type: String,
         unique: true,
@@ -14,12 +15,17 @@ const projectSchema = new mongoose_1.Schema({
         lowercase: false,
         trim: false,
     },
-    description: {
-        type: String,
-        unique: true,
+    descriptions: {
+        type: [String],
         required: true,
-        lowercase: false,
-        trim: false,
+    },
+    images: {
+        type: [String],
+        required: true,
+    },
+    tags: {
+        type: [String],
+        required: true,
     },
     uri: {
         type: String,
@@ -39,4 +45,4 @@ const projectSchema = new mongoose_1.Schema({
         required: true,
     },
 });
-exports.default = (0, mongoose_1.model)("Project", projectSchema);
+exports.default = (0, mongoose_1.model)('Project', projectSchema);

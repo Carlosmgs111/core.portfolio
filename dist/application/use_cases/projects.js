@@ -13,17 +13,19 @@ exports.migrateDescriptionToDescriptions = exports.updateProject = exports.delet
 const dependencies_1 = require("../../config/dependencies");
 const Project_1 = require("../../domain/entities/Project");
 const utils_1 = require("../../utils");
-const formatProjects = (projects) => projects.map((project) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project.dataValues), { createdBy: project.User.username }), [
-    "User",
+const formatSequelizeProjects = (projects) => projects.map((project) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project.dataValues), { createdBy: project.User.username }), [
+    'User',
 ]));
+const formatMongooseProjects = (projects) => projects.map((project) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project._doc), { createdBy: project.User.username }), ['User']));
+const formats = { se: formatSequelizeProjects, mo: formatMongooseProjects };
 const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
-    const projects = yield dependencies_1.DatabaseService.setupEntity("Project").findAll({
-        related: [["User", { as: "User", credentials: username && { username } }]],
+    const projects = yield Project_1.Project.findAll(dependencies_1.DatabaseService, {
+        related: [['User', { as: 'User', credentials: username && { username } }]],
         size,
         page,
     });
-    return formatProjects(projects);
+    return formats.mo(projects);
 });
 exports.getProjects = getProjects;
 const addProject = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield Project_1.Project.new(dependencies_1.DatabaseService, data); });
@@ -36,13 +38,13 @@ const updateProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.updateProject = updateProject;
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
 const migrateDescriptionToDescriptions = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const projects = yield dependencies_1.DatabaseService.setupEntity("Project").findAll();
+    const projects = yield dependencies_1.DatabaseService.setupEntity('Project').findAll();
     console.log({ projects });
     for (var project of projects) {
-        const descriptions = project.description.split(". ");
+        const descriptions = project.description.split('. ');
         console.log({ descriptions });
         yield (0, exports.updateProject)({ uuid: project.uuid, descriptions, user: data.user });
     }
-    return "OK!";
+    return 'OK!';
 });
 exports.migrateDescriptionToDescriptions = migrateDescriptionToDescriptions;

@@ -1,7 +1,10 @@
 import mongoose from "mongoose";
 import config from "../../../config";
 
-export const connect = ()=> mongoose.connect(config.mongoDBLocalUrl);
+console.log({ config });
+
+export const connect = () =>
+  mongoose.connect(config.mongoDBLocalUrl || config.mongoDBAtlasURL);
 
 export const { connection } = mongoose;
 

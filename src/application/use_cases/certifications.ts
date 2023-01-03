@@ -1,6 +1,5 @@
 import { DatabaseService } from "../../config/dependencies";
 import { Certification } from "../../domain/entities/Certification";
-import { Institution } from "../../domain/entities/Institution";
 import { User } from "../../domain/entities/User";
 import boom from "@hapi/boom";
 import { filterAttrs } from "../../utils";
@@ -39,7 +38,7 @@ const formats = {
 
 export const getCertifications = async (data: any) => {
   const { username, user, size, page } = data;
-  return formats.se(
+  return formats.mo(
     await Certification.findAll(DatabaseService, {
       related: [
         [
@@ -99,7 +98,7 @@ export const updateCertification = async (data: any) => {
   await (
     await Certification.load(DatabaseService, { credentials: { uuid } })
   ).update(DatabaseService, data);
-  return formats.se([
+  return formats.mo([
     {
       ...(await getCertificationByUUID({
         credentials: { uuid },

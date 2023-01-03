@@ -2,7 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 
 type IProject = {
   uuid: string;
-  userUUID: string;
+  // userUUID: string;
   name: string;
   descriptions: string[];
   images: string[];
@@ -13,7 +13,7 @@ type IProject = {
 
 export class Project {
   uuid: string;
-  userUUID: string;
+  // userUUID: string;
   name: string;
   descriptions: string[];
   images: string[];
@@ -25,7 +25,7 @@ export class Project {
 
   constructor({
     uuid,
-    userUUID,
+    // userUUID,
     name,
     descriptions,
     images,
@@ -34,7 +34,7 @@ export class Project {
     version,
   }: IProject) {
     this.uuid = uuid;
-    this.userUUID = userUUID;
+    // this.userUUID = userUUID;
     this.name = name;
     this.descriptions = descriptions;
     this.images = images;
@@ -45,24 +45,32 @@ export class Project {
     this.updatedAt = new Date().getTime();
   }
   static new = async (DatabaseServices: any, data: any): Promise<string> => {
-    DatabaseServices.setupEntity("Project");
     const uuid = uuidv4();
-    const account = new Project({ ...data, uuid, userUUID: data.user.uuid });
-    return await DatabaseServices.create(account);
+    const project = await DatabaseServices.setupEntity("Project").relate2One(
+      new Project({ ...data, uuid }),
+      [{ user: { uuid: data.user.uuid } }]
+    );
+    return await DatabaseServices.create(project);
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
     DatabaseServices.setupEntity("Project");
-    const project = await Project.find(DatabaseServices, credentials);
-    if (!project) throw new Error("Incorrect credentials!");
-    const account = new Project(project);
-    return account;
+    const loadedProject = await Project.find(DatabaseServices, credentials);
+    if (!loadedProject) throw new Error("Incorrect credentials!");
+    const project = new Project(loadedProject);
+    return project;
   };
 
   static find = async (DatabaseServices: any, options: any) => {
     DatabaseServices.setupEntity("Project");
     const account: any = await DatabaseServices.findOne(options);
     return account;
+  };
+
+  static findAll = async (DatabaseServices: any, options: any = {}) => {
+    DatabaseServices.setupEntity("Project");
+    const projects: any = await DatabaseServices.findAll(options);
+    return projects;
   };
 
   remove = async (DatabaseServices: any) => {

@@ -1,7 +1,7 @@
-import { Model, DataTypes } from "sequelize";
-import { sequelize } from "..";
+import { Model, DataTypes } from 'sequelize'
+import { sequelize } from '..'
 
-export const post_table = "Posts";
+export const post_table = 'Posts'
 export const post_schema = {
   uuid: {
     primaryKey: true,
@@ -10,20 +10,20 @@ export const post_schema = {
     type: DataTypes.STRING,
   },
   userUUID: {
-    field: "user_uuid",
-    unique: true,
+    field: 'user_uuid',
     allowNull: false,
+    unique: false,
     type: DataTypes.STRING,
     foreignKey: true,
   },
   title: { allowNull: false, type: DataTypes.STRING },
   content: { allowNull: false, type: DataTypes.TEXT },
-  createdAt: { type: DataTypes.DATE, allowNull: false, field: "created_at" },
-  updatedAt: { type: DataTypes.DATE, allowNull: false, field: "updated_at" },
-};
+  createdAt: { type: DataTypes.DATE, allowNull: false, field: 'created_at' },
+  updatedAt: { type: DataTypes.DATE, allowNull: false, field: 'updated_at' },
+}
 
 export class Post extends Model {
   static associate(models: any) {}
 }
 
-Post.init(post_schema, { sequelize, tableName: post_table });
+Post.init(post_schema, { sequelize, tableName: post_table })

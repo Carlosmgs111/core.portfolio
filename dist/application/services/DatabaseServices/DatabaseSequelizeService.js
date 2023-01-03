@@ -27,6 +27,7 @@ class DatabaseSequelizeService {
         });
         this.findAll = (options = {}) => __awaiter(this, void 0, void 0, function* () {
             const entities = yield this.Entity.findAll(this.adapter(options));
+            console.log({ entity0: entities[0].dataValues });
             return entities;
         });
         this.findOne = (options = {}) => __awaiter(this, void 0, void 0, function* () {

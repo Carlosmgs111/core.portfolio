@@ -24,6 +24,7 @@ export default class DatabaseSequelizeService {
 
   findAll = async (options: any = {}) => {
     const entities = await this.Entity.findAll(this.adapter(options));
+    console.log({ entity0: entities[0].dataValues });
     return entities;
   };
 

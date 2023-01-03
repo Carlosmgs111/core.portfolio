@@ -62,8 +62,8 @@ export class Certification {
 
   static findAll = async (DatabaseServices: any, options: any = {}) => {
     DatabaseServices.setupEntity("Certification");
-    const certificate: any = await DatabaseServices.findAll(options);
-    return certificate;
+    const certificates: any = await DatabaseServices.findAll(options);
+    return certificates;
   };
 
   remove = async (DatabaseServices: any, options: any = {}) => {

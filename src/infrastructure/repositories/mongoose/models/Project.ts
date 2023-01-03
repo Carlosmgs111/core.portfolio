@@ -1,13 +1,16 @@
-import { model, Schema, Document } from "mongoose";
+import { model, Schema, Document } from 'mongoose'
 
 export interface IProject extends Document {
-  uuid: string;
-  name: string;
-  description: string;
-  uri: string;
-  version: string;
-  createdAt: number;
-  updatedAt: number;
+  uuid: string
+  User: string
+  name: string
+  descriptions: [string]
+  images: [string]
+  tags: [string]
+  uri: string
+  version: string
+  createdAt: number
+  updatedAt: number
 }
 
 const projectSchema = new Schema<IProject>({
@@ -16,6 +19,7 @@ const projectSchema = new Schema<IProject>({
     required: true,
     unique: true,
   },
+  User: { type: String, ref: 'User' },
   name: {
     type: String,
     unique: true,
@@ -23,12 +27,17 @@ const projectSchema = new Schema<IProject>({
     lowercase: false,
     trim: false,
   },
-  description: {
-    type: String,
-    unique: true,
+  descriptions: {
+    type: [String],
     required: true,
-    lowercase: false,
-    trim: false,
+  },
+  images: {
+    type: [String],
+    required: true,
+  },
+  tags: {
+    type: [String],
+    required: true,
   },
   uri: {
     type: String,
@@ -47,6 +56,6 @@ const projectSchema = new Schema<IProject>({
     type: Number,
     required: true,
   },
-});
+})
 
-export default model<IProject>("Project", projectSchema);
+export default model<IProject>('Project', projectSchema)

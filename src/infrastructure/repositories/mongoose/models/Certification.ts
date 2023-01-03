@@ -1,18 +1,18 @@
-import { model, Schema, Document } from "mongoose";
+import { model, Schema, Document } from 'mongoose'
 
 export interface ICertification extends Document {
-  uuid: string;
-  title: string;
-  Users: Array<any>;
-  Institution: string;
-  institutionUUID: string;
-  emitedDate: number;
-  image: string;
-  url: string;
-  tags: String[];
-  emitedAt: number;
-  createdAt: number;
-  updatedAt: number;
+  uuid: string
+  title: string
+  Users: Array<any>
+  Institution: string
+  // institutionUUID: string;
+  emitedDate: number
+  image: string
+  url: string
+  tags: String[]
+  emitedAt: number
+  createdAt: number
+  updatedAt: number
 }
 
 const certificationSchema = new Schema<ICertification>({
@@ -28,16 +28,8 @@ const certificationSchema = new Schema<ICertification>({
     lowercase: false,
     trim: false,
   },
-  Users: [{ type: String, ref: "User" }],
-  Institution: { type: String, ref: "Institution" },
-  institutionUUID: {
-    type: String,
-    unique: false,
-    required: true,
-    lowercase: true,
-    trim: true,
-    ref: "Institution",
-  },
+  Users: [{ type: String, ref: 'User' }],
+  Institution: { type: String, ref: 'Institution', required: true },
   image: {
     type: String,
     required: true,
@@ -59,6 +51,6 @@ const certificationSchema = new Schema<ICertification>({
     type: Number,
     required: true,
   },
-});
+})
 
-export default model<ICertification>("Certification", certificationSchema);
+export default model<ICertification>('Certification', certificationSchema)

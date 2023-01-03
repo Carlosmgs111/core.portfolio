@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
 const config = {
-    mongoDBLocalUrl: String(process.env.MONGODB_LOCAL_URL),
+    mongoDBLocalUrl: process.env.MONGODB_LOCAL_URL && String(process.env.MONGODB_LOCAL_URL),
     mongoDBLocalTestUrl: String(process.env.MONGODB_LOCAL_TEST_URL),
     mongoDBAtlasURL: String(process.env.MONGODB_ATLAS_URL),
     /*  */
@@ -24,6 +24,7 @@ const config = {
     apiKey: String(process.env.API_KEY),
     // jwtResetPasswordSecret: String(process.env.JWT_RESET_PASSWORD_SECRET),
     jwtExp: process.env.TOKEN_EXPIRATION,
+    test: process.env.test && String(process.env.test),
     // apiKey: String(process.env.API_KEY),
     // emailAddress: process.env.EMAIL_ADDRESS,
     // emailAppPassword: process.env.EMAIL_APP_PASSWORD,

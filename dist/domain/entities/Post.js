@@ -18,22 +18,21 @@ const uuid_1 = require("uuid");
 const utils_1 = require("../../utils");
 const boom_1 = __importDefault(require("@hapi/boom"));
 class Post {
-    constructor({ uuid, userUUID, title, content, createdAt, updatedAt, }) {
+    constructor({ uuid, title, content, createdAt, updatedAt, }) {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupEntity("Post");
+            DatabaseServices.setupEntity('Post');
             return yield DatabaseServices.remove({
                 credentials: { uuid: this.uuid },
             });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupEntity("Post");
+            DatabaseServices.setupEntity('Post');
             this.updatedAt = new Date().getTime();
             return yield DatabaseServices.update(Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
-        this.userUUID = userUUID;
         this.title = title;
         this.content = content;
         this.createdAt = createdAt;
@@ -43,28 +42,30 @@ class Post {
 exports.Post = Post;
 _a = Post;
 Post.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("Post");
-    const exist = yield DatabaseServices.findOne(data);
+    DatabaseServices.setupEntity('Post');
+    const exist = yield DatabaseServices.findOne({
+        credentials: (0, utils_1.filterAttrs)(data, ['token', 'user']),
+    });
     console.log({ exist });
     if (exist)
-        throw boom_1.default.conflict("Entity exist yet!");
+        throw boom_1.default.conflict('Entity exist yet!');
     const uuid = (0, uuid_1.v4)();
-    const account = new Post(Object.assign(Object.assign({}, data), { uuid, createdAt: new Date().getTime(), updatedAt: new Date().getTime() }));
-    yield DatabaseServices.create(Object.assign({}, (0, utils_1.getEntityProperties)(account)));
-    return account;
+    const post = yield DatabaseServices.relate2One(new Post(Object.assign(Object.assign({}, data), { uuid, createdAt: new Date().getTime(), updatedAt: new Date().getTime() })), [{ user: { uuid: data.user.uuid } }]);
+    yield DatabaseServices.create(Object.assign({}, (0, utils_1.getEntityProperties)(post)));
+    return post;
 });
 Post.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("Post");
+    DatabaseServices.setupEntity('Post');
     const user = yield Post.find(DatabaseServices, { uuid: credentials.uuid });
     if (!user)
-        throw boom_1.default.notFound("Incorrect credentials!");
+        throw boom_1.default.notFound('Incorrect credentials!');
     const account = new Post(user);
     return account;
 });
 Post.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("Post");
+    DatabaseServices.setupEntity('Post');
     const account = yield DatabaseServices.findOne({
-        credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["title", "userUUID"], false),
+        credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ['title', 'userUUID'], false),
     });
     return account;
 });
