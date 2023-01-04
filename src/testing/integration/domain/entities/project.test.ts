@@ -4,7 +4,6 @@ describe("Lifecycle of project entity", () => {
   test("Create a new project", () => {
     const project = new Project({
       uuid: "0",
-      userUUID: "1",
       name: "Test Project",
       descriptions: ["A test project"],
       images: ["https://images.com"],

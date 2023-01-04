@@ -21,21 +21,19 @@ class DatabaseSequelizeService {
     constructor({}) {
         this.serviceDescription = "Sequelize Interface Database Service";
         this.create = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            console.log({ Entity });
             const entity = yield this.Entity.create(Entity, this.adapter(options));
             return entity;
         });
         this.findAll = (options = {}) => __awaiter(this, void 0, void 0, function* () {
             const entities = yield this.Entity.findAll(this.adapter(options));
-            console.log({ entity0: entities[0].dataValues });
-            return entities;
+            return entities.map((e) => (Object.assign({}, e.dataValues)));
         });
         this.findOne = (options = {}) => __awaiter(this, void 0, void 0, function* () {
-            console.log({ options });
             try {
                 const entity = yield this.Entity.findOne(this.adapter(options));
-                console.log({ entity });
-                return entity;
+                if (!entity)
+                    return null;
+                return entity.dataValues;
             }
             catch (e) {
                 console.log(e.message.red);
@@ -49,7 +47,7 @@ class DatabaseSequelizeService {
         });
         this.update = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const model = yield this.Entity.update(Entity, this.adapter(options));
-            return model;
+            return model.dataValues;
         });
         // TODO rename to createRelationship
         this.relateN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
@@ -92,7 +90,6 @@ class DatabaseSequelizeService {
                 [`${from.label}UUID`]: from.pk,
                 [`${to.label}UUID`]: to.pk,
             };
-            console.log({ relationshipUUIDS });
             const exist = yield this.setupEntity(relationshipLabel).findOne({
                 credentials: relationshipUUIDS,
             });
@@ -101,8 +98,9 @@ class DatabaseSequelizeService {
         // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
         this.hasMany = (Entity, label) => __awaiter(this, void 0, void 0, function* () { return Entity[`get${label}`](); });
         this.adapter = (OPS) => {
+            console.log({ OPS });
             const { credentials = {}, related = [], size = 100, page = 0, as = null, } = OPS;
-            return Object.assign(Object.assign({}, OPS), { where: credentials, include: this.formatIncludeClosure(related), limit: size, offset: page, alias: as });
+            return Object.assign(Object.assign({}, OPS), { where: credentials, include: this.formatIncludeClosure(related), limit: Number(size), offset: Number(page), alias: as });
         };
         // * A function that is called in the constructor of the class. It is used to associate the models in
         // * the database.

@@ -19,38 +19,43 @@ const boom_1 = __importDefault(require("@hapi/boom"));
 console.log({ models: models_1.default });
 class DatabaseMongooseService {
     constructor({}) {
-        this.serviceDescription = 'Mongoose Interface Database Service';
+        this.serviceDescription = "Mongoose Interface Database Service";
         this.create = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const entity = new this.Entity(Entity);
             yield entity.save();
             return entity;
         });
         this.findAll = (options) => __awaiter(this, void 0, void 0, function* () {
-            console.log({ options });
+            const { size = 100, page = 0 } = options;
+            console.log({ size, page });
             const { related = [] } = options;
-            const entities = yield this.Entity.find(this.adapter(options)).populate(this.getPopulateMap(related));
-            console.log({ entities });
-            return entities;
+            const entities = yield this.Entity.find(this.adapter(options))
+                .populate(this.getPopulateMap(related))
+                .limit(Number(size))
+                .skip(Number(page));
+            return entities.map((e) => (Object.assign({}, e._doc)));
         });
         this.findOne = (options) => __awaiter(this, void 0, void 0, function* () {
             const { credentials, related = [] } = options;
-            const entity = yield this.Entity.findOne(credentials).populate(this.getPopulateMap(related));
-            yield console.log({ entity });
-            return entity;
+            const entity = yield this.Entity.findOne(credentials)
+                .populate(this.getPopulateMap(related));
+            if (!entity)
+                return null;
+            return entity._doc;
         });
         this.remove = (options) => __awaiter(this, void 0, void 0, function* () {
             return yield this.Entity.deleteOne(this.adapter(options));
         });
         this.update = (Entity, options) => __awaiter(this, void 0, void 0, function* () {
             const model = yield this.Entity.updateOne(this.adapter(options), Entity);
-            return model;
+            return model._doc;
         });
         // TODO rename to createRelationship
         // ? add a check method that search for a uuid similar to be introduced
         this.relateN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
             const [exist, { fromModel, toModel }] = yield this.checkRelationship(from, to);
             if (exist)
-                throw boom_1.default.conflict('Entity exist yet!');
+                throw boom_1.default.conflict("Entity exist yet!");
             yield fromModel.updateOne({
                 [(0, utils_1.labelCases)(to.label).CP]: [
                     ...fromModel[(0, utils_1.labelCases)(to.label).CP],
@@ -72,7 +77,7 @@ class DatabaseMongooseService {
         this.unrelateN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
             const [exist, { fromModel, toModel, fromRelated, toRelated, fromRelatedIndex, toRelatedIndex, },] = yield this.checkRelationship(from, to);
             if (!exist)
-                throw boom_1.default.conflict('Entity exist yet!');
+                throw boom_1.default.conflict("Entity exist yet!");
             fromRelated.splice(fromRelatedIndex, 1);
             toRelated.splice(toRelatedIndex, 1);
             yield fromModel.updateOne({
@@ -128,11 +133,11 @@ class DatabaseMongooseService {
         this.getPopulateMap = (related) => {
             const populates = [];
             related.forEach((r) => {
-                const [label, { as = null } = {}] = r;
-                console.log();
-                populates.push({ path: as || (0, utils_1.labelCases)(label).CP });
+                const [label, { as = null, attributes = [] } = {}] = r;
+                let select = "-_id"; // ? for exclude _id attribute
+                attributes.forEach((a) => (select += `${a} `));
+                populates.push({ path: as || (0, utils_1.labelCases)(label).CP, select });
             });
-            console.log({ populates });
             return populates;
         };
         this.formatIncludeClosure = (entitiesToInclude) => __awaiter(this, void 0, void 0, function* () { });

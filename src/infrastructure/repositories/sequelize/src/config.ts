@@ -13,11 +13,11 @@ import {
 
 const PROD = false; // ? true for use in production
 const USER = !PROD
-  ? encodeURIComponent(postgresUserDev)
-  : encodeURIComponent(postgresUserProd);
+  ? encodeURIComponent(postgresUserDev || "")
+  : encodeURIComponent(postgresUserProd || "");
 const PASSWORD = !PROD
-  ? encodeURIComponent(postgresPasswordDev)
-  : encodeURIComponent(postgresPasswordProd);
+  ? encodeURIComponent(postgresPasswordDev || "")
+  : encodeURIComponent(postgresPasswordProd || "");
 const URI = `postgres://${USER}:${PASSWORD}@${
   !PROD ? postgresHostDev : postgresHostProd
 }:${!PROD ? postgresPortDev : postgresPortProd}/${

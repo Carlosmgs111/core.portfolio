@@ -9,7 +9,7 @@ export const createToken = (
   expiresIn: number | string = expiresIn1Month,
   secret = config.jwtAccessSecret
 ) => {
-  return jwt.sign({ sub: params._id || params.sub, ...params }, secret, {
+  return jwt.sign({ sub: params._id || params.sub, ...params }, secret || "", {
     expiresIn,
   });
 };
@@ -23,7 +23,7 @@ export const verifyToken = (
     console.log({ payload });
     if (!payload) throw new Error("Invalid Payload!");
     return payload;
-  } catch (e: any) {
+  } catch (e) {
     console.log();
     throw new Error("Invalid Token!");
   }

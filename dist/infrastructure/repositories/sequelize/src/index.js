@@ -10,38 +10,38 @@ if (process.argv.includes("PROD"))
     ENV = "PROD";
 let database = (() => {
     if (ENV === "DEV")
-        return config_env_1.postgresDatabaseDev;
+        return config_env_1.postgresDatabaseDev || "";
     if (ENV === "PROD")
-        return config_env_1.postgresDatabaseProd;
-    return "test";
+        return config_env_1.postgresDatabaseProd || "";
+    return config_env_1.postgresDatabaseTest || "";
 })();
 let user = (() => {
     if (ENV === "DEV")
-        return config_env_1.postgresUserDev;
+        return config_env_1.postgresUserDev || "";
     if (ENV === "PROD")
-        return config_env_1.postgresUserProd;
-    return "tester";
+        return config_env_1.postgresUserProd || "";
+    return config_env_1.postgresUserTest || "";
 })();
 let PASSWORD = (() => {
     if (ENV === "DEV")
-        return encodeURIComponent(config_env_1.postgresPasswordDev);
+        return encodeURIComponent(config_env_1.postgresPasswordDev || "");
     if (ENV === "PROD")
-        return encodeURIComponent(config_env_1.postgresPasswordProd);
-    return encodeURIComponent("password");
+        return encodeURIComponent(config_env_1.postgresPasswordProd || "");
+    return encodeURIComponent(config_env_1.postgresPasswordTest || "");
 })();
 let host = (() => {
     if (ENV === "DEV")
-        return config_env_1.postgresHostDev;
+        return config_env_1.postgresHostDev || "";
     if (ENV === "PROD")
-        return config_env_1.postgresHostProd;
-    return "127.0.0.1";
+        return config_env_1.postgresHostProd || "";
+    return config_env_1.postgresHostTest || "";
 })();
 let port = (() => {
     if (ENV === "DEV")
         return Number(config_env_1.postgresPortDev);
     if (ENV === "PROD")
         return Number(config_env_1.postgresPortProd);
-    return Number(5432);
+    return Number(config_env_1.postgresPortTest);
 })();
 exports.sequelize = new sequelize_1.Sequelize(database, user, PASSWORD, {
     host,

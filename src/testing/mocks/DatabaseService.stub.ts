@@ -56,8 +56,9 @@ export const DatabaseServiceStub = {
     this.Entity = entityLabel;
     return this;
   },
-  relate: () => {},
-  unrelate: () => {},
+  relateN2N: () => {},
+  unrelateN2N: () => {},
+  relate2One: () => {},
 };
 
 export const spyCreate = jest.spyOn(DatabaseServiceStub, "create");

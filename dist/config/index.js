@@ -1,27 +1,30 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require("dotenv").config();
+require('dotenv').config();
 const config = {
     mongoDBLocalUrl: process.env.MONGODB_LOCAL_URL && String(process.env.MONGODB_LOCAL_URL),
-    mongoDBLocalTestUrl: String(process.env.MONGODB_LOCAL_TEST_URL),
-    mongoDBAtlasURL: String(process.env.MONGODB_ATLAS_URL),
+    mongoDBLocalTestUrl: process.env.MONGODB_LOCAL_TEST_URL &&
+        String(process.env.MONGODB_LOCAL_TEST_URL),
+    mongoDBAtlasURL: process.env.MONGODB_ATLAS_URL && String(process.env.MONGODB_ATLAS_URL),
     /*  */
-    postgresDatabase: String(process.env.POSTGRES_DATABASE),
-    postgresUser: String(process.env.POSTGRES_USER),
-    postgresPassword: String(process.env.POSTGRES_PASSWORD),
-    postgresHost: String(process.env.POSTGRES_HOST),
-    postgresPort: String(process.env.POSTGRES_PORT),
+    postgresDatabase: process.env.POSTGRES_DATABASE && String(process.env.POSTGRES_DATABASE),
+    postgresUser: process.env.POSTGRES_USER && String(process.env.POSTGRES_USER),
+    postgresPassword: process.env.POSTGRES_PASSWORD && String(process.env.POSTGRES_PASSWORD),
+    postgresHost: process.env.POSTGRES_HOST && String(process.env.POSTGRES_HOST),
+    postgresPort: process.env.POSTGRES_PORT && String(process.env.POSTGRES_PORT),
     /*  */
-    postgresDatabaseDev: String(process.env.POSTGRES_DATABASE_DEV),
-    postgresUserDev: String(process.env.POSTGRES_USER_DEV),
-    postgresPasswordDev: String(process.env.POSTGRES_PASSWORD_DEV),
-    postgresHostDev: String(process.env.POSTGRES_HOST_DEV),
-    postgresPortDev: String(process.env.POSTGRES_PORT_DEV),
+    postgresDatabaseDev: process.env.POSTGRES_DATABASE_DEV &&
+        String(process.env.POSTGRES_DATABASE_DEV),
+    postgresUserDev: process.env.POSTGRES_USER_DEV && String(process.env.POSTGRES_USER_DEV),
+    postgresPasswordDev: process.env.POSTGRES_PASSWORD_DEV &&
+        String(process.env.POSTGRES_PASSWORD_DEV),
+    postgresHostDev: process.env.POSTGRES_HOST_DEV && String(process.env.POSTGRES_HOST_DEV),
+    postgresPortDev: process.env.POSTGRES_PORT_DEV && String(process.env.POSTGRES_PORT_DEV),
     /*  */
-    serverPort: String(process.env.PORT),
-    jwtAccessSecret: String(process.env.JWT_ACCESS_SECRET),
-    jwtSignupSecret: String(process.env.JWT_SIGNUP_SECRET),
-    apiKey: String(process.env.API_KEY),
+    serverPort: process.env.PORT && String(process.env.PORT),
+    jwtAccessSecret: process.env.JWT_ACCESS_SECRET && String(process.env.JWT_ACCESS_SECRET),
+    jwtSignupSecret: process.env.JWT_SIGNUP_SECRET && String(process.env.JWT_SIGNUP_SECRET),
+    apiKey: process.env.API_KEY && String(process.env.API_KEY),
     // jwtResetPasswordSecret: String(process.env.JWT_RESET_PASSWORD_SECRET),
     jwtExp: process.env.TOKEN_EXPIRATION,
     test: process.env.test && String(process.env.test),

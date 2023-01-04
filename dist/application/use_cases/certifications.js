@@ -19,22 +19,17 @@ const User_1 = require("../../domain/entities/User");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const utils_1 = require("../../utils");
 const JWT_1 = require("../../infrastructure/auth/JWT");
-const sequelizeFormatCertifications = (certifications) => certifications
-    .map((certification) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, certification.dataValues), { emitedAt: new Date(certification.dataValues.emitedAt).getTime(), grantedTo: certification.Users[0].username, emitedBy: certification.Institution.name }), ["Users", "Institution"]))
+const format = (certifications) => certifications
+    .map((certification) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, certification), { emitedAt: new Date(certification.emitedAt).getTime(), grantedTo: certification.Users[0].username, emitedBy: certification.Institution.name }), ["Users", "Institution"]))
     .sort((a, b) => {
     if (a.emitedAt < b.emitedAt)
         return 1;
     return -1;
 });
-const mongooseFormatCertifications = (certifications) => certifications.map((certification) => (Object.assign(Object.assign({}, certification._doc), { grantedTo: "cmgs111" })));
-const formats = {
-    se: sequelizeFormatCertifications,
-    mo: mongooseFormatCertifications,
-};
 // ! ---------------------------------------------------------------------------------------------
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
-    return formats.mo(yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, {
+    return format(yield Certification_1.Certification.findAll(dependencies_1.DatabaseService, {
         related: [
             [
                 "User",
@@ -43,11 +38,7 @@ const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* 
                     credentials: username && { username },
                 },
             ],
-            [
-                "Institution",
-                { attributes: ["name"], as: "Institution" },
-                // { singular: true },
-            ],
+            ["Institution", { attributes: ["name"], as: "Institution" }],
         ],
         size,
         page,
@@ -85,7 +76,7 @@ exports.addManyCertifications = addManyCertifications;
 const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, uuid } = data;
     yield (yield Certification_1.Certification.load(dependencies_1.DatabaseService, { credentials: { uuid } })).update(dependencies_1.DatabaseService, data);
-    return formats.mo([
+    return format([
         Object.assign(Object.assign({}, (yield (0, exports.getCertificationByUUID)({
             credentials: { uuid },
             related: [["Institution", { attributes: ["name"], as: "Institution" }]],

@@ -5,13 +5,13 @@ import boom from "@hapi/boom";
 import { filterAttrs } from "../../utils";
 import { verifyToken2 } from "../../infrastructure/auth/JWT";
 
-const sequelizeFormatCertifications = (certifications: [Certification]) =>
+const format = (certifications: [Certification]) =>
   certifications
     .map((certification: any) =>
       filterAttrs(
         {
-          ...certification.dataValues,
-          emitedAt: new Date(certification.dataValues.emitedAt).getTime(),
+          ...certification,
+          emitedAt: new Date(certification.emitedAt).getTime(),
           grantedTo: certification.Users[0].username,
           emitedBy: certification.Institution.name,
         },
@@ -23,22 +23,11 @@ const sequelizeFormatCertifications = (certifications: [Certification]) =>
       return -1;
     });
 
-const mongooseFormatCertifications = (certifications: [Certification]) =>
-  certifications.map((certification: any) => ({
-    ...certification._doc,
-    grantedTo: "cmgs111",
-  }));
-
-const formats = {
-  se: sequelizeFormatCertifications,
-  mo: mongooseFormatCertifications,
-};
-
 // ! ---------------------------------------------------------------------------------------------
 
 export const getCertifications = async (data: any) => {
   const { username, user, size, page } = data;
-  return formats.mo(
+  return format(
     await Certification.findAll(DatabaseService, {
       related: [
         [
@@ -48,11 +37,7 @@ export const getCertifications = async (data: any) => {
             credentials: username && { username },
           },
         ],
-        [
-          "Institution",
-          { attributes: ["name"], as: "Institution" },
-          // { singular: true },
-        ],
+        ["Institution", { attributes: ["name"], as: "Institution" }],
       ],
       size,
       page,
@@ -98,7 +83,7 @@ export const updateCertification = async (data: any) => {
   await (
     await Certification.load(DatabaseService, { credentials: { uuid } })
   ).update(DatabaseService, data);
-  return formats.mo([
+  return format([
     {
       ...(await getCertificationByUUID({
         credentials: { uuid },

@@ -17,23 +17,20 @@ export default class DatabaseSequelizeService {
     Entity: any,
     options: any = {}
   ): Promise<typeof Entity | null> => {
-    console.log({ Entity });
     const entity = await this.Entity.create(Entity, this.adapter(options));
     return entity;
   };
 
   findAll = async (options: any = {}) => {
     const entities = await this.Entity.findAll(this.adapter(options));
-    console.log({ entity0: entities[0].dataValues });
-    return entities;
+    return entities.map((e: any) => ({ ...e.dataValues }));
   };
 
   findOne = async (options: any = {}) => {
-    console.log({ options });
     try {
       const entity = await this.Entity.findOne(this.adapter(options));
-      console.log({ entity });
-      return entity;
+      if (!entity) return null;
+      return entity.dataValues;
     } catch (e: any) {
       console.log(e.message.red);
       throw boom.internal(e.message);
@@ -50,7 +47,7 @@ export default class DatabaseSequelizeService {
 
   update = async (Entity: any, options: any = {}) => {
     const model = await this.Entity.update(Entity, this.adapter(options));
-    return model;
+    return model.dataValues;
   };
 
   // TODO rename to createRelationship
@@ -97,7 +94,6 @@ export default class DatabaseSequelizeService {
       [`${from.label}UUID`]: from.pk,
       [`${to.label}UUID`]: to.pk,
     };
-    console.log({ relationshipUUIDS });
     const exist = await this.setupEntity(relationshipLabel).findOne({
       credentials: relationshipUUIDS,
     });
@@ -108,6 +104,7 @@ export default class DatabaseSequelizeService {
   hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
 
   adapter = (OPS: any) => {
+    console.log({ OPS });
     const {
       credentials = {},
       related = [],
@@ -119,8 +116,8 @@ export default class DatabaseSequelizeService {
       ...OPS,
       where: credentials,
       include: this.formatIncludeClosure(related),
-      limit: size,
-      offset: page,
+      limit: Number(size),
+      offset: Number(page),
       alias: as,
     };
   };

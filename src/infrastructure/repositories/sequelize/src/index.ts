@@ -22,29 +22,29 @@ if (process.argv.includes("DEV")) ENV = "DEV";
 if (process.argv.includes("PROD")) ENV = "PROD";
 
 let database: string = (() => {
-  if (ENV === "DEV") return postgresDatabaseDev;
-  if (ENV === "PROD") return postgresDatabaseProd;
-  return "test";
+  if (ENV === "DEV") return postgresDatabaseDev || "";
+  if (ENV === "PROD") return postgresDatabaseProd || "";
+  return postgresDatabaseTest || "";
 })();
 let user: string = (() => {
-  if (ENV === "DEV") return postgresUserDev;
-  if (ENV === "PROD") return postgresUserProd;
-  return "tester";
+  if (ENV === "DEV") return postgresUserDev || "";
+  if (ENV === "PROD") return postgresUserProd || "";
+  return postgresUserTest || "";
 })();
 let PASSWORD: string = (() => {
-  if (ENV === "DEV") return encodeURIComponent(postgresPasswordDev);
-  if (ENV === "PROD") return encodeURIComponent(postgresPasswordProd);
-  return encodeURIComponent("password");
+  if (ENV === "DEV") return encodeURIComponent(postgresPasswordDev || "");
+  if (ENV === "PROD") return encodeURIComponent(postgresPasswordProd || "");
+  return encodeURIComponent(postgresPasswordTest || "");
 })();
 let host: string = (() => {
-  if (ENV === "DEV") return postgresHostDev;
-  if (ENV === "PROD") return postgresHostProd;
-  return "127.0.0.1";
+  if (ENV === "DEV") return postgresHostDev || "";
+  if (ENV === "PROD") return postgresHostProd || "";
+  return postgresHostTest || "";
 })();
 let port: number = (() => {
   if (ENV === "DEV") return Number(postgresPortDev);
   if (ENV === "PROD") return Number(postgresPortProd);
-  return Number(5432);
+  return Number(postgresPortTest);
 })();
 
 export const sequelize = new Sequelize(database, user, PASSWORD, {
