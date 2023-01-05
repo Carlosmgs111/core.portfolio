@@ -51,18 +51,27 @@ export default class SequelizeAdapter {
   };
 
   // TODO rename to createRelationship
-  relateN2N = async (from: any, to: any) => {
-    const [exist, data]: any = await this.checkRelationship(from, to);
-    if (exist) throw boom.conflict("Entity exist yet!");
-    const newSupportEntity = await this.create({ ...data, uuid: uuidv4() });
-    if (!newSupportEntity) throw boom.conflict("Support table doesn't created");
+  relateN2N = async (refs: any) => {
+    let succesfully = false;
+    for (let ref of refs) {
+      const [from, to] = ref;
+      const [exist, data]: any = await this.checkRelationship(from, to);
+      if (exist) throw boom.conflict("Entity exist yet!");
+      const newSupportEntity = await this.create({ ...data, uuid: uuidv4() });
+      if (!newSupportEntity)
+        throw boom.conflict("Support table doesn't created");
+    }
+    return succesfully;
   };
 
   // TODO rename to removeRelationship
-  unrelateN2N = async (from: any, to: any) => {
-    const [exist, data] = await this.checkRelationship(from, to);
-    if (!exist) throw boom.conflict("Relationship doesn't exist!");
-    return await this.remove({ credentials: data });
+  unrelateN2N = async (refs: any) => {
+    for (let ref of refs) {
+      const [from, to] = ref;
+      const [exist, data] = await this.checkRelationship(from, to);
+      if (!exist) throw boom.conflict("Relationship doesn't exist!");
+      return await this.remove({ credentials: data });
+    }
   };
 
   relate2One = async (entity: any, refs: any) => {
@@ -74,6 +83,15 @@ export default class SequelizeAdapter {
         where: value,
       });
       relations2One[`${key}UUID`] = referenced.uuid;
+    }
+    return { ...entity, ...relations2One };
+  };
+
+  // ? Pending to test
+  unrelate2One = async (entity: any, refs: any) => {
+    const relations2One: any = {};
+    for (let ref of refs) {
+      relations2One[`${ref}UUID`] = null;
     }
     return { ...entity, ...relations2One };
   };
@@ -104,7 +122,6 @@ export default class SequelizeAdapter {
   hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
 
   adapter = (OPS: any) => {
-    console.log({ OPS });
     const {
       credentials = {},
       related = [],

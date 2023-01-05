@@ -3,22 +3,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.DatabaseService = exports.ServicesInterfaceEnums = exports.ServicesInterface = void 0;
-const utils_1 = require("../../../utils");
-const DatabaseMongooseService_1 = __importDefault(require("./DatabaseMongooseService"));
-const DatabaseSequelizeService_1 = __importDefault(require("./DatabaseSequelizeService"));
-exports.ServicesInterface = {
-    DatabaseMongooseService: DatabaseMongooseService_1.default,
-    DatabaseSequelizeService: DatabaseSequelizeService_1.default,
+exports.DatabaseService = exports.Adapters = void 0;
+const SequelizeAdapter_1 = __importDefault(require("./SequelizeAdapter"));
+const MongooseAdapter_1 = __importDefault(require("./MongooseAdapter"));
+exports.Adapters = {
+    SequelizeAdapter: SequelizeAdapter_1.default,
+    MongooseAdapter: MongooseAdapter_1.default,
 };
-exports.ServicesInterfaceEnums = (0, utils_1.setEnums)([
-    DatabaseSequelizeService_1.default.name,
-    DatabaseMongooseService_1.default.name,
-]);
-console.log({ ServicesInterface: exports.ServicesInterface });
-const DatabaseService = (service = exports.ServicesInterfaceEnums.DatabaseSequelizeService) => {
-    console.log({ service });
-    class DatabaseService extends exports.ServicesInterface[service] {
+const DatabaseService = (adapter = exports.Adapters.SequelizeAdapter) => {
+    class DatabaseService extends adapter {
         constructor(props) {
             super(props);
         }

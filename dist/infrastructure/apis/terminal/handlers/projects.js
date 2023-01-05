@@ -17,6 +17,24 @@ const projects_1 = require("../../../../application/use_cases/projects");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
+const listProjectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
+    const { token } = state;
+    const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
+    const choices = [all, owns, byUser, test];
+    const options = {
+        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, projects_1.getProjects)({})); }),
+        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, projects_1.getOwnProjects)({ token })); }),
+        [test]: () => { },
+    };
+    const { option } = yield inquirer_1.default.prompt([
+        {
+            type: "list",
+            name: "option",
+            choices,
+        },
+    ]);
+    yield (0, utils_1.execFunc)(options[option]);
+});
 const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = state;
     let running = true;
@@ -29,7 +47,7 @@ const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* (
     ];
     const choices = [add, update, remove, read, exit];
     const options = {
-        [read]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, projects_1.getProjects)({ username })); }),
+        [read]: () => __awaiter(void 0, void 0, void 0, function* () { return listProjectsHandler(state); }),
         [exit]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),
     };
     while (running) {

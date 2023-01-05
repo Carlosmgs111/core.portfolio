@@ -16,10 +16,9 @@ const mongoose_1 = require("../../../infrastructure/repositories/mongoose");
 const models_1 = __importDefault(require("../../../infrastructure/repositories/mongoose/models"));
 const utils_1 = require("../../../utils");
 const boom_1 = __importDefault(require("@hapi/boom"));
-console.log({ models: models_1.default });
-class DatabaseMongooseService {
+class MongooseAdapter {
     constructor({}) {
-        this.serviceDescription = "Mongoose Interface Database Service";
+        this.serviceDescription = "Mongoose Database Service Adapter";
         this.create = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const entity = new this.Entity(Entity);
             yield entity.save();
@@ -27,7 +26,6 @@ class DatabaseMongooseService {
         });
         this.findAll = (options) => __awaiter(this, void 0, void 0, function* () {
             const { size = 100, page = 0 } = options;
-            console.log({ size, page });
             const { related = [] } = options;
             const entities = yield this.Entity.find(this.adapter(options))
                 .populate(this.getPopulateMap(related))
@@ -37,8 +35,7 @@ class DatabaseMongooseService {
         });
         this.findOne = (options) => __awaiter(this, void 0, void 0, function* () {
             const { credentials, related = [] } = options;
-            const entity = yield this.Entity.findOne(credentials)
-                .populate(this.getPopulateMap(related));
+            const entity = yield this.Entity.findOne(credentials).populate(this.getPopulateMap(related));
             if (!entity)
                 return null;
             return entity._doc;
@@ -51,45 +48,50 @@ class DatabaseMongooseService {
             return model._doc;
         });
         // TODO rename to createRelationship
-        // ? add a check method that search for a uuid similar to be introduced
-        this.relateN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
-            const [exist, { fromModel, toModel }] = yield this.checkRelationship(from, to);
-            if (exist)
-                throw boom_1.default.conflict("Entity exist yet!");
-            yield fromModel.updateOne({
-                [(0, utils_1.labelCases)(to.label).CP]: [
-                    ...fromModel[(0, utils_1.labelCases)(to.label).CP],
-                    toModel._id,
-                ],
-            }, {
-                uuid: from.pk,
-            });
-            yield toModel.updateOne({
-                [(0, utils_1.labelCases)(from.label).CP]: [
-                    ...toModel[(0, utils_1.labelCases)(from.label).CP],
-                    fromModel._id,
-                ],
-            }, {
-                uuid: to.pk,
-            });
+        this.relateN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
+            for (let ref of refs) {
+                const [from, to] = ref;
+                const [exist, { fromModel, toModel }] = yield this.checkRelationship(from, to);
+                if (exist)
+                    throw boom_1.default.conflict("Entity exist yet!");
+                yield fromModel.updateOne({
+                    [(0, utils_1.labelCases)(to.label).CP]: [
+                        ...fromModel[(0, utils_1.labelCases)(to.label).CP],
+                        toModel._id,
+                    ],
+                }, {
+                    uuid: from.pk,
+                });
+                yield toModel.updateOne({
+                    [(0, utils_1.labelCases)(from.label).CP]: [
+                        ...toModel[(0, utils_1.labelCases)(from.label).CP],
+                        fromModel._id,
+                    ],
+                }, {
+                    uuid: to.pk,
+                });
+            }
         });
         // TODO rename to removeRelationship
-        this.unrelateN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
-            const [exist, { fromModel, toModel, fromRelated, toRelated, fromRelatedIndex, toRelatedIndex, },] = yield this.checkRelationship(from, to);
-            if (!exist)
-                throw boom_1.default.conflict("Entity exist yet!");
-            fromRelated.splice(fromRelatedIndex, 1);
-            toRelated.splice(toRelatedIndex, 1);
-            yield fromModel.updateOne({
-                [(0, utils_1.labelCases)(to.label).CP]: [...fromRelated],
-            }, {
-                uuid: from.pk,
-            });
-            yield toModel.updateOne({
-                [(0, utils_1.labelCases)(from.label).CP]: [...toRelated],
-            }, {
-                uuid: to.pk,
-            });
+        this.unrelateN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
+            for (let ref of refs) {
+                const [from, to] = ref;
+                const [exist, { fromModel, toModel, fromRelated, toRelated, fromRelatedIndex, toRelatedIndex, },] = yield this.checkRelationship(from, to);
+                if (!exist)
+                    throw boom_1.default.conflict("Entity exist yet!");
+                fromRelated.splice(fromRelatedIndex, 1);
+                toRelated.splice(toRelatedIndex, 1);
+                yield fromModel.updateOne({
+                    [(0, utils_1.labelCases)(to.label).CP]: [...fromRelated],
+                }, {
+                    uuid: from.pk,
+                });
+                yield toModel.updateOne({
+                    [(0, utils_1.labelCases)(from.label).CP]: [...toRelated],
+                }, {
+                    uuid: to.pk,
+                });
+            }
         });
         this.relate2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
             const relations2One = {};
@@ -98,6 +100,14 @@ class DatabaseMongooseService {
                 const value = (0, utils_1.Mapfy)(ref).values().next().value;
                 const referenced = yield models_1.default[(0, utils_1.labelCases)(key).CS].findOne(value);
                 relations2One[(0, utils_1.labelCases)(key).CS] = referenced._id;
+            }
+            return Object.assign(Object.assign({}, entity), relations2One);
+        });
+        // ? Pending to test
+        this.unrelate2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
+            const relations2One = {};
+            for (let ref of refs) {
+                relations2One[(0, utils_1.labelCases)(ref).CS] = null;
             }
             return Object.assign(Object.assign({}, entity), relations2One);
         });
@@ -149,4 +159,4 @@ class DatabaseMongooseService {
         return this;
     }
 }
-exports.default = DatabaseMongooseService;
+exports.default = MongooseAdapter;

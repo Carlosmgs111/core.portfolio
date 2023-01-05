@@ -5,7 +5,7 @@ import {
 } from "../application/services";
 
 export const DatabaseService = DBS(
-  //Adapters.MongooseAdapter
+  Adapters.MongooseAdapter
 );
 export const AuthServices = new AS();
 

@@ -111,7 +111,7 @@ export class User {
       credentials,
       related: [["Certification"]],
     });
-    console.log({user})
+    console.log({ user });
     return user.Certifications.map((c: any) =>
       filterAttrs(
         {
@@ -128,10 +128,7 @@ export class User {
       credentials,
       related: [["Project"]],
     });
-    return (await DatabaseServices.hasMany(user, "Projects")).map((c: any) => ({
-      ...c.dataValues,
-      createdBy: user.username,
-    }));
+    return user.Projects;
   };
 
   hashPassword = async (password: string | undefined) => {

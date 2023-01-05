@@ -16,10 +16,10 @@ const models_1 = __importDefault(require("../../../infrastructure/repositories/s
 const utils_1 = require("../../../utils");
 const uuid_1 = require("uuid");
 const boom_1 = __importDefault(require("@hapi/boom"));
-class DatabaseSequelizeService {
+class SequelizeAdapter {
     // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
     constructor({}) {
-        this.serviceDescription = "Sequelize Interface Database Service";
+        this.serviceDescription = "Sequelize Database Service Adapter";
         this.create = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const entity = yield this.Entity.create(Entity, this.adapter(options));
             return entity;
@@ -50,20 +50,28 @@ class DatabaseSequelizeService {
             return model.dataValues;
         });
         // TODO rename to createRelationship
-        this.relateN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
-            const [exist, data] = yield this.checkRelationship(from, to);
-            if (exist)
-                throw boom_1.default.conflict("Entity exist yet!");
-            const newSupportEntity = yield this.create(Object.assign(Object.assign({}, data), { uuid: (0, uuid_1.v4)() }));
-            if (!newSupportEntity)
-                throw boom_1.default.conflict("Support table doesn't created");
+        this.relateN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
+            let succesfully = false;
+            for (let ref of refs) {
+                const [from, to] = ref;
+                const [exist, data] = yield this.checkRelationship(from, to);
+                if (exist)
+                    throw boom_1.default.conflict("Entity exist yet!");
+                const newSupportEntity = yield this.create(Object.assign(Object.assign({}, data), { uuid: (0, uuid_1.v4)() }));
+                if (!newSupportEntity)
+                    throw boom_1.default.conflict("Support table doesn't created");
+            }
+            return succesfully;
         });
         // TODO rename to removeRelationship
-        this.unrelateN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
-            const [exist, data] = yield this.checkRelationship(from, to);
-            if (!exist)
-                throw boom_1.default.conflict("Relationship doesn't exist!");
-            return yield this.remove({ credentials: data });
+        this.unrelateN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
+            for (let ref of refs) {
+                const [from, to] = ref;
+                const [exist, data] = yield this.checkRelationship(from, to);
+                if (!exist)
+                    throw boom_1.default.conflict("Relationship doesn't exist!");
+                return yield this.remove({ credentials: data });
+            }
         });
         this.relate2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
             const relations2One = {};
@@ -74,6 +82,14 @@ class DatabaseSequelizeService {
                     where: value,
                 });
                 relations2One[`${key}UUID`] = referenced.uuid;
+            }
+            return Object.assign(Object.assign({}, entity), relations2One);
+        });
+        // ? Pending to test
+        this.unrelate2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
+            const relations2One = {};
+            for (let ref of refs) {
+                relations2One[`${ref}UUID`] = null;
             }
             return Object.assign(Object.assign({}, entity), relations2One);
         });
@@ -98,7 +114,6 @@ class DatabaseSequelizeService {
         // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
         this.hasMany = (Entity, label) => __awaiter(this, void 0, void 0, function* () { return Entity[`get${label}`](); });
         this.adapter = (OPS) => {
-            console.log({ OPS });
             const { credentials = {}, related = [], size = 100, page = 0, as = null, } = OPS;
             return Object.assign(Object.assign({}, OPS), { where: credentials, include: this.formatIncludeClosure(related), limit: Number(size), offset: Number(page), alias: as });
         };
@@ -131,4 +146,4 @@ class DatabaseSequelizeService {
         return this;
     }
 }
-exports.default = DatabaseSequelizeService;
+exports.default = SequelizeAdapter;

@@ -93,5 +93,5 @@ User.projects = (DatabaseServices, credentials) => __awaiter(void 0, void 0, voi
         credentials,
         related: [["Project"]],
     });
-    return (yield DatabaseServices.hasMany(user, "Projects")).map((c) => (Object.assign(Object.assign({}, c.dataValues), { createdBy: user.username })));
+    return user.Projects;
 });

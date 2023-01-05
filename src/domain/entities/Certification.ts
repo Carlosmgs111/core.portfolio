@@ -27,7 +27,6 @@ export class Certification {
     data: any
   ): Promise<Certification> => {
     const uuid = uuidv4();
-    console.log({ data });
     const { emitedBy } = data;
     const certification = await DatabaseServices.setupEntity(
       "Certification"
@@ -36,13 +35,13 @@ export class Certification {
         institution: { name: emitedBy },
       },
     ]);
-    console.log({ certification });
     await DatabaseServices.create(certification);
-    await DatabaseServices.relateN2N(
-      { label: "certification", pk: uuid },
-      { label: "user", pk: data.user.uuid }
-    );
-    console.log({ data });
+    await DatabaseServices.relateN2N([
+      [
+        { label: "certification", pk: uuid },
+        { label: "user", pk: data.user.uuid },
+      ],
+    ]);
     return certification;
   };
 
@@ -67,10 +66,12 @@ export class Certification {
   };
 
   remove = async (DatabaseServices: any, options: any = {}) => {
-    await DatabaseServices.unrelateN2N(
-      { label: "user", pk: options.userUUID },
-      { label: "certification", pk: this.uuid }
-    );
+    await DatabaseServices.unrelateN2N([
+      [
+        { label: "user", pk: options.userUUID },
+        { label: "certification", pk: this.uuid },
+      ],
+    ]);
     return await DatabaseServices.setupEntity("Certification").remove({
       credentials: filterAttrs(
         getEntityProperties(this),

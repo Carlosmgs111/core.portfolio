@@ -33,10 +33,12 @@ export class Institution {
     const institution = new Institution({ ...data, uuid });
     await DatabaseServices.setupEntity("Institution").create(institution);
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
-    await DatabaseServices.relateN2N(
-      { label: "institution", pk: uuid },
-      { label: "user", pk: data.user.uuid }
-    );
+    await DatabaseServices.relateN2N([
+      [
+        { label: "institution", pk: uuid },
+        { label: "user", pk: data.user.uuid },
+      ],
+    ]);
     return institution;
   };
 
@@ -67,10 +69,12 @@ export class Institution {
   unlink = async (DatabaseServices: any, options: any) => {};
 
   remove = async (DatabaseServices: any, options: any = {}) => {
-    await DatabaseServices.unrelateN2N(
-      { label: "user", uuid: options.userUUID },
-      { label: "institution", uuid: this.uuid }
-    );
+    await DatabaseServices.unrelateN2N([
+      [
+        { label: "user", uuid: options.userUUID },
+        { label: "institution", uuid: this.uuid },
+      ],
+    ]);
     return await DatabaseServices.setupEntity("Institution").remove({
       credentials: { uuid: this.uuid },
     });

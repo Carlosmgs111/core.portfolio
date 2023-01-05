@@ -27,7 +27,12 @@ class Certification {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (DatabaseServices, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            yield DatabaseServices.unrelateN2N({ label: "user", pk: options.userUUID }, { label: "certification", pk: this.uuid });
+            yield DatabaseServices.unrelateN2N([
+                [
+                    { label: "user", pk: options.userUUID },
+                    { label: "certification", pk: this.uuid },
+                ],
+            ]);
             return yield DatabaseServices.setupEntity("Certification").remove({
                 credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["title", "uuid"], false),
             });
@@ -55,17 +60,19 @@ exports.Certification = Certification;
 _a = Certification;
 Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = (0, uuid_1.v4)();
-    console.log({ data });
     const { emitedBy } = data;
     const certification = yield DatabaseServices.setupEntity("Certification").relate2One(new Certification(Object.assign(Object.assign({}, data), { uuid })), [
         {
             institution: { name: emitedBy },
         },
     ]);
-    console.log({ certification });
     yield DatabaseServices.create(certification);
-    yield DatabaseServices.relateN2N({ label: "certification", pk: uuid }, { label: "user", pk: data.user.uuid });
-    console.log({ data });
+    yield DatabaseServices.relateN2N([
+        [
+            { label: "certification", pk: uuid },
+            { label: "user", pk: data.user.uuid },
+        ],
+    ]);
     return certification;
 });
 Certification.load = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
