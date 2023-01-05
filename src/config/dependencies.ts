@@ -1,11 +1,11 @@
-import { ServicesInterfaceEnums } from "../application/services/DatabaseServices";
+import { Adapters } from "../application/services/DatabaseServices";
 import {
   DatabaseService as DBS,
   AuthServices as AS,
 } from "../application/services";
 
 export const DatabaseService = DBS(
-  //ServicesInterfaceEnums.DatabaseMongooseService
+  //Adapters.MongooseAdapter
 );
 export const AuthServices = new AS();
 

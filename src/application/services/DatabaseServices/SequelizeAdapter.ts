@@ -4,8 +4,8 @@ import { filterAttrs } from "../../../utils";
 import { v4 as uuidv4 } from "uuid";
 import boom from "@hapi/boom";
 
-export default class DatabaseSequelizeService {
-  serviceDescription: string = "Sequelize Interface Database Service";
+export default class SequelizeAdapter {
+  serviceDescription: string = "Sequelize Database Service Adapter";
   Entity: any;
 
   // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead

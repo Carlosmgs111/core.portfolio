@@ -1,8 +1,5 @@
 {
   "workbench.colorCustomizations": {
-    "vscode_custom_css.imports": [
-      "file:///C:/Users/Draupnir/.vscode/extensions/webrender.synthwave-x-fluoromachine-0.0.12/synthwave-x-fluoromachine.css"
-    ],
     "activityBar.activeBackground": "#d0f892",
     "activityBar.activeBorder": "#2da5f2",
     "activityBar.background": "#d0f892",
@@ -19,6 +16,9 @@
     "titleBar.inactiveBackground": "#bbf56299",
     "titleBar.inactiveForeground": "#15202b99",
     "commandCenter.border": "#15202b99",
+    "vscode_custom_css.imports": [
+      "file:///C:/Users/Draupnir/.vscode/extensions/webrender.synthwave-x-fluoromachine-0.0.12/synthwave-x-fluoromachine.css"
+    ],
     "[Andromeda Italic Bordered]": {
       "editor.background": "#232020",
       "sideBar.background": "#232020",

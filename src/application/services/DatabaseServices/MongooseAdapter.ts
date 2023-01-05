@@ -5,8 +5,8 @@ import { labelCases, Mapfy } from "../../../utils";
 import boom from "@hapi/boom";
 
 console.log({ models });
-export default class DatabaseMongooseService {
-  serviceDescription: string = "Mongoose Interface Database Service";
+export default class MongooseAdapter {
+  serviceDescription: string = "Mongoose Database Service Adapter";
   Entity: any;
 
   constructor({}: any) {

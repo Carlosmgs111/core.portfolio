@@ -1,23 +1,18 @@
 import { setEnums } from "../../../utils";
-import DatabaseMongooseService from "./DatabaseMongooseService";
-import DatabaseSequelizeService from "./DatabaseSequelizeService";
+import SequelizeAdapter from "./SequelizeAdapter";
+import MongooseAdapter from "./MongooseAdapter";
 
-export const ServicesInterface: any = {
-  DatabaseMongooseService,
-  DatabaseSequelizeService,
+export const Adapters: any = {
+  SequelizeAdapter,
+  MongooseAdapter,
 };
 
-export const ServicesInterfaceEnums: any = setEnums([
-  DatabaseSequelizeService.name,
-  DatabaseMongooseService.name,
-]);
-
-console.log({ServicesInterface})
+console.log({Adapters})
 
 export const DatabaseService = (
-  service:string = ServicesInterfaceEnums.DatabaseSequelizeService) => {
-  console.log({service})
-  class DatabaseService extends ServicesInterface[service]{
+  adapter:string = Adapters.SequelizeAdapter) => {
+  console.log({adapter})
+  class DatabaseService extends adapter{
     constructor(props: any) {
       super(props);
     }
