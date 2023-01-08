@@ -24,6 +24,10 @@ class SequelizeAdapter {
             const entity = yield this.Entity.create(Entity, this.adapter(options));
             return entity;
         });
+        this.createMany = (entities, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const entitiesCreated = yield this.Entity.bulkCreate(entities, this.adapter(options));
+            return entitiesCreated;
+        });
         this.findAll = (options = {}) => __awaiter(this, void 0, void 0, function* () {
             const entities = yield this.Entity.findAll(this.adapter(options));
             return entities.map((e) => (Object.assign({}, e.dataValues)));

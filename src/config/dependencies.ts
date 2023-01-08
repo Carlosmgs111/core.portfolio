@@ -2,11 +2,13 @@ import { Adapters } from "../application/services/DatabaseServices";
 import {
   DatabaseService as DBS,
   AuthServices as AS,
+  RepositoryService,
 } from "../application/services";
+console.log({ RepositoryService });
+export const DatabaseService = RepositoryService; /* DBS(
+  //Adapters.MongooseAdapter
+); */
 
-export const DatabaseService = DBS(
-  Adapters.MongooseAdapter
-);
 export const AuthServices = new AS();
 
 const apiVersions = ["v1"];

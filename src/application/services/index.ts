@@ -1,3 +1,5 @@
 import { DatabaseService } from "./DatabaseServices";
 import { AuthServices } from "./AuthServices";
-export { DatabaseService, AuthServices };
+import { RepositoryService } from "./RepositoryServices";
+
+export { DatabaseService, AuthServices, RepositoryService };

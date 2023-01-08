@@ -21,6 +21,14 @@ export default class SequelizeAdapter {
     return entity;
   };
 
+  createMany = async (entities: any, options: any = {}) => {
+    const entitiesCreated = await this.Entity.bulkCreate(
+      entities,
+      this.adapter(options)
+    );
+    return entitiesCreated;
+  };
+
   findAll = async (options: any = {}) => {
     const entities = await this.Entity.findAll(this.adapter(options));
     return entities.map((e: any) => ({ ...e.dataValues }));

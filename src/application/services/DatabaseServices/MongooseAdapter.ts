@@ -15,9 +15,13 @@ export default class MongooseAdapter {
     Entity: any,
     options: any = {}
   ): Promise<typeof model | null> => {
-    const entity = new this.Entity(Entity);
-    await entity.save();
+    const entity = this.Entity.create(Entity);
     return entity;
+  };
+
+  createMany = async (entities: any, options: any) => {
+    const entitiesCreated = this.Entity.insertMany(entities);
+    return entitiesCreated;
   };
 
   findAll = async (options: any) => {
@@ -40,6 +44,10 @@ export default class MongooseAdapter {
   };
 
   remove = async (options: any) => {
+    if (!options.credentials)
+      throw boom.forbidden(
+        "Must supply credentials for find and delete entity!"
+      );
     return await this.Entity.deleteOne(this.adapter(options));
   };
 

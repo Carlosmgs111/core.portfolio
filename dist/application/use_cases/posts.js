@@ -16,7 +16,7 @@ const addPost = (data) => __awaiter(void 0, void 0, void 0, function* () {
     return yield Post_1.Post.create(dependencies_1.DatabaseService, data);
 });
 exports.addPost = addPost;
-const getAllPosts = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield dependencies_1.DatabaseService.setupEntity('Post').findAll(); });
+const getAllPosts = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield dependencies_1.DatabaseService.query.setupEntity('Post').findAll(); });
 exports.getAllPosts = getAllPosts;
 const removePost = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield (yield Post_1.Post.load(dependencies_1.DatabaseService, data)).remove(dependencies_1.DatabaseService); });
 exports.removePost = removePost;

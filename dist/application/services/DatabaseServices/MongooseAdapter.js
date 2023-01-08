@@ -20,9 +20,12 @@ class MongooseAdapter {
     constructor({}) {
         this.serviceDescription = "Mongoose Database Service Adapter";
         this.create = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const entity = new this.Entity(Entity);
-            yield entity.save();
+            const entity = this.Entity.create(Entity);
             return entity;
+        });
+        this.createMany = (entities, options) => __awaiter(this, void 0, void 0, function* () {
+            const entitiesCreated = this.Entity.insertMany(entities);
+            return entitiesCreated;
         });
         this.findAll = (options) => __awaiter(this, void 0, void 0, function* () {
             const { size = 100, page = 0 } = options;
@@ -41,6 +44,8 @@ class MongooseAdapter {
             return entity._doc;
         });
         this.remove = (options) => __awaiter(this, void 0, void 0, function* () {
+            if (!options.credentials)
+                throw boom_1.default.forbidden("Must supply credentials for find and delete entity!");
             return yield this.Entity.deleteOne(this.adapter(options));
         });
         this.update = (Entity, options) => __awaiter(this, void 0, void 0, function* () {

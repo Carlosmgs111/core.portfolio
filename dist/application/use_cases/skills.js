@@ -13,7 +13,7 @@ exports.updateSkill = exports.deleteSkill = exports.addNewSkill = exports.getAll
 const Skill_1 = require("../../domain/entities/Skill");
 const dependencies_1 = require("../../config/dependencies");
 const getAllSkills = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield dependencies_1.DatabaseService.setupEntity("Skill").findAll();
+    return yield dependencies_1.DatabaseService.query.setupEntity("Skill").findAll();
 });
 exports.getAllSkills = getAllSkills;
 const addNewSkill = (data) => __awaiter(void 0, void 0, void 0, function* () {

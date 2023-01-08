@@ -65,12 +65,9 @@ const addNewCertification = (data) => __awaiter(void 0, void 0, void 0, function
 });
 exports.addNewCertification = addNewCertification;
 const addManyCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const { certifications } = data;
-    const newCertifications = [];
-    for (var certification of certifications) {
-        newCertifications.push(yield (0, exports.addNewCertification)(Object.assign(Object.assign({}, certification), { user: data.user })));
-    }
-    return newCertifications;
+    const { certifications, user, emitedBy } = data;
+    const newCertifications = yield Certification_1.Certification.createMany(dependencies_1.DatabaseService, certifications.map((c) => (Object.assign(Object.assign({}, c), { user }))));
+    return newCertifications.map((c) => (Object.assign(Object.assign({}, c), { emitedBy, grantedTo: user.username })));
 });
 exports.addManyCertifications = addManyCertifications;
 const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {

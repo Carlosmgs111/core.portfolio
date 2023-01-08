@@ -68,14 +68,16 @@ export const addNewCertification = async (data: any) => {
 };
 
 export const addManyCertifications = async (data: any) => {
-  const { certifications } = data;
-  const newCertifications = [];
-  for (var certification of certifications) {
-    newCertifications.push(
-      await addNewCertification({ ...certification, user: data.user })
-    );
-  }
-  return newCertifications;
+  const { certifications, user, emitedBy } = data;
+  const newCertifications = await Certification.createMany(
+    DatabaseService,
+    certifications.map((c: any) => ({ ...c, user }))
+  );
+  return newCertifications.map((c: any) => ({
+    ...c,
+    emitedBy,
+    grantedTo: user.username,
+  }));
 };
 
 export const updateCertification = async (data: any) => {

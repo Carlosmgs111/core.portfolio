@@ -6,7 +6,7 @@ export const addPost = async (data: any) => {
 }
 
 export const getAllPosts = async (data: any) =>
-  await DatabaseService.setupEntity('Post').findAll()
+  await DatabaseService.query.setupEntity('Post').findAll()
 
 export const removePost = async (data: any) =>
   await (await Post.load(DatabaseService, data)).remove(DatabaseService)

@@ -28,13 +28,13 @@ export class Certification {
   ): Promise<Certification> => {
     const uuid = uuidv4();
     const { emitedBy } = data;
-    const certification = await DatabaseServices.setupEntity(
-      "Certification"
-    ).relate2One(new Certification({ ...data, uuid }), [
-      {
-        institution: { name: emitedBy },
-      },
-    ]);
+    const certification = await DatabaseServices.command
+      .setupEntity("Certification")
+      .relate2One(new Certification({ ...data, uuid }), [
+        {
+          institution: { name: emitedBy },
+        },
+      ]);
     await DatabaseServices.create(certification);
     await DatabaseServices.relateN2N([
       [
@@ -43,6 +43,40 @@ export class Certification {
       ],
     ]);
     return certification;
+  };
+
+  static createMany = async (DatabaseServices: any, data: any) => {
+    DatabaseServices.setupEntity("Certification");
+    const certifications = [];
+    for (let certification of data) {
+      certifications.push(
+        await DatabaseServices.relate2One(
+          new Certification({ ...certification, uuid: uuidv4() }),
+          [
+            {
+              institution: { name: certification.emitedBy },
+            },
+          ]
+        )
+      );
+    }
+    const certificationsCreated = await DatabaseServices.createMany(
+      certifications
+    );
+
+    for (let certificationIdx in data) {
+      await DatabaseServices.relateN2N([
+        [
+          {
+            label: "certification",
+            pk: certifications[Number(certificationIdx)].uuid,
+          },
+          { label: "user", pk: data[Number(certificationIdx)].user.uuid },
+        ],
+      ]);
+    }
+    console.log({ certificationsCreated });
+    return certifications;
   };
 
   static load = async (DatabaseServices: any, options: any) => {
@@ -60,8 +94,8 @@ export class Certification {
   };
 
   static findAll = async (DatabaseServices: any, options: any = {}) => {
-    DatabaseServices.setupEntity("Certification");
-    const certificates: any = await DatabaseServices.findAll(options);
+    DatabaseServices.query.setupEntity("Certification");
+    const certificates: any = await DatabaseServices.query.findAll(options);
     return certificates;
   };
 

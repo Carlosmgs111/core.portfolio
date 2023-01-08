@@ -35,7 +35,10 @@ exports.updateInstitution = updateInstitution;
 const linkToIntitution = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { institutionUUID, token } = data;
     const { user } = yield (0, JWT_1.verifyToken2)(token);
-    dependencies_1.DatabaseService.relate({ label: "user", uuid: user.uuid }, { label: "institution", uuid: institutionUUID });
+    dependencies_1.DatabaseService.command.relateN2N([
+        { label: "user", uuid: user.uuid },
+        { label: "institution", uuid: institutionUUID },
+    ]);
 });
 exports.linkToIntitution = linkToIntitution;
 const unlinkFromInstitution = (data) => __awaiter(void 0, void 0, void 0, function* () { });
