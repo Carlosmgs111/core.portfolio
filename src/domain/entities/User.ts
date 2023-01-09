@@ -39,14 +39,16 @@ export class User {
   }
 
   static create = async (DatabaseServices: any, data: any): Promise<any> => {
-    DatabaseServices.setupEntity("User");
-    const exist = await DatabaseServices.findOne({
-      credentials: filterAttrs(
-        getEntityProperties(data),
-        ["email", "username"],
-        false
-      ),
-    });
+    const exist = await DatabaseServices.findOne(
+      DatabaseServices.entities.User,
+      {
+        credentials: filterAttrs(
+          getEntityProperties(data),
+          ["email", "username"],
+          false
+        ),
+      }
+    );
     if (exist) throw boom.conflict("Entity exist yet!");
     const uuid = uuidv4();
     const account = new User({
@@ -64,41 +66,43 @@ export class User {
   };
 
   static load = async (DatabaseServices: any, options: any = {}) => {
-    const user = await User.find(DatabaseServices.setupEntity("User"), options);
+    const user = await User.find(DatabaseServices, options);
     if (!user) throw boom.notFound("Incorrect credentials!");
     const account = new User(user);
     return account;
   };
 
   static find = async (DatabaseServices: any, options: any = {}) => {
-    const account: any = await DatabaseServices.setupEntity("User").findOne({
-      ...options,
-      credentials: filterAttrs(
-        getEntityProperties(options.credentials),
-        ["email", "username"],
-        false
-      ),
-    });
+    const account: any = await DatabaseServices.findOne(
+      DatabaseServices.entities.User,
+      {
+        ...options,
+        credentials: filterAttrs(
+          getEntityProperties(options.credentials),
+          ["email", "username"],
+          false
+        ),
+      }
+    );
     if (!account) throw boom.conflict("Account doesn´t exist!");
     return account;
   };
 
   static findAll = async (DatabaseService: any, options: any = {}) =>
-    (await DatabaseService.setupEntity("User").findAll(options)).map(
+    (await DatabaseService.findAll(DatabaseService.entities.User, options)).map(
       (user: any) => user.dataValues.username
     );
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupEntity("User");
-    return await DatabaseServices.remove({
+    return await DatabaseServices.remove(DatabaseServices.entities.User, {
       credentials: { uuid: this.uuid },
     });
   };
 
   update = async (DatabaseServices: any, data: any) => {
-    DatabaseServices.setupEntity("User");
     this.updatedAt = new Date().getTime();
     return await DatabaseServices.update(
+      DatabaseServices.entities.User,
       {
         ...getEntityProperties({ ...this, ...data }),
       },
@@ -107,7 +111,7 @@ export class User {
   };
 
   static certifications = async (DatabaseServices: any, credentials: any) => {
-    const user: any = await User.find(DatabaseServices.setupEntity("User"), {
+    const user: any = await User.find(DatabaseServices, {
       credentials,
       related: [["Certification"]],
     });
@@ -124,7 +128,7 @@ export class User {
   };
 
   static projects = async (DatabaseServices: any, credentials: any) => {
-    const user = await User.find(DatabaseServices.setupEntity("User"), {
+    const user = await User.find(DatabaseServices, {
       credentials,
       related: [["Project"]],
     });

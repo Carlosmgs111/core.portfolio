@@ -4,7 +4,7 @@ import { DatabaseService } from "../../config/dependencies";
 import boom from "@hapi/boom";
 
 export const getAllSkills = async (data: any) => {
-  return await DatabaseService.query.setupEntity("Skill").findAll();
+  return await DatabaseService.findAll(DatabaseService.entities.Skill);
 };
 
 export const addNewSkill = async (data: any) => {

@@ -30,14 +30,13 @@ class Institution {
                     { label: "institution", uuid: this.uuid },
                 ],
             ]);
-            return yield DatabaseServices.setupEntity("Institution").remove({
+            return yield DatabaseServices.remove(DatabaseServices.entities.Institution, {
                 credentials: { uuid: this.uuid },
             });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
-            DatabaseServices.setupEntity("Institution");
             this.updatedAt = new Date().getTime();
-            return yield DatabaseServices.update(Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
+            return yield DatabaseServices.update(DatabaseServices.entities.Institution, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.name = name;
@@ -53,7 +52,7 @@ _a = Institution;
 Institution.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = (0, uuid_1.v4)();
     const institution = new Institution(Object.assign(Object.assign({}, data), { uuid }));
-    yield DatabaseServices.setupEntity("Institution").create(institution);
+    yield DatabaseServices.create(DatabaseServices.entities.Institution, institution);
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
     yield DatabaseServices.relateN2N([
         [
@@ -64,7 +63,6 @@ Institution.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 
     return institution;
 });
 Institution.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("Institution");
     const project = yield Institution.find(DatabaseServices, credentials);
     if (!project)
         throw new Error("Incorrect credentials!");
@@ -72,14 +70,12 @@ Institution.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, 
     return institution;
 });
 Institution.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("Institution");
-    const institution = yield DatabaseServices.findOne({
+    const institution = yield DatabaseServices.findOne(DatabaseServices.entities.Institution, {
         credentials,
     });
     return institution;
 });
 Institution.findAll = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("Institution");
-    const institutions = yield DatabaseServices.findAll(options);
+    const institutions = yield DatabaseServices.findAll(DatabaseServices.entities.Institution, options);
     return institutions;
 });

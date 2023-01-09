@@ -30,14 +30,15 @@ export class Skill {
     this.updatedAt = new Date().getTime();
   }
   static create = async (DatabaseServices: any, data: any): Promise<string> => {
-    DatabaseServices.setupEntity("Skill");
     const uuid = uuidv4();
     const skill = new Skill({ ...data, uuid, userUUID: data.user.uuid });
-    return await DatabaseServices.create(skill);
+    return await DatabaseServices.create(
+      DatabaseServices.entities.Skill,
+      skill
+    );
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupEntity("Skill");
     const skill = await Skill.find(DatabaseServices, credentials);
     console.log({ Model: DatabaseServices.Model, credentials });
     if (!skill) throw new Error("Incorrect credentials!");
@@ -46,22 +47,25 @@ export class Skill {
   };
 
   static find = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupEntity("Skill");
-    const skill: any = await DatabaseServices.findOne({
-      credentials,
-    });
+    const skill: any = await DatabaseServices.findOne(
+      DatabaseServices.entities.Skill,
+      {
+        credentials,
+      }
+    );
     return skill;
   };
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupEntity("Skill");
-    return await DatabaseServices.remove({ credentials: { uuid: this.uuid } });
+    return await DatabaseServices.remove(DatabaseServices.entities.Skill, {
+      credentials: { uuid: this.uuid },
+    });
   };
 
   update = async (DatabaseServices: any, data: any) => {
-    DatabaseServices.setupEntity("Skill");
     this.updatedAt = new Date().getTime();
     return await DatabaseServices.update(
+      DatabaseServices.entities.Skill,
       { ...this, ...data },
       { credentials: { uuid: this.uuid } }
     );

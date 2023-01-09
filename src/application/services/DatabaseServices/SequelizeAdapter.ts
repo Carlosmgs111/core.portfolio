@@ -1,6 +1,5 @@
 import models from "../../../infrastructure/repositories/sequelize/src/models";
-import { labelCases, Mapfy } from "../../../utils";
-import { filterAttrs } from "../../../utils";
+import { labelCases, Mapfy, setEnums } from "../../../utils";
 import { v4 as uuidv4 } from "uuid";
 import boom from "@hapi/boom";
 
@@ -14,47 +13,51 @@ export default class SequelizeAdapter {
   }
 
   create = async (
+    entity: any,
     Entity: any,
     options: any = {}
   ): Promise<typeof Entity | null> => {
-    const entity = await this.Entity.create(Entity, this.adapter(options));
-    return entity;
+    const newEntity = await models[entity].create(
+      Entity,
+      this.adapter(options)
+    );
+    return newEntity;
   };
 
-  createMany = async (entities: any, options: any = {}) => {
-    const entitiesCreated = await this.Entity.bulkCreate(
+  createMany = async (entity: any, entities: any, options: any = {}) => {
+    const entitiesCreated = await models[entity].bulkCreate(
       entities,
       this.adapter(options)
     );
     return entitiesCreated;
   };
 
-  findAll = async (options: any = {}) => {
-    const entities = await this.Entity.findAll(this.adapter(options));
+  findAll = async (entity: any, options: any = {}) => {
+    const entities = await models[entity].findAll(this.adapter(options));
     return entities.map((e: any) => ({ ...e.dataValues }));
   };
 
-  findOne = async (options: any = {}) => {
+  findOne = async (entity: any, options: any = {}) => {
     try {
-      const entity = await this.Entity.findOne(this.adapter(options));
-      if (!entity) return null;
-      return entity.dataValues;
+      const entityFounded = await models[entity].findOne(this.adapter(options));
+      if (!entityFounded) return null;
+      return entityFounded.dataValues;
     } catch (e: any) {
       console.log(e.message.red);
       throw boom.internal(e.message);
     }
   };
 
-  remove = async (options: any) => {
+  remove = async (entity: any, options: any) => {
     if (!options.credentials)
       throw boom.forbidden(
         "Must supply credentials for find and delete entity!"
       );
-    return await this.Entity.destroy(this.adapter(options));
+    return await models[entity].destroy(this.adapter(options));
   };
 
-  update = async (Entity: any, options: any = {}) => {
-    const model = await this.Entity.update(Entity, this.adapter(options));
+  update = async (entity: any, Entity: any, options: any = {}) => {
+    const model = await models[entity].update(Entity, this.adapter(options));
     return model.dataValues;
   };
 
@@ -63,9 +66,13 @@ export default class SequelizeAdapter {
     let succesfully = false;
     for (let ref of refs) {
       const [from, to] = ref;
-      const [exist, data]: any = await this.checkRelationship(from, to);
+      const [exist, data, relationshipLabel]: any =
+        await this.checkRelationship(from, to);
       if (exist) throw boom.conflict("Entity exist yet!");
-      const newSupportEntity = await this.create({ ...data, uuid: uuidv4() });
+      const newSupportEntity = await this.create(relationshipLabel, {
+        ...data,
+        uuid: uuidv4(),
+      });
       if (!newSupportEntity)
         throw boom.conflict("Support table doesn't created");
     }
@@ -76,9 +83,12 @@ export default class SequelizeAdapter {
   unrelateN2N = async (refs: any) => {
     for (let ref of refs) {
       const [from, to] = ref;
-      const [exist, data] = await this.checkRelationship(from, to);
+      const [exist, data, relationshipLabel] = await this.checkRelationship(
+        from,
+        to
+      );
       if (!exist) throw boom.conflict("Relationship doesn't exist!");
-      return await this.remove({ credentials: data });
+      return await this.remove(relationshipLabel, { credentials: data });
     }
   };
 
@@ -92,6 +102,7 @@ export default class SequelizeAdapter {
       });
       relations2One[`${key}UUID`] = referenced.uuid;
     }
+    console.log({relations2One})
     return { ...entity, ...relations2One };
   };
 
@@ -120,10 +131,10 @@ export default class SequelizeAdapter {
       [`${from.label}UUID`]: from.pk,
       [`${to.label}UUID`]: to.pk,
     };
-    const exist = await this.setupEntity(relationshipLabel).findOne({
+    const exist = await this.findOne(relationshipLabel, {
       credentials: relationshipUUIDS,
     });
-    return [exist, relationshipUUIDS];
+    return [exist, relationshipUUIDS, relationshipLabel];
   };
 
   // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
@@ -179,4 +190,6 @@ export default class SequelizeAdapter {
     for (var model in models)
       models[model].associate && models[model].associate(models);
   };
+
+  entities = setEnums(Object.entries(models).flatMap((m: any) => m[0]));
 }

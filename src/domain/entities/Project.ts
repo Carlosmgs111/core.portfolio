@@ -46,15 +46,17 @@ export class Project {
   }
   static new = async (DatabaseServices: any, data: any): Promise<string> => {
     const uuid = uuidv4();
-    const project = await DatabaseServices.setupEntity("Project").relate2One(
+    const project = await DatabaseServices.relate2One(
       new Project({ ...data, uuid }),
       [{ user: { uuid: data.user.uuid } }]
     );
-    return await DatabaseServices.create(project);
+    return await DatabaseServices.create(
+      DatabaseServices.entities.Project,
+      project
+    );
   };
 
   static load = async (DatabaseServices: any, credentials: any) => {
-    DatabaseServices.setupEntity("Project");
     const loadedProject = await Project.find(DatabaseServices, credentials);
     if (!loadedProject) throw new Error("Incorrect credentials!");
     const project = new Project(loadedProject);
@@ -62,26 +64,31 @@ export class Project {
   };
 
   static find = async (DatabaseServices: any, options: any) => {
-    DatabaseServices.setupEntity("Project");
-    const account: any = await DatabaseServices.findOne(options);
+    const account: any = await DatabaseServices.findOne(
+      DatabaseServices.entities.Project,
+      options
+    );
     return account;
   };
 
   static findAll = async (DatabaseServices: any, options: any = {}) => {
-    DatabaseServices.setupEntity("Project");
-    const projects: any = await DatabaseServices.findAll(options);
+    const projects: any = await DatabaseServices.findAll(
+      DatabaseServices.entities.Project,
+      options
+    );
     return projects;
   };
 
   remove = async (DatabaseServices: any) => {
-    DatabaseServices.setupEntity("Project");
-    return await DatabaseServices.remove({ credentials: { uuid: this.uuid } });
+    return await DatabaseServices.remove(DatabaseServices.entities.Project, {
+      credentials: { uuid: this.uuid },
+    });
   };
 
   update = async (DatabaseServices: any, data: any) => {
-    DatabaseServices.setupEntity("Project");
     this.updatedAt = new Date().getTime();
     return await DatabaseServices.update(
+      DatabaseServices.entities.Project,
       { ...this, ...data },
       { credentials: { uuid: this.uuid } }
     );

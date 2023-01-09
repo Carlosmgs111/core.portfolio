@@ -1,7 +1,7 @@
 import { connect } from "../../../infrastructure/repositories/mongoose";
 import models from "../../../infrastructure/repositories/mongoose/models";
 import { model } from "mongoose";
-import { labelCases, Mapfy } from "../../../utils";
+import { labelCases, Mapfy, setEnums } from "../../../utils";
 import boom from "@hapi/boom";
 export default class MongooseAdapter {
   serviceDescription: string = "Mongoose Database Service Adapter";
@@ -12,47 +12,49 @@ export default class MongooseAdapter {
   }
 
   create = async (
+    entity: any,
     Entity: any,
     options: any = {}
   ): Promise<typeof model | null> => {
-    const entity = this.Entity.create(Entity);
-    return entity;
+    const newEntity = models[entity].create(Entity);
+    return newEntity;
   };
 
-  createMany = async (entities: any, options: any) => {
-    const entitiesCreated = this.Entity.insertMany(entities);
+  createMany = async (entity: any, entities: any, options: any) => {
+    const entitiesCreated = models[entity].insertMany(entities);
     return entitiesCreated;
   };
 
-  findAll = async (options: any) => {
+  findAll = async (entity: any, options: any) => {
     const { size = 100, page = 0 } = options;
     const { related = [] } = options;
-    const entities = await this.Entity.find(this.adapter(options))
+    const entities = await models[entity]
+      .find(this.adapter(options))
       .populate(this.getPopulateMap(related))
       .limit(Number(size))
       .skip(Number(page));
     return entities.map((e: any) => ({ ...e._doc }));
   };
 
-  findOne = async (options: any) => {
+  findOne = async (entity: any, options: any) => {
     const { credentials, related = [] } = options;
-    const entity = await this.Entity.findOne(credentials).populate(
-      this.getPopulateMap(related)
-    );
-    if (!entity) return null;
-    return entity._doc;
+    const entityFounded = await models[entity]
+      .findOne(credentials)
+      .populate(this.getPopulateMap(related));
+    if (!entityFounded) return null;
+    return entityFounded._doc;
   };
 
-  remove = async (options: any) => {
+  remove = async (entity: any, options: any) => {
     if (!options.credentials)
       throw boom.forbidden(
         "Must supply credentials for find and delete entity!"
       );
-    return await this.Entity.deleteOne(this.adapter(options));
+    return await models[entity].deleteOne(this.adapter(options));
   };
 
-  update = async (Entity: any, options: any) => {
-    const model = await this.Entity.updateOne(this.adapter(options), Entity);
+  update = async (entity: any, Entity: any, options: any) => {
+    const model = await models[entity].updateOne(this.adapter(options), Entity);
     return model._doc;
   };
 
@@ -207,4 +209,6 @@ export default class MongooseAdapter {
   }
 
   syncModels = () => {};
+
+  entities = setEnums(Object.entries(models).flatMap((m: any) => m[0]));
 }

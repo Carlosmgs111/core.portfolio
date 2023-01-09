@@ -38,9 +38,8 @@ export const updateProject = async (data: any) =>
 
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
 export const migrateDescriptionToDescriptions = async (data: any) => {
-  const projects = await DatabaseService.command
-    .setupEntity("Project")
-    .findAll();
+  const projects = await DatabaseService
+    .findAll(DatabaseService.entities.Project);
   console.log({ projects });
   for (var project of projects) {
     const descriptions = project.description.split(". ");

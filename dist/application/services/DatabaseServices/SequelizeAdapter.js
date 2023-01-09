@@ -20,37 +20,37 @@ class SequelizeAdapter {
     // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
     constructor({}) {
         this.serviceDescription = "Sequelize Database Service Adapter";
-        this.create = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const entity = yield this.Entity.create(Entity, this.adapter(options));
-            return entity;
+        this.create = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const newEntity = yield models_1.default[entity].create(Entity, this.adapter(options));
+            return newEntity;
         });
-        this.createMany = (entities, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const entitiesCreated = yield this.Entity.bulkCreate(entities, this.adapter(options));
+        this.createMany = (entity, entities, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const entitiesCreated = yield models_1.default[entity].bulkCreate(entities, this.adapter(options));
             return entitiesCreated;
         });
-        this.findAll = (options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const entities = yield this.Entity.findAll(this.adapter(options));
+        this.findAll = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const entities = yield models_1.default[entity].findAll(this.adapter(options));
             return entities.map((e) => (Object.assign({}, e.dataValues)));
         });
-        this.findOne = (options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.findOne = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const entity = yield this.Entity.findOne(this.adapter(options));
-                if (!entity)
+                const entityFounded = yield models_1.default[entity].findOne(this.adapter(options));
+                if (!entityFounded)
                     return null;
-                return entity.dataValues;
+                return entityFounded.dataValues;
             }
             catch (e) {
                 console.log(e.message.red);
                 throw boom_1.default.internal(e.message);
             }
         });
-        this.remove = (options) => __awaiter(this, void 0, void 0, function* () {
+        this.remove = (entity, options) => __awaiter(this, void 0, void 0, function* () {
             if (!options.credentials)
                 throw boom_1.default.forbidden("Must supply credentials for find and delete entity!");
-            return yield this.Entity.destroy(this.adapter(options));
+            return yield models_1.default[entity].destroy(this.adapter(options));
         });
-        this.update = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const model = yield this.Entity.update(Entity, this.adapter(options));
+        this.update = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const model = yield models_1.default[entity].update(Entity, this.adapter(options));
             return model.dataValues;
         });
         // TODO rename to createRelationship
@@ -58,10 +58,10 @@ class SequelizeAdapter {
             let succesfully = false;
             for (let ref of refs) {
                 const [from, to] = ref;
-                const [exist, data] = yield this.checkRelationship(from, to);
+                const [exist, data, relationshipLabel] = yield this.checkRelationship(from, to);
                 if (exist)
                     throw boom_1.default.conflict("Entity exist yet!");
-                const newSupportEntity = yield this.create(Object.assign(Object.assign({}, data), { uuid: (0, uuid_1.v4)() }));
+                const newSupportEntity = yield this.create(relationshipLabel, Object.assign(Object.assign({}, data), { uuid: (0, uuid_1.v4)() }));
                 if (!newSupportEntity)
                     throw boom_1.default.conflict("Support table doesn't created");
             }
@@ -71,10 +71,10 @@ class SequelizeAdapter {
         this.unrelateN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
             for (let ref of refs) {
                 const [from, to] = ref;
-                const [exist, data] = yield this.checkRelationship(from, to);
+                const [exist, data, relationshipLabel] = yield this.checkRelationship(from, to);
                 if (!exist)
                     throw boom_1.default.conflict("Relationship doesn't exist!");
-                return yield this.remove({ credentials: data });
+                return yield this.remove(relationshipLabel, { credentials: data });
             }
         });
         this.relate2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
@@ -87,6 +87,7 @@ class SequelizeAdapter {
                 });
                 relations2One[`${key}UUID`] = referenced.uuid;
             }
+            console.log({ relations2One });
             return Object.assign(Object.assign({}, entity), relations2One);
         });
         // ? Pending to test
@@ -110,10 +111,10 @@ class SequelizeAdapter {
                 [`${from.label}UUID`]: from.pk,
                 [`${to.label}UUID`]: to.pk,
             };
-            const exist = yield this.setupEntity(relationshipLabel).findOne({
+            const exist = yield this.findOne(relationshipLabel, {
                 credentials: relationshipUUIDS,
             });
-            return [exist, relationshipUUIDS];
+            return [exist, relationshipUUIDS, relationshipLabel];
         });
         // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
         this.hasMany = (Entity, label) => __awaiter(this, void 0, void 0, function* () { return Entity[`get${label}`](); });
@@ -127,6 +128,7 @@ class SequelizeAdapter {
             for (var model in models_1.default)
                 models_1.default[model].associate && models_1.default[model].associate(models_1.default);
         };
+        this.entities = (0, utils_1.setEnums)(Object.entries(models_1.default).flatMap((m) => m[0]));
         this.syncModels();
     }
     // ? pending to find an appropiated agnosthic name

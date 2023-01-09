@@ -19,37 +19,40 @@ const boom_1 = __importDefault(require("@hapi/boom"));
 class MongooseAdapter {
     constructor({}) {
         this.serviceDescription = "Mongoose Database Service Adapter";
-        this.create = (Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const entity = this.Entity.create(Entity);
-            return entity;
+        this.create = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const newEntity = models_1.default[entity].create(Entity);
+            return newEntity;
         });
-        this.createMany = (entities, options) => __awaiter(this, void 0, void 0, function* () {
-            const entitiesCreated = this.Entity.insertMany(entities);
+        this.createMany = (entity, entities, options) => __awaiter(this, void 0, void 0, function* () {
+            const entitiesCreated = models_1.default[entity].insertMany(entities);
             return entitiesCreated;
         });
-        this.findAll = (options) => __awaiter(this, void 0, void 0, function* () {
+        this.findAll = (entity, options) => __awaiter(this, void 0, void 0, function* () {
             const { size = 100, page = 0 } = options;
             const { related = [] } = options;
-            const entities = yield this.Entity.find(this.adapter(options))
+            const entities = yield models_1.default[entity]
+                .find(this.adapter(options))
                 .populate(this.getPopulateMap(related))
                 .limit(Number(size))
                 .skip(Number(page));
             return entities.map((e) => (Object.assign({}, e._doc)));
         });
-        this.findOne = (options) => __awaiter(this, void 0, void 0, function* () {
+        this.findOne = (entity, options) => __awaiter(this, void 0, void 0, function* () {
             const { credentials, related = [] } = options;
-            const entity = yield this.Entity.findOne(credentials).populate(this.getPopulateMap(related));
-            if (!entity)
+            const entityFounded = yield models_1.default[entity]
+                .findOne(credentials)
+                .populate(this.getPopulateMap(related));
+            if (!entityFounded)
                 return null;
-            return entity._doc;
+            return entityFounded._doc;
         });
-        this.remove = (options) => __awaiter(this, void 0, void 0, function* () {
+        this.remove = (entity, options) => __awaiter(this, void 0, void 0, function* () {
             if (!options.credentials)
                 throw boom_1.default.forbidden("Must supply credentials for find and delete entity!");
-            return yield this.Entity.deleteOne(this.adapter(options));
+            return yield models_1.default[entity].deleteOne(this.adapter(options));
         });
-        this.update = (Entity, options) => __awaiter(this, void 0, void 0, function* () {
-            const model = yield this.Entity.updateOne(this.adapter(options), Entity);
+        this.update = (entity, Entity, options) => __awaiter(this, void 0, void 0, function* () {
+            const model = yield models_1.default[entity].updateOne(this.adapter(options), Entity);
             return model._doc;
         });
         // TODO rename to createRelationship
@@ -157,6 +160,7 @@ class MongooseAdapter {
         };
         this.formatIncludeClosure = (entitiesToInclude) => __awaiter(this, void 0, void 0, function* () { });
         this.syncModels = () => { };
+        this.entities = (0, utils_1.setEnums)(Object.entries(models_1.default).flatMap((m) => m[0]));
         (0, mongoose_1.connect)();
     }
     setupEntity(entityLabel) {

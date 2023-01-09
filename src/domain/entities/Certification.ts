@@ -28,14 +28,18 @@ export class Certification {
   ): Promise<Certification> => {
     const uuid = uuidv4();
     const { emitedBy } = data;
-    const certification = await DatabaseServices.command
-      .setupEntity("Certification")
-      .relate2One(new Certification({ ...data, uuid }), [
+    const certification = await DatabaseServices.relate2One(
+      new Certification({ ...data, uuid }),
+      [
         {
           institution: { name: emitedBy },
         },
-      ]);
-    await DatabaseServices.create(certification);
+      ]
+    );
+    await DatabaseServices.create(
+      DatabaseServices.entities.Certification,
+      certification
+    );
     await DatabaseServices.relateN2N([
       [
         { label: "certification", pk: uuid },
@@ -46,7 +50,6 @@ export class Certification {
   };
 
   static createMany = async (DatabaseServices: any, data: any) => {
-    DatabaseServices.setupEntity("Certification");
     const certifications = [];
     for (let certification of data) {
       certifications.push(
@@ -60,7 +63,10 @@ export class Certification {
         )
       );
     }
+    console.log({certifications
+    })
     const certificationsCreated = await DatabaseServices.createMany(
+      DatabaseServices.entities.Certification,
       certifications
     );
 
@@ -80,7 +86,6 @@ export class Certification {
   };
 
   static load = async (DatabaseServices: any, options: any) => {
-    DatabaseServices.setupEntity("Certification");
     const certification = await Certification.find(DatabaseServices, options);
     if (!certification) throw new Error("Incorrect credentials!");
     const loadedCertification = new Certification(certification);
@@ -88,14 +93,18 @@ export class Certification {
   };
 
   static find = async (DatabaseServices: any, options: any) => {
-    DatabaseServices.setupEntity("Certification");
-    const certificate: any = await DatabaseServices.findOne(options);
+    const certificate: any = await DatabaseServices.findOne(
+      DatabaseServices.entities.Certification,
+      options
+    );
     return certificate;
   };
 
   static findAll = async (DatabaseServices: any, options: any = {}) => {
-    DatabaseServices.query.setupEntity("Certification");
-    const certificates: any = await DatabaseServices.query.findAll(options);
+    const certificates: any = await DatabaseServices.findAll(
+      DatabaseServices.entities.Certification,
+      options
+    );
     return certificates;
   };
 
@@ -106,22 +115,25 @@ export class Certification {
         { label: "certification", pk: this.uuid },
       ],
     ]);
-    return await DatabaseServices.setupEntity("Certification").remove({
-      credentials: filterAttrs(
-        getEntityProperties(this),
-        ["title", "uuid"],
-        false
-      ),
-    });
+    return await DatabaseServices.remove(
+      DatabaseServices.entities.Certification,
+      {
+        credentials: filterAttrs(
+          getEntityProperties(this),
+          ["title", "uuid"],
+          false
+        ),
+      }
+    );
   };
 
   update = async (DatabaseServices: any, data: any) => {
     const [exist] = await DatabaseServices.checkRelationship(
+      DatabaseServices.entities.Certification,
       { label: "certification", pk: this.uuid },
       { label: "user", pk: data.user.uuid }
     );
     if (!exist) throw boom.conflict("Relationship doesn't exist!");
-    DatabaseServices.setupEntity("Certification");
     this.updatedAt = new Date().getTime();
     await DatabaseServices.update(
       {

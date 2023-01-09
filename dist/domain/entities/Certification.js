@@ -33,15 +33,14 @@ class Certification {
                     { label: "certification", pk: this.uuid },
                 ],
             ]);
-            return yield DatabaseServices.setupEntity("Certification").remove({
+            return yield DatabaseServices.remove(DatabaseServices.entities.Certification, {
                 credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["title", "uuid"], false),
             });
         });
         this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
-            const [exist] = yield DatabaseServices.checkRelationship({ label: "certification", pk: this.uuid }, { label: "user", pk: data.user.uuid });
+            const [exist] = yield DatabaseServices.checkRelationship(DatabaseServices.entities.Certification, { label: "certification", pk: this.uuid }, { label: "user", pk: data.user.uuid });
             if (!exist)
                 throw boom_1.default.conflict("Relationship doesn't exist!");
-            DatabaseServices.setupEntity("Certification");
             this.updatedAt = new Date().getTime();
             yield DatabaseServices.update(Object.assign({ updatedAt: this.updatedAt }, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
             return this;
@@ -61,14 +60,12 @@ _a = Certification;
 Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = (0, uuid_1.v4)();
     const { emitedBy } = data;
-    const certification = yield DatabaseServices.command
-        .setupEntity("Certification")
-        .relate2One(new Certification(Object.assign(Object.assign({}, data), { uuid })), [
+    const certification = yield DatabaseServices.relate2One(new Certification(Object.assign(Object.assign({}, data), { uuid })), [
         {
             institution: { name: emitedBy },
         },
     ]);
-    yield DatabaseServices.create(certification);
+    yield DatabaseServices.create(DatabaseServices.entities.Certification, certification);
     yield DatabaseServices.relateN2N([
         [
             { label: "certification", pk: uuid },
@@ -78,7 +75,6 @@ Certification.create = (DatabaseServices, data) => __awaiter(void 0, void 0, voi
     return certification;
 });
 Certification.createMany = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("Certification");
     const certifications = [];
     for (let certification of data) {
         certifications.push(yield DatabaseServices.relate2One(new Certification(Object.assign(Object.assign({}, certification), { uuid: (0, uuid_1.v4)() })), [
@@ -87,7 +83,9 @@ Certification.createMany = (DatabaseServices, data) => __awaiter(void 0, void 0,
             },
         ]));
     }
-    const certificationsCreated = yield DatabaseServices.createMany(certifications);
+    console.log({ certifications
+    });
+    const certificationsCreated = yield DatabaseServices.createMany(DatabaseServices.entities.Certification, certifications);
     for (let certificationIdx in data) {
         yield DatabaseServices.relateN2N([
             [
@@ -103,7 +101,6 @@ Certification.createMany = (DatabaseServices, data) => __awaiter(void 0, void 0,
     return certifications;
 });
 Certification.load = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("Certification");
     const certification = yield Certification.find(DatabaseServices, options);
     if (!certification)
         throw new Error("Incorrect credentials!");
@@ -111,12 +108,10 @@ Certification.load = (DatabaseServices, options) => __awaiter(void 0, void 0, vo
     return loadedCertification;
 });
 Certification.find = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.setupEntity("Certification");
-    const certificate = yield DatabaseServices.findOne(options);
+    const certificate = yield DatabaseServices.findOne(DatabaseServices.entities.Certification, options);
     return certificate;
 });
 Certification.findAll = (DatabaseServices, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    DatabaseServices.query.setupEntity("Certification");
-    const certificates = yield DatabaseServices.query.findAll(options);
+    const certificates = yield DatabaseServices.findAll(DatabaseServices.entities.Certification, options);
     return certificates;
 });
