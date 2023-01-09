@@ -14,7 +14,7 @@ exports.certification_schema = {
     institutionUUID: {
         field: "institution_uuid",
         unique: false,
-        allowNull: false,
+        allowNull: true,
         type: sequelize_1.DataTypes.STRING,
         references: {
             model: "Institutions",

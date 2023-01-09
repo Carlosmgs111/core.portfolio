@@ -50,39 +50,36 @@ export class Certification {
   };
 
   static createMany = async (DatabaseServices: any, data: any) => {
-    const certifications = [];
-    for (let certification of data) {
-      certifications.push(
-        await DatabaseServices.relate2One(
-          new Certification({ ...certification, uuid: uuidv4() }),
-          [
-            {
-              institution: { name: certification.emitedBy },
-            },
-          ]
-        )
-      );
-    }
-    console.log({certifications
-    })
+    console.log({ data });
     const certificationsCreated = await DatabaseServices.createMany(
       DatabaseServices.entities.Certification,
-      certifications
+      data.map((c: any) => new Certification({ ...c, uuid: uuidv4() }))
     );
+
+    for (let certification in certificationsCreated) {
+      await DatabaseServices.relate2One(
+        { certifications: { uuid: certificationsCreated[certification].uuid } },
+        [
+          {
+            institution: { name: data[certification].emitedBy },
+          },
+        ]
+      );
+    }
 
     for (let certificationIdx in data) {
       await DatabaseServices.relateN2N([
         [
           {
             label: "certification",
-            pk: certifications[Number(certificationIdx)].uuid,
+            pk: certificationsCreated[Number(certificationIdx)].uuid,
           },
           { label: "user", pk: data[Number(certificationIdx)].user.uuid },
         ],
       ]);
     }
     console.log({ certificationsCreated });
-    return certifications;
+    return certificationsCreated;
   };
 
   static load = async (DatabaseServices: any, options: any) => {
@@ -128,14 +125,15 @@ export class Certification {
   };
 
   update = async (DatabaseServices: any, data: any) => {
-    const [exist] = await DatabaseServices.checkRelationship(
+    /* const [exist] = await DatabaseServices.checkRelationship(
       DatabaseServices.entities.Certification,
       { label: "certification", pk: this.uuid },
       { label: "user", pk: data.user.uuid }
     );
-    if (!exist) throw boom.conflict("Relationship doesn't exist!");
+    if (!exist) throw boom.conflict("Relationship doesn't exist!"); */
     this.updatedAt = new Date().getTime();
     await DatabaseServices.update(
+      DatabaseServices.entities.Certification,
       {
         updatedAt: this.updatedAt,
         ...filterAttrs(data, ["uuid", "user", "token"]),

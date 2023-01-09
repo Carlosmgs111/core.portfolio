@@ -14,8 +14,8 @@ const certificationSchema = new mongoose_1.Schema({
         lowercase: false,
         trim: false,
     },
-    Users: [{ type: String, ref: 'User' }],
-    Institution: { type: String, ref: 'Institution', required: true },
+    Users: [{ type: String, ref: "User" }],
+    Institution: { type: String, ref: "Institution" },
     image: {
         type: String,
         required: true,
@@ -38,4 +38,4 @@ const certificationSchema = new mongoose_1.Schema({
         required: true,
     },
 });
-exports.default = (0, mongoose_1.model)('Certification', certificationSchema);
+exports.default = (0, mongoose_1.model)("Certification", certificationSchema);

@@ -12,7 +12,7 @@ export const certification_schema = {
   institutionUUID: {
     field: "institution_uuid",
     unique: false,
-    allowNull: false,
+    allowNull: true,
     type: DataTypes.STRING,
     references: {
       model: "Institutions",

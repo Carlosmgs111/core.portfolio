@@ -22,11 +22,11 @@ class SequelizeAdapter {
         this.serviceDescription = "Sequelize Database Service Adapter";
         this.create = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const newEntity = yield models_1.default[entity].create(Entity, this.adapter(options));
-            return newEntity;
+            return newEntity.dataValues;
         });
         this.createMany = (entity, entities, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const entitiesCreated = yield models_1.default[entity].bulkCreate(entities, this.adapter(options));
-            return entitiesCreated;
+            return entitiesCreated.map((e) => (Object.assign({}, e.dataValues)));
         });
         this.findAll = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const entities = yield models_1.default[entity].findAll(this.adapter(options));
@@ -82,12 +82,17 @@ class SequelizeAdapter {
             for (let ref of refs) {
                 const key = (0, utils_1.Mapfy)(ref).keys().next().value;
                 const value = (0, utils_1.Mapfy)(ref).values().next().value;
+                console.log({ key, value });
                 const referenced = yield models_1.default[(0, utils_1.labelCases)(key).CS].findOne({
                     where: value,
                 });
                 relations2One[`${key}UUID`] = referenced.uuid;
             }
+            const key = (0, utils_1.Mapfy)(entity).keys().next().value;
+            const value = (0, utils_1.Mapfy)(entity).values().next().value;
             console.log({ relations2One });
+            console.log({ key, value });
+            models_1.default[(0, utils_1.labelCases)(key).CS].update(relations2One, { where: value });
             return Object.assign(Object.assign({}, entity), relations2One);
         });
         // ? Pending to test

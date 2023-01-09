@@ -21,7 +21,7 @@ export default class SequelizeAdapter {
       Entity,
       this.adapter(options)
     );
-    return newEntity;
+    return newEntity.dataValues;
   };
 
   createMany = async (entity: any, entities: any, options: any = {}) => {
@@ -29,7 +29,7 @@ export default class SequelizeAdapter {
       entities,
       this.adapter(options)
     );
-    return entitiesCreated;
+    return entitiesCreated.map((e: any) => ({ ...e.dataValues }));
   };
 
   findAll = async (entity: any, options: any = {}) => {
@@ -97,12 +97,18 @@ export default class SequelizeAdapter {
     for (let ref of refs) {
       const key = Mapfy(ref).keys().next().value;
       const value = Mapfy(ref).values().next().value;
+      console.log({ key, value });
       const referenced = await models[labelCases(key).CS].findOne({
         where: value,
       });
       relations2One[`${key}UUID`] = referenced.uuid;
     }
-    console.log({relations2One})
+
+    const key = Mapfy(entity).keys().next().value;
+    const value = Mapfy(entity).values().next().value;
+    console.log({ relations2One });
+    console.log({ key, value });
+    models[labelCases(key).CS].update(relations2One, { where: value });
     return { ...entity, ...relations2One };
   };
 

@@ -21,11 +21,11 @@ class MongooseAdapter {
         this.serviceDescription = "Mongoose Database Service Adapter";
         this.create = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const newEntity = models_1.default[entity].create(Entity);
-            return newEntity;
+            return newEntity._doc;
         });
         this.createMany = (entity, entities, options) => __awaiter(this, void 0, void 0, function* () {
-            const entitiesCreated = models_1.default[entity].insertMany(entities);
-            return entitiesCreated;
+            const entitiesCreated = yield models_1.default[entity].insertMany(entities);
+            return entitiesCreated.map((e) => (Object.assign({}, e._doc)));
         });
         this.findAll = (entity, options) => __awaiter(this, void 0, void 0, function* () {
             const { size = 100, page = 0 } = options;
@@ -109,6 +109,9 @@ class MongooseAdapter {
                 const referenced = yield models_1.default[(0, utils_1.labelCases)(key).CS].findOne(value);
                 relations2One[(0, utils_1.labelCases)(key).CS] = referenced._id;
             }
+            const key = (0, utils_1.Mapfy)(entity).keys().next().value;
+            const value = (0, utils_1.Mapfy)(entity).values().next().value;
+            yield models_1.default[(0, utils_1.labelCases)(key).CS].updateOne(value, relations2One);
             return Object.assign(Object.assign({}, entity), relations2One);
         });
         // ? Pending to test

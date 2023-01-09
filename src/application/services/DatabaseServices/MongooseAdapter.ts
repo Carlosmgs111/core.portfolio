@@ -17,12 +17,12 @@ export default class MongooseAdapter {
     options: any = {}
   ): Promise<typeof model | null> => {
     const newEntity = models[entity].create(Entity);
-    return newEntity;
+    return newEntity._doc;
   };
 
   createMany = async (entity: any, entities: any, options: any) => {
-    const entitiesCreated = models[entity].insertMany(entities);
-    return entitiesCreated;
+    const entitiesCreated = await models[entity].insertMany(entities);
+    return entitiesCreated.map((e: any) => ({ ...e._doc }));
   };
 
   findAll = async (entity: any, options: any) => {
@@ -139,6 +139,9 @@ export default class MongooseAdapter {
       const referenced = await models[labelCases(key).CS].findOne(value);
       relations2One[labelCases(key).CS] = referenced._id;
     }
+    const key = Mapfy(entity).keys().next().value;
+    const value = Mapfy(entity).values().next().value;
+    await models[labelCases(key).CS].updateOne(value, relations2One);
     return { ...entity, ...relations2One };
   };
 
