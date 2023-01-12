@@ -1,4 +1,4 @@
-import { DatabaseService } from "../../config/dependencies";
+import { RepositoryService } from "../../config/dependencies";
 import { Certification } from "../../domain/entities/Certification";
 import { User } from "../../domain/entities/User";
 import boom from "@hapi/boom";
@@ -28,7 +28,7 @@ const format = (certifications: [Certification]) =>
 export const getCertifications = async (data: any) => {
   const { username, user, size, page } = data;
   return format(
-    await Certification.findAll(DatabaseService, {
+    await Certification.findAll(RepositoryService, {
       related: [
         [
           "User",
@@ -48,18 +48,18 @@ export const getCertifications = async (data: any) => {
 export const getOwnCertifications = async (data: any) => {
   const { token } = data;
   const { user } = await verifyToken2(token);
-  return await User.certifications(DatabaseService, {
+  return await User.certifications(RepositoryService, {
     username: user.username,
   });
 };
 
 export const getCertificationByUUID = async (data: any) => {
-  return await Certification.find(DatabaseService, data);
+  return await Certification.find(RepositoryService, data);
 };
 
 export const addNewCertification = async (data: any) => {
   if (!data.user) throw boom.conflict("A user must be instanced!");
-  const certification = await Certification.create(DatabaseService, data);
+  const certification = await Certification.create(RepositoryService, data);
   return {
     ...certification,
     emitedBy: data.emitedBy,
@@ -70,7 +70,7 @@ export const addNewCertification = async (data: any) => {
 export const addManyCertifications = async (data: any) => {
   const { certifications, user, emitedBy } = data;
   const newCertifications = await Certification.createMany(
-    DatabaseService,
+    RepositoryService,
     certifications.map((c: any) => ({ ...c, user }))
   );
   return newCertifications.map((c: any) => ({
@@ -83,8 +83,8 @@ export const addManyCertifications = async (data: any) => {
 export const updateCertification = async (data: any) => {
   const { user, uuid } = data;
   await (
-    await Certification.load(DatabaseService, { credentials: { uuid } })
-  ).update(DatabaseService, data);
+    await Certification.load(RepositoryService, { credentials: { uuid } })
+  ).update(RepositoryService, data);
   return format([
     {
       ...(await getCertificationByUUID({
@@ -98,9 +98,9 @@ export const updateCertification = async (data: any) => {
 
 export const removeCertification = async (data: any) => {
   await (
-    await Certification.load(DatabaseService, {
+    await Certification.load(RepositoryService, {
       credentials: { uuid: data.uuid },
     })
-  ).remove(DatabaseService, { userUUID: data.user.uuid });
+  ).remove(RepositoryService, { userUUID: data.user.uuid });
   return { message: "Certification deleted", uuid: data.uuid };
 };

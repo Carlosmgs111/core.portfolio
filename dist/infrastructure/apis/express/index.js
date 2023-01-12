@@ -28,7 +28,7 @@ exports.app
     // .use(passport)
     .use((0, grantUrls_handler_1.grantUrls)([
     [["signin", "signup"], ["POST"]],
-    [["certifications", "institutions", "skills", "projects"]],
+    [["certifications", "institutions", "skills", "projects", "cqrs"]],
 ]))
     /* to check */
     .use((req, res, next) => {

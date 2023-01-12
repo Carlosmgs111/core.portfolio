@@ -18,28 +18,28 @@ const dependencies_1 = require("../../config/dependencies");
 // ! implementar el uso de ´boom´ a traves de un ´interface´
 const boom_1 = __importDefault(require("@hapi/boom"));
 const registerUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield User_1.User.create(dependencies_1.DatabaseService, data);
+    return yield User_1.User.create(dependencies_1.RepositoryService, data);
 });
 exports.registerUser = registerUser;
 const signin = (data) => __awaiter(void 0, void 0, void 0, function* () {
     if (!(new Map(Object.entries(data)).has("email") ||
         new Map(Object.entries(data)).has("username")))
         throw boom_1.default.badRequest("Require username or email!");
-    return yield User_1.User.load(dependencies_1.DatabaseService, { credentials: data });
+    return yield User_1.User.load(dependencies_1.RepositoryService, { credentials: data });
 });
 exports.signin = signin;
 const removeUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield User_1.User.load(dependencies_1.DatabaseService, data);
+    const user = yield User_1.User.load(dependencies_1.RepositoryService, data);
     console.log({ user });
-    return yield user.remove(dependencies_1.DatabaseService);
+    return yield user.remove(dependencies_1.RepositoryService);
 });
 exports.removeUser = removeUser;
 const updateUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
     console.log({ data });
-    return yield (yield User_1.User.load(dependencies_1.DatabaseService, data)).update(dependencies_1.DatabaseService, data);
+    return yield (yield User_1.User.load(dependencies_1.RepositoryService, data)).update(dependencies_1.RepositoryService, data);
 });
 exports.updateUser = updateUser;
 const sayHello = (data) => data.user.sayHello(data.name);
 exports.sayHello = sayHello;
-const getAllUsername = () => __awaiter(void 0, void 0, void 0, function* () { return yield User_1.User.findAll(dependencies_1.DatabaseService); });
+const getAllUsername = () => __awaiter(void 0, void 0, void 0, function* () { return yield User_1.User.findAll(dependencies_1.RepositoryService); });
 exports.getAllUsername = getAllUsername;

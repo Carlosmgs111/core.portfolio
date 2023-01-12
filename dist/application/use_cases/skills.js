@@ -13,16 +13,16 @@ exports.updateSkill = exports.deleteSkill = exports.addNewSkill = exports.getAll
 const Skill_1 = require("../../domain/entities/Skill");
 const dependencies_1 = require("../../config/dependencies");
 const getAllSkills = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield dependencies_1.DatabaseService.findAll(dependencies_1.DatabaseService.entities.Skill);
+    return yield dependencies_1.RepositoryService.findAll(dependencies_1.RepositoryService.entities.Skill);
 });
 exports.getAllSkills = getAllSkills;
 const addNewSkill = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield Skill_1.Skill.create(dependencies_1.DatabaseService, data);
+    return yield Skill_1.Skill.create(dependencies_1.RepositoryService, data);
 });
 exports.addNewSkill = addNewSkill;
-const deleteSkill = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield (yield Skill_1.Skill.load(dependencies_1.DatabaseService, data)).remove(dependencies_1.DatabaseService); });
+const deleteSkill = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield (yield Skill_1.Skill.load(dependencies_1.RepositoryService, data)).remove(dependencies_1.RepositoryService); });
 exports.deleteSkill = deleteSkill;
 const updateSkill = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (yield Skill_1.Skill.load(dependencies_1.DatabaseService, { uuid: data.uuid })).update(dependencies_1.DatabaseService, data);
+    return yield (yield Skill_1.Skill.load(dependencies_1.RepositoryService, { uuid: data.uuid })).update(dependencies_1.RepositoryService, data);
 });
 exports.updateSkill = updateSkill;

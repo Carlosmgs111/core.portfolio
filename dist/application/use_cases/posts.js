@@ -13,12 +13,12 @@ exports.updatePost = exports.removePost = exports.getAllPosts = exports.addPost 
 const Post_1 = require("../../domain/entities/Post");
 const dependencies_1 = require("../../config/dependencies");
 const addPost = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield Post_1.Post.create(dependencies_1.DatabaseService, data);
+    return yield Post_1.Post.create(dependencies_1.RepositoryService, data);
 });
 exports.addPost = addPost;
-const getAllPosts = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield dependencies_1.DatabaseService.findAll(dependencies_1.DatabaseService.entities.Post); });
+const getAllPosts = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield dependencies_1.RepositoryService.findAll(dependencies_1.RepositoryService.entities.Post); });
 exports.getAllPosts = getAllPosts;
-const removePost = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield (yield Post_1.Post.load(dependencies_1.DatabaseService, data)).remove(dependencies_1.DatabaseService); });
+const removePost = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield (yield Post_1.Post.load(dependencies_1.RepositoryService, data)).remove(dependencies_1.RepositoryService); });
 exports.removePost = removePost;
-const updatePost = (data) => __awaiter(void 0, void 0, void 0, function* () { return (yield Post_1.Post.load(dependencies_1.DatabaseService, data)).update(dependencies_1.DatabaseService, data); });
+const updatePost = (data) => __awaiter(void 0, void 0, void 0, function* () { return (yield Post_1.Post.load(dependencies_1.RepositoryService, data)).update(dependencies_1.RepositoryService, data); });
 exports.updatePost = updatePost;

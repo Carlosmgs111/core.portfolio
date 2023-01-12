@@ -21,14 +21,14 @@ class Post {
     constructor({ uuid, title, content, createdAt, updatedAt, }) {
         this.createdAt = 0;
         this.updatedAt = 0;
-        this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
-            return yield DatabaseServices.remove(DatabaseServices.entities.Post, {
+        this.remove = (RepositoryService) => __awaiter(this, void 0, void 0, function* () {
+            return yield RepositoryService.remove(RepositoryService.entities.Post, {
                 credentials: { uuid: this.uuid },
             });
         });
-        this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
+        this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
             this.updatedAt = new Date().getTime();
-            return yield DatabaseServices.update(DatabaseServices.entities.Post, Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
+            return yield RepositoryService.update(RepositoryService.entities.Post, Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.title = title;
@@ -39,27 +39,27 @@ class Post {
 }
 exports.Post = Post;
 _a = Post;
-Post.create = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
-    const exist = yield DatabaseServices.findOne(DatabaseServices.entities.Post, {
+Post.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const exist = yield RepositoryService.findOne(RepositoryService.entities.Post, {
         credentials: (0, utils_1.filterAttrs)(data, ["token", "user"]),
     });
     console.log({ exist });
     if (exist)
         throw boom_1.default.conflict("Entity exist yet!");
     const uuid = (0, uuid_1.v4)();
-    const post = yield DatabaseServices.relate2One(new Post(Object.assign(Object.assign({}, data), { uuid, createdAt: new Date().getTime(), updatedAt: new Date().getTime() })), [{ user: { uuid: data.user.uuid } }]);
-    yield DatabaseServices.create(Object.assign({}, (0, utils_1.getEntityProperties)(post)));
+    const post = yield RepositoryService.relate2One(new Post(Object.assign(Object.assign({}, data), { uuid, createdAt: new Date().getTime(), updatedAt: new Date().getTime() })), [{ user: { uuid: data.user.uuid } }]);
+    yield RepositoryService.create(Object.assign({}, (0, utils_1.getEntityProperties)(post)));
     return post;
 });
-Post.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield Post.find(DatabaseServices, { uuid: credentials.uuid });
+Post.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    const user = yield Post.find(RepositoryService, { uuid: credentials.uuid });
     if (!user)
         throw boom_1.default.notFound("Incorrect credentials!");
     const account = new Post(user);
     return account;
 });
-Post.find = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const account = yield DatabaseServices.findOne(DatabaseServices.entities.Post, {
+Post.find = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    const account = yield RepositoryService.findOne(RepositoryService.entities.Post, {
         credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["title", "userUUID"], false),
     });
     return account;

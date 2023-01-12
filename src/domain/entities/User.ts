@@ -38,9 +38,9 @@ export class User {
     this.updatedAt = updatedAt;
   }
 
-  static create = async (DatabaseServices: any, data: any): Promise<any> => {
-    const exist = await DatabaseServices.findOne(
-      DatabaseServices.entities.User,
+  static create = async (RepositoryService: any, data: any): Promise<any> => {
+    const exist = await RepositoryService.findOne(
+      RepositoryService.entities.User,
       {
         credentials: filterAttrs(
           getEntityProperties(data),
@@ -59,22 +59,22 @@ export class User {
       updatedAt: new Date().getTime(),
     });
     await account.hashPassword(account.password);
-    await DatabaseServices.create({
+    await RepositoryService.create({
       ...getEntityProperties(account),
     });
     return account;
   };
 
-  static load = async (DatabaseServices: any, options: any = {}) => {
-    const user = await User.find(DatabaseServices, options);
+  static load = async (RepositoryService: any, options: any = {}) => {
+    const user = await User.find(RepositoryService, options);
     if (!user) throw boom.notFound("Incorrect credentials!");
     const account = new User(user);
     return account;
   };
 
-  static find = async (DatabaseServices: any, options: any = {}) => {
-    const account: any = await DatabaseServices.findOne(
-      DatabaseServices.entities.User,
+  static find = async (RepositoryService: any, options: any = {}) => {
+    const account: any = await RepositoryService.findOne(
+      RepositoryService.entities.User,
       {
         ...options,
         credentials: filterAttrs(
@@ -93,16 +93,16 @@ export class User {
       (user: any) => user.dataValues.username
     );
 
-  remove = async (DatabaseServices: any) => {
-    return await DatabaseServices.remove(DatabaseServices.entities.User, {
+  remove = async (RepositoryService: any) => {
+    return await RepositoryService.remove(RepositoryService.entities.User, {
       credentials: { uuid: this.uuid },
     });
   };
 
-  update = async (DatabaseServices: any, data: any) => {
+  update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update(
-      DatabaseServices.entities.User,
+    return await RepositoryService.update(
+      RepositoryService.entities.User,
       {
         ...getEntityProperties({ ...this, ...data }),
       },
@@ -110,8 +110,8 @@ export class User {
     );
   };
 
-  static certifications = async (DatabaseServices: any, credentials: any) => {
-    const user: any = await User.find(DatabaseServices, {
+  static certifications = async (RepositoryService: any, credentials: any) => {
+    const user: any = await User.find(RepositoryService, {
       credentials,
       related: [["Certification"]],
     });
@@ -127,8 +127,8 @@ export class User {
     );
   };
 
-  static projects = async (DatabaseServices: any, credentials: any) => {
-    const user = await User.find(DatabaseServices, {
+  static projects = async (RepositoryService: any, credentials: any) => {
+    const user = await User.find(RepositoryService, {
       credentials,
       related: [["Project"]],
     });

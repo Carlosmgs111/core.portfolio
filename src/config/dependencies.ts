@@ -2,12 +2,15 @@ import { Adapters } from "../application/services/DatabaseServices";
 import {
   DatabaseService as DBS,
   AuthServices as AS,
-  RepositoryService,
+  CQRSService,
 } from "../application/services";
-console.log({ RepositoryService });
-export const DatabaseService = RepositoryService; /* DBS(
-  //Adapters.MongooseAdapter
-); */
+
+const repositoryServices = {
+  CQRS: () => new CQRSService(),
+  DBS: () => DBS(Adapters.SequelizeAdapter),
+};
+
+export const RepositoryService = repositoryServices.CQRS();
 
 export const AuthServices = new AS();
 

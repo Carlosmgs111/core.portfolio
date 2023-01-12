@@ -1,14 +1,14 @@
 import { User } from '../../domain/entities/User'
-import { DatabaseService, AuthServices } from '../../config/dependencies'
+import { RepositoryService, AuthServices } from '../../config/dependencies'
 import { filterAttrs, encryptData, decryptData } from '../../domain/utils'
 import config from '../../config'
 
 export const signup = async (credentials: any) => {
-  return await User.create(DatabaseService, credentials)
+  return await User.create(RepositoryService, credentials)
 }
 
 export const signin = async (credentials: any) => {
-  const account = await User.load(DatabaseService, {
+  const account = await User.load(RepositoryService, {
     credentials,
     // related: [["Institution"], ["Certification"]],
   })
@@ -20,8 +20,8 @@ export const signin = async (credentials: any) => {
 }
 
 export const authSignin = async (credentials: any) => {
-  DatabaseService
-  const entity = await User.load(DatabaseService, credentials)
+  RepositoryService
+  const entity = await User.load(RepositoryService, credentials)
   if (!entity) throw new Error("The account doesn't exist!")
   const isMatch = entity.comparePassword(credentials.password)
   if (!isMatch) throw new Error("The account doesn't exist!")
@@ -29,20 +29,20 @@ export const authSignin = async (credentials: any) => {
 }
 
 export const unsubscribe = async (credentials: any) => {
-  DatabaseService
-  const account = await User.load(DatabaseService, credentials)
-  if (account) await account.remove(DatabaseService)
+  RepositoryService
+  const account = await User.load(RepositoryService, credentials)
+  if (account) await account.remove(RepositoryService)
 }
 
 export const update = async (credentials: any, data: any) => {
-  DatabaseService
-  const account = await User.load(DatabaseService, credentials)
-  if (account) await account.update(DatabaseService, data)
+  RepositoryService
+  const account = await User.load(RepositoryService, credentials)
+  if (account) await account.update(RepositoryService, data)
 }
 
 // ! possible vulnerability detected!
 export const resetPassword = async (credentials: any) => {
-  DatabaseService
+  RepositoryService
   const { token } = credentials
   console.log({ token })
   const { email, cipheredPassword } = AuthServices.verifyKey(token)
@@ -50,7 +50,7 @@ export const resetPassword = async (credentials: any) => {
     cipheredPassword,
     config.jwtSignupSecret || '',
   )
-  const account = await User.load(DatabaseService, { email })
+  const account = await User.load(RepositoryService, { email })
   const oldPassword = account.password
   // account.changePassword({ newPassword, oldPassword }); // ! check this method
 }

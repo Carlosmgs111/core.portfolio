@@ -20,22 +20,22 @@ const boom_1 = __importDefault(require("@hapi/boom"));
 const addNewInstitution = (data) => __awaiter(void 0, void 0, void 0, function* () {
     if (!data.user)
         throw boom_1.default.conflict("A user must be instanced!");
-    const institution = yield Institution_1.Institution.create(dependencies_1.DatabaseService, data);
+    const institution = yield Institution_1.Institution.create(dependencies_1.RepositoryService, data);
     return institution;
 });
 exports.addNewInstitution = addNewInstitution;
 const getAllInstitutions = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield Institution_1.Institution.findAll(dependencies_1.DatabaseService, data);
+    return yield Institution_1.Institution.findAll(dependencies_1.RepositoryService, data);
 });
 exports.getAllInstitutions = getAllInstitutions;
 const updateInstitution = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (yield Institution_1.Institution.load(dependencies_1.DatabaseService, { uuid: data.uuid })).update(dependencies_1.DatabaseService, data);
+    return yield (yield Institution_1.Institution.load(dependencies_1.RepositoryService, { uuid: data.uuid })).update(dependencies_1.RepositoryService, data);
 });
 exports.updateInstitution = updateInstitution;
 const linkToIntitution = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { institutionUUID, token } = data;
     const { user } = yield (0, JWT_1.verifyToken2)(token);
-    dependencies_1.DatabaseService.relateN2N([
+    dependencies_1.RepositoryService.relateN2N([
         { label: "user", uuid: user.uuid },
         { label: "institution", uuid: institutionUUID },
     ]);
@@ -44,7 +44,7 @@ exports.linkToIntitution = linkToIntitution;
 const unlinkFromInstitution = (data) => __awaiter(void 0, void 0, void 0, function* () { });
 exports.unlinkFromInstitution = unlinkFromInstitution;
 const deleteInstitution = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (yield Institution_1.Institution.load(dependencies_1.DatabaseService, { uuid: data.uuid })).remove(dependencies_1.DatabaseService, { userUUID: data.user.uuid });
+    yield (yield Institution_1.Institution.load(dependencies_1.RepositoryService, { uuid: data.uuid })).remove(dependencies_1.RepositoryService, { userUUID: data.user.uuid });
     return { message: "Intitution deleted", uuid: data.uuid };
 });
 exports.deleteInstitution = deleteInstitution;

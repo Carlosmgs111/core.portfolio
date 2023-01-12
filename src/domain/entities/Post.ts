@@ -28,9 +28,9 @@ export class Post {
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }
-  static create = async (DatabaseServices: any, data: any): Promise<any> => {
-    const exist = await DatabaseServices.findOne(
-      DatabaseServices.entities.Post,
+  static create = async (RepositoryService: any, data: any): Promise<any> => {
+    const exist = await RepositoryService.findOne(
+      RepositoryService.entities.Post,
       {
         credentials: filterAttrs(data, ["token", "user"]),
       }
@@ -39,7 +39,7 @@ export class Post {
     if (exist) throw boom.conflict("Entity exist yet!");
 
     const uuid = uuidv4();
-    const post = await DatabaseServices.relate2One(
+    const post = await RepositoryService.relate2One(
       new Post({
         ...data,
         uuid,
@@ -48,22 +48,22 @@ export class Post {
       }),
       [{ user: { uuid: data.user.uuid } }]
     );
-    await DatabaseServices.create({
+    await RepositoryService.create({
       ...getEntityProperties(post),
     });
     return post;
   };
 
-  static load = async (DatabaseServices: any, credentials: any) => {
-    const user = await Post.find(DatabaseServices, { uuid: credentials.uuid });
+  static load = async (RepositoryService: any, credentials: any) => {
+    const user = await Post.find(RepositoryService, { uuid: credentials.uuid });
     if (!user) throw boom.notFound("Incorrect credentials!");
     const account = new Post(user);
     return account;
   };
 
-  static find = async (DatabaseServices: any, credentials: any) => {
-    const account: any = await DatabaseServices.findOne(
-      DatabaseServices.entities.Post,
+  static find = async (RepositoryService: any, credentials: any) => {
+    const account: any = await RepositoryService.findOne(
+      RepositoryService.entities.Post,
       {
         credentials: filterAttrs(
           getEntityProperties(credentials),
@@ -75,16 +75,16 @@ export class Post {
     return account;
   };
 
-  remove = async (DatabaseServices: any) => {
-    return await DatabaseServices.remove(DatabaseServices.entities.Post, {
+  remove = async (RepositoryService: any) => {
+    return await RepositoryService.remove(RepositoryService.entities.Post, {
       credentials: { uuid: this.uuid },
     });
   };
 
-  update = async (DatabaseServices: any, data: any) => {
+  update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update(
-      DatabaseServices.entities.Post,
+    return await RepositoryService.update(
+      RepositoryService.entities.Post,
       {
         ...getEntityProperties({ ...this, ...data }),
       },

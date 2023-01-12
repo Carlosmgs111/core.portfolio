@@ -82,7 +82,7 @@ class SequelizeAdapter {
             for (let ref of refs) {
                 const key = (0, utils_1.Mapfy)(ref).keys().next().value;
                 const value = (0, utils_1.Mapfy)(ref).values().next().value;
-                console.log({ key, value });
+                // console.log({ key, value });
                 const referenced = yield models_1.default[(0, utils_1.labelCases)(key).CS].findOne({
                     where: value,
                 });
@@ -90,8 +90,8 @@ class SequelizeAdapter {
             }
             const key = (0, utils_1.Mapfy)(entity).keys().next().value;
             const value = (0, utils_1.Mapfy)(entity).values().next().value;
-            console.log({ relations2One });
-            console.log({ key, value });
+            // console.log({ relations2One });
+            // console.log({ key, value });
             models_1.default[(0, utils_1.labelCases)(key).CS].update(relations2One, { where: value });
             return Object.assign(Object.assign({}, entity), relations2One);
         });

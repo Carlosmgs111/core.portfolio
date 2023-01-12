@@ -5,6 +5,8 @@ import { certificationsHandler } from "./handlers/certifications";
 import { projectsHandler } from "./handlers/projects";
 import { institutionsHandler } from "./handlers/institutions";
 import { execFunc } from "../../../utils";
+import { generateManyCertifications } from "../../../testing/fakers/certification.fake";
+import fs from "fs";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 colors;
@@ -21,21 +23,30 @@ export default async () => {
     username: usernames.cm,
     exp: 0,
   };
-  const [login, logout, user, certifications, institutions, projects] = [
+  const [login, logout, user, certifications, institutions, projects, test] = [
     "Login".bgGreen,
     "Logout".bgRed,
     "User",
     "Certifications",
     "Institutions",
     "Projects",
+    "Test".bgYellow,
   ];
-  const choices = [user, certifications, institutions, projects];
+  const choices = [user, certifications, institutions, projects, test];
   const options = {
     [login]: () => loginHandler(state),
     [logout]: () => (state.token = undefined),
     [certifications]: () => certificationsHandler(state),
     [institutions]: () => institutionsHandler(state),
     [projects]: () => projectsHandler(state),
+    [test]: () => {
+      fs.writeFileSync(
+        "certifications.json",
+        JSON.stringify({
+          certifications: generateManyCertifications(100),
+        })
+      );
+    },
   };
   while (true) {
     const { token } = state;

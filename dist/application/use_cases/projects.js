@@ -18,7 +18,7 @@ const JWT_1 = require("../../infrastructure/auth/JWT");
 const formatProjects = (projects) => projects.map((project) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project), { createdBy: project.User.username }), ["User"]));
 const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
-    const projects = yield Project_1.Project.findAll(dependencies_1.DatabaseService, {
+    const projects = yield Project_1.Project.findAll(dependencies_1.RepositoryService, {
         related: [["User", { as: "User", credentials: username && { username } }]],
         size,
         page,
@@ -29,21 +29,21 @@ exports.getProjects = getProjects;
 const getOwnProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { token } = data;
     const { user } = yield (0, JWT_1.verifyToken2)(token);
-    return yield User_1.User.projects(dependencies_1.DatabaseService, user);
+    return yield User_1.User.projects(dependencies_1.RepositoryService, user);
 });
 exports.getOwnProjects = getOwnProjects;
-const addProject = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield Project_1.Project.new(dependencies_1.DatabaseService, data); });
+const addProject = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield Project_1.Project.new(dependencies_1.RepositoryService, data); });
 exports.addProject = addProject;
-const deleteProject = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield (yield Project_1.Project.load(dependencies_1.DatabaseService, data)).remove(dependencies_1.DatabaseService); });
+const deleteProject = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield (yield Project_1.Project.load(dependencies_1.RepositoryService, data)).remove(dependencies_1.RepositoryService); });
 exports.deleteProject = deleteProject;
 const updateProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (yield Project_1.Project.load(dependencies_1.DatabaseService, { uuid: data.uuid })).update(dependencies_1.DatabaseService, data);
+    return yield (yield Project_1.Project.load(dependencies_1.RepositoryService, { uuid: data.uuid })).update(dependencies_1.RepositoryService, data);
 });
 exports.updateProject = updateProject;
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
 const migrateDescriptionToDescriptions = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const projects = yield dependencies_1.DatabaseService
-        .findAll(dependencies_1.DatabaseService.entities.Project);
+    const projects = yield dependencies_1.RepositoryService
+        .findAll(dependencies_1.RepositoryService.entities.Project);
     console.log({ projects });
     for (var project of projects) {
         const descriptions = project.description.split(". ");

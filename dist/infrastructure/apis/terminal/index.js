@@ -19,6 +19,8 @@ const certifications_1 = require("./handlers/certifications");
 const projects_1 = require("./handlers/projects");
 const institutions_1 = require("./handlers/institutions");
 const utils_1 = require("../../../utils");
+const certification_fake_1 = require("../../../testing/fakers/certification.fake");
+const fs_1 = __importDefault(require("fs"));
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
 colors_1.default;
 exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -33,21 +35,27 @@ exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
         username: usernames.cm,
         exp: 0,
     };
-    const [login, logout, user, certifications, institutions, projects] = [
+    const [login, logout, user, certifications, institutions, projects, test] = [
         "Login".bgGreen,
         "Logout".bgRed,
         "User",
         "Certifications",
         "Institutions",
         "Projects",
+        "Test".bgYellow,
     ];
-    const choices = [user, certifications, institutions, projects];
+    const choices = [user, certifications, institutions, projects, test];
     const options = {
         [login]: () => (0, login_1.loginHandler)(state),
         [logout]: () => (state.token = undefined),
         [certifications]: () => (0, certifications_1.certificationsHandler)(state),
         [institutions]: () => (0, institutions_1.institutionsHandler)(state),
         [projects]: () => (0, projects_1.projectsHandler)(state),
+        [test]: () => {
+            fs_1.default.writeFileSync("certifications.json", JSON.stringify({
+                certifications: (0, certification_fake_1.generateManyCertifications)(100),
+            }));
+        },
     };
     while (true) {
         const { token } = state;

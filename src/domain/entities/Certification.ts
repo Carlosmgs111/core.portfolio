@@ -23,12 +23,12 @@ export class Certification {
     this.updatedAt = new Date().getTime();
   }
   static create = async (
-    DatabaseServices: any,
+    RepositoryService: any,
     data: any
   ): Promise<Certification> => {
     const uuid = uuidv4();
     const { emitedBy } = data;
-    const certification = await DatabaseServices.relate2One(
+    const certification = await RepositoryService.relate2One(
       new Certification({ ...data, uuid }),
       [
         {
@@ -36,11 +36,11 @@ export class Certification {
         },
       ]
     );
-    await DatabaseServices.create(
-      DatabaseServices.entities.Certification,
+    await RepositoryService.create(
+      RepositoryService.entities.Certification,
       certification
     );
-    await DatabaseServices.relateN2N([
+    await RepositoryService.relateN2N([
       [
         { label: "certification", pk: uuid },
         { label: "user", pk: data.user.uuid },
@@ -49,15 +49,15 @@ export class Certification {
     return certification;
   };
 
-  static createMany = async (DatabaseServices: any, data: any) => {
-    console.log({ data });
-    const certificationsCreated = await DatabaseServices.createMany(
-      DatabaseServices.entities.Certification,
+  static createMany = async (RepositoryService: any, data: any) => {
+    // console.log({ data });
+    const certificationsCreated = await RepositoryService.createMany(
+      RepositoryService.entities.Certification,
       data.map((c: any) => new Certification({ ...c, uuid: uuidv4() }))
     );
 
     for (let certification in certificationsCreated) {
-      await DatabaseServices.relate2One(
+      await RepositoryService.relate2One(
         { certifications: { uuid: certificationsCreated[certification].uuid } },
         [
           {
@@ -68,7 +68,7 @@ export class Certification {
     }
 
     for (let certificationIdx in data) {
-      await DatabaseServices.relateN2N([
+      await RepositoryService.relateN2N([
         [
           {
             label: "certification",
@@ -78,42 +78,42 @@ export class Certification {
         ],
       ]);
     }
-    console.log({ certificationsCreated });
+    // console.log({ certificationsCreated });
     return certificationsCreated;
   };
 
-  static load = async (DatabaseServices: any, options: any) => {
-    const certification = await Certification.find(DatabaseServices, options);
+  static load = async (RepositoryService: any, options: any) => {
+    const certification = await Certification.find(RepositoryService, options);
     if (!certification) throw new Error("Incorrect credentials!");
     const loadedCertification = new Certification(certification);
     return loadedCertification;
   };
 
-  static find = async (DatabaseServices: any, options: any) => {
-    const certificate: any = await DatabaseServices.findOne(
-      DatabaseServices.entities.Certification,
+  static find = async (RepositoryService: any, options: any) => {
+    const certificate: any = await RepositoryService.findOne(
+      RepositoryService.entities.Certification,
       options
     );
     return certificate;
   };
 
-  static findAll = async (DatabaseServices: any, options: any = {}) => {
-    const certificates: any = await DatabaseServices.findAll(
-      DatabaseServices.entities.Certification,
+  static findAll = async (RepositoryService: any, options: any = {}) => {
+    const certificates: any = await RepositoryService.findAll(
+      RepositoryService.entities.Certification,
       options
     );
     return certificates;
   };
 
-  remove = async (DatabaseServices: any, options: any = {}) => {
-    await DatabaseServices.unrelateN2N([
+  remove = async (RepositoryService: any, options: any = {}) => {
+    await RepositoryService.unrelateN2N([
       [
         { label: "user", pk: options.userUUID },
         { label: "certification", pk: this.uuid },
       ],
     ]);
-    return await DatabaseServices.remove(
-      DatabaseServices.entities.Certification,
+    return await RepositoryService.remove(
+      RepositoryService.entities.Certification,
       {
         credentials: filterAttrs(
           getEntityProperties(this),
@@ -124,16 +124,16 @@ export class Certification {
     );
   };
 
-  update = async (DatabaseServices: any, data: any) => {
-    /* const [exist] = await DatabaseServices.checkRelationship(
-      DatabaseServices.entities.Certification,
+  update = async (RepositoryService: any, data: any) => {
+    /* const [exist] = await RepositoryService.checkRelationship(
+      RepositoryService.entities.Certification,
       { label: "certification", pk: this.uuid },
       { label: "user", pk: data.user.uuid }
     );
     if (!exist) throw boom.conflict("Relationship doesn't exist!"); */
     this.updatedAt = new Date().getTime();
-    await DatabaseServices.update(
-      DatabaseServices.entities.Certification,
+    await RepositoryService.update(
+      RepositoryService.entities.Certification,
       {
         updatedAt: this.updatedAt,
         ...filterAttrs(data, ["uuid", "user", "token"]),

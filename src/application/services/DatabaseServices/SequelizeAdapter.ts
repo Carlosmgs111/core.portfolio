@@ -97,7 +97,7 @@ export default class SequelizeAdapter {
     for (let ref of refs) {
       const key = Mapfy(ref).keys().next().value;
       const value = Mapfy(ref).values().next().value;
-      console.log({ key, value });
+      // console.log({ key, value });
       const referenced = await models[labelCases(key).CS].findOne({
         where: value,
       });
@@ -106,8 +106,8 @@ export default class SequelizeAdapter {
 
     const key = Mapfy(entity).keys().next().value;
     const value = Mapfy(entity).values().next().value;
-    console.log({ relations2One });
-    console.log({ key, value });
+    // console.log({ relations2One });
+    // console.log({ key, value });
     models[labelCases(key).CS].update(relations2One, { where: value });
     return { ...entity, ...relations2One };
   };

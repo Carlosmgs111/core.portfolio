@@ -1,9 +1,9 @@
 import colors from "colors";
 import app from "./infrastructure/apis/express/index";
 import terminal from "./infrastructure/apis/terminal";
-import { DatabaseService } from "./config/dependencies";
+import { RepositoryService } from "./config/dependencies";
 import "./infrastructure/repositories/mongoose";
-DatabaseService.info();
+RepositoryService.info();
 (async () => {
   await app();
   await terminal();

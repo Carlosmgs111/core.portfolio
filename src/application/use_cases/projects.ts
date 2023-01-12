@@ -1,4 +1,4 @@
-import { DatabaseService } from "../../config/dependencies";
+import { RepositoryService } from "../../config/dependencies";
 import { Project } from "../../domain/entities/Project";
 import { User } from "../../domain/entities/User";
 import { filterAttrs } from "../../utils";
@@ -11,7 +11,7 @@ const formatProjects = (projects: [Project]) =>
 
 export const getProjects = async (data: any) => {
   const { username, user, size, page } = data;
-  const projects = await Project.findAll(DatabaseService, {
+  const projects = await Project.findAll(RepositoryService, {
     related: [["User", { as: "User", credentials: username && { username } }]],
     size,
     page,
@@ -22,24 +22,24 @@ export const getProjects = async (data: any) => {
 export const getOwnProjects = async (data: any) => {
   const { token } = data;
   const { user } = await verifyToken2(token);
-  return await User.projects(DatabaseService, user);
+  return await User.projects(RepositoryService, user);
 };
 
 export const addProject = async (data: any) =>
-  await Project.new(DatabaseService, data);
+  await Project.new(RepositoryService, data);
 
 export const deleteProject = async (data: any) =>
-  await (await Project.load(DatabaseService, data)).remove(DatabaseService);
+  await (await Project.load(RepositoryService, data)).remove(RepositoryService);
 
 export const updateProject = async (data: any) =>
   await (
-    await Project.load(DatabaseService, { uuid: data.uuid })
-  ).update(DatabaseService, data);
+    await Project.load(RepositoryService, { uuid: data.uuid })
+  ).update(RepositoryService, data);
 
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
 export const migrateDescriptionToDescriptions = async (data: any) => {
-  const projects = await DatabaseService
-    .findAll(DatabaseService.entities.Project);
+  const projects = await RepositoryService
+    .findAll(RepositoryService.entities.Project);
   console.log({ projects });
   for (var project of projects) {
     const descriptions = project.description.split(". ");

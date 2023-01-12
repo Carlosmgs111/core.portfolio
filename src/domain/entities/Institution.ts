@@ -26,17 +26,17 @@ export class Institution {
     this.updatedAt = new Date().getTime();
   }
   static create = async (
-    DatabaseServices: any,
+    RepositoryService: any,
     data: any
   ): Promise<Institution> => {
     const uuid = uuidv4();
     const institution = new Institution({ ...data, uuid });
-    await DatabaseServices.create(
-      DatabaseServices.entities.Institution,
+    await RepositoryService.create(
+      RepositoryService.entities.Institution,
       institution
     );
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
-    await DatabaseServices.relateN2N([
+    await RepositoryService.relateN2N([
       [
         { label: "institution", pk: uuid },
         { label: "user", pk: data.user.uuid },
@@ -45,16 +45,16 @@ export class Institution {
     return institution;
   };
 
-  static load = async (DatabaseServices: any, credentials: any) => {
-    const project = await Institution.find(DatabaseServices, credentials);
+  static load = async (RepositoryService: any, credentials: any) => {
+    const project = await Institution.find(RepositoryService, credentials);
     if (!project) throw new Error("Incorrect credentials!");
     const institution = new Institution(project);
     return institution;
   };
 
-  static find = async (DatabaseServices: any, credentials: any) => {
-    const institution: any = await DatabaseServices.findOne(
-      DatabaseServices.entities.Institution,
+  static find = async (RepositoryService: any, credentials: any) => {
+    const institution: any = await RepositoryService.findOne(
+      RepositoryService.entities.Institution,
       {
         credentials,
       }
@@ -62,37 +62,37 @@ export class Institution {
     return institution;
   };
 
-  static findAll = async (DatabaseServices: any, options: any) => {
-    const institutions: any = await DatabaseServices.findAll(
-      DatabaseServices.entities.Institution,
+  static findAll = async (RepositoryService: any, options: any) => {
+    const institutions: any = await RepositoryService.findAll(
+      RepositoryService.entities.Institution,
       options
     );
     return institutions;
   };
 
-  link = async (DatabaseServices: any, options: any) => {};
+  link = async (RepositoryService: any, options: any) => {};
 
-  unlink = async (DatabaseServices: any, options: any) => {};
+  unlink = async (RepositoryService: any, options: any) => {};
 
-  remove = async (DatabaseServices: any, options: any = {}) => {
-    await DatabaseServices.unrelateN2N([
+  remove = async (RepositoryService: any, options: any = {}) => {
+    await RepositoryService.unrelateN2N([
       [
         { label: "user", uuid: options.userUUID },
         { label: "institution", uuid: this.uuid },
       ],
     ]);
-    return await DatabaseServices.remove(
-      DatabaseServices.entities.Institution,
+    return await RepositoryService.remove(
+      RepositoryService.entities.Institution,
       {
         credentials: { uuid: this.uuid },
       }
     );
   };
 
-  update = async (DatabaseServices: any, data: any) => {
+  update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update(
-      DatabaseServices.entities.Institution,
+    return await RepositoryService.update(
+      RepositoryService.entities.Institution,
       { ...this, ...data },
       { credentials: { uuid: this.uuid } }
     );

@@ -1,5 +1,5 @@
 import { DatabaseService } from "./DatabaseServices";
 import { AuthServices } from "./AuthServices";
-import { RepositoryService } from "./RepositoryServices";
+import { CQRSService } from "./CQRSService";
 
-export { DatabaseService, AuthServices, RepositoryService };
+export { DatabaseService, AuthServices, CQRSService };

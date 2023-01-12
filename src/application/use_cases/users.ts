@@ -1,10 +1,10 @@
 import { User } from "../../domain/entities/User";
-import { DatabaseService } from "../../config/dependencies";
+import { RepositoryService } from "../../config/dependencies";
 // ! implementar el uso de ´boom´ a traves de un ´interface´
 import boom from "@hapi/boom";
 
 export const registerUser = async (data: any) => {
-  return await User.create(DatabaseService, data);
+  return await User.create(RepositoryService, data);
 };
 export const signin = async (data: any) => {
   if (
@@ -14,19 +14,19 @@ export const signin = async (data: any) => {
     )
   )
     throw boom.badRequest("Require username or email!");
-  return await User.load(DatabaseService, { credentials: data });
+  return await User.load(RepositoryService, { credentials: data });
 };
 export const removeUser = async (data: any) => {
-  const user = await User.load(DatabaseService, data);
+  const user = await User.load(RepositoryService, data);
   console.log({ user });
-  return await user.remove(DatabaseService);
+  return await user.remove(RepositoryService);
 };
 export const updateUser = async (data: any) => {
   console.log({ data });
   return await (
-    await User.load(DatabaseService, data)
-  ).update(DatabaseService, data);
+    await User.load(RepositoryService, data)
+  ).update(RepositoryService, data);
 };
 export const sayHello = (data: any) => data.user.sayHello(data.name);
 
-export const getAllUsername = async () => await User.findAll(DatabaseService);
+export const getAllUsername = async () => await User.findAll(RepositoryService);

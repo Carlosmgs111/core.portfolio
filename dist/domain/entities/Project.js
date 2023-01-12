@@ -18,14 +18,14 @@ class Project {
     name, descriptions, images, tags, uri, version, }) {
         this.createdAt = 0;
         this.updatedAt = 0;
-        this.remove = (DatabaseServices) => __awaiter(this, void 0, void 0, function* () {
-            return yield DatabaseServices.remove(DatabaseServices.entities.Project, {
+        this.remove = (RepositoryService) => __awaiter(this, void 0, void 0, function* () {
+            return yield RepositoryService.remove(RepositoryService.entities.Project, {
                 credentials: { uuid: this.uuid },
             });
         });
-        this.update = (DatabaseServices, data) => __awaiter(this, void 0, void 0, function* () {
+        this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
             this.updatedAt = new Date().getTime();
-            return yield DatabaseServices.update(DatabaseServices.entities.Project, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
+            return yield RepositoryService.update(RepositoryService.entities.Project, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         // this.userUUID = userUUID;
@@ -41,23 +41,23 @@ class Project {
 }
 exports.Project = Project;
 _a = Project;
-Project.new = (DatabaseServices, data) => __awaiter(void 0, void 0, void 0, function* () {
+Project.new = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = (0, uuid_1.v4)();
-    const project = yield DatabaseServices.relate2One(new Project(Object.assign(Object.assign({}, data), { uuid })), [{ user: { uuid: data.user.uuid } }]);
-    return yield DatabaseServices.create(DatabaseServices.entities.Project, project);
+    const project = yield RepositoryService.relate2One(new Project(Object.assign(Object.assign({}, data), { uuid })), [{ user: { uuid: data.user.uuid } }]);
+    return yield RepositoryService.create(RepositoryService.entities.Project, project);
 });
-Project.load = (DatabaseServices, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const loadedProject = yield Project.find(DatabaseServices, credentials);
+Project.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    const loadedProject = yield Project.find(RepositoryService, credentials);
     if (!loadedProject)
         throw new Error("Incorrect credentials!");
     const project = new Project(loadedProject);
     return project;
 });
-Project.find = (DatabaseServices, options) => __awaiter(void 0, void 0, void 0, function* () {
-    const account = yield DatabaseServices.findOne(DatabaseServices.entities.Project, options);
+Project.find = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {
+    const account = yield RepositoryService.findOne(RepositoryService.entities.Project, options);
     return account;
 });
-Project.findAll = (DatabaseServices, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    const projects = yield DatabaseServices.findAll(DatabaseServices.entities.Project, options);
+Project.findAll = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
+    const projects = yield RepositoryService.findAll(RepositoryService.entities.Project, options);
     return projects;
 });

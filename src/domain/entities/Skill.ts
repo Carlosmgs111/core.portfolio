@@ -29,26 +29,26 @@ export class Skill {
     this.createdAt = new Date().getTime();
     this.updatedAt = new Date().getTime();
   }
-  static create = async (DatabaseServices: any, data: any): Promise<string> => {
+  static create = async (RepositoryService: any, data: any): Promise<string> => {
     const uuid = uuidv4();
     const skill = new Skill({ ...data, uuid, userUUID: data.user.uuid });
-    return await DatabaseServices.create(
-      DatabaseServices.entities.Skill,
+    return await RepositoryService.create(
+      RepositoryService.entities.Skill,
       skill
     );
   };
 
-  static load = async (DatabaseServices: any, credentials: any) => {
-    const skill = await Skill.find(DatabaseServices, credentials);
-    console.log({ Model: DatabaseServices.Model, credentials });
+  static load = async (RepositoryService: any, credentials: any) => {
+    const skill = await Skill.find(RepositoryService, credentials);
+    console.log({ Model: RepositoryService.Model, credentials });
     if (!skill) throw new Error("Incorrect credentials!");
     const loadedSkill = new Skill(skill);
     return loadedSkill;
   };
 
-  static find = async (DatabaseServices: any, credentials: any) => {
-    const skill: any = await DatabaseServices.findOne(
-      DatabaseServices.entities.Skill,
+  static find = async (RepositoryService: any, credentials: any) => {
+    const skill: any = await RepositoryService.findOne(
+      RepositoryService.entities.Skill,
       {
         credentials,
       }
@@ -56,16 +56,16 @@ export class Skill {
     return skill;
   };
 
-  remove = async (DatabaseServices: any) => {
-    return await DatabaseServices.remove(DatabaseServices.entities.Skill, {
+  remove = async (RepositoryService: any) => {
+    return await RepositoryService.remove(RepositoryService.entities.Skill, {
       credentials: { uuid: this.uuid },
     });
   };
 
-  update = async (DatabaseServices: any, data: any) => {
+  update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
-    return await DatabaseServices.update(
-      DatabaseServices.entities.Skill,
+    return await RepositoryService.update(
+      RepositoryService.entities.Skill,
       { ...this, ...data },
       { credentials: { uuid: this.uuid } }
     );
