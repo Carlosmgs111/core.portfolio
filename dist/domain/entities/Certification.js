@@ -51,13 +51,13 @@ class Certification {
         this.url = url;
         this.tags = tags;
         this.createdAt = new Date().getTime();
-        this.updatedAt = new Date().getTime();
+        this.updatedAt = this.createdAt;
     }
 }
 exports.Certification = Certification;
 _a = Certification;
 Certification.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
-    const uuid = (0, uuid_1.v4)();
+    const uuid = data.uuid || (0, uuid_1.v4)();
     const { emitedBy } = data;
     const certification = yield RepositoryService.relate2One(new Certification(Object.assign(Object.assign({}, data), { uuid })), [
         {
@@ -75,7 +75,7 @@ Certification.create = (RepositoryService, data) => __awaiter(void 0, void 0, vo
 });
 Certification.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log({ data });
-    const certificationsCreated = yield RepositoryService.createMany(RepositoryService.entities.Certification, data.map((c) => new Certification(Object.assign(Object.assign({}, c), { uuid: (0, uuid_1.v4)() }))));
+    const certificationsCreated = yield RepositoryService.createMany(RepositoryService.entities.Certification, data.map((c) => new Certification(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
     for (let certification in certificationsCreated) {
         yield RepositoryService.relate2One({ certifications: { uuid: certificationsCreated[certification].uuid } }, [
             {

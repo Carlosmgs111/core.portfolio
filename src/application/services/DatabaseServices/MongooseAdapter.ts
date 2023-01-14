@@ -161,7 +161,6 @@ export default class MongooseAdapter {
     const toModel = await models[labelCases(to.label).CS].findOne({
       uuid: to.pk,
     });
-
     const fromRelated = fromModel[labelCases(to.label).CP];
     const fromRelatedIndex = fromModel[labelCases(to.label).CP].indexOf(
       toModel._id

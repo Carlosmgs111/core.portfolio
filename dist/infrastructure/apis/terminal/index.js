@@ -52,7 +52,7 @@ exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
         [institutions]: () => (0, institutions_1.institutionsHandler)(state),
         [projects]: () => (0, projects_1.projectsHandler)(state),
         [test]: () => {
-            fs_1.default.writeFileSync("certifications.json", JSON.stringify({
+            fs_1.default.writeFileSync("datasets/certifications3.json", JSON.stringify({
                 certifications: (0, certification_fake_1.generateManyCertifications)(100),
             }));
         },

@@ -18,6 +18,10 @@ const dependencies_1 = require("./config/dependencies");
 require("./infrastructure/repositories/mongoose");
 dependencies_1.RepositoryService.info();
 (() => __awaiter(void 0, void 0, void 0, function* () {
+    // await setInterval(() => {
+    //   console.log("Syncing...");
+    //   RepositoryService.sync();
+    // }, 10000);
     yield (0, index_1.default)();
     yield (0, terminal_1.default)();
 }))();

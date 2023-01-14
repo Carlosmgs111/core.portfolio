@@ -6,7 +6,6 @@ import institutionRoutes from "./institution.routes";
 import authRoutes from "./auth.routes";
 import postRoutes from "./post.routes";
 import skillRoutes from "./skill.routes";
-import cqrsRoutes from "./cqrs.routes";
 
 const router = Router();
 
@@ -18,4 +17,3 @@ export default router
   .use("/posts", postRoutes)
   .use("/skills", skillRoutes)
   .use("", authRoutes)
-  .use("/cqrs", cqrsRoutes);

@@ -41,7 +41,7 @@ export default async () => {
     [projects]: () => projectsHandler(state),
     [test]: () => {
       fs.writeFileSync(
-        "certifications.json",
+        "datasets/certifications3.json",
         JSON.stringify({
           certifications: generateManyCertifications(100),
         })

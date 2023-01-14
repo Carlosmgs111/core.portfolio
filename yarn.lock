@@ -4852,6 +4852,14 @@ sequelize-cli@^6.5.2:
     umzug "^2.3.0"
     yargs "^16.2.0"
 
+sequelize-mysql-timestamp@^1.4.0:
+  version "1.4.0"
+  resolved "https://registry.yarnpkg.com/sequelize-mysql-timestamp/-/sequelize-mysql-timestamp-1.4.0.tgz#3ca54109e7ea4bcd9988b42cb343aace67db40e8"
+  integrity sha512-zAYwZSGo8Fpdw0hMwIx8foyaedE8EH59+DYrtL31ThMum89fq8nYiCXjGVczj7galW4H+LqA9Sc0vXf5ScKgig==
+  dependencies:
+    lodash "^4.17.15"
+    timezone "^1.0.23"
+
 sequelize-pool@^7.1.0:
   version "7.1.0"
   resolved "https://registry.yarnpkg.com/sequelize-pool/-/sequelize-pool-7.1.0.tgz#210b391af4002762f823188fd6ecfc7413020768"
@@ -5231,6 +5239,11 @@ timers-ext@^0.1.7:
   dependencies:
     es5-ext "~0.10.46"
     next-tick "1"
+
+timezone@^1.0.23:
+  version "1.0.23"
+  resolved "https://registry.yarnpkg.com/timezone/-/timezone-1.0.23.tgz#87865e2c9d6aff6a52a598247e8f5102a92c881b"
+  integrity sha512-yhQgk6qmSLB+TF8HGmApZAVI5bfzR1CoKUGr+WMZWmx75ED1uDewAZA8QMGCQ70TEv4GmM8pDB9jrHuxdaQ1PA==
 
 tmp@^0.0.33:
   version "0.0.33"

@@ -20,13 +20,13 @@ export class Certification {
     this.url = url;
     this.tags = tags;
     this.createdAt = new Date().getTime();
-    this.updatedAt = new Date().getTime();
+    this.updatedAt = this.createdAt;
   }
   static create = async (
     RepositoryService: any,
     data: any
   ): Promise<Certification> => {
-    const uuid = uuidv4();
+    const uuid = data.uuid || uuidv4();
     const { emitedBy } = data;
     const certification = await RepositoryService.relate2One(
       new Certification({ ...data, uuid }),
@@ -53,7 +53,9 @@ export class Certification {
     // console.log({ data });
     const certificationsCreated = await RepositoryService.createMany(
       RepositoryService.entities.Certification,
-      data.map((c: any) => new Certification({ ...c, uuid: uuidv4() }))
+      data.map(
+        (c: any) => new Certification({ ...c, uuid: c.uuid || uuidv4() })
+      )
     );
 
     for (let certification in certificationsCreated) {
