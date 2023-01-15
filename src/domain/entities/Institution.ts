@@ -31,12 +31,12 @@ export class Institution {
   ): Promise<Institution> => {
     const uuid = uuidv4();
     const institution = new Institution({ ...data, uuid });
-    await RepositoryService.create(
+    await RepositoryService.createOne(
       RepositoryService.entities.Institution,
       institution
     );
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
-    await RepositoryService.relateN2N([
+    await RepositoryService.createOneRelationshipN2N([
       [
         { label: "institution", pk: uuid },
         { label: "user", pk: data.user.uuid },
@@ -75,13 +75,13 @@ export class Institution {
   unlink = async (RepositoryService: any, options: any) => {};
 
   remove = async (RepositoryService: any, options: any = {}) => {
-    await RepositoryService.unrelateN2N([
+    await RepositoryService.removeOneRelationshipN2N([
       [
         { label: "user", uuid: options.userUUID },
         { label: "institution", uuid: this.uuid },
       ],
     ]);
-    return await RepositoryService.remove(
+    return await RepositoryService.removeOne(
       RepositoryService.entities.Institution,
       {
         credentials: { uuid: this.uuid },
@@ -91,7 +91,7 @@ export class Institution {
 
   update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
-    return await RepositoryService.update(
+    return await RepositoryService.updateOne(
       RepositoryService.entities.Institution,
       { ...this, ...data },
       { credentials: { uuid: this.uuid } }

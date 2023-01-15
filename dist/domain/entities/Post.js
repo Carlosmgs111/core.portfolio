@@ -22,7 +22,7 @@ class Post {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService) => __awaiter(this, void 0, void 0, function* () {
-            return yield RepositoryService.remove(RepositoryService.entities.Post, {
+            return yield RepositoryService.removeOne(RepositoryService.entities.Post, {
                 credentials: { uuid: this.uuid },
             });
         });
@@ -47,7 +47,7 @@ Post.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     if (exist)
         throw boom_1.default.conflict("Entity exist yet!");
     const uuid = (0, uuid_1.v4)();
-    const post = yield RepositoryService.relate2One(new Post(Object.assign(Object.assign({}, data), { uuid, createdAt: new Date().getTime(), updatedAt: new Date().getTime() })), [{ user: { uuid: data.user.uuid } }]);
+    const post = yield RepositoryService.createOneRelationship2One(new Post(Object.assign(Object.assign({}, data), { uuid, createdAt: new Date().getTime(), updatedAt: new Date().getTime() })), [{ user: { uuid: data.user.uuid } }]);
     yield RepositoryService.create(Object.assign({}, (0, utils_1.getEntityProperties)(post)));
     return post;
 });

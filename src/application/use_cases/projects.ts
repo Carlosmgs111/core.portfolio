@@ -28,6 +28,18 @@ export const getOwnProjects = async (data: any) => {
 export const addProject = async (data: any) =>
   await Project.new(RepositoryService, data);
 
+export const addManyProject = async (data: any) => {
+  const { projects, user } = data;
+  const newProjects: any = await Project.createMany(
+    RepositoryService,
+    projects.map((c: any) => ({ ...c, user }))
+  );
+  return newProjects.map((c: any) => ({
+    ...c,
+    grantedTo: user.username,
+  }));
+};
+
 export const deleteProject = async (data: any) =>
   await (await Project.load(RepositoryService, data)).remove(RepositoryService);
 
@@ -38,8 +50,9 @@ export const updateProject = async (data: any) =>
 
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
 export const migrateDescriptionToDescriptions = async (data: any) => {
-  const projects = await RepositoryService
-    .findAll(RepositoryService.entities.Project);
+  const projects = await RepositoryService.findAll(
+    RepositoryService.entities.Project
+  );
   console.log({ projects });
   for (var project of projects) {
     const descriptions = project.description.split(". ");

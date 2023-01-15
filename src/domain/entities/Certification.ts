@@ -22,25 +22,26 @@ export class Certification {
     this.createdAt = new Date().getTime();
     this.updatedAt = this.createdAt;
   }
-  static create = async (
+  static createOne = async (
     RepositoryService: any,
     data: any
   ): Promise<Certification> => {
     const uuid = data.uuid || uuidv4();
     const { emitedBy } = data;
-    const certification = await RepositoryService.relate2One(
-      new Certification({ ...data, uuid }),
+    const certification = await RepositoryService.createOne(
+      RepositoryService.entities.Certification,
+      new Certification({ ...data, uuid })
+    );
+    console.log({ certification, userUUID: data.user.uuid });
+    await RepositoryService.createOneRelationship2One(
+      { certifications: { uuid: certification.uuid } },
       [
         {
           institution: { name: emitedBy },
         },
       ]
     );
-    await RepositoryService.create(
-      RepositoryService.entities.Certification,
-      certification
-    );
-    await RepositoryService.relateN2N([
+    await RepositoryService.createOneRelationshipN2N([
       [
         { label: "certification", pk: uuid },
         { label: "user", pk: data.user.uuid },
@@ -59,7 +60,7 @@ export class Certification {
     );
 
     for (let certification in certificationsCreated) {
-      await RepositoryService.relate2One(
+      await RepositoryService.createOneRelationship2One(
         { certifications: { uuid: certificationsCreated[certification].uuid } },
         [
           {
@@ -70,7 +71,7 @@ export class Certification {
     }
 
     for (let certificationIdx in data) {
-      await RepositoryService.relateN2N([
+      await RepositoryService.createOneRelationshipN2N([
         [
           {
             label: "certification",
@@ -108,13 +109,13 @@ export class Certification {
   };
 
   remove = async (RepositoryService: any, options: any = {}) => {
-    await RepositoryService.unrelateN2N([
+    await RepositoryService.removeOneRelationshipN2N([
       [
         { label: "user", pk: options.userUUID },
         { label: "certification", pk: this.uuid },
       ],
     ]);
-    return await RepositoryService.remove(
+    return await RepositoryService.removeOne(
       RepositoryService.entities.Certification,
       {
         credentials: filterAttrs(
@@ -127,14 +128,14 @@ export class Certification {
   };
 
   update = async (RepositoryService: any, data: any) => {
-    /* const [exist] = await RepositoryService.checkRelationship(
+    /* const [exist] = await RepositoryService.checkOneRelationshipN2N(
       RepositoryService.entities.Certification,
       { label: "certification", pk: this.uuid },
       { label: "user", pk: data.user.uuid }
     );
     if (!exist) throw boom.conflict("Relationship doesn't exist!"); */
     this.updatedAt = new Date().getTime();
-    await RepositoryService.update(
+    await RepositoryService.updateOne(
       RepositoryService.entities.Certification,
       {
         updatedAt: this.updatedAt,

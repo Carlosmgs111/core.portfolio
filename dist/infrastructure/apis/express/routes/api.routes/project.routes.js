@@ -7,6 +7,7 @@ const router = (0, express_1.Router)();
 exports.default = router
     .get("/", (0, express_2.expressHandlerAdapter)(projects_1.getProjects))
     .post("/", (0, express_2.expressHandlerAdapter)(projects_1.addProject))
+    .post("/projects", (0, express_2.expressHandlerAdapter)(projects_1.addManyProject))
     .delete("/", (0, express_2.expressHandlerAdapter)(projects_1.deleteProject))
     .patch("/", (0, express_2.expressHandlerAdapter)(projects_1.updateProject))
     // ! this fucntion should not be exposed by an API controller, and if it, should be protected by a middleware of authorization

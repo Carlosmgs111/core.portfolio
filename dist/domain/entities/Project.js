@@ -19,13 +19,13 @@ class Project {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService) => __awaiter(this, void 0, void 0, function* () {
-            return yield RepositoryService.remove(RepositoryService.entities.Project, {
+            return yield RepositoryService.removeOne(RepositoryService.entities.Project, {
                 credentials: { uuid: this.uuid },
             });
         });
         this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
             this.updatedAt = new Date().getTime();
-            return yield RepositoryService.update(RepositoryService.entities.Project, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
+            return yield RepositoryService.updateOne(RepositoryService.entities.Project, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         // this.userUUID = userUUID;
@@ -43,8 +43,20 @@ exports.Project = Project;
 _a = Project;
 Project.new = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = (0, uuid_1.v4)();
-    const project = yield RepositoryService.relate2One(new Project(Object.assign(Object.assign({}, data), { uuid })), [{ user: { uuid: data.user.uuid } }]);
-    return yield RepositoryService.create(RepositoryService.entities.Project, project);
+    const newProject = yield RepositoryService.createOne(RepositoryService.entities.Project, new Project(Object.assign(Object.assign({}, data), { uuid })));
+    yield RepositoryService.createOneRelationship2One({ project: { uuid: newProject.uuid } }, [{ user: { uuid: data.user.uuid } }]);
+    return newProject;
+});
+Project.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const projectsCreated = yield RepositoryService.createMany(RepositoryService.entities.Project, data.map((c) => new Project(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
+    for (let project in projectsCreated) {
+        yield RepositoryService.createOneRelationship2One({ project: { uuid: projectsCreated[project].uuid } }, [
+            {
+                user: { uuid: data[project].user.uuid },
+            },
+        ]);
+    }
+    return projectsCreated;
 });
 Project.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const loadedProject = yield Project.find(RepositoryService, credentials);

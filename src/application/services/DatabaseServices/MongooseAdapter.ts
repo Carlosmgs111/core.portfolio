@@ -11,12 +11,12 @@ export default class MongooseAdapter {
     connect();
   }
 
-  create = async (
+  createOne = async (
     entity: any,
     Entity: any,
     options: any = {}
   ): Promise<typeof model | null> => {
-    const newEntity = models[entity].create(Entity);
+    const newEntity = await models[entity].create(Entity);
     return newEntity._doc;
   };
 
@@ -45,7 +45,7 @@ export default class MongooseAdapter {
     return entityFounded._doc;
   };
 
-  remove = async (entity: any, options: any) => {
+  removeOne = async (entity: any, options: any) => {
     if (!options.credentials)
       throw boom.forbidden(
         "Must supply credentials for find and delete entity!"
@@ -53,19 +53,16 @@ export default class MongooseAdapter {
     return await models[entity].deleteOne(this.adapter(options));
   };
 
-  update = async (entity: any, Entity: any, options: any) => {
+  updateOne = async (entity: any, Entity: any, options: any) => {
     const model = await models[entity].updateOne(this.adapter(options), Entity);
     return model._doc;
   };
 
-  // TODO rename to createRelationship
-  relateN2N = async (refs: any) => {
+  createOneRelationshipN2N = async (refs: any) => {
     for (let ref of refs) {
       const [from, to] = ref;
-      const [exist, { fromModel, toModel }]: any = await this.checkRelationship(
-        from,
-        to
-      );
+      const [exist, { fromModel, toModel }]: any =
+        await this.checkOneRelationshipN2N(from, to);
       if (exist) throw boom.conflict("Entity exist yet!");
       await fromModel.updateOne(
         {
@@ -93,7 +90,7 @@ export default class MongooseAdapter {
   };
 
   // TODO rename to removeRelationship
-  unrelateN2N = async (refs: any) => {
+  removeOneRelationshipN2N = async (refs: any) => {
     for (let ref of refs) {
       const [from, to] = ref;
       const [
@@ -106,7 +103,7 @@ export default class MongooseAdapter {
           fromRelatedIndex,
           toRelatedIndex,
         },
-      ]: any = await this.checkRelationship(from, to);
+      ]: any = await this.checkOneRelationshipN2N(from, to);
       if (!exist) throw boom.conflict("Entity exist yet!");
 
       fromRelated.splice(fromRelatedIndex, 1);
@@ -131,7 +128,7 @@ export default class MongooseAdapter {
     }
   };
 
-  relate2One = async (entity: any, refs: any) => {
+  createOneRelationship2One = async (entity: any, refs: any) => {
     const relations2One: any = {};
     for (let ref of refs) {
       const key = Mapfy(ref).keys().next().value;
@@ -146,7 +143,7 @@ export default class MongooseAdapter {
   };
 
   // ? Pending to test
-  unrelate2One = async (entity: any, refs: any) => {
+  removeOneRelationship2One = async (entity: any, refs: any) => {
     const relations2One: any = {};
     for (let ref of refs) {
       relations2One[labelCases(ref).CS] = null;
@@ -154,7 +151,7 @@ export default class MongooseAdapter {
     return { ...entity, ...relations2One };
   };
 
-  checkRelationship = async (from: any, to: any) => {
+  checkOneRelationshipN2N = async (from: any, to: any) => {
     const fromModel = await models[labelCases(from.label).CS].findOne({
       uuid: from.pk,
     });
@@ -184,8 +181,6 @@ export default class MongooseAdapter {
       },
     ];
   };
-
-  hasMany = () => {};
 
   adapter = (options: any) => {
     const { credentials, related } = options;

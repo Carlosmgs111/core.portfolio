@@ -59,7 +59,7 @@ export class User {
       updatedAt: new Date().getTime(),
     });
     await account.hashPassword(account.password);
-    await RepositoryService.create({
+    await RepositoryService.createOne({
       ...getEntityProperties(account),
     });
     return account;
@@ -94,14 +94,14 @@ export class User {
     );
 
   remove = async (RepositoryService: any) => {
-    return await RepositoryService.remove(RepositoryService.entities.User, {
+    return await RepositoryService.removeOne(RepositoryService.entities.User, {
       credentials: { uuid: this.uuid },
     });
   };
 
   update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
-    return await RepositoryService.update(
+    return await RepositoryService.updateOne(
       RepositoryService.entities.User,
       {
         ...getEntityProperties({ ...this, ...data }),
@@ -115,7 +115,6 @@ export class User {
       credentials,
       related: [["Certification"]],
     });
-    console.log({ user });
     return user.Certifications.map((c: any) =>
       filterAttrs(
         {

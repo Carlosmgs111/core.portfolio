@@ -1,8 +1,8 @@
 import { fakeDatabase } from "../../../mocks/DatabaseService.stub";
 import { User } from "../../../../domain/entities/User";
-import { DatabaseService } from "../../../../config/dependencies";
+import { RepositoryService } from "../../../../config/dependencies";
 
-// console.log({ DatabaseService });
+// console.log({ RepositoryService });
 
 describe("Life cycle of user", () => {
   const userCredentials = {
@@ -11,11 +11,10 @@ describe("Life cycle of user", () => {
     password: "p@55w0rd",
   };
   var user: User;
-  // const DatabaseService = new DatabaseService({});
+  // const RepositoryService = new RepositoryService({});
 
   test("Create a new user with static method `new`", async () => {
-    DatabaseService.setupEntity("User");
-    user = await User.create(DatabaseService, userCredentials);
+    user = await User.create(RepositoryService, userCredentials);
     expect(user.password).not.toBe(userCredentials.password);
   });
 
@@ -27,17 +26,16 @@ describe("Life cycle of user", () => {
   });
 
   afterAll(async () => {
-    DatabaseService.setupEntity("User");
-    const user = await User.load(DatabaseService, {
+    const user = await User.load(RepositoryService, {
       credentials: {
         email: "test@email.com",
         password: "p@55w0rd",
       },
     });
-    await user.remove(DatabaseService);
+    await user.remove(RepositoryService);
     let loadedUser;
     try {
-      loadedUser = await User.find(DatabaseService, {
+      loadedUser = await User.find(RepositoryService, {
         credentials: { email: "test@email.com" },
       });
     } catch (e: any) {}

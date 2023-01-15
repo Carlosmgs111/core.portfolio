@@ -35,7 +35,7 @@ exports.updateInstitution = updateInstitution;
 const linkToIntitution = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { institutionUUID, token } = data;
     const { user } = yield (0, JWT_1.verifyToken2)(token);
-    dependencies_1.RepositoryService.relateN2N([
+    dependencies_1.RepositoryService.createOneRelationshipN2N([
         { label: "user", uuid: user.uuid },
         { label: "institution", uuid: institutionUUID },
     ]);

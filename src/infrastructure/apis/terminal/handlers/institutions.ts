@@ -11,14 +11,14 @@ inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 
 export const institutionsHandler = async (state: any) => {
   let running = true;
-  const [add, update, remove, read, exit] = [
+  const [add, update, removeOne, read, exit] = [
     "Agregar",
     "Actualizar",
     "Eliminar",
     "Listar",
     "Salir",
   ];
-  const choices = [add, update, remove, read, exit];
+  const choices = [add, update, removeOne, read, exit];
   const options = {
     [read]: async () => console.log(await getAllInstitutions({})),
     [exit]: async () => (running = false),

@@ -19,14 +19,14 @@ const utils_1 = require("../../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
 const institutionsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     let running = true;
-    const [add, update, remove, read, exit] = [
+    const [add, update, removeOne, read, exit] = [
         "Agregar",
         "Actualizar",
         "Eliminar",
         "Listar",
         "Salir",
     ];
-    const choices = [add, update, remove, read, exit];
+    const choices = [add, update, removeOne, read, exit];
     const options = {
         [read]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, institutions_1.getAllInstitutions)({})); }),
         [exit]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),

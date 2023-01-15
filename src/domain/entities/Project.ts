@@ -46,14 +46,33 @@ export class Project {
   }
   static new = async (RepositoryService: any, data: any): Promise<string> => {
     const uuid = uuidv4();
-    const project = await RepositoryService.relate2One(
-      new Project({ ...data, uuid }),
+    const newProject = await RepositoryService.createOne(
+      RepositoryService.entities.Project,
+      new Project({ ...data, uuid })
+    );
+    await RepositoryService.createOneRelationship2One(
+      { project: { uuid: newProject.uuid } },
       [{ user: { uuid: data.user.uuid } }]
     );
-    return await RepositoryService.create(
+    return newProject;
+  };
+
+  static createMany = async (RepositoryService: any, data: any) => {
+    const projectsCreated = await RepositoryService.createMany(
       RepositoryService.entities.Project,
-      project
+      data.map((c: any) => new Project({ ...c, uuid: c.uuid || uuidv4() }))
     );
+    for (let project in projectsCreated) {
+      await RepositoryService.createOneRelationship2One(
+        { project: { uuid: projectsCreated[project].uuid } },
+        [
+          {
+            user: { uuid: data[project].user.uuid },
+          },
+        ]
+      );
+    }
+    return projectsCreated;
   };
 
   static load = async (RepositoryService: any, credentials: any) => {
@@ -80,14 +99,17 @@ export class Project {
   };
 
   remove = async (RepositoryService: any) => {
-    return await RepositoryService.remove(RepositoryService.entities.Project, {
-      credentials: { uuid: this.uuid },
-    });
+    return await RepositoryService.removeOne(
+      RepositoryService.entities.Project,
+      {
+        credentials: { uuid: this.uuid },
+      }
+    );
   };
 
   update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
-    return await RepositoryService.update(
+    return await RepositoryService.updateOne(
       RepositoryService.entities.Project,
       { ...this, ...data },
       { credentials: { uuid: this.uuid } }

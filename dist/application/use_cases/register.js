@@ -28,7 +28,7 @@ const signin = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     });
     if (!account)
         throw new Error("The account doesn't exist!");
-    let response = dependencies_1.AuthServices.getAuthPackage((0, utils_1.filterAttrs)(account, ['uuid', 'email', 'username'], false));
+    let response = dependencies_1.AuthServices.getAuthPackage((0, utils_1.filterAttrs)(account, ["uuid", "email", "username"], false));
     return response;
 });
 exports.signin = signin;
@@ -63,7 +63,7 @@ const resetPassword = (credentials) => __awaiter(void 0, void 0, void 0, functio
     const { token } = credentials;
     console.log({ token });
     const { email, cipheredPassword } = dependencies_1.AuthServices.verifyKey(token);
-    const newPassword = (0, utils_1.decryptData)(cipheredPassword, config_1.default.jwtSignupSecret || '');
+    const newPassword = (0, utils_1.decryptData)(cipheredPassword, config_1.default.jwtSignupSecret || "");
     const account = yield User_1.User.load(dependencies_1.RepositoryService, { email });
     const oldPassword = account.password;
     // account.changePassword({ newPassword, oldPassword }); // ! check this method

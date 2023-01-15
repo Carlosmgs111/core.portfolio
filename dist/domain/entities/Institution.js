@@ -24,19 +24,19 @@ class Institution {
         this.link = (RepositoryService, options) => __awaiter(this, void 0, void 0, function* () { });
         this.unlink = (RepositoryService, options) => __awaiter(this, void 0, void 0, function* () { });
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            yield RepositoryService.unrelateN2N([
+            yield RepositoryService.removeOneRelationshipN2N([
                 [
                     { label: "user", uuid: options.userUUID },
                     { label: "institution", uuid: this.uuid },
                 ],
             ]);
-            return yield RepositoryService.remove(RepositoryService.entities.Institution, {
+            return yield RepositoryService.removeOne(RepositoryService.entities.Institution, {
                 credentials: { uuid: this.uuid },
             });
         });
         this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
             this.updatedAt = new Date().getTime();
-            return yield RepositoryService.update(RepositoryService.entities.Institution, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
+            return yield RepositoryService.updateOne(RepositoryService.entities.Institution, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.name = name;
@@ -52,9 +52,9 @@ _a = Institution;
 Institution.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = (0, uuid_1.v4)();
     const institution = new Institution(Object.assign(Object.assign({}, data), { uuid }));
-    yield RepositoryService.create(RepositoryService.entities.Institution, institution);
+    yield RepositoryService.createOne(RepositoryService.entities.Institution, institution);
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
-    yield RepositoryService.relateN2N([
+    yield RepositoryService.createOneRelationshipN2N([
         [
             { label: "institution", pk: uuid },
             { label: "user", pk: data.user.uuid },

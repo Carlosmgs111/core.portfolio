@@ -17,13 +17,13 @@ class Skill {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService) => __awaiter(this, void 0, void 0, function* () {
-            return yield RepositoryService.remove(RepositoryService.entities.Skill, {
+            return yield RepositoryService.removeOne(RepositoryService.entities.Skill, {
                 credentials: { uuid: this.uuid },
             });
         });
         this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
             this.updatedAt = new Date().getTime();
-            return yield RepositoryService.update(RepositoryService.entities.Skill, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
+            return yield RepositoryService.updateOne(RepositoryService.entities.Skill, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.userUUID = userUUID;
@@ -40,7 +40,7 @@ _a = Skill;
 Skill.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = (0, uuid_1.v4)();
     const skill = new Skill(Object.assign(Object.assign({}, data), { uuid, userUUID: data.user.uuid }));
-    return yield RepositoryService.create(RepositoryService.entities.Skill, skill);
+    return yield RepositoryService.createOne(RepositoryService.entities.Skill, skill);
 });
 Skill.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const skill = yield Skill.find(RepositoryService, credentials);

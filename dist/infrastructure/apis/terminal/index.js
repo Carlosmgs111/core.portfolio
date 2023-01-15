@@ -21,6 +21,7 @@ const institutions_1 = require("./handlers/institutions");
 const utils_1 = require("../../../utils");
 const certification_fake_1 = require("../../../testing/fakers/certification.fake");
 const fs_1 = __importDefault(require("fs"));
+const random_words_1 = __importDefault(require("random-words"));
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
 colors_1.default;
 exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
@@ -52,7 +53,11 @@ exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
         [institutions]: () => (0, institutions_1.institutionsHandler)(state),
         [projects]: () => (0, projects_1.projectsHandler)(state),
         [test]: () => {
-            fs_1.default.writeFileSync("datasets/certifications3.json", JSON.stringify({
+            fs_1.default.writeFileSync(`datasets/certifications/${new Date()
+                .toISOString()
+                .replace(/T/, "_")
+                .replace(/\..+/, "")
+                .replaceAll(":", ".")}_${(0, random_words_1.default)(1)[0]}-${(0, random_words_1.default)(1)[0]}.json`, JSON.stringify({
                 certifications: (0, certification_fake_1.generateManyCertifications)(100),
             }));
         },

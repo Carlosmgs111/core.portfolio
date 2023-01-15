@@ -1,5 +1,5 @@
 import "../../../mocks/DatabaseService.stub";
-import { DatabaseService } from "../../../../config/dependencies";
+import { RepositoryService } from "../../../../config/dependencies";
 import { User } from "../../../../domain/entities/User";
 import { Certification } from "../../../../domain/entities/Certification";
 import { Institution } from "../../../../domain/entities/Institution";
@@ -23,17 +23,17 @@ describe("Aggregates of certificates", () => {
   let institution: Institution;
   let certification: Certification;
 
-  // const DBS = new DatabaseService({});
+  // const DBS = new RepositoryService({});
 
   beforeAll(async () => {
     // spyFindOne.mockResolvedValue(userCredentials);
     user = await User.create(
-      DatabaseService.setupEntity("User"),
+      RepositoryService,
       userCredentials
     );
     console.log({ user });
     institution = await Institution.create(
-      DatabaseService.setupEntity("Institution"),
+      RepositoryService,
       { ...institutionData, user }
     );
     // jest.clearAllMocks() / ? for clear all mocks
@@ -51,7 +51,7 @@ describe("Aggregates of certificates", () => {
         user,
       };
       // console.log({ fakeCollection });
-      // console.log({DatabaseService})
+      // console.log({RepositoryService})
       certification = await addNewCertification(certificationData);
       console.log({ certification });
       // expect(certification.Institution).toEqual(institution.uuid);
@@ -61,11 +61,8 @@ describe("Aggregates of certificates", () => {
   });
 
   afterAll(async () => {
-    DatabaseService.setupEntity("User");
-    await user.remove(DatabaseService);
-    DatabaseService.setupEntity("Institution");
-    await institution.remove(DatabaseService);
-    DatabaseService.setupEntity("Certification");
-    await certification.remove(DatabaseService);
+    await user.remove(RepositoryService);
+    await institution.remove(RepositoryService);
+    await certification.remove(RepositoryService);
   });
 });

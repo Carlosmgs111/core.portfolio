@@ -60,7 +60,7 @@ exports.getCertificationByUUID = getCertificationByUUID;
 const addNewCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
     if (!data.user)
         throw boom_1.default.conflict("A user must be instanced!");
-    const certification = yield Certification_1.Certification.create(dependencies_1.RepositoryService, data);
+    const certification = yield Certification_1.Certification.createOne(dependencies_1.RepositoryService, data);
     return Object.assign(Object.assign({}, certification), { emitedBy: data.emitedBy, grantedTo: data.user.username });
 });
 exports.addNewCertification = addNewCertification;

@@ -7,6 +7,7 @@ import { institutionsHandler } from "./handlers/institutions";
 import { execFunc } from "../../../utils";
 import { generateManyCertifications } from "../../../testing/fakers/certification.fake";
 import fs from "fs";
+import randomWords from "random-words";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 colors;
@@ -41,7 +42,13 @@ export default async () => {
     [projects]: () => projectsHandler(state),
     [test]: () => {
       fs.writeFileSync(
-        "datasets/certifications3.json",
+        `datasets/certifications/${new Date()
+          .toISOString()
+          .replace(/T/, "_")
+          .replace(/\..+/, "")
+          .replaceAll(":", ".")}_${randomWords(1)[0]}-${
+          randomWords(1)[0]
+        }.json`,
         JSON.stringify({
           certifications: generateManyCertifications(100),
         })

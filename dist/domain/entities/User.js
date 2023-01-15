@@ -23,13 +23,13 @@ class User {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService) => __awaiter(this, void 0, void 0, function* () {
-            return yield RepositoryService.remove(RepositoryService.entities.User, {
+            return yield RepositoryService.removeOne(RepositoryService.entities.User, {
                 credentials: { uuid: this.uuid },
             });
         });
         this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
             this.updatedAt = new Date().getTime();
-            return yield RepositoryService.update(RepositoryService.entities.User, Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
+            return yield RepositoryService.updateOne(RepositoryService.entities.User, Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
         });
         this.hashPassword = (password) => __awaiter(this, void 0, void 0, function* () {
             const salt = yield bcrypt_1.default.genSalt(10);
@@ -58,7 +58,7 @@ User.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     const uuid = (0, uuid_1.v4)();
     const account = new User(Object.assign(Object.assign({}, data), { uuid, privilege: "admin", createdAt: new Date().getTime(), updatedAt: new Date().getTime() }));
     yield account.hashPassword(account.password);
-    yield RepositoryService.create(Object.assign({}, (0, utils_1.getEntityProperties)(account)));
+    yield RepositoryService.createOne(Object.assign({}, (0, utils_1.getEntityProperties)(account)));
     return account;
 });
 User.load = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
@@ -82,7 +82,6 @@ User.certifications = (RepositoryService, credentials) => __awaiter(void 0, void
         credentials,
         related: [["Certification"]],
     });
-    console.log({ user });
     return user.Certifications.map((c) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, (c.dataValues ? c.dataValues : c._doc)), { grantedTo: user.username }), ["Users_Certifications"]));
 });
 User.projects = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {

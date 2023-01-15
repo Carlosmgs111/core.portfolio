@@ -59,7 +59,7 @@ export const getCertificationByUUID = async (data: any) => {
 
 export const addNewCertification = async (data: any) => {
   if (!data.user) throw boom.conflict("A user must be instanced!");
-  const certification = await Certification.create(RepositoryService, data);
+  const certification = await Certification.createOne(RepositoryService, data);
   return {
     ...certification,
     emitedBy: data.emitedBy,

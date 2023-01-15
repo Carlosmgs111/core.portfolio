@@ -3,14 +3,12 @@ import { app } from "../../infrastructure/apis/express";
 import { generateOneProject } from "../fakers/project.fake";
 import { generateOneUser } from "../fakers/user.fake";
 import { generateOneInstitution } from "../fakers/institution.fake";
-import { connection } from "../../infrastructure/repositories/mongoose";
 import { sequelize } from "../../infrastructure/repositories/sequelize/src";
 import { User } from "../../infrastructure/repositories/sequelize/src/models/User";
 import { Institution } from "../../infrastructure/repositories/sequelize/src/models/Institution";
 import { Certification } from "../../infrastructure/repositories/sequelize/src/models/Certification";
 import { Users_Certifications } from "../../infrastructure/repositories/sequelize/src/models/User_Certification";
 import { Users_Institutions } from "../../infrastructure/repositories/sequelize/src/models/User_Institution";
-import { DatabaseService } from "../../config/dependencies";
 import { generateOneCertification } from "../fakers/certification.fake";
 
 describe("Creation of a new certification", () => {

@@ -58,14 +58,14 @@ const listCertificationsHandler = (state) => __awaiter(void 0, void 0, void 0, f
 });
 const certificationsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     let running = true;
-    const [add, update, remove, read, exit] = [
+    const [add, update, removeOne, read, exit] = [
         "Agregar",
         "Actualizar",
         "Eliminar",
         "Listar",
         "Salir",
     ];
-    const choices = [add, update, remove, read, exit];
+    const choices = [add, update, removeOne, read, exit];
     const options = {
         [read]: () => __awaiter(void 0, void 0, void 0, function* () { return yield listCertificationsHandler(state); }),
         [exit]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),

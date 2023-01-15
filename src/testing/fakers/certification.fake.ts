@@ -3,11 +3,17 @@ import { faker } from "@faker-js/faker";
 export const generateOneCertification = (count: number = 0) => ({
   title: `${faker.helpers
     .fake("{{commerce.productAdjective}}: {{commerce.productDescription}} ")
-    .toUpperCase()} ${count}`,
+    .toUpperCase()} ${Number(
+    String(Math.random()).replace("0.", "")
+  )} ${count}`,
   emitedAt: Number(faker.datatype.datetime({ min: 1577836800000 }).getTime()),
   emitedBy: "Platzi",
-  image: `${faker.image.avatar()} ${count}`,
-  url: `${faker.internet.url()} ${count}`,
+  image: `${faker.image.avatar()} ${Number(
+    String(Math.random()).replace("0.", "")
+  )} ${count}`,
+  url: `${faker.internet.url()} ${Number(
+    String(Math.random()).replace("0.", "")
+  )} ${count}`,
 });
 
 // generate many fake users

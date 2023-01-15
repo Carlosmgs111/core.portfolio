@@ -39,7 +39,7 @@ export class Post {
     if (exist) throw boom.conflict("Entity exist yet!");
 
     const uuid = uuidv4();
-    const post = await RepositoryService.relate2One(
+    const post = await RepositoryService.createOneRelationship2One(
       new Post({
         ...data,
         uuid,
@@ -76,7 +76,7 @@ export class Post {
   };
 
   remove = async (RepositoryService: any) => {
-    return await RepositoryService.remove(RepositoryService.entities.Post, {
+    return await RepositoryService.removeOne(RepositoryService.entities.Post, {
       credentials: { uuid: this.uuid },
     });
   };

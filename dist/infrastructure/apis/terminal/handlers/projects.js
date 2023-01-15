@@ -38,14 +38,14 @@ const listProjectsHandler = (state) => __awaiter(void 0, void 0, void 0, functio
 const projectsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const { username } = state;
     let running = true;
-    const [add, update, remove, read, exit] = [
+    const [add, update, removeOne, read, exit] = [
         "Agregar",
         "Actualizar",
         "Eliminar",
         "Listar",
         "Salir",
     ];
-    const choices = [add, update, remove, read, exit];
+    const choices = [add, update, removeOne, read, exit];
     const options = {
         [read]: () => __awaiter(void 0, void 0, void 0, function* () { return listProjectsHandler(state); }),
         [exit]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),

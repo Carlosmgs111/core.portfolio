@@ -12,7 +12,7 @@ export default class SequelizeAdapter {
     this.syncModels();
   }
 
-  create = async (
+  createOne = async (
     entity: any,
     Entity: any,
     options: any = {}
@@ -48,7 +48,7 @@ export default class SequelizeAdapter {
     }
   };
 
-  remove = async (entity: any, options: any) => {
+  removeOne = async (entity: any, options: any) => {
     if (!options.credentials)
       throw boom.forbidden(
         "Must supply credentials for find and delete entity!"
@@ -56,20 +56,19 @@ export default class SequelizeAdapter {
     return await models[entity].destroy(this.adapter(options));
   };
 
-  update = async (entity: any, Entity: any, options: any = {}) => {
-    const model = await models[entity].update(Entity, this.adapter(options));
-    return model.dataValues;
+  updateOne = async (entity: any, Entity: any, options: any = {}) => {
+    const updated = await models[entity].update(Entity, this.adapter(options));
+    return updated.dataValues;
   };
 
-  // TODO rename to createRelationship
-  relateN2N = async (refs: any) => {
+  createOneRelationshipN2N = async (refs: any) => {
     let succesfully = false;
     for (let ref of refs) {
       const [from, to] = ref;
       const [exist, data, relationshipLabel]: any =
-        await this.checkRelationship(from, to);
+        await this.checkOneRelationshipN2N(from, to);
       if (exist) throw boom.conflict("Entity exist yet!");
-      const newSupportEntity = await this.create(relationshipLabel, {
+      const newSupportEntity = await this.createOne(relationshipLabel, {
         ...data,
         uuid: uuidv4(),
       });
@@ -80,19 +79,19 @@ export default class SequelizeAdapter {
   };
 
   // TODO rename to removeRelationship
-  unrelateN2N = async (refs: any) => {
+  removeOneRelationshipN2N = async (refs: any) => {
     for (let ref of refs) {
       const [from, to] = ref;
-      const [exist, data, relationshipLabel] = await this.checkRelationship(
+      const [exist, data, relationshipLabel] = await this.checkOneRelationshipN2N(
         from,
         to
       );
       if (!exist) throw boom.conflict("Relationship doesn't exist!");
-      return await this.remove(relationshipLabel, { credentials: data });
+      return await this.removeOne(relationshipLabel, { credentials: data });
     }
   };
 
-  relate2One = async (entity: any, refs: any) => {
+  createOneRelationship2One = async (entity: any, refs: any) => {
     const relations2One: any = {};
     for (let ref of refs) {
       const key = Mapfy(ref).keys().next().value;
@@ -113,7 +112,7 @@ export default class SequelizeAdapter {
   };
 
   // ? Pending to test
-  unrelate2One = async (entity: any, refs: any) => {
+  removeOneRelationship2One = async (entity: any, refs: any) => {
     const relations2One: any = {};
     for (let ref of refs) {
       relations2One[`${ref}UUID`] = null;
@@ -121,7 +120,7 @@ export default class SequelizeAdapter {
     return { ...entity, ...relations2One };
   };
 
-  checkRelationship = async (from: any, to: any) => {
+  checkOneRelationshipN2N = async (from: any, to: any) => {
     const composeRelationshipLabel = (from: string, to: string) => {
       if (models[`${labelCases(from).CP}_${labelCases(to).CP}`])
         return `${labelCases(from).CP}_${labelCases(to).CP}`;
@@ -142,9 +141,6 @@ export default class SequelizeAdapter {
     });
     return [exist, relationshipUUIDS, relationshipLabel];
   };
-
-  // ? Pending to check if it can be implemented as agnosthic way for be using at least with Sequelize and Mongoose
-  hasMany = async (Entity: any, label: string) => Entity[`get${label}`]();
 
   adapter = (OPS: any) => {
     const {

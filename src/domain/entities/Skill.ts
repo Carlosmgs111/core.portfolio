@@ -32,7 +32,7 @@ export class Skill {
   static create = async (RepositoryService: any, data: any): Promise<string> => {
     const uuid = uuidv4();
     const skill = new Skill({ ...data, uuid, userUUID: data.user.uuid });
-    return await RepositoryService.create(
+    return await RepositoryService.createOne(
       RepositoryService.entities.Skill,
       skill
     );
@@ -57,14 +57,14 @@ export class Skill {
   };
 
   remove = async (RepositoryService: any) => {
-    return await RepositoryService.remove(RepositoryService.entities.Skill, {
+    return await RepositoryService.removeOne(RepositoryService.entities.Skill, {
       credentials: { uuid: this.uuid },
     });
   };
 
   update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
-    return await RepositoryService.update(
+    return await RepositoryService.updateOne(
       RepositoryService.entities.Skill,
       { ...this, ...data },
       { credentials: { uuid: this.uuid } }

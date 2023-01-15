@@ -4,8 +4,6 @@ import { generateOneUser } from "../fakers/user.fake";
 import { app } from "../../infrastructure/apis/express";
 import { generateOneProject } from "../fakers/project.fake";
 import { Project } from "../../infrastructure/repositories/sequelize/src/models/Project";
-import { User } from "../../infrastructure/repositories/sequelize/src/models/User";
-import { connection } from "../../infrastructure/repositories/mongoose";
 import { sequelize } from "../../infrastructure/repositories/sequelize/src";
 
 describe("Test for get all projects endpoint", () => {

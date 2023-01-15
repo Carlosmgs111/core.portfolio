@@ -50,14 +50,14 @@ const listCertificationsHandler = async (state: any) => {
 
 export const certificationsHandler = async (state: any) => {
   let running = true;
-  const [add, update, remove, read, exit] = [
+  const [add, update, removeOne, read, exit] = [
     "Agregar",
     "Actualizar",
     "Eliminar",
     "Listar",
     "Salir",
   ];
-  const choices = [add, update, remove, read, exit];
+  const choices = [add, update, removeOne, read, exit];
   const options = {
     [read]: async () => await listCertificationsHandler(state),
     [exit]: async () => (running = false),

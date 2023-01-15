@@ -1,3 +1,4 @@
+import { setEnums } from "../../utils";
 export const fakeDatabase: any = {
   User: [],
   Project: [],
@@ -26,7 +27,7 @@ async function findOne(this: any, fake: any) {
   return recovered;
 }
 
-async function remove(this: any, fake: any) {
+async function removeOne(this: any, fake: any) {
   let index = 0;
   const { credentials } = fake;
   fakeDatabase[this.Entity].forEach((value: any, idx: any) => {
@@ -44,21 +45,17 @@ async function remove(this: any, fake: any) {
 }
 
 export const DatabaseServiceStub = {
-  Entity: "",
   create,
   findOne,
   find: async function () {
-    return fakeDatabase[this.Entity];
+    return fakeDatabase["some to add here"];
   },
-  remove,
+  removeOne,
   update: async () => {},
-  setupEntity: function (entityLabel: string) {
-    this.Entity = entityLabel;
-    return this;
-  },
-  relateN2N: () => {},
-  unrelateN2N: () => {},
-  relate2One: () => {},
+  createOneRelationshipN2N: () => {},
+  removeOneRelationshipN2N: () => {},
+  createOneRelationship2One: () => {},
+  entities: setEnums(Object.entries(fakeDatabase).flatMap((m: any) => m[0])),
 };
 
 export const spyCreate = jest.spyOn(DatabaseServiceStub, "create");

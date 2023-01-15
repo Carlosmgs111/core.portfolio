@@ -10,9 +10,8 @@ export const project_schema = {
     type: DataTypes.STRING,
   },
   userUUID: {
-    field:"user_uuid",
+    field: "user_uuid",
     unique: false,
-    allowNull: false,
     type: DataTypes.STRING,
     references: {
       model: "Users",
@@ -21,18 +20,22 @@ export const project_schema = {
       onUpdate: "NO ACTION",
     },
   },
-  name: { allowNull: false, type: DataTypes.STRING, unique:true },
-  descriptions:{ type: DataTypes.ARRAY(DataTypes.TEXT), allowNull:true},
-  images:{ type: DataTypes.ARRAY(DataTypes.TEXT), allowNull:true},
-  tags: {allowNull:true, type: DataTypes.ARRAY(DataTypes.STRING)},
+  name: { allowNull: false, type: DataTypes.STRING, unique: true },
+  descriptions: { type: DataTypes.ARRAY(DataTypes.TEXT), allowNull: true },
+  images: { type: DataTypes.ARRAY(DataTypes.TEXT), allowNull: true },
+  tags: {
+    allowNull: true,
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    default: [],
+  },
   uri: { type: DataTypes.STRING },
   version: { type: DataTypes.STRING, allowNull: false },
   createdAt: { type: DataTypes.DATE, allowNull: false, field: "created_at" },
   updatedAt: { type: DataTypes.DATE, allowNull: false, field: "updated_at" },
 };
 
-export class Project extends Model{
-  static associate(models: any){
+export class Project extends Model {
+  static associate(models: any) {
     this.belongsTo(models.User, {
       as: "User",
       targetKey: "uuid",
@@ -41,4 +44,4 @@ export class Project extends Model{
   }
 }
 
-Project.init(project_schema,{sequelize, modelName: project_table})
+Project.init(project_schema, { sequelize, modelName: project_table });
