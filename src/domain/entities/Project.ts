@@ -99,6 +99,7 @@ export class Project {
   };
 
   remove = async (RepositoryService: any) => {
+    await RepositoryService.removeOneRelationship2One({}, [{}]);
     return await RepositoryService.removeOne(
       RepositoryService.entities.Project,
       {

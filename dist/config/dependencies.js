@@ -5,7 +5,7 @@ const DatabaseServices_1 = require("../application/services/DatabaseServices");
 const services_1 = require("../application/services");
 const repositoryServices = {
     CQRS: () => new services_1.CQRSService(),
-    DBS: () => (0, services_1.DatabaseService)(DatabaseServices_1.Adapters.SequelizeAdapter),
+    DBS: () => (0, services_1.DatabaseService)(DatabaseServices_1.Adapters.MongooseAdapter),
 };
 exports.RepositoryService = repositoryServices.CQRS();
 exports.AuthServices = new services_1.AuthServices();

@@ -130,24 +130,54 @@ export default class MongooseAdapter {
 
   createOneRelationship2One = async (entity: any, refs: any) => {
     const relations2One: any = {};
+    const mainKey = Mapfy(entity).keys().next().value;
+    const mainValue = Mapfy(entity).values().next().value;
+
+    const { _id } = await models[labelCases(mainKey).CS].findOne(mainValue, {
+      select: "_id",
+    });
+
     for (let ref of refs) {
       const key = Mapfy(ref).keys().next().value;
       const value = Mapfy(ref).values().next().value;
       const referenced = await models[labelCases(key).CS].findOne(value);
       relations2One[labelCases(key).CS] = referenced._id;
+
+      await models[labelCases(key).CS].updateOne(value, {
+        [labelCases(mainKey).CP]: [...referenced[labelCases(mainKey).CP], _id],
+      });
     }
-    const key = Mapfy(entity).keys().next().value;
-    const value = Mapfy(entity).values().next().value;
-    await models[labelCases(key).CS].updateOne(value, relations2One);
+    await models[labelCases(mainKey).CS].updateOne(mainValue, relations2One);
     return { ...entity, ...relations2One };
   };
 
   // ? Pending to test
   removeOneRelationship2One = async (entity: any, refs: any) => {
+    const mainKey = Mapfy(entity).keys().next().value;
+    const mainValue = Mapfy(entity).values().next().value;
     const relations2One: any = {};
+    const Entity = await models[labelCases(mainKey).CS]
+      .findOne(mainValue)
+      .populate(this.getPopulateMap(refs, true));
     for (let ref of refs) {
-      relations2One[labelCases(ref).CS] = null;
+      const [label] = ref;
+      relations2One[labelCases(label).CS] = "";
+      const referenced = (
+        await models[labelCases(label).CS]
+          .findOne(Entity[labelCases(label).CS])
+          .select(labelCases(mainKey).CP)
+      )[labelCases(mainKey).CP];
+
+      await models[labelCases(label).CS].updateOne(
+        Entity[labelCases(label).CS],
+        {
+          [labelCases(mainKey).CP]: [
+            ...referenced.filter((r: any) => r !== String(Entity._id)),
+          ],
+        }
+      );
     }
+
     return { ...entity, ...relations2One };
   };
 
@@ -182,30 +212,21 @@ export default class MongooseAdapter {
     ];
   };
 
-  adapter = (options: any) => {
+  private adapter = (options: any) => {
     const { credentials, related } = options;
     return credentials;
   };
 
-  getPopulateMap = (related: any) => {
+  private getPopulateMap = (related: any, include_id: boolean = false) => {
     const populates: any = [];
     related.forEach((r: any) => {
       const [label, { as = null, attributes = [] } = {}] = r;
-      let select = "-_id"; // ? for exclude _id attribute
+      let select = `${include_id ? "_id" : "-_id"}`; // ? for exclude _id attribute
       attributes.forEach((a: any) => (select += `${a} `));
       populates.push({ path: as || labelCases(label).CP, select });
     });
     return populates;
   };
-
-  formatIncludeClosure = async (entitiesToInclude: any) => {};
-
-  setupEntity(entityLabel: string) {
-    this.Entity = models[entityLabel];
-    return this;
-  }
-
-  syncModels = () => {};
 
   entities = setEnums(Object.entries(models).flatMap((m: any) => m[0]));
 }

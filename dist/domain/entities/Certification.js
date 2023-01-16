@@ -23,6 +23,7 @@ class Certification {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            yield RepositoryService.removeOneRelationship2One({ certifications: { uuid: this.uuid } }, [["Institution", { as: "Institution" }]]);
             yield RepositoryService.removeOneRelationshipN2N([
                 [
                     { label: "user", pk: options.userUUID },
@@ -34,13 +35,13 @@ class Certification {
             });
         });
         this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
-            /* const [exist] = await RepositoryService.checkOneRelationshipN2N(
-              RepositoryService.entities.Certification,
-              { label: "certification", pk: this.uuid },
-              { label: "user", pk: data.user.uuid }
-            );
-            if (!exist) throw boom.conflict("Relationship doesn't exist!"); */
             this.updatedAt = new Date().getTime();
+            const { Institution: { name: emitedBy }, } = yield Certification.find(RepositoryService, {
+                credentials: { uuid: this.uuid },
+                related: [["Institution", { attributes: ["name"], as: "Institution" }]],
+            });
+            if (data.emitedBy && emitedBy !== data.emitedBy)
+                console.log("Must change relationship".bgYellow);
             yield RepositoryService.updateOne(RepositoryService.entities.Certification, Object.assign({ updatedAt: this.updatedAt }, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
             return this;
         });
@@ -60,7 +61,6 @@ Certification.createOne = (RepositoryService, data) => __awaiter(void 0, void 0,
     const uuid = data.uuid || (0, uuid_1.v4)();
     const { emitedBy } = data;
     const certification = yield RepositoryService.createOne(RepositoryService.entities.Certification, new Certification(Object.assign(Object.assign({}, data), { uuid })));
-    console.log({ certification, userUUID: data.user.uuid });
     yield RepositoryService.createOneRelationship2One({ certifications: { uuid: certification.uuid } }, [
         {
             institution: { name: emitedBy },
@@ -103,6 +103,7 @@ Certification.load = (RepositoryService, options) => __awaiter(void 0, void 0, v
     if (!certification)
         throw new Error("Incorrect credentials!");
     const loadedCertification = new Certification(certification);
+    console.log({ loadedCertification });
     return loadedCertification;
 });
 Certification.find = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {

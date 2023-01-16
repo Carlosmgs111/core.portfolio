@@ -2,32 +2,12 @@ import { RepositoryService } from "../../config/dependencies";
 import { Certification } from "../../domain/entities/Certification";
 import { User } from "../../domain/entities/User";
 import boom from "@hapi/boom";
-import { filterAttrs } from "../../utils";
 import { verifyToken2 } from "../../infrastructure/auth/JWT";
-
-const format = (certifications: [Certification]) =>
-  certifications
-    .map((certification: any) =>
-      filterAttrs(
-        {
-          ...certification,
-          emitedAt: new Date(certification.emitedAt).getTime(),
-          grantedTo: certification.Users[0].username,
-          emitedBy: certification.Institution.name,
-        },
-        ["Users", "Institution"]
-      )
-    )
-    .sort((a: any, b: any) => {
-      if (a.emitedAt < b.emitedAt) return 1;
-      return -1;
-    });
-
-// ! ---------------------------------------------------------------------------------------------
+import { formatCertifications } from "../../domain/DTOs/certifications";
 
 export const getCertifications = async (data: any) => {
   const { username, user, size, page } = data;
-  return format(
+  return formatCertifications(
     await Certification.findAll(RepositoryService, {
       related: [
         [
@@ -83,9 +63,11 @@ export const addManyCertifications = async (data: any) => {
 export const updateCertification = async (data: any) => {
   const { user, uuid } = data;
   await (
-    await Certification.load(RepositoryService, { credentials: { uuid } })
+    await Certification.load(RepositoryService, {
+      credentials: { uuid },
+    })
   ).update(RepositoryService, data);
-  return format([
+  return formatCertifications([
     {
       ...(await getCertificationByUUID({
         credentials: { uuid },

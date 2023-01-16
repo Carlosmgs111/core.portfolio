@@ -102,22 +102,42 @@ class MongooseAdapter {
         });
         this.createOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
             const relations2One = {};
+            const mainKey = (0, utils_1.Mapfy)(entity).keys().next().value;
+            const mainValue = (0, utils_1.Mapfy)(entity).values().next().value;
+            const { _id } = yield models_1.default[(0, utils_1.labelCases)(mainKey).CS].findOne(mainValue, {
+                select: "_id",
+            });
             for (let ref of refs) {
                 const key = (0, utils_1.Mapfy)(ref).keys().next().value;
                 const value = (0, utils_1.Mapfy)(ref).values().next().value;
                 const referenced = yield models_1.default[(0, utils_1.labelCases)(key).CS].findOne(value);
                 relations2One[(0, utils_1.labelCases)(key).CS] = referenced._id;
+                yield models_1.default[(0, utils_1.labelCases)(key).CS].updateOne(value, {
+                    [(0, utils_1.labelCases)(mainKey).CP]: [...referenced[(0, utils_1.labelCases)(mainKey).CP], _id],
+                });
             }
-            const key = (0, utils_1.Mapfy)(entity).keys().next().value;
-            const value = (0, utils_1.Mapfy)(entity).values().next().value;
-            yield models_1.default[(0, utils_1.labelCases)(key).CS].updateOne(value, relations2One);
+            yield models_1.default[(0, utils_1.labelCases)(mainKey).CS].updateOne(mainValue, relations2One);
             return Object.assign(Object.assign({}, entity), relations2One);
         });
         // ? Pending to test
         this.removeOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
+            const mainKey = (0, utils_1.Mapfy)(entity).keys().next().value;
+            const mainValue = (0, utils_1.Mapfy)(entity).values().next().value;
             const relations2One = {};
+            const Entity = yield models_1.default[(0, utils_1.labelCases)(mainKey).CS]
+                .findOne(mainValue)
+                .populate(this.getPopulateMap(refs, true));
             for (let ref of refs) {
-                relations2One[(0, utils_1.labelCases)(ref).CS] = null;
+                const [label] = ref;
+                relations2One[(0, utils_1.labelCases)(label).CS] = "";
+                const referenced = (yield models_1.default[(0, utils_1.labelCases)(label).CS]
+                    .findOne(Entity[(0, utils_1.labelCases)(label).CS])
+                    .select((0, utils_1.labelCases)(mainKey).CP))[(0, utils_1.labelCases)(mainKey).CP];
+                yield models_1.default[(0, utils_1.labelCases)(label).CS].updateOne(Entity[(0, utils_1.labelCases)(label).CS], {
+                    [(0, utils_1.labelCases)(mainKey).CP]: [
+                        ...referenced.filter((r) => r !== String(Entity._id)),
+                    ],
+                });
             }
             return Object.assign(Object.assign({}, entity), relations2One);
         });
@@ -149,24 +169,18 @@ class MongooseAdapter {
             const { credentials, related } = options;
             return credentials;
         };
-        this.getPopulateMap = (related) => {
+        this.getPopulateMap = (related, include_id = false) => {
             const populates = [];
             related.forEach((r) => {
                 const [label, { as = null, attributes = [] } = {}] = r;
-                let select = "-_id"; // ? for exclude _id attribute
+                let select = `${include_id ? "_id" : "-_id"}`; // ? for exclude _id attribute
                 attributes.forEach((a) => (select += `${a} `));
                 populates.push({ path: as || (0, utils_1.labelCases)(label).CP, select });
             });
             return populates;
         };
-        this.formatIncludeClosure = (entitiesToInclude) => __awaiter(this, void 0, void 0, function* () { });
-        this.syncModels = () => { };
         this.entities = (0, utils_1.setEnums)(Object.entries(models_1.default).flatMap((m) => m[0]));
         (0, mongoose_1.connect)();
-    }
-    setupEntity(entityLabel) {
-        this.Entity = models_1.default[entityLabel];
-        return this;
     }
 }
 exports.default = MongooseAdapter;

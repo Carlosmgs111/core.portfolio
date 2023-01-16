@@ -19,6 +19,7 @@ class Project {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService) => __awaiter(this, void 0, void 0, function* () {
+            yield RepositoryService.removeOneRelationship2One({}, [{}]);
             return yield RepositoryService.removeOne(RepositoryService.entities.Project, {
                 credentials: { uuid: this.uuid },
             });

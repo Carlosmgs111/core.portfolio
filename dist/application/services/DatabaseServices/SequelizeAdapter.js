@@ -149,9 +149,5 @@ class SequelizeAdapter {
         });
         return include;
     }
-    setupEntity(entityLabel) {
-        this.Entity = models_1.default[entityLabel];
-        return this;
-    }
 }
 exports.default = SequelizeAdapter;

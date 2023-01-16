@@ -5,6 +5,7 @@ export interface IInstitution extends Document {
   name: string;
   businessName: string;
   Users: Array<any>;
+  Certifications: Array<any>;
   descriptions: Array<string>;
   urls: Array<string>;
   createdAt: number;
@@ -28,10 +29,10 @@ const institutionSchema = new Schema<IInstitution>({
     type: String,
     unique: false,
     required: true,
-    lowercase: true,
     trim: true,
   },
   Users: [{ type: String, ref: "User" }],
+  Certifications: [{ type: String, ref: "Certification" }],
   descriptions: {
     type: [String],
     unique: false,

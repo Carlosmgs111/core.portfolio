@@ -17,19 +17,11 @@ const dependencies_1 = require("../../config/dependencies");
 const Certification_1 = require("../../domain/entities/Certification");
 const User_1 = require("../../domain/entities/User");
 const boom_1 = __importDefault(require("@hapi/boom"));
-const utils_1 = require("../../utils");
 const JWT_1 = require("../../infrastructure/auth/JWT");
-const format = (certifications) => certifications
-    .map((certification) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, certification), { emitedAt: new Date(certification.emitedAt).getTime(), grantedTo: certification.Users[0].username, emitedBy: certification.Institution.name }), ["Users", "Institution"]))
-    .sort((a, b) => {
-    if (a.emitedAt < b.emitedAt)
-        return 1;
-    return -1;
-});
-// ! ---------------------------------------------------------------------------------------------
+const certifications_1 = require("../../domain/DTOs/certifications");
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
-    return format(yield Certification_1.Certification.findAll(dependencies_1.RepositoryService, {
+    return (0, certifications_1.formatCertifications)(yield Certification_1.Certification.findAll(dependencies_1.RepositoryService, {
         related: [
             [
                 "User",
@@ -72,8 +64,10 @@ const addManyCertifications = (data) => __awaiter(void 0, void 0, void 0, functi
 exports.addManyCertifications = addManyCertifications;
 const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, uuid } = data;
-    yield (yield Certification_1.Certification.load(dependencies_1.RepositoryService, { credentials: { uuid } })).update(dependencies_1.RepositoryService, data);
-    return format([
+    yield (yield Certification_1.Certification.load(dependencies_1.RepositoryService, {
+        credentials: { uuid },
+    })).update(dependencies_1.RepositoryService, data);
+    return (0, certifications_1.formatCertifications)([
         Object.assign(Object.assign({}, (yield (0, exports.getCertificationByUUID)({
             credentials: { uuid },
             related: [["Institution", { attributes: ["name"], as: "Institution" }]],

@@ -1,6 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
 import { getEntityProperties, filterAttrs } from "../../utils";
-import boom from "@hapi/boom";
 
 export class Certification {
   uuid: string = "";
@@ -32,7 +31,7 @@ export class Certification {
       RepositoryService.entities.Certification,
       new Certification({ ...data, uuid })
     );
-    console.log({ certification, userUUID: data.user.uuid });
+
     await RepositoryService.createOneRelationship2One(
       { certifications: { uuid: certification.uuid } },
       [
@@ -89,6 +88,7 @@ export class Certification {
     const certification = await Certification.find(RepositoryService, options);
     if (!certification) throw new Error("Incorrect credentials!");
     const loadedCertification = new Certification(certification);
+    console.log({ loadedCertification });
     return loadedCertification;
   };
 
@@ -109,6 +109,10 @@ export class Certification {
   };
 
   remove = async (RepositoryService: any, options: any = {}) => {
+    await RepositoryService.removeOneRelationship2One(
+      { certifications: { uuid: this.uuid } },
+      [["Institution", { as: "Institution" }]]
+    );
     await RepositoryService.removeOneRelationshipN2N([
       [
         { label: "user", pk: options.userUUID },
@@ -128,13 +132,16 @@ export class Certification {
   };
 
   update = async (RepositoryService: any, data: any) => {
-    /* const [exist] = await RepositoryService.checkOneRelationshipN2N(
-      RepositoryService.entities.Certification,
-      { label: "certification", pk: this.uuid },
-      { label: "user", pk: data.user.uuid }
-    );
-    if (!exist) throw boom.conflict("Relationship doesn't exist!"); */
     this.updatedAt = new Date().getTime();
+    const {
+      Institution: { name: emitedBy },
+    } = await Certification.find(RepositoryService, {
+      credentials: { uuid: this.uuid },
+      related: [["Institution", { attributes: ["name"], as: "Institution" }]],
+    });
+    if (data.emitedBy && emitedBy !== data.emitedBy)
+      console.log("Must change relationship".bgYellow);
+
     await RepositoryService.updateOne(
       RepositoryService.entities.Certification,
       {

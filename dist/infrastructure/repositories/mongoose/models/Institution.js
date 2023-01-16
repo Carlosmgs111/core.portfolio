@@ -18,10 +18,10 @@ const institutionSchema = new mongoose_1.Schema({
         type: String,
         unique: false,
         required: true,
-        lowercase: true,
         trim: true,
     },
     Users: [{ type: String, ref: "User" }],
+    Certifications: [{ type: String, ref: "Certification" }],
     descriptions: {
         type: [String],
         unique: false,

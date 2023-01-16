@@ -1,142 +1,68 @@
 import { DatabaseService, Adapters } from "../DatabaseServices";
-import Queue from "bull";
+import { addQueue, setProcessToQueue, addJobToQueue } from "./queue";
 export class CQRSService {
   QueryService = DatabaseService(Adapters.MongooseAdapter);
   CommandService = DatabaseService(Adapters.SequelizeAdapter);
   lastSync: number = new Date().getTime();
 
-  private createOneInQueryService = new Queue("createOneInQueryService", {
-    redis: {
-      host: "127.0.0.1",
-      port: 6379,
-    },
-  });
-  private createManyInQueryService = new Queue("createManyInQueryService", {
-    redis: {
-      host: "127.0.0.1",
-      port: 6379,
-    },
-  });
-  private createOneRelationshipN2NInQueryService = new Queue(
-    "createOneRelationshipN2NInQueryService",
-    {
-      redis: {
-        host: "127.0.0.1",
-        port: 6379,
-      },
-    }
+  private createOneInQueryService = addQueue("createOneInQueryService");
+  private createManyInQueryService = addQueue("createManyInQueryService");
+  private createOneRelationshipN2NInQueryService = addQueue(
+    "createOneRelationshipN2NInQueryService"
   );
-  private createOneRelationship2OneInQueryService = new Queue(
-    "createOneRelationship2OneInQueryService",
-    {
-      redis: {
-        host: "127.0.0.1",
-        port: 6379,
-      },
-    }
+  private removeOneRelationshipN2NInQueryService = addQueue(
+    "removeOneRelationshipN2NInQueryService"
   );
-  private updateOneInQueryService = new Queue("updateOneInQueryService", {
-    redis: {
-      host: "127.0.0.1",
-      port: 6379,
-    },
-  });
-  private removeOneInQueryService = new Queue("removeOneInQueryService", {
-    redis: {
-      host: "127.0.0.1",
-      port: 6379,
-    },
-  });
+  private createOneRelationship2OneInQueryService = addQueue(
+    "createOneRelationship2OneInQueryService"
+  );
+  private removeOneRelationship2OneInQueryService = addQueue(
+    "removeOneRelationship2OneInQueryService"
+  );
+  private updateOneInQueryService = addQueue("updateOneInQueryService");
+  private removeOneInQueryService = addQueue("removeOneInQueryService");
 
   constructor() {
-    this.createOneInQueryService.process(async (job: any, done: any) => {
-      const { entity, Entity, options } = job.data;
-      try {
-        await this.QueryService.createOne(entity, Entity, options);
-        done(null, { message: "Entities created in Query Service Database!" });
-      } catch (error) {
-        console.error(error);
-        job.fail(error);
-      }
-    });
-    this.createManyInQueryService.process(async (job: any, done: any) => {
-      const { entity, entities, options } = job.data;
-      try {
-        await this.QueryService.createMany(entity, entities, options);
-        done(null, { message: "Entities created in Query Service Database!" });
-      } catch (error) {
-        console.error(error);
-        job.fail(error);
-      }
-    });
-    this.createOneRelationshipN2NInQueryService.process(
-      async (job: any, done: any) => {
-        const { refs } = job.data;
-        try {
-          await this.QueryService.createOneRelationshipN2N(refs);
-          done(null, {
-            message: "Entities created in Query Service Database!",
-          });
-        } catch (error: any) {
-          console.error(error);
-          job.fail(error);
-        }
-      }
+    setProcessToQueue(
+      this.createOneInQueryService,
+      this.QueryService.createOne
     );
-    this.createOneRelationship2OneInQueryService.process(
-      async (job: any, done: any) => {
-        const { entity, refs } = job.data;
-        try {
-          await this.QueryService.createOneRelationship2One(entity, refs);
-          done(null, {
-            message: "Entities created in Query Service Database!",
-          });
-        } catch (error) {
-          console.error(error);
-          job.fail(error);
-        }
-      }
+    setProcessToQueue(
+      this.createManyInQueryService,
+      this.QueryService.createMany
     );
-    this.updateOneInQueryService.process(async (job: any, done: any) => {
-      const { entity, Entity, options } = job.data;
-      try {
-        await this.QueryService.updateOne(entity, Entity, options);
-        done(null, { message: "Entities created in Query Service Database!" });
-      } catch (error) {
-        console.error(error);
-        job.fail(error);
-      }
-    });
-    this.removeOneInQueryService.process(async (job: any, done: any) => {
-      const { entity, options } = job.data;
-      try {
-        await this.QueryService.removeOne(entity, options);
-        done(null, { message: "Entities created in Query Service Database!" });
-      } catch (error) {
-        console.error(error);
-        job.fail(error);
-      }
-    });
+    setProcessToQueue(
+      this.createOneRelationshipN2NInQueryService,
+      this.QueryService.createOneRelationshipN2N
+    );
+    setProcessToQueue(
+      this.removeOneRelationshipN2NInQueryService,
+      this.QueryService.removeOneRelationshipN2N
+    );
+    setProcessToQueue(
+      this.createOneRelationship2OneInQueryService,
+      this.QueryService.createOneRelationship2One
+    );
+    setProcessToQueue(
+      this.removeOneRelationship2OneInQueryService,
+      this.QueryService.removeOneRelationship2One
+    );
+    setProcessToQueue(
+      this.updateOneInQueryService,
+      this.QueryService.updateOne
+    );
+    setProcessToQueue(
+      this.removeOneInQueryService,
+      this.QueryService.removeOne
+    );
   }
 
   createOne = async (entity: any, Entity: any, options: any = {}) => {
-    this.createOneInQueryService.add(
-      { entity, Entity, options },
-      {
-        attempts: 3,
-        backoff: { type: "exponential", delay: 60000 },
-      }
-    );
+    addJobToQueue(this.createOneInQueryService, [entity, Entity, options]);
     return await this.CommandService.createOne(entity, Entity, options);
   };
   createMany = async (entity: any, entities: any, options: any = {}) => {
-    this.createManyInQueryService.add(
-      { entity, entities, options },
-      {
-        attempts: 3,
-        backoff: { type: "exponential", delay: 60000 },
-      }
-    );
+    addJobToQueue(this.createManyInQueryService, [entity, entities, options]);
     return await this.CommandService.createMany(entity, entities, options);
   };
   findOne = async (entity: any, options: any = {}) =>
@@ -144,52 +70,39 @@ export class CQRSService {
   findAll = async (entity: any, options: any = {}) =>
     await this.QueryService.findAll(entity, options);
   removeOne = async (entity: any, options: any) => {
-    this.removeOneInQueryService.add(
-      { entity, options },
-      {
-        attempts: 3,
-        backoff: { type: "exponential", delay: 60000 },
-      }
-    );
+    addJobToQueue(this.removeOneInQueryService, [entity, options]);
     return await this.CommandService.removeOne(entity, options);
   };
   updateOne = async (entity: any, Entity: any, options: any = {}) => {
-    this.updateOneInQueryService.add(
-      { entity, Entity, options },
-      {
-        attempts: 3,
-        backoff: { type: "exponential", delay: 60000 },
-      }
-    );
+    addJobToQueue(this.updateOneInQueryService, [entity, Entity, options]);
     return await this.CommandService.updateOne(entity, Entity, options);
   };
-  createOneRelationshipN2N = async (refs: any) => {
-    this.createOneRelationshipN2NInQueryService.add(
-      { refs },
-      {
-        attempts: 3,
-        backoff: { type: "exponential", delay: 60000 },
-      }
-    );
-    return await this.CommandService.createOneRelationshipN2N(refs);
-  };
   createOneRelationship2One = async (entity: any, refs: any) => {
-    this.createOneRelationship2OneInQueryService.add(
-      { entity, refs },
-      {
-        attempts: 3,
-        backoff: { type: "exponential", delay: 60000 },
-      }
-    );
-
+    addJobToQueue(this.createOneRelationship2OneInQueryService, [entity, refs]);
     return await this.CommandService.createOneRelationship2One(entity, refs);
   };
-  removeOneRelationshipN2N = async (refs: any) =>
-    await this.CommandService.removeOneRelationshipN2N(refs);
+  removeOneRelationship2One = async (entity: any, refs: any) => {
+    addJobToQueue(this.removeOneRelationship2OneInQueryService, [entity, refs]);
+    return await this.CommandService.removeOneRelationship2One(entity, refs);
+  };
+  createOneRelationshipN2N = async (refs: any) => {
+    addJobToQueue(this.createOneRelationshipN2NInQueryService, [refs]);
+    return await this.CommandService.createOneRelationshipN2N(refs);
+  };
+  removeOneRelationshipN2N = async (refs: any) => {
+    addJobToQueue(this.removeOneRelationshipN2NInQueryService, [refs]);
+    return await this.CommandService.removeOneRelationshipN2N(refs);
+  };
   checkOneRelationshipN2N = this.CommandService.checkOneRelationshipN2N;
   entities = { ...this.CommandService.entities, ...this.QueryService.entities };
-  setupEntity = this.CommandService.setupEntity;
   info = () => {
-    return "Repository Service";
+    console.table({
+      "Query Database Service": this.QueryService.serviceDescription,
+      "Command Database Service": this.CommandService.serviceDescription,
+    });
+    return {
+      queryDatabaseInterfaceName: this.QueryService.serviceDescription,
+      commandDatabaseInterfaceName: this.CommandService.serviceDescription,
+    };
   };
 }

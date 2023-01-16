@@ -82,10 +82,8 @@ export default class SequelizeAdapter {
   removeOneRelationshipN2N = async (refs: any) => {
     for (let ref of refs) {
       const [from, to] = ref;
-      const [exist, data, relationshipLabel] = await this.checkOneRelationshipN2N(
-        from,
-        to
-      );
+      const [exist, data, relationshipLabel] =
+        await this.checkOneRelationshipN2N(from, to);
       if (!exist) throw boom.conflict("Relationship doesn't exist!");
       return await this.removeOne(relationshipLabel, { credentials: data });
     }
@@ -142,7 +140,7 @@ export default class SequelizeAdapter {
     return [exist, relationshipUUIDS, relationshipLabel];
   };
 
-  adapter = (OPS: any) => {
+  private adapter = (OPS: any) => {
     const {
       credentials = {},
       related = [],
@@ -181,14 +179,9 @@ export default class SequelizeAdapter {
     return include;
   }
 
-  setupEntity(entityLabel: string) {
-    this.Entity = models[entityLabel];
-    return this;
-  }
-
   // * A function that is called in the constructor of the class. It is used to associate the models in
   // * the database.
-  syncModels = () => {
+  private syncModels = () => {
     for (var model in models)
       models[model].associate && models[model].associate(models);
   };
