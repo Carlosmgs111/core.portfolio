@@ -12,35 +12,47 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addJobToQueue = exports.setProcessToQueue = exports.addQueue = void 0;
+exports.QueueService = exports.createQueue = void 0;
 const bull_1 = __importDefault(require("bull"));
-const addQueue = (alias, options = {
+const createQueue = (alias, options = {
     redis: {
         host: "127.0.0.1",
         port: 6379,
     },
-}) => {
-    return new bull_1.default(alias, options);
-};
-exports.addQueue = addQueue;
-const setProcessToQueue = (queue, process) => {
-    queue.process((job, done) => __awaiter(void 0, void 0, void 0, function* () {
-        const { data } = job;
-        try {
-            if (Array.isArray(data))
-                yield process(...data);
-            else
-                yield process(data);
-            done(null, { message: "Process completed succesfully!" });
-        }
-        catch (e) {
-            console.error(e);
-            job.fail(e);
-        }
-    }));
-};
-exports.setProcessToQueue = setProcessToQueue;
-const addJobToQueue = (queue, job, options = { attempts: 3, backoff: { type: "exponential", delay: 60000 } }) => {
-    queue.add(job, options);
-};
-exports.addJobToQueue = addJobToQueue;
+}) => new QueueService(alias, options);
+exports.createQueue = createQueue;
+class QueueService extends bull_1.default {
+    constructor(alias, options = {
+        redis: {
+            host: "127.0.0.1",
+            port: 6379,
+        },
+    }) {
+        super(alias, options);
+        this.setProcess = (process) => {
+            this.process((job, done) => __awaiter(this, void 0, void 0, function* () {
+                const { data } = job;
+                try {
+                    if (Array.isArray(data))
+                        yield process(...data);
+                    else
+                        yield process(data);
+                    done(null, { message: "Process completed succesfully!" });
+                }
+                catch (e) {
+                    console.error(e);
+                    job.fail(e);
+                }
+            }));
+            return this;
+        };
+        this.addJob = (job, options = {
+            attempts: 3,
+            backoff: { type: "exponential", delay: 60000 },
+        }) => {
+            this.add(job, options);
+            return this;
+        };
+    }
+}
+exports.QueueService = QueueService;

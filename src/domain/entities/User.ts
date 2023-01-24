@@ -49,6 +49,7 @@ export class User {
         ),
       }
     );
+    console.log({ exist });
     if (exist) throw boom.conflict("Entity exist yet!");
     const uuid = uuidv4();
     const account = new User({
@@ -59,7 +60,7 @@ export class User {
       updatedAt: new Date().getTime(),
     });
     await account.hashPassword(account.password);
-    await RepositoryService.createOne({
+    await RepositoryService.createOne(RepositoryService.entities.User, {
       ...getEntityProperties(account),
     });
     return account;

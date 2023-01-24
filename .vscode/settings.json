@@ -3,22 +3,22 @@
     "vscode_custom_css.imports": [
       "file:///C:/Users/Draupnir/.vscode/extensions/webrender.synthwave-x-fluoromachine-0.0.12/synthwave-x-fluoromachine.css"
     ],
-    "activityBar.activeBackground": "#d0f892",
+    "activityBar.activeBackground": "#fd62b0",
     "activityBar.activeBorder": "#2da5f2",
-    "activityBar.background": "#d0f892",
+    "activityBar.background": "#fd62b0",
     "activityBar.foreground": "#15202b",
     "activityBar.inactiveForeground": "#15202b99",
-    "activityBarBadge.background": "#2da5f2",
+    "activityBarBadge.background": "#80fc03",
     "activityBarBadge.foreground": "#15202b",
-    "sash.hoverBorder": "#d0f892",
-    "statusBarItem.hoverBackground": "#a6f232",
-    "statusBarItem.remoteBackground": "#bbf562",
-    "statusBarItem.remoteForeground": "#15202b",
-    "titleBar.activeBackground": "#bbf562",
-    "titleBar.activeForeground": "#15202b",
-    "titleBar.inactiveBackground": "#bbf56299",
-    "titleBar.inactiveForeground": "#15202b99",
-    "commandCenter.border": "#15202b99",
+    "sash.hoverBorder": "#fd62b0",
+    "statusBarItem.hoverBackground": "#fd62b0",
+    "statusBarItem.remoteBackground": "#fd2f97",
+    "statusBarItem.remoteForeground": "#e7e7e7",
+    "titleBar.activeBackground": "#fd2f97",
+    "titleBar.activeForeground": "#e7e7e7",
+    "titleBar.inactiveBackground": "#fd2f9799",
+    "titleBar.inactiveForeground": "#e7e7e799",
+    "commandCenter.border": "#e7e7e799",
     "[Andromeda Italic Bordered]": {
       "editor.background": "#232020",
       "sideBar.background": "#232020",
@@ -40,7 +40,9 @@
       "progressBar.background": "#0D9373",
       "notificationsInfoIcon.foreground": "#0D9373",
       "editor.selectionBackground": "#0D937333"
-    }
+    },
+    "statusBar.background": "#fd2f97",
+    "statusBar.foreground": "#e7e7e7"
   },
-  "peacock.color": "#bbf562"
+  "peacock.color": "#fd2f97"
 }

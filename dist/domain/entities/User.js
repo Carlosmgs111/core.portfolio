@@ -53,12 +53,13 @@ User.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     const exist = yield RepositoryService.findOne(RepositoryService.entities.User, {
         credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(data), ["email", "username"], false),
     });
+    console.log({ exist });
     if (exist)
         throw boom_1.default.conflict("Entity exist yet!");
     const uuid = (0, uuid_1.v4)();
     const account = new User(Object.assign(Object.assign({}, data), { uuid, privilege: "admin", createdAt: new Date().getTime(), updatedAt: new Date().getTime() }));
     yield account.hashPassword(account.password);
-    yield RepositoryService.createOne(Object.assign({}, (0, utils_1.getEntityProperties)(account)));
+    yield RepositoryService.createOne(RepositoryService.entities.User, Object.assign({}, (0, utils_1.getEntityProperties)(account)));
     return account;
 });
 User.load = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {

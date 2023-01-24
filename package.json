@@ -40,6 +40,7 @@
   "dependencies": {
     "@hapi/boom": "^10.0.0",
     "bcrypt": "^5.1.0",
+    "bull": "^4.10.2",
     "colors": "^1.4.0",
     "cors": "^2.8.5",
     "crypto-js": "^4.1.1",
