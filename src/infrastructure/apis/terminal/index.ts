@@ -4,6 +4,7 @@ import { loginHandler } from "./handlers/login";
 import { certificationsHandler } from "./handlers/certifications";
 import { projectsHandler } from "./handlers/projects";
 import { institutionsHandler } from "./handlers/institutions";
+import { testsHandler } from "./handlers/tests";
 import { execFunc } from "../../../utils";
 import { generateManyCertifications } from "../../../testing/fakers/certification.fake";
 import fs from "fs";
@@ -24,33 +25,52 @@ export default async () => {
     username: usernames.cm,
     exp: 0,
   };
-  const [login, logout, user, certifications, institutions, projects, test] = [
+  const [
+    login,
+    logout,
+    user,
+    certifications,
+    institutions,
+    projects,
+    tests,
+    datasets,
+  ] = [
     "Login".bgGreen,
     "Logout".bgRed,
     "User",
     "Certifications",
     "Institutions",
     "Projects",
-    "Test".bgYellow,
+    "Tests".bgYellow,
+    "Datasets".bgCyan,
   ];
-  const choices = [user, certifications, institutions, projects, test];
+  const choices = [
+    user,
+    certifications,
+    institutions,
+    projects,
+    tests,
+    datasets,
+  ];
   const options = {
     [login]: () => loginHandler(state),
     [logout]: () => (state.token = undefined),
     [certifications]: () => certificationsHandler(state),
     [institutions]: () => institutionsHandler(state),
     [projects]: () => projectsHandler(state),
-    [test]: () => {
+    [tests]: () => testsHandler(state),
+    [datasets]: () => {
+      const qt = 100;
       fs.writeFileSync(
         `datasets/certifications/${new Date()
           .toISOString()
           .replace(/T/, "_")
           .replace(/\..+/, "")
-          .replaceAll(":", ".")}_${randomWords(1)[0]}-${
+          .replaceAll(":", ".")}_qt.${qt}_${randomWords(1)[0]}-${
           randomWords(1)[0]
         }.json`,
         JSON.stringify({
-          certifications: generateManyCertifications(100),
+          certifications: generateManyCertifications(qt),
         })
       );
     },

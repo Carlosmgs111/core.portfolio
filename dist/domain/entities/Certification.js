@@ -23,11 +23,11 @@ class Certification {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            yield RepositoryService.removeOneRelationship2One({ certifications: { uuid: this.uuid } }, [["Institution", { as: "Institution" }]]);
+            yield RepositoryService.unsetOneRelationship2One({ certifications: { uuid: this.uuid } }, [["Institution", { as: "Institution" }]]);
             const removed = yield RepositoryService.removeOneRelationshipN2N([
                 [
-                    { label: "user", pk: options.userUUID },
-                    { label: "certification", pk: this.uuid },
+                    { user: { uuid: options.userUUID } },
+                    { certification: { uuid: this.uuid } },
                 ],
             ]);
             if (!removed)
@@ -42,8 +42,14 @@ class Certification {
                 credentials: { uuid: this.uuid },
                 related: [["Institution", { attributes: ["name"], as: "Institution" }]],
             });
-            if (data.emitedBy && emitedBy !== data.emitedBy)
+            if (data.emitedBy && emitedBy !== data.emitedBy) {
                 console.log("Must change relationship".bgYellow);
+                yield RepositoryService.setOneRelationship2One({ certifications: { uuid: this.uuid } }, [
+                    {
+                        institution: { name: data.emitedBy },
+                    },
+                ]);
+            }
             yield RepositoryService.updateOne(RepositoryService.entities.Certification, Object.assign({ updatedAt: this.updatedAt }, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
             return this;
         });
@@ -63,16 +69,13 @@ Certification.createOne = (RepositoryService, data) => __awaiter(void 0, void 0,
     const uuid = data.uuid || (0, uuid_1.v4)();
     const { emitedBy } = data;
     const certification = yield RepositoryService.createOne(RepositoryService.entities.Certification, new Certification(Object.assign(Object.assign({}, data), { uuid })));
-    yield RepositoryService.createOneRelationship2One({ certifications: { uuid: certification.uuid } }, [
+    yield RepositoryService.setOneRelationship2One({ certifications: { uuid: certification.uuid } }, [
         {
             institution: { name: emitedBy },
         },
     ]);
     yield RepositoryService.createOneRelationshipN2N([
-        [
-            { label: "certification", pk: uuid },
-            { label: "user", pk: data.user.uuid },
-        ],
+        [{ certification: { uuid } }, { user: { uuid: data.user.uuid } }],
     ]);
     return certification;
 });
@@ -80,7 +83,7 @@ Certification.createMany = (RepositoryService, data) => __awaiter(void 0, void 0
     // console.log({ data });
     const certificationsCreated = yield RepositoryService.createMany(RepositoryService.entities.Certification, data.map((c) => new Certification(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
     for (let certification in certificationsCreated) {
-        yield RepositoryService.createOneRelationship2One({ certifications: { uuid: certificationsCreated[certification].uuid } }, [
+        yield RepositoryService.setOneRelationship2One({ certifications: { uuid: certificationsCreated[certification].uuid } }, [
             {
                 institution: { name: data[certification].emitedBy },
             },
@@ -90,10 +93,11 @@ Certification.createMany = (RepositoryService, data) => __awaiter(void 0, void 0
         yield RepositoryService.createOneRelationshipN2N([
             [
                 {
-                    label: "certification",
-                    pk: certificationsCreated[Number(certificationIdx)].uuid,
+                    certification: {
+                        uuid: certificationsCreated[Number(certificationIdx)].uuid,
+                    },
                 },
-                { label: "user", pk: data[Number(certificationIdx)].user.uuid },
+                { user: { uuid: data[Number(certificationIdx)].user.uuid } },
             ],
         ]);
     }

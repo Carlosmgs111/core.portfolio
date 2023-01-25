@@ -54,7 +54,7 @@ export const DatabaseServiceStub = {
   update: async () => {},
   createOneRelationshipN2N: () => {},
   removeOneRelationshipN2N: () => {},
-  createOneRelationship2One: () => {},
+  setOneRelationship2One: () => {},
   entities: setEnums(Object.entries(fakeDatabase).flatMap((m: any) => m[0])),
 };
 

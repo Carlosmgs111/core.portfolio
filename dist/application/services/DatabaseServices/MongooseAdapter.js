@@ -16,7 +16,7 @@ const mongoose_1 = require("../../../infrastructure/repositories/mongoose");
 const models_1 = __importDefault(require("../../../infrastructure/repositories/mongoose/models"));
 const utils_1 = require("../../../utils");
 const boom_1 = __importDefault(require("@hapi/boom"));
-class MongooseAdapter {
+class MongooseAdapter /* implements DatabaseAdapter */ {
     constructor({}) {
         this.serviceDescription = "Mongoose Database Service Adapter";
         this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
@@ -58,32 +58,33 @@ class MongooseAdapter {
         this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
             for (let ref of refs) {
                 const [from, to] = ref;
-                const [exist, { fromModel, toModel }] = yield this.checkOneRelationshipN2N(from, to);
+                const [exist, { fromModel, toModel, fromLabel, fromQuery, toLabel, toQuery },] = yield this.checkOneRelationshipN2N(from, to);
                 if (exist)
                     throw boom_1.default.conflict("Entity exist yet!");
                 yield fromModel.updateOne({
-                    [(0, utils_1.labelCases)(to.label).CP]: [
-                        ...fromModel[(0, utils_1.labelCases)(to.label).CP],
+                    [(0, utils_1.labelCases)(toLabel).CP]: [
+                        ...fromModel[(0, utils_1.labelCases)(toLabel).CP],
                         toModel._id,
                     ],
                 }, {
-                    uuid: from.pk,
+                    uuid: fromQuery,
                 });
                 yield toModel.updateOne({
-                    [(0, utils_1.labelCases)(from.label).CP]: [
-                        ...toModel[(0, utils_1.labelCases)(from.label).CP],
+                    [(0, utils_1.labelCases)(fromLabel).CP]: [
+                        ...toModel[(0, utils_1.labelCases)(fromLabel).CP],
                         fromModel._id,
                     ],
                 }, {
-                    uuid: to.pk,
+                    uuid: toQuery,
                 });
             }
         });
+        this.updateOneRelationshipN2N = this.createOneRelationshipN2N;
         // TODO rename to removeRelationship
         this.removeOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
             for (let ref of refs) {
                 const [from, to] = ref;
-                const [exist, { fromModel, toModel, fromRelated, toRelated, fromRelatedIndex, toRelatedIndex, },] = yield this.checkOneRelationshipN2N(from, to);
+                const [exist, { fromModel, toModel, fromRelated, toRelated, fromRelatedIndex, toRelatedIndex, fromLabel, toLabel, fromQuery, toQuery, },] = yield this.checkOneRelationshipN2N(from, to);
                 if (!exist)
                     throw boom_1.default.conflict("Entity exist yet!");
                 if (fromRelatedIndex === -1 || toRelatedIndex === -1)
@@ -91,23 +92,23 @@ class MongooseAdapter {
                 fromRelated.splice(fromRelatedIndex, 1);
                 toRelated.splice(toRelatedIndex, 1);
                 yield fromModel.updateOne({
-                    [(0, utils_1.labelCases)(to.label).CP]: [...fromRelated],
+                    [(0, utils_1.labelCases)(toLabel).CP]: [...fromRelated],
                 }, {
-                    uuid: from.pk,
+                    uuid: fromQuery,
                 });
                 yield toModel.updateOne({
-                    [(0, utils_1.labelCases)(from.label).CP]: [...toRelated],
+                    [(0, utils_1.labelCases)(fromLabel).CP]: [...toRelated],
                 }, {
-                    uuid: to.pk,
+                    uuid: toQuery,
                 });
             }
             return true;
         });
-        this.createOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
+        this.setOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
             const relations2One = {};
-            const mainKey = (0, utils_1.Mapfy)(entity).keys().next().value;
-            const mainValue = (0, utils_1.Mapfy)(entity).values().next().value;
-            const { _id } = yield models_1.default[(0, utils_1.labelCases)(mainKey).CS].findOne(mainValue, {
+            const mainLabel = (0, utils_1.Mapfy)(entity).keys().next().value;
+            const mainQuery = (0, utils_1.Mapfy)(entity).values().next().value;
+            const { _id } = yield models_1.default[(0, utils_1.labelCases)(mainLabel).CS].findOne(mainQuery, {
                 select: "_id",
             });
             for (let ref of refs) {
@@ -116,28 +117,31 @@ class MongooseAdapter {
                 const referenced = yield models_1.default[(0, utils_1.labelCases)(key).CS].findOne(value);
                 relations2One[(0, utils_1.labelCases)(key).CS] = referenced._id;
                 yield models_1.default[(0, utils_1.labelCases)(key).CS].updateOne(value, {
-                    [(0, utils_1.labelCases)(mainKey).CP]: [...referenced[(0, utils_1.labelCases)(mainKey).CP], _id],
+                    [(0, utils_1.labelCases)(mainLabel).CP]: [
+                        ...referenced[(0, utils_1.labelCases)(mainLabel).CP],
+                        _id,
+                    ],
                 });
             }
-            yield models_1.default[(0, utils_1.labelCases)(mainKey).CS].updateOne(mainValue, relations2One);
+            yield models_1.default[(0, utils_1.labelCases)(mainLabel).CS].updateOne(mainQuery, relations2One);
             return Object.assign(Object.assign({}, entity), relations2One);
         });
         // ? Pending to test
-        this.removeOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
-            const mainKey = (0, utils_1.Mapfy)(entity).keys().next().value;
-            const mainValue = (0, utils_1.Mapfy)(entity).values().next().value;
+        this.unsetOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
+            const mainLabel = (0, utils_1.Mapfy)(entity).keys().next().value;
+            const mainQuery = (0, utils_1.Mapfy)(entity).values().next().value;
             const relations2One = {};
-            const Entity = yield models_1.default[(0, utils_1.labelCases)(mainKey).CS]
-                .findOne(mainValue)
+            const Entity = yield models_1.default[(0, utils_1.labelCases)(mainLabel).CS]
+                .findOne(mainQuery)
                 .populate(this.getPopulateMap(refs, true));
             for (let ref of refs) {
                 const [label] = ref;
                 relations2One[(0, utils_1.labelCases)(label).CS] = "";
                 const referenced = (yield models_1.default[(0, utils_1.labelCases)(label).CS]
                     .findOne(Entity[(0, utils_1.labelCases)(label).CS])
-                    .select((0, utils_1.labelCases)(mainKey).CP))[(0, utils_1.labelCases)(mainKey).CP];
+                    .select((0, utils_1.labelCases)(mainLabel).CP))[(0, utils_1.labelCases)(mainLabel).CP];
                 yield models_1.default[(0, utils_1.labelCases)(label).CS].updateOne(Entity[(0, utils_1.labelCases)(label).CS], {
-                    [(0, utils_1.labelCases)(mainKey).CP]: [
+                    [(0, utils_1.labelCases)(mainLabel).CP]: [
                         ...referenced.filter((r) => r !== String(Entity._id)),
                     ],
                 });
@@ -145,16 +149,16 @@ class MongooseAdapter {
             return Object.assign(Object.assign({}, entity), relations2One);
         });
         this.checkOneRelationshipN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
-            const fromModel = yield models_1.default[(0, utils_1.labelCases)(from.label).CS].findOne({
-                uuid: from.pk,
-            });
-            const toModel = yield models_1.default[(0, utils_1.labelCases)(to.label).CS].findOne({
-                uuid: to.pk,
-            });
-            const fromRelated = fromModel[(0, utils_1.labelCases)(to.label).CP];
-            const fromRelatedIndex = fromModel[(0, utils_1.labelCases)(to.label).CP].indexOf(toModel._id);
-            const toRelated = toModel[(0, utils_1.labelCases)(from.label).CP];
-            const toRelatedIndex = toModel[(0, utils_1.labelCases)(from.label).CP].indexOf(fromModel._id);
+            const fromLabel = (0, utils_1.Mapfy)(from).keys().next().value;
+            const fromQuery = (0, utils_1.Mapfy)(from).values().next().value;
+            const toLabel = (0, utils_1.Mapfy)(to).keys().next().value;
+            const toQuery = (0, utils_1.Mapfy)(to).values().next().value;
+            const fromModel = yield models_1.default[(0, utils_1.labelCases)(fromLabel).CS].findOne(fromQuery);
+            const toModel = yield models_1.default[(0, utils_1.labelCases)(toLabel).CS].findOne(toQuery);
+            const fromRelated = fromModel[(0, utils_1.labelCases)(toLabel).CP];
+            const fromRelatedIndex = fromModel[(0, utils_1.labelCases)(toLabel).CP].indexOf(toModel._id);
+            const toRelated = toModel[(0, utils_1.labelCases)(fromLabel).CP];
+            const toRelatedIndex = toModel[(0, utils_1.labelCases)(fromLabel).CP].indexOf(fromModel._id);
             const exist = fromRelatedIndex !== -1 || toRelatedIndex !== -1;
             return [
                 exist,
@@ -165,6 +169,10 @@ class MongooseAdapter {
                     toRelated,
                     fromRelatedIndex,
                     toRelatedIndex,
+                    fromLabel,
+                    toLabel,
+                    fromQuery,
+                    toQuery,
                 },
             ];
         });

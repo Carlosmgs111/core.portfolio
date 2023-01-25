@@ -11,20 +11,20 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.CQRSService = void 0;
 const DatabaseServices_1 = require("../DatabaseServices");
-const queue_1 = require("./queue");
+const QueueServices_1 = require("../QueueServices");
 class CQRSService {
     constructor() {
         this.QueryService = (0, DatabaseServices_1.DatabaseService)(DatabaseServices_1.Adapters.MongooseAdapter);
         this.CommandService = (0, DatabaseServices_1.DatabaseService)(DatabaseServices_1.Adapters.SequelizeAdapter);
         this.lastSync = new Date().getTime();
-        this.createOneInQueryService = (0, queue_1.createQueue)("createOneInQueryService");
-        this.createManyInQueryService = (0, queue_1.createQueue)("createManyInQueryService");
-        this.createOneRelationshipN2NInQueryService = (0, queue_1.createQueue)("createOneRelationshipN2NInQueryService");
-        this.removeOneRelationshipN2NInQueryService = (0, queue_1.createQueue)("removeOneRelationshipN2NInQueryService");
-        this.createOneRelationship2OneInQueryService = (0, queue_1.createQueue)("createOneRelationship2OneInQueryService");
-        this.removeOneRelationship2OneInQueryService = (0, queue_1.createQueue)("removeOneRelationship2OneInQueryService");
-        this.updateOneInQueryService = (0, queue_1.createQueue)("updateOneInQueryService");
-        this.removeOneInQueryService = (0, queue_1.createQueue)("removeOneInQueryService");
+        this.createOneInQueryService = (0, QueueServices_1.createQueue)("createOneInQueryService");
+        this.createManyInQueryService = (0, QueueServices_1.createQueue)("createManyInQueryService");
+        this.createOneRelationshipN2NInQueryService = (0, QueueServices_1.createQueue)("createOneRelationshipN2NInQueryService");
+        this.removeOneRelationshipN2NInQueryService = (0, QueueServices_1.createQueue)("removeOneRelationshipN2NInQueryService");
+        this.setOneRelationship2OneInQueryService = (0, QueueServices_1.createQueue)("setOneRelationship2OneInQueryService");
+        this.unsetOneRelationship2OneInQueryService = (0, QueueServices_1.createQueue)("unsetOneRelationship2OneInQueryService");
+        this.updateOneInQueryService = (0, QueueServices_1.createQueue)("updateOneInQueryService");
+        this.removeOneInQueryService = (0, QueueServices_1.createQueue)("removeOneInQueryService");
         this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             this.createOneInQueryService.addJob([entity, Entity, options]);
             return yield this.CommandService.createOne(entity, Entity, options);
@@ -43,13 +43,13 @@ class CQRSService {
             this.updateOneInQueryService.addJob([entity, Entity, options]);
             return yield this.CommandService.updateOne(entity, Entity, options);
         });
-        this.createOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
-            this.createOneRelationship2OneInQueryService.addJob([entity, refs]);
-            return yield this.CommandService.createOneRelationship2One(entity, refs);
+        this.setOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
+            this.setOneRelationship2OneInQueryService.addJob([entity, refs]);
+            return yield this.CommandService.setOneRelationship2One(entity, refs);
         });
-        this.removeOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
-            this.removeOneRelationship2OneInQueryService.addJob([entity, refs]);
-            return yield this.CommandService.removeOneRelationship2One(entity, refs);
+        this.unsetOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
+            this.unsetOneRelationship2OneInQueryService.addJob([entity, refs]);
+            return yield this.CommandService.unsetOneRelationship2One(entity, refs);
         });
         this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
             this.createOneRelationshipN2NInQueryService.addJob([refs]);
@@ -75,8 +75,8 @@ class CQRSService {
         this.createManyInQueryService.setProcess(this.QueryService.createMany);
         this.createOneRelationshipN2NInQueryService.setProcess(this.QueryService.createOneRelationshipN2N);
         this.removeOneRelationshipN2NInQueryService.setProcess(this.QueryService.removeOneRelationshipN2N);
-        this.createOneRelationship2OneInQueryService.setProcess(this.QueryService.createOneRelationship2One);
-        this.removeOneRelationship2OneInQueryService.setProcess(this.QueryService.removeOneRelationship2One);
+        this.setOneRelationship2OneInQueryService.setProcess(this.QueryService.setOneRelationship2One);
+        this.unsetOneRelationship2OneInQueryService.setProcess(this.QueryService.unsetOneRelationship2One);
         this.updateOneInQueryService.setProcess(this.QueryService.updateOne);
         this.removeOneInQueryService.setProcess(this.QueryService.removeOne);
     }

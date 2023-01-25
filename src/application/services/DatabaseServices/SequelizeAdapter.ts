@@ -8,7 +8,7 @@ export default class SequelizeAdapter {
   Entity: any;
 
   // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
-  constructor({}: any) {
+  constructor({}: any = {}) {
     this.syncModels();
   }
 
@@ -65,9 +65,9 @@ export default class SequelizeAdapter {
     let succesfully = false;
     for (let ref of refs) {
       const [from, to] = ref;
-      const [exist, data, relationshipLabel]: any =
+      const [existed, data, relationshipLabel]: any =
         await this.checkOneRelationshipN2N(from, to);
-      if (exist) throw boom.conflict("Entity exist yet!");
+      if (existed) throw boom.conflict("Entity existed yet!");
       const newSupportEntity = await this.createOne(relationshipLabel, {
         ...data,
         uuid: uuidv4(),
@@ -78,41 +78,58 @@ export default class SequelizeAdapter {
     return succesfully;
   };
 
+  updateOneRelationshipN2N = async (refs: any) => {
+    let succesfully = false;
+    for (let ref of refs) {
+      const [from, to] = ref;
+      const [existed, data, relationshipLabel]: any =
+        await this.checkOneRelationshipN2N(from, to);
+      if (!existed) throw boom.conflict("Relationship doesn't existed!");
+      const updatedEntity = await this.updateOne(relationshipLabel, {
+        ...data,
+      });
+      if (!updatedEntity) throw boom.conflict("Support table doesn't created");
+    }
+    return succesfully;
+  };
+
   // TODO rename to removeRelationship
   removeOneRelationshipN2N = async (refs: any) => {
     for (let ref of refs) {
       const [from, to] = ref;
-      const [exist, data, relationshipLabel] =
+      const [existed, data, relationshipLabel] =
         await this.checkOneRelationshipN2N(from, to);
-      if (!exist) throw boom.conflict("Relationship doesn't exist!");
+      if (!existed) throw boom.conflict("Relationship doesn't existed!");
       return Boolean(
         await this.removeOne(relationshipLabel, { credentials: data })
       );
     }
   };
 
-  createOneRelationship2One = async (entity: any, refs: any) => {
+  setOneRelationship2One = async (entity: any, refs: any) => {
+    const mainLabel = Mapfy(entity).keys().next().value;
+    const mainQuery = Mapfy(entity).values().next().value;
+
     const relations2One: any = {};
     for (let ref of refs) {
-      const key = Mapfy(ref).keys().next().value;
-      const value = Mapfy(ref).values().next().value;
-      // console.log({ key, value });
-      const referenced = await models[labelCases(key).CS].findOne({
-        where: value,
+      const label = Mapfy(ref).keys().next().value;
+      const query = Mapfy(ref).values().next().value;
+      // console.log({ label, query });
+      const referenced = await models[labelCases(label).CS].findOne({
+        where: query,
       });
-      relations2One[`${key}UUID`] = referenced.uuid;
+      relations2One[`${label}UUID`] = referenced.uuid;
     }
-
-    const key = Mapfy(entity).keys().next().value;
-    const value = Mapfy(entity).values().next().value;
     // console.log({ relations2One });
-    // console.log({ key, value });
-    models[labelCases(key).CS].update(relations2One, { where: value });
+    // console.log({ mainLabel, mainQuery });
+    models[labelCases(mainLabel).CS].update(relations2One, {
+      where: mainQuery,
+    });
     return { ...entity, ...relations2One };
   };
 
   // ? Pending to test
-  removeOneRelationship2One = async (entity: any, refs: any) => {
+  unsetOneRelationship2One = async (entity: any, refs: any) => {
     const relations2One: any = {};
     for (let ref of refs) {
       relations2One[`${ref}UUID`] = null;
@@ -128,18 +145,33 @@ export default class SequelizeAdapter {
         return `${labelCases(to).CP}_${labelCases(from).CP}`;
       throw boom.internal("Invalid labels");
     };
+
+    const fromLabel = Mapfy(from).keys().next().value;
+    const fromQuery = Mapfy(from).values().next().value;
+    const toLabel = Mapfy(to).keys().next().value;
+    const toQuery = Mapfy(to).values().next().value;
+
+    const { uuid: fromUUID } = await models[labelCases(fromLabel).CS].findOne({
+      where: fromQuery,
+      attributes: ["uuid"],
+    });
+    const { uuid: toUUID } = await models[labelCases(toLabel).CS].findOne({
+      where: toQuery,
+      attributes: ["uuid"],
+    });
+
     let relationshipLabel: string = composeRelationshipLabel(
-      from.label,
-      to.label
+      fromLabel,
+      toLabel
     );
     const relationshipUUIDS = {
-      [`${from.label}UUID`]: from.pk,
-      [`${to.label}UUID`]: to.pk,
+      [`${fromLabel}UUID`]: fromUUID,
+      [`${toLabel}UUID`]: toUUID,
     };
-    const exist = await this.findOne(relationshipLabel, {
+    const existed = await this.findOne(relationshipLabel, {
       credentials: relationshipUUIDS,
     });
-    return [exist, relationshipUUIDS, relationshipLabel];
+    return [existed, relationshipUUIDS, relationshipLabel];
   };
 
   private adapter = (OPS: any) => {

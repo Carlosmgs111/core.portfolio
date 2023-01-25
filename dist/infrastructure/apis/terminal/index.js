@@ -18,6 +18,7 @@ const login_1 = require("./handlers/login");
 const certifications_1 = require("./handlers/certifications");
 const projects_1 = require("./handlers/projects");
 const institutions_1 = require("./handlers/institutions");
+const tests_1 = require("./handlers/tests");
 const utils_1 = require("../../../utils");
 const certification_fake_1 = require("../../../testing/fakers/certification.fake");
 const fs_1 = __importDefault(require("fs"));
@@ -36,29 +37,39 @@ exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
         username: usernames.cm,
         exp: 0,
     };
-    const [login, logout, user, certifications, institutions, projects, test] = [
+    const [login, logout, user, certifications, institutions, projects, tests, datasets,] = [
         "Login".bgGreen,
         "Logout".bgRed,
         "User",
         "Certifications",
         "Institutions",
         "Projects",
-        "Test".bgYellow,
+        "Tests".bgYellow,
+        "Datasets".bgCyan,
     ];
-    const choices = [user, certifications, institutions, projects, test];
+    const choices = [
+        user,
+        certifications,
+        institutions,
+        projects,
+        tests,
+        datasets,
+    ];
     const options = {
         [login]: () => (0, login_1.loginHandler)(state),
         [logout]: () => (state.token = undefined),
         [certifications]: () => (0, certifications_1.certificationsHandler)(state),
         [institutions]: () => (0, institutions_1.institutionsHandler)(state),
         [projects]: () => (0, projects_1.projectsHandler)(state),
-        [test]: () => {
+        [tests]: () => (0, tests_1.testsHandler)(state),
+        [datasets]: () => {
+            const qt = 100;
             fs_1.default.writeFileSync(`datasets/certifications/${new Date()
                 .toISOString()
                 .replace(/T/, "_")
                 .replace(/\..+/, "")
-                .replaceAll(":", ".")}_${(0, random_words_1.default)(1)[0]}-${(0, random_words_1.default)(1)[0]}.json`, JSON.stringify({
-                certifications: (0, certification_fake_1.generateManyCertifications)(100),
+                .replaceAll(":", ".")}_qt.${qt}_${(0, random_words_1.default)(1)[0]}-${(0, random_words_1.default)(1)[0]}.json`, JSON.stringify({
+                certifications: (0, certification_fake_1.generateManyCertifications)(qt),
             }));
         },
     };

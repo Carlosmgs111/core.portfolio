@@ -10,7 +10,7 @@ const repositoryServices = {
   DBS: () => DBS(Adapters.MongooseAdapter),
 };
 
-export const RepositoryService = repositoryServices.DBS();
+export const RepositoryService = repositoryServices.CQRS();
 
 export const AuthServices = new AS();
 

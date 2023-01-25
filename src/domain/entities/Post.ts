@@ -39,7 +39,7 @@ export class Post {
     if (exist) throw boom.conflict("Entity exist yet!");
 
     const uuid = uuidv4();
-    const post = await RepositoryService.createOneRelationship2One(
+    const post = await RepositoryService.setOneRelationship2One(
       new Post({
         ...data,
         uuid,

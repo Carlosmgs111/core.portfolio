@@ -50,7 +50,7 @@ export class Project {
       RepositoryService.entities.Project,
       new Project({ ...data, uuid })
     );
-    await RepositoryService.createOneRelationship2One(
+    await RepositoryService.setOneRelationship2One(
       { project: { uuid: newProject.uuid } },
       [{ user: { uuid: data.user.uuid } }]
     );
@@ -63,7 +63,7 @@ export class Project {
       data.map((c: any) => new Project({ ...c, uuid: c.uuid || uuidv4() }))
     );
     for (let project in projectsCreated) {
-      await RepositoryService.createOneRelationship2One(
+      await RepositoryService.setOneRelationship2One(
         { project: { uuid: projectsCreated[project].uuid } },
         [
           {
@@ -99,7 +99,7 @@ export class Project {
   };
 
   remove = async (RepositoryService: any) => {
-    await RepositoryService.removeOneRelationship2One({}, [{}]);
+    await RepositoryService.unsetOneRelationship2One({}, [{}]);
     return await RepositoryService.removeOne(
       RepositoryService.entities.Project,
       {

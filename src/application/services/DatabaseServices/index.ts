@@ -7,7 +7,7 @@ export const Adapters: any = {
 };
 
 export const DatabaseService = (adapter: any = Adapters.SequelizeAdapter) => {
-  class DatabaseService extends adapter {
+  class DatabaseService extends adapter  {
     constructor(props: any) {
       super(props);
     }

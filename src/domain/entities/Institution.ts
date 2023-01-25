@@ -37,10 +37,7 @@ export class Institution {
     );
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
     await RepositoryService.createOneRelationshipN2N([
-      [
-        { label: "institution", pk: uuid },
-        { label: "user", pk: data.user.uuid },
-      ],
+      [{ institution: { uuid } }, { user: { uuid: data.user.uuid } }],
     ]);
     return institution;
   };
@@ -76,10 +73,7 @@ export class Institution {
 
   remove = async (RepositoryService: any, options: any = {}) => {
     await RepositoryService.removeOneRelationshipN2N([
-      [
-        { label: "user", uuid: options.userUUID },
-        { label: "institution", uuid: this.uuid },
-      ],
+      [{ user: options.userUUID }, { institution: this.uuid }],
     ]);
     return await RepositoryService.removeOne(
       RepositoryService.entities.Institution,

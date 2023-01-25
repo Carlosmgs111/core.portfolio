@@ -32,7 +32,7 @@ export class Certification {
       new Certification({ ...data, uuid })
     );
 
-    await RepositoryService.createOneRelationship2One(
+    await RepositoryService.setOneRelationship2One(
       { certifications: { uuid: certification.uuid } },
       [
         {
@@ -41,10 +41,7 @@ export class Certification {
       ]
     );
     await RepositoryService.createOneRelationshipN2N([
-      [
-        { label: "certification", pk: uuid },
-        { label: "user", pk: data.user.uuid },
-      ],
+      [{ certification: { uuid } }, { user: { uuid: data.user.uuid } }],
     ]);
     return certification;
   };
@@ -59,7 +56,7 @@ export class Certification {
     );
 
     for (let certification in certificationsCreated) {
-      await RepositoryService.createOneRelationship2One(
+      await RepositoryService.setOneRelationship2One(
         { certifications: { uuid: certificationsCreated[certification].uuid } },
         [
           {
@@ -73,10 +70,11 @@ export class Certification {
       await RepositoryService.createOneRelationshipN2N([
         [
           {
-            label: "certification",
-            pk: certificationsCreated[Number(certificationIdx)].uuid,
+            certification: {
+              uuid: certificationsCreated[Number(certificationIdx)].uuid,
+            },
           },
-          { label: "user", pk: data[Number(certificationIdx)].user.uuid },
+          { user: { uuid: data[Number(certificationIdx)].user.uuid } },
         ],
       ]);
     }
@@ -109,17 +107,17 @@ export class Certification {
   };
 
   remove = async (RepositoryService: any, options: any = {}) => {
-    await RepositoryService.removeOneRelationship2One(
+    await RepositoryService.unsetOneRelationship2One(
       { certifications: { uuid: this.uuid } },
       [["Institution", { as: "Institution" }]]
     );
     const removed = await RepositoryService.removeOneRelationshipN2N([
       [
-        { label: "user", pk: options.userUUID },
-        { label: "certification", pk: this.uuid },
+        { user: { uuid: options.userUUID } },
+        { certification: { uuid: this.uuid } },
       ],
     ]);
-    
+
     if (!removed) return;
     return await RepositoryService.removeOne(
       RepositoryService.entities.Certification,
@@ -141,8 +139,17 @@ export class Certification {
       credentials: { uuid: this.uuid },
       related: [["Institution", { attributes: ["name"], as: "Institution" }]],
     });
-    if (data.emitedBy && emitedBy !== data.emitedBy)
+    if (data.emitedBy && emitedBy !== data.emitedBy) {
       console.log("Must change relationship".bgYellow);
+      await RepositoryService.setOneRelationship2One(
+        { certifications: { uuid: this.uuid } },
+        [
+          {
+            institution: { name: data.emitedBy },
+          },
+        ]
+      );
+    }
 
     await RepositoryService.updateOne(
       RepositoryService.entities.Certification,

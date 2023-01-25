@@ -1,5 +1,6 @@
 import { DatabaseService, Adapters } from "../DatabaseServices";
-import { createQueue } from "./queue";
+import { createQueue } from "../QueueServices";
+
 export class CQRSService {
   QueryService = DatabaseService(Adapters.MongooseAdapter);
   CommandService = DatabaseService(Adapters.SequelizeAdapter);
@@ -13,11 +14,11 @@ export class CQRSService {
   private removeOneRelationshipN2NInQueryService = createQueue(
     "removeOneRelationshipN2NInQueryService"
   );
-  private createOneRelationship2OneInQueryService = createQueue(
-    "createOneRelationship2OneInQueryService"
+  private setOneRelationship2OneInQueryService = createQueue(
+    "setOneRelationship2OneInQueryService"
   );
-  private removeOneRelationship2OneInQueryService = createQueue(
-    "removeOneRelationship2OneInQueryService"
+  private unsetOneRelationship2OneInQueryService = createQueue(
+    "unsetOneRelationship2OneInQueryService"
   );
   private updateOneInQueryService = createQueue("updateOneInQueryService");
   private removeOneInQueryService = createQueue("removeOneInQueryService");
@@ -31,11 +32,11 @@ export class CQRSService {
     this.removeOneRelationshipN2NInQueryService.setProcess(
       this.QueryService.removeOneRelationshipN2N
     );
-    this.createOneRelationship2OneInQueryService.setProcess(
-      this.QueryService.createOneRelationship2One
+    this.setOneRelationship2OneInQueryService.setProcess(
+      this.QueryService.setOneRelationship2One
     );
-    this.removeOneRelationship2OneInQueryService.setProcess(
-      this.QueryService.removeOneRelationship2One
+    this.unsetOneRelationship2OneInQueryService.setProcess(
+      this.QueryService.unsetOneRelationship2One
     );
     this.updateOneInQueryService.setProcess(this.QueryService.updateOne);
     this.removeOneInQueryService.setProcess(this.QueryService.removeOne);
@@ -61,13 +62,13 @@ export class CQRSService {
     this.updateOneInQueryService.addJob([entity, Entity, options]);
     return await this.CommandService.updateOne(entity, Entity, options);
   };
-  createOneRelationship2One = async (entity: any, refs: any) => {
-    this.createOneRelationship2OneInQueryService.addJob([entity, refs]);
-    return await this.CommandService.createOneRelationship2One(entity, refs);
+  setOneRelationship2One = async (entity: any, refs: any) => {
+    this.setOneRelationship2OneInQueryService.addJob([entity, refs]);
+    return await this.CommandService.setOneRelationship2One(entity, refs);
   };
-  removeOneRelationship2One = async (entity: any, refs: any) => {
-    this.removeOneRelationship2OneInQueryService.addJob([entity, refs]);
-    return await this.CommandService.removeOneRelationship2One(entity, refs);
+  unsetOneRelationship2One = async (entity: any, refs: any) => {
+    this.unsetOneRelationship2OneInQueryService.addJob([entity, refs]);
+    return await this.CommandService.unsetOneRelationship2One(entity, refs);
   };
   createOneRelationshipN2N = async (refs: any) => {
     this.createOneRelationshipN2NInQueryService.addJob([refs]);
