@@ -113,12 +113,14 @@ export class Certification {
       { certifications: { uuid: this.uuid } },
       [["Institution", { as: "Institution" }]]
     );
-    await RepositoryService.removeOneRelationshipN2N([
+    const removed = await RepositoryService.removeOneRelationshipN2N([
       [
         { label: "user", pk: options.userUUID },
         { label: "certification", pk: this.uuid },
       ],
     ]);
+    
+    if (!removed) return;
     return await RepositoryService.removeOne(
       RepositoryService.entities.Certification,
       {

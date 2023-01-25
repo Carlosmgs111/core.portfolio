@@ -7,10 +7,10 @@ import {
 
 const repositoryServices = {
   CQRS: () => new CQRSService(),
-  DBS: () => DBS(Adapters.SequelizeAdapter),
+  DBS: () => DBS(Adapters.MongooseAdapter),
 };
 
-export const RepositoryService = repositoryServices.CQRS();
+export const RepositoryService = repositoryServices.DBS();
 
 export const AuthServices = new AS();
 

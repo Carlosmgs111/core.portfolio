@@ -85,7 +85,9 @@ export default class SequelizeAdapter {
       const [exist, data, relationshipLabel] =
         await this.checkOneRelationshipN2N(from, to);
       if (!exist) throw boom.conflict("Relationship doesn't exist!");
-      return await this.removeOne(relationshipLabel, { credentials: data });
+      return Boolean(
+        await this.removeOne(relationshipLabel, { credentials: data })
+      );
     }
   };
 

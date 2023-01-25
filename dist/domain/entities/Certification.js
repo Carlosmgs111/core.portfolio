@@ -24,12 +24,14 @@ class Certification {
         this.updatedAt = 0;
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
             yield RepositoryService.removeOneRelationship2One({ certifications: { uuid: this.uuid } }, [["Institution", { as: "Institution" }]]);
-            yield RepositoryService.removeOneRelationshipN2N([
+            const removed = yield RepositoryService.removeOneRelationshipN2N([
                 [
                     { label: "user", pk: options.userUUID },
                     { label: "certification", pk: this.uuid },
                 ],
             ]);
+            if (!removed)
+                return;
             return yield RepositoryService.removeOne(RepositoryService.entities.Certification, {
                 credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["title", "uuid"], false),
             });

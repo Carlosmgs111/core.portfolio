@@ -105,7 +105,7 @@ export default class MongooseAdapter {
         },
       ]: any = await this.checkOneRelationshipN2N(from, to);
       if (!exist) throw boom.conflict("Entity exist yet!");
-
+      if (fromRelatedIndex === -1 || toRelatedIndex === -1) return false;
       fromRelated.splice(fromRelatedIndex, 1);
       toRelated.splice(toRelatedIndex, 1);
 
@@ -126,6 +126,7 @@ export default class MongooseAdapter {
         }
       );
     }
+    return true;
   };
 
   createOneRelationship2One = async (entity: any, refs: any) => {

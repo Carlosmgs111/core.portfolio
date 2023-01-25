@@ -86,6 +86,8 @@ class MongooseAdapter {
                 const [exist, { fromModel, toModel, fromRelated, toRelated, fromRelatedIndex, toRelatedIndex, },] = yield this.checkOneRelationshipN2N(from, to);
                 if (!exist)
                     throw boom_1.default.conflict("Entity exist yet!");
+                if (fromRelatedIndex === -1 || toRelatedIndex === -1)
+                    return false;
                 fromRelated.splice(fromRelatedIndex, 1);
                 toRelated.splice(toRelatedIndex, 1);
                 yield fromModel.updateOne({
@@ -99,6 +101,7 @@ class MongooseAdapter {
                     uuid: to.pk,
                 });
             }
+            return true;
         });
         this.createOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
             const relations2One = {};
