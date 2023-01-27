@@ -44,8 +44,8 @@ exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
         "Certifications",
         "Institutions",
         "Projects",
-        "Tests".bgYellow,
-        "Datasets".bgCyan,
+        "Tests".yellow,
+        "Datasets".blue,
     ];
     const choices = [
         user,

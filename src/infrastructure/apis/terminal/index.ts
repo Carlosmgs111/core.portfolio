@@ -41,8 +41,8 @@ export default async () => {
     "Certifications",
     "Institutions",
     "Projects",
-    "Tests".bgYellow,
-    "Datasets".bgCyan,
+    "Tests".yellow,
+    "Datasets".blue,
   ];
   const choices = [
     user,
