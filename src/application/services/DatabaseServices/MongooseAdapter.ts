@@ -94,7 +94,7 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
   };
 
   updateOneRelationshipN2N = this.createOneRelationshipN2N;
-  
+
   // TODO rename to removeRelationship
   removeOneRelationshipN2N = async (refs: any) => {
     for (let ref of refs) {
@@ -114,7 +114,7 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
           toQuery,
         },
       ]: any = await this.checkOneRelationshipN2N(from, to);
-      if (!exist) throw boom.conflict("Entity exist yet!");
+      if (!exist) throw boom.conflict("Entity doesn't exist!");
       if (fromRelatedIndex === -1 || toRelatedIndex === -1) return false;
       fromRelated.splice(fromRelatedIndex, 1);
       toRelated.splice(toRelatedIndex, 1);

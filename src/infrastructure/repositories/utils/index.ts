@@ -19,3 +19,12 @@ export const getEntityProperties = (Entity: any) => {
   }
   return newObj;
 };
+
+/**
+ * @LP Lower Case Plural (LowerPlural)
+ * @LS Lower Case Singular (LowerSingle)
+ * @CP Camel Case Plural (CamelPlural)
+ * @CS Camel Case Singular (CamelSingle)
+ * @UP Upper Case Plural (UpperPlural)
+ * @US Upper Case Singular (UpperSingle)
+ */

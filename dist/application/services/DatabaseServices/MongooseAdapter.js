@@ -86,7 +86,7 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
                 const [from, to] = ref;
                 const [exist, { fromModel, toModel, fromRelated, toRelated, fromRelatedIndex, toRelatedIndex, fromLabel, toLabel, fromQuery, toQuery, },] = yield this.checkOneRelationshipN2N(from, to);
                 if (!exist)
-                    throw boom_1.default.conflict("Entity exist yet!");
+                    throw boom_1.default.conflict("Entity doesn't exist!");
                 if (fromRelatedIndex === -1 || toRelatedIndex === -1)
                     return false;
                 fromRelated.splice(fromRelatedIndex, 1);
