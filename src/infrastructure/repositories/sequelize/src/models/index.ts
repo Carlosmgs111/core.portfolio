@@ -8,7 +8,10 @@ import { Certification } from "./Certification";
 import { Post } from "./Post";
 import { Skill } from "./Skill";
 
-const JoinTableFactory = (A: string, B: string) => {
+const createJoinTable = (A: any, B: any) => {
+  A = A.tableName || A;
+  B = B.tableName || B;
+
   const join_table_name = `${labelCases(A).CP}_${labelCases(B).CP}`;
 
   const join_table_schema = {
@@ -59,9 +62,11 @@ const models: any = {
   Certification,
   Post,
   Skill,
-  ...JoinTableFactory("User", "Institution"),
-  ...JoinTableFactory("User", "Certification"),
-  ...JoinTableFactory("User", "Skill"),
+  ...createJoinTable(User, Institution),
+  ...createJoinTable(User, Certification),
+  ...createJoinTable(User, Skill),
 };
+
+console.log(String(models.Users_Certifications.tableName));
 
 export default models;
