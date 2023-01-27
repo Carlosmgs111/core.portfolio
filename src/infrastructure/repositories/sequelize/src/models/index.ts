@@ -24,7 +24,7 @@ const JoinTableFactory = (A: string, B: string) => {
       allowNull: false,
       type: DataTypes.STRING,
       references: {
-        model: "Users",
+        model: labelCases(A).CP,
         key: "uuid",
         onDelete: "NO ACTION",
         onUpdate: "NO ACTION",
@@ -36,7 +36,7 @@ const JoinTableFactory = (A: string, B: string) => {
       allowNull: false,
       type: DataTypes.STRING,
       references: {
-        model: "Users",
+        model: labelCases(B).CP,
         key: "uuid",
         onDelete: "NO ACTION",
         onUpdate: "NO ACTION",

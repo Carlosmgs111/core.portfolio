@@ -24,7 +24,7 @@ const JoinTableFactory = (A, B) => {
             allowNull: false,
             type: sequelize_1.DataTypes.STRING,
             references: {
-                model: "Users",
+                model: (0, utils_1.labelCases)(A).CP,
                 key: "uuid",
                 onDelete: "NO ACTION",
                 onUpdate: "NO ACTION",
@@ -36,7 +36,7 @@ const JoinTableFactory = (A, B) => {
             allowNull: false,
             type: sequelize_1.DataTypes.STRING,
             references: {
-                model: "Users",
+                model: (0, utils_1.labelCases)(B).CP,
                 key: "uuid",
                 onDelete: "NO ACTION",
                 onUpdate: "NO ACTION",
