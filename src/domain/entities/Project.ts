@@ -1,4 +1,5 @@
 import { v4 as uuidv4 } from "uuid";
+import { filterAttrs } from "../../utils";
 
 type IProject = {
   uuid: string;
@@ -75,8 +76,8 @@ export class Project {
     return projectsCreated;
   };
 
-  static load = async (RepositoryService: any, credentials: any) => {
-    const loadedProject = await Project.find(RepositoryService, credentials);
+  static load = async (RepositoryService: any, options: any) => {
+    const loadedProject = await Project.find(RepositoryService, options);
     if (!loadedProject) throw new Error("Incorrect credentials!");
     const project = new Project(loadedProject);
     return project;
@@ -98,21 +99,26 @@ export class Project {
     return projects;
   };
 
-  remove = async (RepositoryService: any) => {
-    await RepositoryService.unsetOneRelationship2One({}, [{}]);
+  remove = async (RepositoryService: any, options: any = {}) => {
+    const { uuid } = this;
+    console.log({ uuid });
+    await RepositoryService.unsetOneRelationship2One({ projects: { uuid } }, [
+      ["User", { as: "User" }],
+    ]);
     return await RepositoryService.removeOne(
       RepositoryService.entities.Project,
       {
-        credentials: { uuid: this.uuid },
+        credentials: { uuid },
       }
     );
   };
 
   update = async (RepositoryService: any, data: any) => {
+    console.log({ this: this });
     this.updatedAt = new Date().getTime();
     return await RepositoryService.updateOne(
       RepositoryService.entities.Project,
-      { ...this, ...data },
+      { ...this, ...filterAttrs(data, ["uuid", "user", "token"]) },
       { credentials: { uuid: this.uuid } }
     );
   };

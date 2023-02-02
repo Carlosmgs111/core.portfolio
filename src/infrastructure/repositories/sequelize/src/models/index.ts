@@ -67,6 +67,4 @@ const models: any = {
   ...createJoinTable(User, Skill),
 };
 
-console.log(String(models.Users_Certifications.tableName));
-
 export default models;

@@ -40,13 +40,25 @@ export const addManyProject = async (data: any) => {
   }));
 };
 
-export const deleteProject = async (data: any) =>
-  await (await Project.load(RepositoryService, data)).remove(RepositoryService);
-
-export const updateProject = async (data: any) =>
+export const deleteProject = async (data: any) => {
+  console.log({ data });
   await (
-    await Project.load(RepositoryService, { uuid: data.uuid })
+    await Project.load(RepositoryService, { credentials: { uuid: data.uuid } })
+  ).remove(RepositoryService);
+  return { message: "Project deleted", uuid: data.uuid };
+};
+
+export const updateProject = async (data: any) => {
+  const { user, uuid } = data;
+  await (
+    await Project.load(RepositoryService, { credentials: { uuid } })
   ).update(RepositoryService, data);
+
+  return await Project.find(RepositoryService, {
+    credentials: { uuid },
+    related: [["User", { attributes: ["username"], as: "User" }]],
+  });
+};
 
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
 export const migrateDescriptionToDescriptions = async (data: any) => {

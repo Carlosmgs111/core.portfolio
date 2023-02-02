@@ -58,5 +58,4 @@ const models = Object.assign(Object.assign(Object.assign({ User: User_1.User,
     Certification: Certification_1.Certification,
     Post: Post_1.Post,
     Skill: Skill_1.Skill }, createJoinTable(User_1.User, Institution_1.Institution)), createJoinTable(User_1.User, Certification_1.Certification)), createJoinTable(User_1.User, Skill_1.Skill));
-console.log(String(models.Users_Certifications.tableName));
 exports.default = models;

@@ -40,10 +40,19 @@ const addManyProject = (data) => __awaiter(void 0, void 0, void 0, function* () 
     return newProjects.map((c) => (Object.assign(Object.assign({}, c), { grantedTo: user.username })));
 });
 exports.addManyProject = addManyProject;
-const deleteProject = (data) => __awaiter(void 0, void 0, void 0, function* () { return yield (yield Project_1.Project.load(dependencies_1.RepositoryService, data)).remove(dependencies_1.RepositoryService); });
+const deleteProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({ data });
+    yield (yield Project_1.Project.load(dependencies_1.RepositoryService, { credentials: { uuid: data.uuid } })).remove(dependencies_1.RepositoryService);
+    return { message: "Project deleted", uuid: data.uuid };
+});
 exports.deleteProject = deleteProject;
 const updateProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield (yield Project_1.Project.load(dependencies_1.RepositoryService, { uuid: data.uuid })).update(dependencies_1.RepositoryService, data);
+    const { user, uuid } = data;
+    yield (yield Project_1.Project.load(dependencies_1.RepositoryService, { credentials: { uuid } })).update(dependencies_1.RepositoryService, data);
+    return yield Project_1.Project.find(dependencies_1.RepositoryService, {
+        credentials: { uuid },
+        related: [["User", { attributes: ["username"], as: "User" }]],
+    });
 });
 exports.updateProject = updateProject;
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data

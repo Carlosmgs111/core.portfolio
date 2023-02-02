@@ -12,21 +12,27 @@ var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Project = void 0;
 const uuid_1 = require("uuid");
+const utils_1 = require("../../utils");
 class Project {
     constructor({ uuid, 
     // userUUID,
     name, descriptions, images, tags, uri, version, }) {
         this.createdAt = 0;
         this.updatedAt = 0;
-        this.remove = (RepositoryService) => __awaiter(this, void 0, void 0, function* () {
-            yield RepositoryService.unsetOneRelationship2One({}, [{}]);
+        this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const { uuid } = this;
+            console.log({ uuid });
+            yield RepositoryService.unsetOneRelationship2One({ projects: { uuid } }, [
+                ["User", { as: "User" }],
+            ]);
             return yield RepositoryService.removeOne(RepositoryService.entities.Project, {
-                credentials: { uuid: this.uuid },
+                credentials: { uuid },
             });
         });
         this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
+            console.log({ this: this });
             this.updatedAt = new Date().getTime();
-            return yield RepositoryService.updateOne(RepositoryService.entities.Project, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
+            return yield RepositoryService.updateOne(RepositoryService.entities.Project, Object.assign(Object.assign({}, this), (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         // this.userUUID = userUUID;
@@ -59,8 +65,8 @@ Project.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void
     }
     return projectsCreated;
 });
-Project.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const loadedProject = yield Project.find(RepositoryService, credentials);
+Project.load = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {
+    const loadedProject = yield Project.find(RepositoryService, options);
     if (!loadedProject)
         throw new Error("Incorrect credentials!");
     const project = new Project(loadedProject);

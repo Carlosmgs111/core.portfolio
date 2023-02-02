@@ -16,7 +16,9 @@ export default router
   .post("/", expressHandlerAdapter(addProject))
   .post("/projects", expressHandlerAdapter(addManyProject))
   .delete("/", expressHandlerAdapter(deleteProject))
+  .delete("/:uuid", expressHandlerAdapter(deleteProject))
   .patch("/", expressHandlerAdapter(updateProject))
+  .patch("/:uuid", expressHandlerAdapter(updateProject))
   // ! this fucntion should not be exposed by an API controller, and if it, should be protected by a middleware of authorization
   .get(
     "/migrate_descriptions",
