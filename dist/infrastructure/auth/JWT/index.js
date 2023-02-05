@@ -25,6 +25,7 @@ const createToken = (params, expiresIn = expires_1.expiresIn1Month, secret = con
 };
 exports.createToken = createToken;
 const verifyToken = (token, signature = config_1.default.jwtSignupSecret) => {
+    console.log({ signature });
     try {
         const payload = jsonwebtoken_1.default.verify(token, signature);
         console.log({ payload });
@@ -33,14 +34,14 @@ const verifyToken = (token, signature = config_1.default.jwtSignupSecret) => {
         return payload;
     }
     catch (e) {
-        console.log();
+        console.log(e);
         throw new Error("Invalid Token!");
     }
 };
 exports.verifyToken = verifyToken;
-const verifyToken2 = (token) => __awaiter(void 0, void 0, void 0, function* () {
+const verifyToken2 = (token, signature = config_1.default.jwtAccessSecret) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        const verified = yield (0, jose_1.jwtVerify)(token, new TextEncoder().encode(config_1.default.jwtAccessSecret));
+        const verified = yield (0, jose_1.jwtVerify)(token, new TextEncoder().encode(signature));
         const { uuid, email, username } = verified.payload;
         console.log({ uuid, email, username });
         return {

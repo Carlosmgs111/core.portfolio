@@ -10,4 +10,3 @@ exports.default = router
     .post("/signup", (0, validator_handler_1.validatorHandler)(user_schema_1.createUserSchema, "body"), (0, express_2.expressHandlerAdapter)(register_1.signup))
     .get("/signin", (0, validator_handler_1.validatorHandler)(user_schema_1.getUserSchema, "body"), (0, express_2.expressHandlerAdapter)(register_1.signin))
     .post("/signin", (0, validator_handler_1.validatorHandler)(user_schema_1.getUserSchema, "body"), (0, express_2.expressHandlerAdapter)(register_1.signin));
-;

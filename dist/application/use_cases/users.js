@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getAllUsername = exports.sayHello = exports.updateUser = exports.removeUser = exports.signin = exports.registerUser = void 0;
+exports.load = exports.getAllUsername = exports.sayHello = exports.updateUser = exports.removeUser = exports.signin = exports.registerUser = void 0;
 const User_1 = require("../../domain/entities/User");
 const dependencies_1 = require("../../config/dependencies");
 // ! implementar el uso de ´boom´ a traves de un ´interface´
@@ -25,21 +25,23 @@ const signin = (data) => __awaiter(void 0, void 0, void 0, function* () {
     if (!(new Map(Object.entries(data)).has("email") ||
         new Map(Object.entries(data)).has("username")))
         throw boom_1.default.badRequest("Require username or email!");
-    return yield User_1.User.load(dependencies_1.RepositoryService, { credentials: data });
+    return yield User_1.User.authLoad(dependencies_1.RepositoryService, { credentials: data });
 });
 exports.signin = signin;
 const removeUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield User_1.User.load(dependencies_1.RepositoryService, data);
+    const user = yield User_1.User.authLoad(dependencies_1.RepositoryService, data);
     console.log({ user });
     return yield user.remove(dependencies_1.RepositoryService);
 });
 exports.removeUser = removeUser;
 const updateUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
     console.log({ data });
-    return yield (yield User_1.User.load(dependencies_1.RepositoryService, data)).update(dependencies_1.RepositoryService, data);
+    return yield (yield User_1.User.authLoad(dependencies_1.RepositoryService, data)).update(dependencies_1.RepositoryService, data);
 });
 exports.updateUser = updateUser;
 const sayHello = (data) => data.user.sayHello(data.name);
 exports.sayHello = sayHello;
 const getAllUsername = () => __awaiter(void 0, void 0, void 0, function* () { return yield User_1.User.findAll(dependencies_1.RepositoryService); });
 exports.getAllUsername = getAllUsername;
+const load = (credentials) => __awaiter(void 0, void 0, void 0, function* () { return yield User_1.User.load(dependencies_1.RepositoryService, { credentials }); });
+exports.load = load;

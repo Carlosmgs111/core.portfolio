@@ -16,7 +16,7 @@ exports.authMiddleware = exports.checkRoles = exports.checkAdminRole = exports.c
 const boom_1 = __importDefault(require("@hapi/boom"));
 const config_1 = __importDefault(require("../../../../config"));
 const jose_1 = require("jose");
-const CRUD_1 = require("../../../../application/use_cases/CRUD");
+const users_1 = require("../../../../application/use_cases/users");
 const verifyToken = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const { authorization } = req.headers;
     const token = (authorization || "").replace("Bearer ", "");
@@ -72,7 +72,8 @@ function authMiddleware(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const payload = yield (0, exports.verifyToken)(req);
-            req.user = yield (0, CRUD_1.findBy)("User", {
+            console.log({ payload });
+            req.user = yield (0, users_1.load)({
                 uuid: payload.uuid,
                 email: payload.email,
             });

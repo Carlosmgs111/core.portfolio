@@ -13,7 +13,7 @@ class AuthServices {
             return (0, JWT_1.createToken)(payload, expires_1.fifteenMinutes, config_1.default.jwtSignupSecret);
         };
         this.verifyKey = (key) => {
-            return (0, JWT_1.verifyToken)(key, config_1.default.jwtSignupSecret);
+            return (0, JWT_1.verifyToken2)(key);
         };
         this.getAuthPackage = (params) => {
             const token = (0, JWT_1.createToken)(params, expires_1.expiresIn1Month);

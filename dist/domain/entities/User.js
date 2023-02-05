@@ -34,10 +34,19 @@ class User {
         this.hashPassword = (password) => __awaiter(this, void 0, void 0, function* () {
             const salt = yield bcrypt_1.default.genSalt(10);
             const hash = yield bcrypt_1.default.hash(password || this.password, salt);
+            console.log({ hash });
             this.password = hash;
             return hash;
         });
         this.comparePassword = (password) => __awaiter(this, void 0, void 0, function* () { return yield bcrypt_1.default.compare(password, this.password); });
+        this.changePassword = (RepositoryService, { newPassword, oldPassword }) => __awaiter(this, void 0, void 0, function* () {
+            if (yield this.comparePassword(oldPassword)) {
+                yield this.hashPassword(newPassword);
+                yield this.update(RepositoryService, {});
+                return true;
+            }
+            return false;
+        });
         this.uuid = uuid;
         this.username = username;
         this.email = email;
@@ -63,14 +72,30 @@ User.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     return account;
 });
 User.load = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({ options });
     const user = yield User.find(RepositoryService, options);
     if (!user)
         throw boom_1.default.notFound("Incorrect credentials!");
     const account = new User(user);
+    console.log({ account });
+    return account;
+});
+User.authLoad = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({ options });
+    const user = yield User.find(RepositoryService, options);
+    if (!user)
+        throw boom_1.default.notFound("Incorrect credentials!");
+    if (!(yield User.comparePassword(options.credentials.password, user.password)))
+        throw boom_1.default.conflict("Password doesn't match!");
+    const account = new User(user);
+    console.log({ account });
     return account;
 });
 User.find = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    const account = yield RepositoryService.findOne(RepositoryService.entities.User, Object.assign(Object.assign({}, options), { credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(options.credentials), ["email", "username"], false) }));
+    const { credentials } = options;
+    if (!credentials)
+        throw boom_1.default.conflict("Idexation must be provided!");
+    const account = yield RepositoryService.findOne(RepositoryService.entities.User, Object.assign(Object.assign({}, options), { credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["email", "username"], false) }));
     if (!account)
         throw boom_1.default.conflict("Account doesn´t exist!");
     return account;
@@ -92,3 +117,4 @@ User.projects = (RepositoryService, credentials) => __awaiter(void 0, void 0, vo
     });
     return user.Projects;
 });
+User.comparePassword = (loaded, provided) => __awaiter(void 0, void 0, void 0, function* () { return yield bcrypt_1.default.compare(loaded, provided); });

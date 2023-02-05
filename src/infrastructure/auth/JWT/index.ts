@@ -18,22 +18,26 @@ export const verifyToken = (
   token: any,
   signature: any = config.jwtSignupSecret
 ) => {
+  console.log({ signature });
   try {
     const payload: any = jwt.verify(token, signature);
     console.log({ payload });
     if (!payload) throw new Error("Invalid Payload!");
     return payload;
   } catch (e) {
-    console.log();
+    console.log(e);
     throw new Error("Invalid Token!");
   }
 };
 
-export const verifyToken2 = async (token: any) => {
+export const verifyToken2 = async (
+  token: any,
+  signature: any = config.jwtAccessSecret
+) => {
   try {
     const verified = await jwtVerify(
       token,
-      new TextEncoder().encode(config.jwtAccessSecret)
+      new TextEncoder().encode(signature)
     );
     const { uuid, email, username } = verified.payload;
     console.log({ uuid, email, username });

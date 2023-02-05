@@ -26,7 +26,7 @@ describe("Life cycle of user", () => {
   });
 
   afterAll(async () => {
-    const user = await User.load(RepositoryService, {
+    const user = await User.authLoad(RepositoryService, {
       credentials: {
         email: "test@email.com",
         password: "p@55w0rd",

@@ -2,6 +2,7 @@ import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
 import { getEntityProperties, filterAttrs } from "../../utils";
 import boom from "@hapi/boom";
+import { RepositoryService } from "../../config/dependencies";
 
 export class User {
   uuid: string;
@@ -67,19 +68,36 @@ export class User {
   };
 
   static load = async (RepositoryService: any, options: any = {}) => {
+    console.log({ options });
     const user = await User.find(RepositoryService, options);
     if (!user) throw boom.notFound("Incorrect credentials!");
     const account = new User(user);
+    console.log({ account });
+    return account;
+  };
+
+  static authLoad = async (RepositoryService: any, options: any = {}) => {
+    console.log({ options });
+    const user = await User.find(RepositoryService, options);
+    if (!user) throw boom.notFound("Incorrect credentials!");
+    if (
+      !(await User.comparePassword(options.credentials.password, user.password))
+    )
+      throw boom.conflict("Password doesn't match!");
+    const account = new User(user);
+    console.log({ account });
     return account;
   };
 
   static find = async (RepositoryService: any, options: any = {}) => {
+    const { credentials } = options;
+    if (!credentials) throw boom.conflict("Idexation must be provided!");
     const account: any = await RepositoryService.findOne(
       RepositoryService.entities.User,
       {
         ...options,
         credentials: filterAttrs(
-          getEntityProperties(options.credentials),
+          getEntityProperties(credentials),
           ["email", "username"],
           false
         ),
@@ -138,10 +156,26 @@ export class User {
   hashPassword = async (password: string | undefined) => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password || this.password, salt);
+    console.log({ hash });
     this.password = hash;
     return hash;
   };
 
   comparePassword = async (password: string): Promise<Boolean> =>
     await bcrypt.compare(password, this.password);
+
+  static comparePassword = async (loaded: string, provided: string) =>
+    await bcrypt.compare(loaded, provided);
+
+  changePassword = async (
+    RepositoryService: any,
+    { newPassword, oldPassword }: any
+  ) => {
+    if (await this.comparePassword(oldPassword)) {
+      await this.hashPassword(newPassword);
+      await this.update(RepositoryService, {});
+      return true;
+    }
+    return false;
+  };
 }

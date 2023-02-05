@@ -39,6 +39,8 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
         });
         this.findOne = (entity, options) => __awaiter(this, void 0, void 0, function* () {
             const { credentials, related = [] } = options;
+            if (!credentials)
+                throw boom_1.default.conflict("Idexation must be provided!");
             const entityFounded = yield models_1.default[entity]
                 .findOne(credentials)
                 .populate(this.getPopulateMap(related));

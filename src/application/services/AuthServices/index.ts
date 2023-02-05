@@ -1,4 +1,4 @@
-import { createToken, verifyToken } from "../../../infrastructure/auth/JWT";
+import { createToken, verifyToken2 } from "../../../infrastructure/auth/JWT";
 import {
   expiresIn1Month,
   fifteenMinutes,
@@ -12,9 +12,9 @@ export class AuthServices {
     return createToken(payload, fifteenMinutes, config.jwtSignupSecret);
   };
 
-  verifyKey =(key:any)=>{
-    return verifyToken(key, config.jwtSignupSecret)
-  }
+  verifyKey = (key: any): any => {
+    return verifyToken2(key);
+  };
 
   getAuthPackage = (params: any) => {
     const token = createToken(params, expiresIn1Month);

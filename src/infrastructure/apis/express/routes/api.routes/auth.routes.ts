@@ -1,5 +1,8 @@
 import { Router } from "express";
-import { signup, signin } from "../../../../../application/use_cases/register";
+import {
+  signup,
+  signin,
+} from "../../../../../application/use_cases/register";
 import {
   createUserSchema,
   getUserSchema,
@@ -25,5 +28,4 @@ export default router
     "/signin",
     validatorHandler(getUserSchema, "body"),
     expressHandlerAdapter(signin)
-  );;
-
+  );

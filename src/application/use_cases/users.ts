@@ -14,19 +14,22 @@ export const signin = async (data: any) => {
     )
   )
     throw boom.badRequest("Require username or email!");
-  return await User.load(RepositoryService, { credentials: data });
+  return await User.authLoad(RepositoryService, { credentials: data });
 };
 export const removeUser = async (data: any) => {
-  const user = await User.load(RepositoryService, data);
+  const user = await User.authLoad(RepositoryService, data);
   console.log({ user });
   return await user.remove(RepositoryService);
 };
 export const updateUser = async (data: any) => {
   console.log({ data });
   return await (
-    await User.load(RepositoryService, data)
+    await User.authLoad(RepositoryService, data)
   ).update(RepositoryService, data);
 };
 export const sayHello = (data: any) => data.user.sayHello(data.name);
 
 export const getAllUsername = async () => await User.findAll(RepositoryService);
+
+export const load = async (credentials: any) =>
+  await User.load(RepositoryService, { credentials });

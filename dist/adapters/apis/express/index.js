@@ -13,6 +13,7 @@ exports.expressHandlerAdapter = void 0;
 const expressHandlerAdapter = (handler) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         const { body, params, query, user, token } = req;
+        console.log({ body, params, query });
         try {
             return res.send(yield handler(Object.assign(Object.assign(Object.assign(Object.assign({}, body), params), query), { user, token })));
         }

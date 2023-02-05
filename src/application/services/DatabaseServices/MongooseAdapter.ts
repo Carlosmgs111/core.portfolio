@@ -40,6 +40,7 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
 
   findOne = async (entity: any, options: any) => {
     const { credentials, related = [] } = options;
+    if(!credentials)throw boom.conflict("Idexation must be provided!")
     const entityFounded = await models[entity]
       .findOne(credentials)
       .populate(this.getPopulateMap(related));
