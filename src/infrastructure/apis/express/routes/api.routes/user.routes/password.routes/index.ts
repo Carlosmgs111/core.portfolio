@@ -4,7 +4,4 @@ import { resetPassword } from "../../../../../../../application/use_cases/regist
 
 const router = Router();
 
-export default router.patch(
-  "/reset",
-  expressHandlerAdapter(resetPassword)
-);
+export default router.patch("/reset", expressHandlerAdapter(resetPassword));
