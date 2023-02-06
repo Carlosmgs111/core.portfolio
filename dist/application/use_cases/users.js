@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.load = exports.getAllUsername = exports.sayHello = exports.updateUser = exports.removeUser = exports.signin = exports.registerUser = void 0;
+exports.updateAvatar = exports.changeUsername = exports.load = exports.getAllUsername = exports.sayHello = exports.updateUser = exports.removeUser = exports.signin = exports.registerUser = void 0;
 const User_1 = require("../../domain/entities/User");
 const dependencies_1 = require("../../config/dependencies");
 // ! implementar el uso de ´boom´ a traves de un ´interface´
@@ -45,3 +45,14 @@ const getAllUsername = () => __awaiter(void 0, void 0, void 0, function* () { re
 exports.getAllUsername = getAllUsername;
 const load = (credentials) => __awaiter(void 0, void 0, void 0, function* () { return yield User_1.User.load(dependencies_1.RepositoryService, { credentials }); });
 exports.load = load;
+const changeUsername = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    const { user, newUsername } = credentials;
+    console.log({ user, newUsername });
+    yield user.update(dependencies_1.RepositoryService, { username: newUsername });
+});
+exports.changeUsername = changeUsername;
+const updateAvatar = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    const { newAvatar, user } = credentials;
+    yield user.update(dependencies_1.RepositoryService, { avatar: newAvatar });
+});
+exports.updateAvatar = updateAvatar;

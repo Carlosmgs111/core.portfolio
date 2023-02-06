@@ -10,6 +10,7 @@ export class User {
   email: string;
   password: string;
   privilege: string;
+  avatar: string;
   createdAt: number = 0;
   updatedAt: number = 0;
 
@@ -19,6 +20,7 @@ export class User {
     email,
     password,
     privilege,
+    avatar,
     createdAt,
     updatedAt,
   }: {
@@ -27,6 +29,7 @@ export class User {
     email: string;
     password: string;
     privilege: string;
+    avatar: string;
     createdAt: number;
     updatedAt: number;
   }) {
@@ -35,6 +38,7 @@ export class User {
     this.email = email;
     this.password = password;
     this.privilege = privilege;
+    this.avatar = avatar;
     this.createdAt = createdAt;
     this.updatedAt = updatedAt;
   }

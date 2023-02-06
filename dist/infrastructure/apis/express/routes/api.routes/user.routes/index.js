@@ -17,4 +17,6 @@ exports.default = router
     .post("/", (0, validator_handler_1.validatorHandler)(user_schema_1.createUserSchema, "body"), (0, express_2.expressHandlerAdapter)(users_1.registerUser))
     .patch("/", (0, validator_handler_1.validatorHandler)(user_schema_1.updateUserSchema, "body"), (0, express_2.expressHandlerAdapter)(users_1.updateUser))
     .delete("/", (0, validator_handler_1.validatorHandler)(user_schema_1.getUserSchema, "body"), (0, express_2.expressHandlerAdapter)(users_1.removeUser))
+    .patch("/username/change", (0, express_2.expressHandlerAdapter)(users_1.changeUsername))
+    .patch("/avatar/update", (0, express_2.expressHandlerAdapter)(users_1.updateAvatar))
     .use("/password", password_routes_1.default);

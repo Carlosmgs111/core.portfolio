@@ -33,3 +33,14 @@ export const getAllUsername = async () => await User.findAll(RepositoryService);
 
 export const load = async (credentials: any) =>
   await User.load(RepositoryService, { credentials });
+
+export const changeUsername = async (credentials: any) => {
+  const { user, newUsername } = credentials;
+  console.log({ user, newUsername });
+  await user.update(RepositoryService, { username: newUsername });
+};
+
+export const updateAvatar = async (credentials: any) => {
+  const { newAvatar, user } = credentials;
+  await user.update(RepositoryService, { avatar: newAvatar });
+};

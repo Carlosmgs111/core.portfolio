@@ -6,6 +6,8 @@ import {
   updateUser,
   signin,
   sayHello,
+  changeUsername,
+  updateAvatar,
 } from "../../../../../../application/use_cases/users";
 import {
   createUserSchema,
@@ -44,4 +46,6 @@ export default router
     validatorHandler(getUserSchema, "body"),
     expressHandlerAdapter(removeUser)
   )
+  .patch("/username/change", expressHandlerAdapter(changeUsername))
+  .patch("/avatar/update", expressHandlerAdapter(updateAvatar))
   .use("/password", passwordRoutes);

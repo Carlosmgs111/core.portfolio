@@ -29,6 +29,7 @@ const userSchema = new mongoose_1.Schema({
         type: String,
         required: true,
     },
+    avatar: { type: String },
     Certifications: [{ type: String, ref: "Certification" }],
     Institutions: [{ type: String, ref: "Institution" }],
     Projects: [{ type: String, ref: "Project" }],

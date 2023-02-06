@@ -17,6 +17,7 @@ export const user_schema = {
   email: { allowNull: false, unique: true, type: DataTypes.STRING },
   password: { allowNull: false, type: DataTypes.STRING },
   privilege: { type: DataTypes.ENUM, values: ["user", "admin"] },
+  avatar: { type: DataTypes.STRING, allowNull: true },
   createdAt: {
     type: DataTypes.DATE,
     allowNull: false,

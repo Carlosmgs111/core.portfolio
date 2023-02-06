@@ -28,7 +28,7 @@ const signin = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     });
     if (!account)
         throw new Error("The account doesn't exist!");
-    let response = dependencies_1.AuthServices.getAuthPackage((0, utils_1.filterAttrs)(account, ["uuid", "email", "username", "privilege", "createdAt"], false));
+    let response = dependencies_1.AuthServices.getAuthPackage((0, utils_1.filterAttrs)(account, ["uuid", "email", "username", "privilege", "createdAt", "avatar"], false));
     return response;
 });
 exports.signin = signin;
@@ -75,7 +75,10 @@ exports.resetAuthPassword = resetAuthPassword;
 const resetPassword = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const { oldPassword, newPassword, username, token, user } = credentials;
     console.log({ user });
-    const result = yield user.changePassword(dependencies_1.RepositoryService, { newPassword, oldPassword });
+    const result = yield user.changePassword(dependencies_1.RepositoryService, {
+        newPassword,
+        oldPassword,
+    });
     return { changed: result };
 });
 exports.resetPassword = resetPassword;

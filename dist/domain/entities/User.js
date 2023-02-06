@@ -19,7 +19,7 @@ const bcrypt_1 = __importDefault(require("bcrypt"));
 const utils_1 = require("../../utils");
 const boom_1 = __importDefault(require("@hapi/boom"));
 class User {
-    constructor({ uuid, username, email, password, privilege, createdAt, updatedAt, }) {
+    constructor({ uuid, username, email, password, privilege, avatar, createdAt, updatedAt, }) {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService) => __awaiter(this, void 0, void 0, function* () {
@@ -52,6 +52,7 @@ class User {
         this.email = email;
         this.password = password;
         this.privilege = privilege;
+        this.avatar = avatar;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

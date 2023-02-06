@@ -17,7 +17,7 @@ export const signin = async (credentials: any) => {
   let response = AuthServices.getAuthPackage(
     filterAttrs(
       account,
-      ["uuid", "email", "username", "privilege", "createdAt"],
+      ["uuid", "email", "username", "privilege", "createdAt", "avatar"],
       false
     )
   );
@@ -66,6 +66,9 @@ export const resetAuthPassword = async (credentials: any) => {
 export const resetPassword = async (credentials: any) => {
   const { oldPassword, newPassword, username, token, user } = credentials;
   console.log({ user });
-  const result = await user.changePassword(RepositoryService, { newPassword, oldPassword });
-  return {  changed: result };
+  const result = await user.changePassword(RepositoryService, {
+    newPassword,
+    oldPassword,
+  });
+  return { changed: result };
 };
