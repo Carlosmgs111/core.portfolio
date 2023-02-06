@@ -72,23 +72,19 @@ User.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     return account;
 });
 User.load = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ options });
     const user = yield User.find(RepositoryService, options);
     if (!user)
         throw boom_1.default.notFound("Incorrect credentials!");
     const account = new User(user);
-    console.log({ account });
     return account;
 });
 User.authLoad = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ options });
     const user = yield User.find(RepositoryService, options);
     if (!user)
         throw boom_1.default.notFound("Incorrect credentials!");
     if (!(yield User.comparePassword(options.credentials.password, user.password)))
         throw boom_1.default.conflict("Password doesn't match!");
     const account = new User(user);
-    console.log({ account });
     return account;
 });
 User.find = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {

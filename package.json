@@ -61,6 +61,7 @@
     "pg": "^8.8.0",
     "pluralize": "^8.0.0",
     "random-words": "^1.2.1",
+    "react-toastify": "^9.1.1",
     "sequelize": "^6.26.0",
     "sequelize-mysql-timestamp": "^1.4.0",
     "uuid": "^9.0.0"

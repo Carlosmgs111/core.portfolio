@@ -14,6 +14,9 @@ export const getCertifications = async (data: any) => {
           "User",
           {
             attributes: ["username"],
+            // * ⚠️ must implement a correct use of filtered finding with related entities
+            // ? ⚠️ this just work fine with sequelize adapter
+            // ? ⚠️ must be implemented in mongoose adapter
             credentials: username && { username },
           },
         ],

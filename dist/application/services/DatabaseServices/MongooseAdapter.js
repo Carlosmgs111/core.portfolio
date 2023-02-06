@@ -28,8 +28,7 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
             return entitiesCreated.map((e) => (Object.assign({}, e._doc)));
         });
         this.findAll = (entity, options) => __awaiter(this, void 0, void 0, function* () {
-            const { size = 100, page = 0 } = options;
-            const { related = [] } = options;
+            const { size = 100, page = 0, related = [] } = options;
             const entities = yield models_1.default[entity]
                 .find(this.adapter(options))
                 .populate(this.getPopulateMap(related))
@@ -179,16 +178,20 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
             ];
         });
         this.adapter = (options) => {
-            const { credentials, related } = options;
+            let { credentials, related } = options;
             return credentials;
         };
         this.getPopulateMap = (related, include_id = false) => {
             const populates = [];
             related.forEach((r) => {
-                const [label, { as = null, attributes = [] } = {}] = r;
+                const [label, { as = null, attributes = [], credentials = {} } = {}] = r;
+                console.log({ credentials });
                 let select = `${include_id ? "_id" : "-_id"}`; // ? for exclude _id attribute
                 attributes.forEach((a) => (select += `${a} `));
-                populates.push({ path: as || (0, utils_1.labelCases)(label).CP, select });
+                populates.push({
+                    path: as || (0, utils_1.labelCases)(label).CP,
+                    select,
+                });
             });
             return populates;
         };

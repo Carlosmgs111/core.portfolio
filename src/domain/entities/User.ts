@@ -68,16 +68,13 @@ export class User {
   };
 
   static load = async (RepositoryService: any, options: any = {}) => {
-    console.log({ options });
     const user = await User.find(RepositoryService, options);
     if (!user) throw boom.notFound("Incorrect credentials!");
     const account = new User(user);
-    console.log({ account });
     return account;
   };
 
   static authLoad = async (RepositoryService: any, options: any = {}) => {
-    console.log({ options });
     const user = await User.find(RepositoryService, options);
     if (!user) throw boom.notFound("Incorrect credentials!");
     if (
@@ -85,7 +82,6 @@ export class User {
     )
       throw boom.conflict("Password doesn't match!");
     const account = new User(user);
-    console.log({ account });
     return account;
   };
 

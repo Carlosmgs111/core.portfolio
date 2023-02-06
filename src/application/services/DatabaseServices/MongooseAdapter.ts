@@ -28,8 +28,7 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
   };
 
   findAll = async (entity: any, options: any) => {
-    const { size = 100, page = 0 } = options;
-    const { related = [] } = options;
+    const { size = 100, page = 0, related = [] } = options;
     const entities = await models[entity]
       .find(this.adapter(options))
       .populate(this.getPopulateMap(related))
@@ -40,7 +39,7 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
 
   findOne = async (entity: any, options: any) => {
     const { credentials, related = [] } = options;
-    if(!credentials)throw boom.conflict("Idexation must be provided!")
+    if (!credentials) throw boom.conflict("Idexation must be provided!");
     const entityFounded = await models[entity]
       .findOne(credentials)
       .populate(this.getPopulateMap(related));
@@ -233,17 +232,21 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
   };
 
   private adapter = (options: any) => {
-    const { credentials, related } = options;
+    let { credentials, related } = options;
     return credentials;
   };
 
   private getPopulateMap = (related: any, include_id: boolean = false) => {
     const populates: any = [];
     related.forEach((r: any) => {
-      const [label, { as = null, attributes = [] } = {}] = r;
+      const [label, { as = null, attributes = [], credentials = {} } = {}] = r;
+      console.log({ credentials });
       let select = `${include_id ? "_id" : "-_id"}`; // ? for exclude _id attribute
       attributes.forEach((a: any) => (select += `${a} `));
-      populates.push({ path: as || labelCases(label).CP, select });
+      populates.push({
+        path: as || labelCases(label).CP,
+        select,
+      });
     });
     return populates;
   };
