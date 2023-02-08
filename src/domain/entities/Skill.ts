@@ -29,13 +29,34 @@ export class Skill {
     this.createdAt = new Date().getTime();
     this.updatedAt = new Date().getTime();
   }
-  static create = async (RepositoryService: any, data: any): Promise<string> => {
+  static create = async (RepositoryService: any, data: any): Promise<Skill> => {
     const uuid = uuidv4();
-    const skill = new Skill({ ...data, uuid, userUUID: data.user.uuid });
-    return await RepositoryService.createOne(
+    const skill = new Skill({ ...data, uuid });
+    await RepositoryService.createOne(RepositoryService.entities.Skill, skill);
+    await RepositoryService.createOneRelationshipN2N([
+      [{ skill: { uuid } }, { user: { uuid: data.user.uuid } }],
+    ]);
+    return skill;
+  };
+
+  static createMany = async (RepositoryService: any, data: any) => {
+    const skillsCreated = await RepositoryService.createMany(
       RepositoryService.entities.Skill,
-      skill
+      data.map((c: any) => new Skill({ ...c, uuid: c.uuid || uuidv4() }))
     );
+    for (let skillIdx in data) {
+      await RepositoryService.createOneRelationshipN2N([
+        [
+          {
+            skill: {
+              uuid: skillsCreated[Number(skillIdx)].uuid,
+            },
+          },
+          { user: { uuid: data[Number(skillIdx)].user.uuid } },
+        ],
+      ]);
+    }
+    return skillsCreated;
   };
 
   static load = async (RepositoryService: any, credentials: any) => {
@@ -46,17 +67,22 @@ export class Skill {
     return loadedSkill;
   };
 
-  static find = async (RepositoryService: any, credentials: any) => {
+  static find = async (RepositoryService: any, options: any) => {
+    console.log({options})
     const skill: any = await RepositoryService.findOne(
       RepositoryService.entities.Skill,
-      {
-        credentials,
-      }
+      options
     );
     return skill;
   };
 
-  remove = async (RepositoryService: any) => {
+  remove = async (RepositoryService: any, options: any = {}) => {
+    const removed = await RepositoryService.removeOneRelationshipN2N([
+      [{ user: { uuid: options.userUUID } }, { skill: { uuid: this.uuid } }],
+    ]);
+
+    if (!removed) return;
+
     return await RepositoryService.removeOne(RepositoryService.entities.Skill, {
       credentials: { uuid: this.uuid },
     });

@@ -1,5 +1,4 @@
 import { v4 as uuidv4 } from "uuid";
-import { filterAttrs } from "../../utils";
 
 type IProject = {
   uuid: string;
@@ -101,7 +100,6 @@ export class Project {
 
   remove = async (RepositoryService: any, options: any = {}) => {
     const { uuid } = this;
-    console.log({ uuid });
     await RepositoryService.unsetOneRelationship2One({ projects: { uuid } }, [
       ["User", { as: "User" }],
     ]);
@@ -114,11 +112,10 @@ export class Project {
   };
 
   update = async (RepositoryService: any, data: any) => {
-    console.log({ this: this });
     this.updatedAt = new Date().getTime();
     return await RepositoryService.updateOne(
       RepositoryService.entities.Project,
-      { ...this, ...filterAttrs(data, ["uuid", "user", "token"]) },
+      { ...this, ...data },
       { credentials: { uuid: this.uuid } }
     );
   };

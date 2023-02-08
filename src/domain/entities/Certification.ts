@@ -106,6 +106,38 @@ export class Certification {
     return certificates;
   };
 
+  update = async (RepositoryService: any, data: any) => {
+    this.updatedAt = new Date().getTime();
+    const {
+      Institution: { name: emitedBy },
+    } = await Certification.find(RepositoryService, {
+      credentials: { uuid: this.uuid },
+      related: [["Institution", { attributes: ["name"], as: "Institution" }]],
+    });
+    
+    if (data.emitedBy && emitedBy !== data.emitedBy) {
+      console.log("Must change relationship".bgYellow);
+      await RepositoryService.setOneRelationship2One(
+        { certifications: { uuid: this.uuid } },
+        [
+          {
+            institution: { name: data.emitedBy },
+          },
+        ]
+      );
+    }
+
+    await RepositoryService.updateOne(
+      RepositoryService.entities.Certification,
+      {
+        updatedAt: this.updatedAt,
+        ...filterAttrs(data, ["uuid", "user", "token"]),
+      },
+      { credentials: { uuid: this.uuid } }
+    );
+    return this;
+  };
+
   remove = async (RepositoryService: any, options: any = {}) => {
     await RepositoryService.unsetOneRelationship2One(
       { certifications: { uuid: this.uuid } },
@@ -129,36 +161,5 @@ export class Certification {
         ),
       }
     );
-  };
-
-  update = async (RepositoryService: any, data: any) => {
-    this.updatedAt = new Date().getTime();
-    const {
-      Institution: { name: emitedBy },
-    } = await Certification.find(RepositoryService, {
-      credentials: { uuid: this.uuid },
-      related: [["Institution", { attributes: ["name"], as: "Institution" }]],
-    });
-    if (data.emitedBy && emitedBy !== data.emitedBy) {
-      console.log("Must change relationship".bgYellow);
-      await RepositoryService.setOneRelationship2One(
-        { certifications: { uuid: this.uuid } },
-        [
-          {
-            institution: { name: data.emitedBy },
-          },
-        ]
-      );
-    }
-
-    await RepositoryService.updateOne(
-      RepositoryService.entities.Certification,
-      {
-        updatedAt: this.updatedAt,
-        ...filterAttrs(data, ["uuid", "user", "token"]),
-      },
-      { credentials: { uuid: this.uuid } }
-    );
-    return this;
   };
 }

@@ -15,6 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const mongoose_1 = require("../../../infrastructure/repositories/mongoose");
 const models_1 = __importDefault(require("../../../infrastructure/repositories/mongoose/models"));
 const utils_1 = require("../../../utils");
+const utils_2 = require("../../../utils");
 const boom_1 = __importDefault(require("@hapi/boom"));
 class MongooseAdapter /* implements DatabaseAdapter */ {
     constructor({}) {
@@ -34,7 +35,7 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
                 .populate(this.getPopulateMap(related))
                 .limit(Number(size))
                 .skip(Number(page));
-            return entities.map((e) => (Object.assign({}, e._doc)));
+            return entities.map((e) => (Object.assign({}, (0, utils_2.filterAttrs)(e._doc, ["_id", "__v"]))));
         });
         this.findOne = (entity, options) => __awaiter(this, void 0, void 0, function* () {
             const { credentials, related = [] } = options;
@@ -45,7 +46,7 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
                 .populate(this.getPopulateMap(related));
             if (!entityFounded)
                 return null;
-            return entityFounded._doc;
+            return (0, utils_2.filterAttrs)(entityFounded._doc, ["_id", "__v"]);
         });
         this.removeOne = (entity, options) => __awaiter(this, void 0, void 0, function* () {
             if (!options.credentials)

@@ -52,7 +52,7 @@ export const updateProject = async (data: any) => {
   const { user, uuid } = data;
   await (
     await Project.load(RepositoryService, { credentials: { uuid } })
-  ).update(RepositoryService, data);
+  ).update(RepositoryService, filterAttrs(data, ["uuid", "user", "token"]));
 
   return await Project.find(RepositoryService, {
     credentials: { uuid },

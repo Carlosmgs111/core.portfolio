@@ -16,7 +16,12 @@ class Skill {
     constructor({ uuid, userUUID, name, description, image, tags }) {
         this.createdAt = 0;
         this.updatedAt = 0;
-        this.remove = (RepositoryService) => __awaiter(this, void 0, void 0, function* () {
+        this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            const removed = yield RepositoryService.removeOneRelationshipN2N([
+                [{ user: { uuid: options.userUUID } }, { skill: { uuid: this.uuid } }],
+            ]);
+            if (!removed)
+                return;
             return yield RepositoryService.removeOne(RepositoryService.entities.Skill, {
                 credentials: { uuid: this.uuid },
             });
@@ -39,8 +44,28 @@ exports.Skill = Skill;
 _a = Skill;
 Skill.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = (0, uuid_1.v4)();
-    const skill = new Skill(Object.assign(Object.assign({}, data), { uuid, userUUID: data.user.uuid }));
-    return yield RepositoryService.createOne(RepositoryService.entities.Skill, skill);
+    const skill = new Skill(Object.assign(Object.assign({}, data), { uuid }));
+    yield RepositoryService.createOne(RepositoryService.entities.Skill, skill);
+    yield RepositoryService.createOneRelationshipN2N([
+        [{ skill: { uuid } }, { user: { uuid: data.user.uuid } }],
+    ]);
+    return skill;
+});
+Skill.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
+    const skillsCreated = yield RepositoryService.createMany(RepositoryService.entities.Skill, data.map((c) => new Skill(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
+    for (let skillIdx in data) {
+        yield RepositoryService.createOneRelationshipN2N([
+            [
+                {
+                    skill: {
+                        uuid: skillsCreated[Number(skillIdx)].uuid,
+                    },
+                },
+                { user: { uuid: data[Number(skillIdx)].user.uuid } },
+            ],
+        ]);
+    }
+    return skillsCreated;
 });
 Skill.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const skill = yield Skill.find(RepositoryService, credentials);
@@ -50,9 +75,8 @@ Skill.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 
     const loadedSkill = new Skill(skill);
     return loadedSkill;
 });
-Skill.find = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const skill = yield RepositoryService.findOne(RepositoryService.entities.Skill, {
-        credentials,
-    });
+Skill.find = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({ options });
+    const skill = yield RepositoryService.findOne(RepositoryService.entities.Skill, options);
     return skill;
 });

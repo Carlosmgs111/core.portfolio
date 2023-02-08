@@ -34,6 +34,7 @@ exports.user_schema = {
 // export const User = sequelize.define(user_table, user_schema);
 class User extends sequelize_1.Model {
     static associate(models) {
+        // ? N2N relationships
         this.belongsToMany(models.Certification, {
             through: models.Users_Certifications,
             foreignKey: "userUUID",
@@ -44,6 +45,12 @@ class User extends sequelize_1.Model {
             foreignKey: "userUUID",
             otherKey: "institutionUUID",
         });
+        this.belongsToMany(models.Institution, {
+            through: models.Users_Skills,
+            foreignKey: "userUUID",
+            otherKey: "skillUUID",
+        });
+        // ? One2N relationships
         this.hasMany(models.Project, {
             as: "Projects",
             foreignKey: "userUUID",

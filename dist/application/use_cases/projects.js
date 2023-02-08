@@ -48,7 +48,7 @@ const deleteProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.deleteProject = deleteProject;
 const updateProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, uuid } = data;
-    yield (yield Project_1.Project.load(dependencies_1.RepositoryService, { credentials: { uuid } })).update(dependencies_1.RepositoryService, data);
+    yield (yield Project_1.Project.load(dependencies_1.RepositoryService, { credentials: { uuid } })).update(dependencies_1.RepositoryService, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"]));
     return yield Project_1.Project.find(dependencies_1.RepositoryService, {
         credentials: { uuid },
         related: [["User", { attributes: ["username"], as: "User" }]],

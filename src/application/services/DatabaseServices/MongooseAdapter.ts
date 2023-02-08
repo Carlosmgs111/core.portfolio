@@ -2,7 +2,7 @@ import { connect } from "../../../infrastructure/repositories/mongoose";
 import models from "../../../infrastructure/repositories/mongoose/models";
 import { model } from "mongoose";
 import { labelCases, Mapfy, setEnums } from "../../../utils";
-import { DatabaseAdapter } from "./DatabaseAdapter";
+import { filterAttrs } from "../../../utils";
 
 import boom from "@hapi/boom";
 export default class MongooseAdapter /* implements DatabaseAdapter */ {
@@ -34,7 +34,9 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
       .populate(this.getPopulateMap(related))
       .limit(Number(size))
       .skip(Number(page));
-    return entities.map((e: any) => ({ ...e._doc }));
+    return entities.map((e: any) => ({
+      ...filterAttrs(e._doc, ["_id", "__v"]),
+    }));
   };
 
   findOne = async (entity: any, options: any) => {
@@ -44,7 +46,7 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
       .findOne(credentials)
       .populate(this.getPopulateMap(related));
     if (!entityFounded) return null;
-    return entityFounded._doc;
+    return filterAttrs(entityFounded._doc, ["_id", "__v"]);
   };
 
   removeOne = async (entity: any, options: any) => {

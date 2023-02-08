@@ -29,10 +29,10 @@ export const user_schema = {
     field: "updated_at",
   },
 };
-
 // export const User = sequelize.define(user_table, user_schema);
 export class User extends Model {
   static associate(models: any) {
+    // ? N2N relationships
     this.belongsToMany(models.Certification, {
       through: models.Users_Certifications,
       foreignKey: "userUUID",
@@ -43,6 +43,12 @@ export class User extends Model {
       foreignKey: "userUUID",
       otherKey: "institutionUUID",
     });
+    this.belongsToMany(models.Institution, {
+      through: models.Users_Skills,
+      foreignKey: "userUUID",
+      otherKey: "skillUUID",
+    });
+    // ? One2N relationships
     this.hasMany(models.Project, {
       as: "Projects",
       foreignKey: "userUUID",

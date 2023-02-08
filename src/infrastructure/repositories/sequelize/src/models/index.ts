@@ -1,18 +1,31 @@
 import { labelCases } from "../utils";
 import { DataTypes } from "sequelize";
 import { sequelize } from "..";
-import { User } from "./User";
-import { Project } from "./Project";
-import { Institution } from "./Institution";
-import { Certification } from "./Certification";
-import { Post } from "./Post";
-import { Skill } from "./Skill";
+// * Models import
+import { User, user_schema, user_table } from "./User";
+import { Project, project_schema, project_table } from "./Project";
+import {
+  Institution,
+  institution_schema,
+  institution_table,
+} from "./Institution";
+import {
+  Certification,
+  certification_schema,
+  certification_table,
+} from "./Certification";
+import { Post, post_schema, post_table } from "./Post";
+import { Skill, skill_schema, skill_table } from "./Skill";
+
+const joinTableNames: any = {};
+const joinTableSchema: any = {};
 
 const createJoinTable = (A: any, B: any) => {
   A = A.tableName || A;
   B = B.tableName || B;
 
   const join_table_name = `${labelCases(A).CP}_${labelCases(B).CP}`;
+  joinTableNames[`${labelCases(join_table_name).LP}_table`] = join_table_name;
 
   const join_table_schema = {
     uuid: {
@@ -46,6 +59,8 @@ const createJoinTable = (A: any, B: any) => {
       },
     },
   };
+  joinTableSchema[`${labelCases(join_table_name).LP}_schema`] =
+    join_table_schema;
 
   return {
     [join_table_name]: sequelize.define(join_table_name, join_table_schema, {
@@ -65,6 +80,26 @@ const models: any = {
   ...createJoinTable(User, Institution),
   ...createJoinTable(User, Certification),
   ...createJoinTable(User, Skill),
+};
+
+export const tableNames = {
+  institution_table,
+  user_table,
+  certification_table,
+  skill_table,
+  project_table,
+  post_table,
+  ...joinTableNames,
+};
+
+export const tableSchemas = {
+  institution_schema,
+  certification_schema,
+  user_schema,
+  skill_schema,
+  project_schema,
+  post_schema,
+  ...joinTableSchema,
 };
 
 export default models;

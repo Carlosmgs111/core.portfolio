@@ -11,6 +11,7 @@ const emitedAt = joi_1.default.number(); // ! change to type array of string
 const image = joi_1.default.string();
 const url = joi_1.default.string();
 const uuid = joi_1.default.string();
+const tags = joi_1.default.array().items(joi_1.default.string());
 exports.createCertification = joi_1.default.object({
     title: title.required(),
     emitedBy: emitedBy.required(),
@@ -24,6 +25,7 @@ exports.updateCertification = joi_1.default.object({
     emitedBy,
     title,
     image,
+    tags,
     url,
 });
 exports.createCertifications = joi_1.default.array().items(exports.createCertification);

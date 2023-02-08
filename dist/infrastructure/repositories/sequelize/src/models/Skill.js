@@ -11,18 +11,6 @@ exports.skill_schema = {
         unique: true,
         type: sequelize_1.DataTypes.STRING,
     },
-    userUUID: {
-        field: "user_uuid",
-        unique: false,
-        allowNull: false,
-        type: sequelize_1.DataTypes.STRING,
-        references: {
-            model: "Users",
-            key: "uuid",
-            onDelete: "NO ACTION",
-            onUpdate: "NO ACTION",
-        },
-    },
     name: { allowNull: false, type: sequelize_1.DataTypes.STRING, unique: false },
     description: { type: sequelize_1.DataTypes.TEXT, allowNull: false },
     image: { type: sequelize_1.DataTypes.STRING, allowNull: true },
@@ -31,7 +19,13 @@ exports.skill_schema = {
     updatedAt: { type: sequelize_1.DataTypes.DATE, allowNull: false, field: "updated_at" },
 };
 class Skill extends sequelize_1.Model {
-    static associate(models) { }
+    static associate(models) {
+        this.belongsToMany(models.User, {
+            through: models.Users_Skills,
+            foreignKey: "skillUUID",
+            otherKey: "userUUID",
+        });
+    }
 }
 exports.Skill = Skill;
 Skill.init(exports.skill_schema, { sequelize: __1.sequelize, modelName: exports.skill_table });

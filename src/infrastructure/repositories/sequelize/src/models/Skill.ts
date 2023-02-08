@@ -9,18 +9,6 @@ export const skill_schema = {
     unique: true,
     type: DataTypes.STRING,
   },
-  userUUID: {
-    field: "user_uuid",
-    unique: false,
-    allowNull: false,
-    type: DataTypes.STRING,
-    references: {
-      model: "Users",
-      key: "uuid",
-      onDelete: "NO ACTION",
-      onUpdate: "NO ACTION",
-    },
-  },
   name: { allowNull: false, type: DataTypes.STRING, unique: false },
   description: { type: DataTypes.TEXT, allowNull: false },
   image: { type: DataTypes.STRING, allowNull: true },
@@ -30,7 +18,13 @@ export const skill_schema = {
 };
 
 export class Skill extends Model {
-  static associate(models: any) {}
+  static associate(models: any) {
+    this.belongsToMany(models.User, {
+      through: models.Users_Skills,
+      foreignKey: "skillUUID",
+      otherKey: "userUUID",
+    });
+  }
 }
 
 Skill.init(skill_schema, { sequelize, modelName: skill_table });

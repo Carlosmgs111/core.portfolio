@@ -33,6 +33,7 @@ const userSchema = new mongoose_1.Schema({
     Certifications: [{ type: String, ref: "Certification" }],
     Institutions: [{ type: String, ref: "Institution" }],
     Projects: [{ type: String, ref: "Project" }],
+    Skills: [{ type: String, ref: "Skill" }],
     createdAt: {
         type: Number,
         required: true,

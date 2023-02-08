@@ -22,20 +22,6 @@ class Certification {
         this.url = ""; // * url to certificated course or institution
         this.createdAt = 0;
         this.updatedAt = 0;
-        this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            yield RepositoryService.unsetOneRelationship2One({ certifications: { uuid: this.uuid } }, [["Institution", { as: "Institution" }]]);
-            const removed = yield RepositoryService.removeOneRelationshipN2N([
-                [
-                    { user: { uuid: options.userUUID } },
-                    { certification: { uuid: this.uuid } },
-                ],
-            ]);
-            if (!removed)
-                return;
-            return yield RepositoryService.removeOne(RepositoryService.entities.Certification, {
-                credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["title", "uuid"], false),
-            });
-        });
         this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
             this.updatedAt = new Date().getTime();
             const { Institution: { name: emitedBy }, } = yield Certification.find(RepositoryService, {
@@ -52,6 +38,20 @@ class Certification {
             }
             yield RepositoryService.updateOne(RepositoryService.entities.Certification, Object.assign({ updatedAt: this.updatedAt }, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
             return this;
+        });
+        this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            yield RepositoryService.unsetOneRelationship2One({ certifications: { uuid: this.uuid } }, [["Institution", { as: "Institution" }]]);
+            const removed = yield RepositoryService.removeOneRelationshipN2N([
+                [
+                    { user: { uuid: options.userUUID } },
+                    { certification: { uuid: this.uuid } },
+                ],
+            ]);
+            if (!removed)
+                return;
+            return yield RepositoryService.removeOne(RepositoryService.entities.Certification, {
+                credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["title", "uuid"], false),
+            });
         });
         this.uuid = uuid;
         this.title = title;
