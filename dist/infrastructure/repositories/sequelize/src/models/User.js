@@ -16,7 +16,7 @@ exports.user_schema = {
         allowNull: false,
         type: sequelize_1.DataTypes.STRING,
     },
-    email: { allowNull: false, unique: true, type: sequelize_1.DataTypes.STRING },
+    email: { allowNull: true, unique: true, type: sequelize_1.DataTypes.STRING },
     password: { allowNull: false, type: sequelize_1.DataTypes.STRING },
     privilege: { type: sequelize_1.DataTypes.ENUM, values: ["user", "admin"] },
     avatar: { type: sequelize_1.DataTypes.STRING, allowNull: true },

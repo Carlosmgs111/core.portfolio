@@ -18,7 +18,7 @@ exports.createUserSchema = joi_1.default.object({
 exports.updateUserSchema = joi_1.default.object({
     email,
     privilege,
-    password: password.required()
+    password: password.required(),
 });
 exports.getUserSchema = joi_1.default.object({
     email,

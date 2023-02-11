@@ -3,8 +3,11 @@ import { RepositoryService, AuthServices } from "../../config/dependencies";
 import { filterAttrs, encryptData, decryptData } from "../../domain/utils";
 import config from "../../config";
 import { verifyToken2 } from "../../infrastructure/auth/JWT";
+import boom from "@hapi/boom";
 
 export const signup = async (credentials: any) => {
+  const { username, email, password } = credentials;
+  if (email) console.log("Authentication Signup use case must be implemented! ".bgYellow)
   return await User.create(RepositoryService, credentials);
 };
 

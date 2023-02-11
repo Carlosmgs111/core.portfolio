@@ -18,6 +18,9 @@ const dependencies_1 = require("../../config/dependencies");
 const utils_1 = require("../../domain/utils");
 const config_1 = __importDefault(require("../../config"));
 const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username, email, password } = credentials;
+    if (email)
+        console.log("Authentication Signup use case must be implemented! ".bgYellow);
     return yield User_1.User.create(dependencies_1.RepositoryService, credentials);
 });
 exports.signup = signup;
