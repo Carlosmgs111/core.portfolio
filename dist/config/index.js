@@ -1,17 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-require('dotenv').config();
+require("dotenv").config();
 const config = {
     mongoDBLocalUrl: process.env.MONGODB_LOCAL_URL && String(process.env.MONGODB_LOCAL_URL),
     mongoDBLocalTestUrl: process.env.MONGODB_LOCAL_TEST_URL &&
         String(process.env.MONGODB_LOCAL_TEST_URL),
     mongoDBAtlasURL: process.env.MONGODB_ATLAS_URL && String(process.env.MONGODB_ATLAS_URL),
     /*  */
-    postgresDatabase: process.env.POSTGRES_DATABASE && String(process.env.POSTGRES_DATABASE),
-    postgresUser: process.env.POSTGRES_USER && String(process.env.POSTGRES_USER),
-    postgresPassword: process.env.POSTGRES_PASSWORD && String(process.env.POSTGRES_PASSWORD),
-    postgresHost: process.env.POSTGRES_HOST && String(process.env.POSTGRES_HOST),
-    postgresPort: process.env.POSTGRES_PORT && String(process.env.POSTGRES_PORT),
+    postgresDatabase: process.env.POSTGRES_DATABASE_PROD &&
+        String(process.env.POSTGRES_DATABASE_PROD),
+    postgresUser: process.env.POSTGRES_USER_PROD && String(process.env.POSTGRES_USER_PROD),
+    postgresPassword: process.env.POSTGRES_PASSWORD_PROD &&
+        String(process.env.POSTGRES_PASSWORD_PROD),
+    postgresHost: process.env.POSTGRES_HOST_PROD && String(process.env.POSTGRES_HOST_PROD),
+    postgresPort: process.env.POSTGRES_PORT_PROD && String(process.env.POSTGRES_PORT_PROD),
     /*  */
     postgresDatabaseDev: process.env.POSTGRES_DATABASE_DEV &&
         String(process.env.POSTGRES_DATABASE_DEV),

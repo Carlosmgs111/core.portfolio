@@ -6,13 +6,13 @@ import { verifyToken2 } from "../../infrastructure/auth/JWT";
 
 const formatProjects = (projects: [Project]) =>
   projects.map((project: any) =>
-    filterAttrs({ ...project, createdBy: project.User.username }, ["User"])
+    filterAttrs({ ...project, createdBy: project.User?.username }, [])
   );
 
 export const getProjects = async (data: any) => {
   const { username, user, size, page } = data;
   const projects = await Project.findAll(RepositoryService, {
-    related: [["User", { as: "User", credentials: username && { username } }]],
+    related: [["User", { as: "Users", attributes: ["username"] }]],
     size,
     page,
   });
@@ -72,4 +72,39 @@ export const migrateDescriptionToDescriptions = async (data: any) => {
     await updateProject({ uuid: project.uuid, descriptions, user: data.user });
   }
   return "OK!";
+};
+
+export const migrateRelationship2OneToN2N = async () => {
+  const projects = await Project.findAll(RepositoryService, {
+    related: [
+      [
+        "User",
+        {
+          as: "User",
+          attributes: ["uuid"],
+        },
+      ],
+    ],
+  });
+  for (let project of projects) {
+    const { User, Users } = project;
+    if (User && Users.length === 0) {
+      console.log({ User, Users });
+      /* await RepositoryService.CommandService.createOneRelationshipN2N([
+        [{ project: { uuid: project.uuid } }, { user: { uuid: User.uuid } }],
+      ]); */
+      /*  await RepositoryService.QueryService.setOneRelationship2One(
+        { user: { uuid: User.uuid } },
+        [
+          {
+            project: { uuid: project.uuid },
+          },
+        ]
+      ); */
+    }
+    /* await RepositoryService.QueryService.removeAttribute(
+      RepositoryService.entities.Project,
+      { User: "" }
+    ); */
+  }
 };

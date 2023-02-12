@@ -7,7 +7,7 @@ const projectSchema = new mongoose_1.Schema({
         required: true,
         unique: true,
     },
-    User: { type: String, ref: 'User' },
+    User: { type: String, ref: "User" },
     name: {
         type: String,
         unique: true,
@@ -24,6 +24,10 @@ const projectSchema = new mongoose_1.Schema({
         required: true,
     },
     tags: {
+        type: [String],
+        required: true,
+    },
+    Users: {
         type: [String],
         required: true,
     },
@@ -45,4 +49,4 @@ const projectSchema = new mongoose_1.Schema({
         required: true,
     },
 });
-exports.default = (0, mongoose_1.model)('Project', projectSchema);
+exports.default = (0, mongoose_1.model)("Project", projectSchema);

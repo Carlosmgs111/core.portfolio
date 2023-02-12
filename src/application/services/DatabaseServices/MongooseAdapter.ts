@@ -242,8 +242,7 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
     const populates: any = [];
     related.forEach((r: any) => {
       const [label, { as = null, attributes = [], credentials = {} } = {}] = r;
-      console.log({ credentials });
-      let select = `${include_id ? "_id" : "-_id"}`; // ? for exclude _id attribute
+      let select = `${include_id ? "_id " : "-_id "}`; // ? for exclude _id attribute
       attributes.forEach((a: any) => (select += `${a} `));
       populates.push({
         path: as || labelCases(label).CP,
@@ -251,6 +250,10 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
       });
     });
     return populates;
+  };
+
+  private removeAttribute = async (entity: any, options: any) => {
+    await models[entity].update({}, { $unset: options });
   };
 
   entities = setEnums(Object.entries(models).flatMap((m: any) => m[0]));

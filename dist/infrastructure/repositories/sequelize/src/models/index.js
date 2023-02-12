@@ -59,12 +59,12 @@ const createJoinTable = (A, B) => {
         }),
     };
 };
-const models = Object.assign(Object.assign(Object.assign({ User: User_1.User,
+const models = Object.assign(Object.assign(Object.assign(Object.assign({ User: User_1.User,
     Project: Project_1.Project,
     Institution: Institution_1.Institution,
     Certification: Certification_1.Certification,
     Post: Post_1.Post,
-    Skill: Skill_1.Skill }, createJoinTable(User_1.User, Institution_1.Institution)), createJoinTable(User_1.User, Certification_1.Certification)), createJoinTable(User_1.User, Skill_1.Skill));
+    Skill: Skill_1.Skill }, createJoinTable(User_1.User, Institution_1.Institution)), createJoinTable(User_1.User, Certification_1.Certification)), createJoinTable(User_1.User, Skill_1.Skill)), createJoinTable(User_1.User, Project_1.Project));
 exports.tableNames = Object.assign({ institution_table: Institution_1.institution_table,
     user_table: User_1.user_table,
     certification_table: Certification_1.certification_table,

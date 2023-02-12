@@ -80,6 +80,7 @@ const models: any = {
   ...createJoinTable(User, Institution),
   ...createJoinTable(User, Certification),
   ...createJoinTable(User, Skill),
+  ...createJoinTable(User, Project),
 };
 
 export const tableNames = {

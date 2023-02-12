@@ -6,6 +6,7 @@ import {
   deleteProject,
   updateProject,
   migrateDescriptionToDescriptions,
+  migrateRelationship2OneToN2N,
 } from "../../../../../application/use_cases/projects";
 import { expressHandlerAdapter } from "../../../../../adapters/apis/express";
 
@@ -23,4 +24,8 @@ export default router
   .get(
     "/migrate_descriptions",
     expressHandlerAdapter(migrateDescriptionToDescriptions)
+  )
+  .get(
+    "/migrateRelationship2OneToN2N",
+    expressHandlerAdapter(migrateRelationship2OneToN2N)
   );

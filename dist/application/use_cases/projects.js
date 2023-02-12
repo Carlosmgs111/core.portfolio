@@ -9,17 +9,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.migrateDescriptionToDescriptions = exports.updateProject = exports.deleteProject = exports.addManyProject = exports.addProject = exports.getOwnProjects = exports.getProjects = void 0;
+exports.migrateRelationship2OneToN2N = exports.migrateDescriptionToDescriptions = exports.updateProject = exports.deleteProject = exports.addManyProject = exports.addProject = exports.getOwnProjects = exports.getProjects = void 0;
 const dependencies_1 = require("../../config/dependencies");
 const Project_1 = require("../../domain/entities/Project");
 const User_1 = require("../../domain/entities/User");
 const utils_1 = require("../../utils");
 const JWT_1 = require("../../infrastructure/auth/JWT");
-const formatProjects = (projects) => projects.map((project) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project), { createdBy: project.User.username }), ["User"]));
+const formatProjects = (projects) => projects.map((project) => { var _a; return (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project), { createdBy: (_a = project.User) === null || _a === void 0 ? void 0 : _a.username }), []); });
 const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
     const projects = yield Project_1.Project.findAll(dependencies_1.RepositoryService, {
-        related: [["User", { as: "User", credentials: username && { username } }]],
+        related: [["User", { as: "Users", attributes: ["username"] }]],
         size,
         page,
     });
@@ -67,3 +67,38 @@ const migrateDescriptionToDescriptions = (data) => __awaiter(void 0, void 0, voi
     return "OK!";
 });
 exports.migrateDescriptionToDescriptions = migrateDescriptionToDescriptions;
+const migrateRelationship2OneToN2N = () => __awaiter(void 0, void 0, void 0, function* () {
+    const projects = yield Project_1.Project.findAll(dependencies_1.RepositoryService, {
+        related: [
+            [
+                "User",
+                {
+                    as: "User",
+                    attributes: ["uuid"],
+                },
+            ],
+        ],
+    });
+    for (let project of projects) {
+        const { User, Users } = project;
+        if (User && Users.length === 0) {
+            console.log({ User, Users });
+            /* await RepositoryService.CommandService.createOneRelationshipN2N([
+              [{ project: { uuid: project.uuid } }, { user: { uuid: User.uuid } }],
+            ]); */
+            /*  await RepositoryService.QueryService.setOneRelationship2One(
+              { user: { uuid: User.uuid } },
+              [
+                {
+                  project: { uuid: project.uuid },
+                },
+              ]
+            ); */
+        }
+        /* await RepositoryService.QueryService.removeAttribute(
+          RepositoryService.entities.Project,
+          { User: "" }
+        ); */
+    }
+});
+exports.migrateRelationship2OneToN2N = migrateRelationship2OneToN2N;

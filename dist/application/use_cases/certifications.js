@@ -27,7 +27,7 @@ const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* 
                 "User",
                 {
                     attributes: ["username"],
-                    // * ⚠️ must implement a correct use of filtered finding with related entities
+                    // ! ⚠️ must implement a correct use of filtered finding with related entities
                     // ? ⚠️ this just work fine with sequelize adapter
                     // ? ⚠️ must be implemented in mongoose adapter
                     credentials: username && { username },

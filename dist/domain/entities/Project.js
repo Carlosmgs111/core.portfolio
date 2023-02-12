@@ -53,11 +53,16 @@ Project.new = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
 });
 Project.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const projectsCreated = yield RepositoryService.createMany(RepositoryService.entities.Project, data.map((c) => new Project(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
-    for (let project in projectsCreated) {
-        yield RepositoryService.setOneRelationship2One({ project: { uuid: projectsCreated[project].uuid } }, [
-            {
-                user: { uuid: data[project].user.uuid },
-            },
+    for (let projectIdx in data) {
+        yield RepositoryService.createOneRelationshipN2N([
+            [
+                {
+                    project: {
+                        uuid: projectsCreated[Number(projectIdx)].uuid,
+                    },
+                },
+                { user: { uuid: data[Number(projectIdx)].user.uuid } },
+            ],
         ]);
     }
     return projectsCreated;

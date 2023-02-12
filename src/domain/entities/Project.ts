@@ -62,15 +62,17 @@ export class Project {
       RepositoryService.entities.Project,
       data.map((c: any) => new Project({ ...c, uuid: c.uuid || uuidv4() }))
     );
-    for (let project in projectsCreated) {
-      await RepositoryService.setOneRelationship2One(
-        { project: { uuid: projectsCreated[project].uuid } },
+    for (let projectIdx in data) {
+      await RepositoryService.createOneRelationshipN2N([
         [
           {
-            user: { uuid: data[project].user.uuid },
+            project: {
+              uuid: projectsCreated[Number(projectIdx)].uuid,
+            },
           },
-        ]
-      );
+          { user: { uuid: data[Number(projectIdx)].user.uuid } },
+        ],
+      ]);
     }
     return projectsCreated;
   };

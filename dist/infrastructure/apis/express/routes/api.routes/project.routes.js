@@ -13,4 +13,5 @@ exports.default = router
     .patch("/", (0, express_2.expressHandlerAdapter)(projects_1.updateProject))
     .patch("/:uuid", (0, express_2.expressHandlerAdapter)(projects_1.updateProject))
     // ! this fucntion should not be exposed by an API controller, and if it, should be protected by a middleware of authorization
-    .get("/migrate_descriptions", (0, express_2.expressHandlerAdapter)(projects_1.migrateDescriptionToDescriptions));
+    .get("/migrate_descriptions", (0, express_2.expressHandlerAdapter)(projects_1.migrateDescriptionToDescriptions))
+    .get("/migrateRelationship2OneToN2N", (0, express_2.expressHandlerAdapter)(projects_1.migrateRelationship2OneToN2N));
