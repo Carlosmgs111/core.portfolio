@@ -44,8 +44,8 @@ const config = {
   jwtExp: process.env.TOKEN_EXPIRATION,
   test: process.env.test && String(process.env.test),
   /*  */
-  redisUrlProd: String(process.env.REDIS_URL_PROD),
-  redisUrlDev: String(process.env.REDIS_URL_DEV),
+  redisUrlProd: String(process.env.REDIS_URL_PROD || ""),
+  redisUrlDev: String(process.env.REDIS_URL_DEV || ""),
   redisHost: String(process.env.REDIS_HOST),
   redisPort: String(process.env.REDIS_PORT),
   redisUser: String(process.env.REDIS_USER),

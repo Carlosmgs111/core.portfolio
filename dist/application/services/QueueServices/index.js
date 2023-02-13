@@ -16,9 +16,8 @@ exports.QueueService = exports.createQueue = void 0;
 const bull_1 = __importDefault(require("bull"));
 const config_1 = __importDefault(require("../../../config"));
 const { redisUrlProd, redisUrlDev } = config_1.default;
-console.log({ redisUrlProd, redisUrlDev });
-const redisUrlConnection = config_1.default.redisUrlDev || config_1.default.redisUrlProd;
-console.log({ redisUrlConnection });
+const redisUrlConnection = redisUrlDev || redisUrlProd;
+console.log(!redisUrlDev ? "PRODUCTION".bgGreen : "DEVELOPMENT".bgYellow);
 const createQueue = (alias, redisUrl = redisUrlConnection) => new QueueService(alias, redisUrl);
 exports.createQueue = createQueue;
 class QueueService extends bull_1.default {
