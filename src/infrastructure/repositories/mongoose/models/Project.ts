@@ -20,7 +20,7 @@ const projectSchema = new Schema<IProject>({
     required: true,
     unique: true,
   },
-  User: { type: String, ref: "User" },
+  Users: [{ type: String, ref: "User" }],
   name: {
     type: String,
     unique: true,
@@ -37,10 +37,6 @@ const projectSchema = new Schema<IProject>({
     required: true,
   },
   tags: {
-    type: [String],
-    required: true,
-  },
-  Users: {
     type: [String],
     required: true,
   },

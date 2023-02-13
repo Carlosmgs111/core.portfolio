@@ -15,11 +15,11 @@ const Project_1 = require("../../domain/entities/Project");
 const User_1 = require("../../domain/entities/User");
 const utils_1 = require("../../utils");
 const JWT_1 = require("../../infrastructure/auth/JWT");
-const formatProjects = (projects) => projects.map((project) => { var _a; return (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project), { createdBy: (_a = project.User) === null || _a === void 0 ? void 0 : _a.username }), []); });
+const formatProjects = (projects) => projects.map((project) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project), { buildedBy: project.Users.map(({ username }) => username) }), ["Users"]));
 const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
     const projects = yield Project_1.Project.findAll(dependencies_1.RepositoryService, {
-        related: [["User", { as: "Users", attributes: ["username"] }]],
+        related: [["User", { attributes: ["username"] }]],
         size,
         page,
     });

@@ -6,13 +6,19 @@ import { verifyToken2 } from "../../infrastructure/auth/JWT";
 
 const formatProjects = (projects: [Project]) =>
   projects.map((project: any) =>
-    filterAttrs({ ...project, createdBy: project.User?.username }, [])
+    filterAttrs(
+      {
+        ...project,
+        buildedBy: project.Users.map(({ username }: any) => username),
+      },
+      ["Users"]
+    )
   );
 
 export const getProjects = async (data: any) => {
   const { username, user, size, page } = data;
   const projects = await Project.findAll(RepositoryService, {
-    related: [["User", { as: "Users", attributes: ["username"] }]],
+    related: [["User", { attributes: ["username"] }]],
     size,
     page,
   });

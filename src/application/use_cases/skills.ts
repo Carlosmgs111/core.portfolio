@@ -2,9 +2,25 @@ import { Skill } from "../../domain/entities/Skill";
 import { RepositoryService } from "../../config/dependencies";
 // ! implementar el uso de ´boom´ a traves de un ´interface´
 import boom from "@hapi/boom";
+import { filterAttrs } from "../../utils";
+
+const formatSkills = (skills: [Skill]) =>
+  skills.map((skill: any) =>
+    filterAttrs(
+      {
+        ...skill,
+        dominatedBy: skill.Users.map(({ username }: any) => username),
+      },
+      ["Users"]
+    )
+  );
 
 export const getAllSkills = async (data: any) => {
-  return await RepositoryService.findAll(RepositoryService.entities.Skill);
+  return formatSkills(
+    await RepositoryService.findAll(RepositoryService.entities.Skill, {
+      related: [["User", { attributes: ["username"] }]],
+    })
+  );
 };
 
 export const getSkillByUUID = async (data: any) => {

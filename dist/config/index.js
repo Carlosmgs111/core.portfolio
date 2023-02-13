@@ -30,6 +30,13 @@ const config = {
     // jwtResetPasswordSecret: String(process.env.JWT_RESET_PASSWORD_SECRET),
     jwtExp: process.env.TOKEN_EXPIRATION,
     test: process.env.test && String(process.env.test),
+    /*  */
+    redisUrlProd: String(process.env.REDIS_URL_PROD),
+    redisUrlDev: String(process.env.REDIS_URL_DEV),
+    redisHost: String(process.env.REDIS_HOST),
+    redisPort: String(process.env.REDIS_PORT),
+    redisUser: String(process.env.REDIS_USER),
+    redisPassword: String(process.env.REDIS_PASSWORD),
     // apiKey: String(process.env.API_KEY),
     // emailAddress: process.env.EMAIL_ADDRESS,
     // emailAppPassword: process.env.EMAIL_APP_PASSWORD,

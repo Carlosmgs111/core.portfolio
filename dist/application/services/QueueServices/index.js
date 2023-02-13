@@ -14,12 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueueService = exports.createQueue = void 0;
 const bull_1 = __importDefault(require("bull"));
-const createQueue = (alias, options = {
-    redis: {
-        host: "127.0.0.1",
-        port: 6379,
-    },
-}) => new QueueService(alias, options);
+const config_1 = __importDefault(require("../../../config"));
+const redisUrlConnection = config_1.default.redisUrlDev || config_1.default.redisUrlProd;
+const createQueue = (alias, redisUrl = redisUrlConnection) => new QueueService(alias, redisUrl);
 exports.createQueue = createQueue;
 class QueueService extends bull_1.default {
     constructor(alias, options = {

@@ -12,8 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.updateSkill = exports.deleteSkill = exports.addManySkills = exports.addNewSkill = exports.getSkillByUUID = exports.getAllSkills = void 0;
 const Skill_1 = require("../../domain/entities/Skill");
 const dependencies_1 = require("../../config/dependencies");
+const utils_1 = require("../../utils");
+const formatSkills = (skills) => skills.map((skill) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, skill), { dominatedBy: skill.Users.map(({ username }) => username) }), ["Users"]));
 const getAllSkills = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    return yield dependencies_1.RepositoryService.findAll(dependencies_1.RepositoryService.entities.Skill);
+    return formatSkills(yield dependencies_1.RepositoryService.findAll(dependencies_1.RepositoryService.entities.Skill, {
+        related: [["User", { attributes: ["username"] }]],
+    }));
 });
 exports.getAllSkills = getAllSkills;
 const getSkillByUUID = (data) => __awaiter(void 0, void 0, void 0, function* () {

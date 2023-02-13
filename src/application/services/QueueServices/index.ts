@@ -1,14 +1,12 @@
 import Queue from "bull";
+import config from "../../../config";
+
+const redisUrlConnection = config.redisUrlDev || config.redisUrlProd;
 
 export const createQueue = (
   alias: string,
-  options: any = {
-    redis: {
-      host: "127.0.0.1",
-      port: 6379,
-    },
-  }
-) => new QueueService(alias, options);
+  redisUrl: string = redisUrlConnection
+) => new QueueService(alias, redisUrl);
 export class QueueService extends Queue {
   constructor(
     alias: string,
