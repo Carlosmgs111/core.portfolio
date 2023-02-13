@@ -20,9 +20,11 @@ class Project {
         this.updatedAt = 0;
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const { uuid } = this;
-            yield RepositoryService.unsetOneRelationship2One({ projects: { uuid } }, [
-                ["User", { as: "User" }],
+            const removed = yield RepositoryService.removeOneRelationshipN2N([
+                [{ user: { uuid: options.userUUID } }, { project: { uuid: this.uuid } }],
             ]);
+            if (!removed)
+                return;
             return yield RepositoryService.removeOne(RepositoryService.entities.Project, {
                 credentials: { uuid },
             });
@@ -65,7 +67,7 @@ Project.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void
             ],
         ]);
     }
-    return projectsCreated;
+    return projectsCreated.map((p, i) => (Object.assign(Object.assign({}, p), { Users: [{ username: data[i].user.username }] })));
 });
 Project.load = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {
     const loadedProject = yield Project.find(RepositoryService, options);

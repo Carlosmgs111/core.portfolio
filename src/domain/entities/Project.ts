@@ -74,7 +74,10 @@ export class Project {
         ],
       ]);
     }
-    return projectsCreated;
+    return projectsCreated.map((p: any, i: any) => ({
+      ...p,
+      Users: [{ username: data[i].user.username }],
+    }));
   };
 
   static load = async (RepositoryService: any, options: any) => {
@@ -102,9 +105,11 @@ export class Project {
 
   remove = async (RepositoryService: any, options: any = {}) => {
     const { uuid } = this;
-    await RepositoryService.unsetOneRelationship2One({ projects: { uuid } }, [
-      ["User", { as: "User" }],
+    const removed = await RepositoryService.removeOneRelationshipN2N([
+      [{ user: { uuid: options.userUUID } }, { project: { uuid: this.uuid } }],
     ]);
+
+    if (!removed) return;
     return await RepositoryService.removeOne(
       RepositoryService.entities.Project,
       {

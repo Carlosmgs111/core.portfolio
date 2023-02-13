@@ -40,17 +40,14 @@ export const addManyProject = async (data: any) => {
     RepositoryService,
     projects.map((c: any) => ({ ...c, user }))
   );
-  return newProjects.map((c: any) => ({
-    ...c,
-    grantedTo: user.username,
-  }));
+  return formatProjects(newProjects);
 };
 
 export const deleteProject = async (data: any) => {
   console.log({ data });
   await (
     await Project.load(RepositoryService, { credentials: { uuid: data.uuid } })
-  ).remove(RepositoryService);
+  ).remove(RepositoryService, { userUUID: data.user.uuid });
   return { message: "Project deleted", uuid: data.uuid };
 };
 
@@ -60,10 +57,12 @@ export const updateProject = async (data: any) => {
     await Project.load(RepositoryService, { credentials: { uuid } })
   ).update(RepositoryService, filterAttrs(data, ["uuid", "user", "token"]));
 
-  return await Project.find(RepositoryService, {
-    credentials: { uuid },
-    related: [["User", { attributes: ["username"], as: "User" }]],
-  });
+  return formatProjects([
+    await Project.find(RepositoryService, {
+      credentials: { uuid },
+      related: [["User", { attributes: ["username"] }]],
+    }),
+  ])[0];
 };
 
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data

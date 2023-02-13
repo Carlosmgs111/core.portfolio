@@ -37,22 +37,24 @@ exports.addProject = addProject;
 const addManyProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { projects, user } = data;
     const newProjects = yield Project_1.Project.createMany(dependencies_1.RepositoryService, projects.map((c) => (Object.assign(Object.assign({}, c), { user }))));
-    return newProjects.map((c) => (Object.assign(Object.assign({}, c), { grantedTo: user.username })));
+    return formatProjects(newProjects);
 });
 exports.addManyProject = addManyProject;
 const deleteProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
     console.log({ data });
-    yield (yield Project_1.Project.load(dependencies_1.RepositoryService, { credentials: { uuid: data.uuid } })).remove(dependencies_1.RepositoryService);
+    yield (yield Project_1.Project.load(dependencies_1.RepositoryService, { credentials: { uuid: data.uuid } })).remove(dependencies_1.RepositoryService, { userUUID: data.user.uuid });
     return { message: "Project deleted", uuid: data.uuid };
 });
 exports.deleteProject = deleteProject;
 const updateProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, uuid } = data;
     yield (yield Project_1.Project.load(dependencies_1.RepositoryService, { credentials: { uuid } })).update(dependencies_1.RepositoryService, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"]));
-    return yield Project_1.Project.find(dependencies_1.RepositoryService, {
-        credentials: { uuid },
-        related: [["User", { attributes: ["username"], as: "User" }]],
-    });
+    return formatProjects([
+        yield Project_1.Project.find(dependencies_1.RepositoryService, {
+            credentials: { uuid },
+            related: [["User", { attributes: ["username"] }]],
+        }),
+    ])[0];
 });
 exports.updateProject = updateProject;
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
