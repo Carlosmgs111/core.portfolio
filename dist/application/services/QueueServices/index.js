@@ -15,6 +15,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.QueueService = exports.createQueue = void 0;
 const bull_1 = __importDefault(require("bull"));
 const config_1 = __importDefault(require("../../../config"));
+const { redisUrlProd, redisUrlDev } = config_1.default;
+console.log({ redisUrlProd, redisUrlDev });
 const redisUrlConnection = config_1.default.redisUrlDev || config_1.default.redisUrlProd;
 console.log({ redisUrlConnection });
 const createQueue = (alias, redisUrl = redisUrlConnection) => new QueueService(alias, redisUrl);

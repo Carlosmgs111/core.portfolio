@@ -1,8 +1,10 @@
 import Queue from "bull";
 import config from "../../../config";
 
+const { redisUrlProd, redisUrlDev } = config;
+console.log({ redisUrlProd, redisUrlDev });
 const redisUrlConnection = config.redisUrlDev || config.redisUrlProd;
-console.log({redisUrlConnection})
+console.log({ redisUrlConnection });
 
 export const createQueue = (
   alias: string,
