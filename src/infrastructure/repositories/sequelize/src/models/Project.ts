@@ -9,17 +9,6 @@ export const project_schema = {
     unique: true,
     type: DataTypes.STRING,
   },
-  userUUID: {
-    field: "user_uuid",
-    unique: false,
-    type: DataTypes.STRING,
-    references: {
-      model: "Users",
-      key: "uuid",
-      onDelete: "NO ACTION",
-      onUpdate: "NO ACTION",
-    },
-  },
   name: { allowNull: false, type: DataTypes.STRING, unique: true },
   descriptions: { type: DataTypes.ARRAY(DataTypes.TEXT), allowNull: true },
   images: { type: DataTypes.ARRAY(DataTypes.TEXT), allowNull: true },
@@ -36,10 +25,10 @@ export const project_schema = {
 
 export class Project extends Model {
   static associate(models: any) {
-    this.belongsTo(models.User, {
-      as: "User",
-      targetKey: "uuid",
-      foreignKey: "userUUID",
+    this.belongsToMany(models.User, {
+      through: models.Users_Projects,
+      foreignKey: "projectUUID",
+      otherKey: "userUUID",
     });
   }
 }

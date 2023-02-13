@@ -11,17 +11,6 @@ exports.project_schema = {
         unique: true,
         type: sequelize_1.DataTypes.STRING,
     },
-    userUUID: {
-        field: "user_uuid",
-        unique: false,
-        type: sequelize_1.DataTypes.STRING,
-        references: {
-            model: "Users",
-            key: "uuid",
-            onDelete: "NO ACTION",
-            onUpdate: "NO ACTION",
-        },
-    },
     name: { allowNull: false, type: sequelize_1.DataTypes.STRING, unique: true },
     descriptions: { type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.TEXT), allowNull: true },
     images: { type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.TEXT), allowNull: true },
@@ -37,10 +26,10 @@ exports.project_schema = {
 };
 class Project extends sequelize_1.Model {
     static associate(models) {
-        this.belongsTo(models.User, {
-            as: "User",
-            targetKey: "uuid",
-            foreignKey: "userUUID",
+        this.belongsToMany(models.User, {
+            through: models.Users_Projects,
+            foreignKey: "projectUUID",
+            otherKey: "userUUID",
         });
     }
 }

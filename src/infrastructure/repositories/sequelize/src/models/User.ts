@@ -43,16 +43,17 @@ export class User extends Model {
       foreignKey: "userUUID",
       otherKey: "institutionUUID",
     });
-    this.belongsToMany(models.Institution, {
+    this.belongsToMany(models.Skill, {
       through: models.Users_Skills,
       foreignKey: "userUUID",
       otherKey: "skillUUID",
     });
-    // ? One2N relationships
-    this.hasMany(models.Project, {
-      as: "Projects",
+    this.belongsToMany(models.Project, {
+      through: models.Users_Projects,
       foreignKey: "userUUID",
+      otherKey: "projectUUID",
     });
+    // ? One2N relationships
     this.hasMany(models.Post, {
       as: "Posts",
       foreignKey: "userUUID",
