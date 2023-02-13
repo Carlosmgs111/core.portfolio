@@ -2,6 +2,7 @@ import Queue from "bull";
 import config from "../../../config";
 
 const redisUrlConnection = config.redisUrlDev || config.redisUrlProd;
+console.log({redisUrlConnection})
 
 export const createQueue = (
   alias: string,
