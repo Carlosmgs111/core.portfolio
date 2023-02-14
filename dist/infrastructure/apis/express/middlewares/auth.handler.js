@@ -20,7 +20,6 @@ const users_1 = require("../../../../application/use_cases/users");
 const verifyToken = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const { authorization } = req.headers;
     const token = (authorization || "").replace("Bearer ", "");
-    console.log({ decoded: (0, jose_1.decodeJwt)(token) });
     try {
         const verified = yield (0, jose_1.jwtVerify)(token, new TextEncoder().encode(config_1.default.jwtAccessSecret));
         //console.log({verified})
@@ -72,7 +71,6 @@ function authMiddleware(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const payload = yield (0, exports.verifyToken)(req);
-            console.log({ payload });
             req.user = yield (0, users_1.load)({
                 uuid: payload.uuid,
                 email: payload.email,

@@ -29,6 +29,7 @@ exports.app
     .use((0, grantUrls_handler_1.grantUrls)([
     [["signin", "signup"], ["POST"]],
     [["certifications", "institutions", "skills", "projects", "cqrs"]],
+    [["users/username/all"]],
 ]))
     /* to check */
     .use((req, res, next) => {

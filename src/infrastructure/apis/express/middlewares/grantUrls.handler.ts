@@ -14,12 +14,18 @@ export const grantUrls = (urlsGranted: string[][][]) => {
       headers: { authorization },
     } = req;
     req.token = (authorization || "").replace("Bearer ", "");
-    
-    let toGrantUrl = url
-      .replace(`/api/${apiConfig.version}/`, "")
-      .replace(`/ui/${uiConfig.version}/`, "")
-      .split("/")[0]
-      .split("?")[0];
+
+    let query;
+    let toGrantUrl;
+
+    (() => {
+      const grantedUrl = url
+        .replace(`/api/${apiConfig.version}/`, "")
+        .replace(`/ui/${uiConfig.version}/`, "")
+        .split("/");
+      [toGrantUrl, query] = grantedUrl.join("/").split("?");
+    })();
+
     let isGranted = false;
     for (var urlGranted of urlsGranted) {
       let [pathsGranted, methodsGranted = []]: any = urlGranted;

@@ -41,7 +41,6 @@ const addManyProject = (data) => __awaiter(void 0, void 0, void 0, function* () 
 });
 exports.addManyProject = addManyProject;
 const deleteProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ data });
     yield (yield Project_1.Project.load(dependencies_1.RepositoryService, { credentials: { uuid: data.uuid } })).remove(dependencies_1.RepositoryService, { userUUID: data.user.uuid });
     return { message: "Project deleted", uuid: data.uuid };
 });

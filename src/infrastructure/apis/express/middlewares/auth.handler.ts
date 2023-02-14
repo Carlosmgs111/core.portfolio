@@ -14,7 +14,6 @@ interface UserJwtPayload {
 export const verifyToken = async (req: any) => {
   const { authorization } = req.headers;
   const token = (authorization || "").replace("Bearer ", "");
-  console.log({ decoded: decodeJwt(token) });
   try {
     const verified = await jwtVerify(
       token,
@@ -65,7 +64,6 @@ export function checkRoles(...roles: string[]) {
 export async function authMiddleware(req: any, res: any, next: Function) {
   try {
     const payload = await verifyToken(req);
-    console.log({ payload });
     req.user = await load({
       uuid: payload.uuid,
       email: payload.email,

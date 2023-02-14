@@ -31,6 +31,7 @@ app
     grantUrls([
       [["signin", "signup"], ["POST"]],
       [["certifications", "institutions", "skills", "projects", "cqrs"]],
+      [["users/username/all"]],
     ])
   )
   /* to check */

@@ -44,7 +44,6 @@ export const addManyProject = async (data: any) => {
 };
 
 export const deleteProject = async (data: any) => {
-  console.log({ data });
   await (
     await Project.load(RepositoryService, { credentials: { uuid: data.uuid } })
   ).remove(RepositoryService, { userUUID: data.user.uuid });

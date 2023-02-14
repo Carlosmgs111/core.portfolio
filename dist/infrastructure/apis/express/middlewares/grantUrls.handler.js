@@ -11,11 +11,15 @@ const grantUrls = (urlsGranted) => {
     return (req, res, next) => {
         const { url, method, params, headers: { authorization }, } = req;
         req.token = (authorization || "").replace("Bearer ", "");
-        let toGrantUrl = url
-            .replace(`/api/${dependencies_1.apiConfig.version}/`, "")
-            .replace(`/ui/${dependencies_1.uiConfig.version}/`, "")
-            .split("/")[0]
-            .split("?")[0];
+        let query;
+        let toGrantUrl;
+        (() => {
+            const grantedUrl = url
+                .replace(`/api/${dependencies_1.apiConfig.version}/`, "")
+                .replace(`/ui/${dependencies_1.uiConfig.version}/`, "")
+                .split("/");
+            [toGrantUrl, query] = grantedUrl.join("/").split("?");
+        })();
         let isGranted = false;
         for (var urlGranted of urlsGranted) {
             let [pathsGranted, methodsGranted = []] = urlGranted;

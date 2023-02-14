@@ -98,7 +98,7 @@ User.find = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 
     return account;
 });
 User.findAll = (DatabaseService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    return (yield DatabaseService.findAll(DatabaseService.entities.User, options)).map((user) => user.dataValues.username);
+    return (yield DatabaseService.findAll(DatabaseService.entities.User, options)).map((user) => (0, utils_1.filterAttrs)(user, ["privilege", "password"]));
 });
 User.certifications = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield User.find(RepositoryService, {

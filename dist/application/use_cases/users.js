@@ -41,7 +41,7 @@ const updateUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.updateUser = updateUser;
 const sayHello = (data) => data.user.sayHello(data.name);
 exports.sayHello = sayHello;
-const getAllUsername = () => __awaiter(void 0, void 0, void 0, function* () { return yield User_1.User.findAll(dependencies_1.RepositoryService); });
+const getAllUsername = () => __awaiter(void 0, void 0, void 0, function* () { return (yield User_1.User.findAll(dependencies_1.RepositoryService)).map((u) => u.username); });
 exports.getAllUsername = getAllUsername;
 const load = (credentials) => __awaiter(void 0, void 0, void 0, function* () { return yield User_1.User.load(dependencies_1.RepositoryService, { credentials }); });
 exports.load = load;

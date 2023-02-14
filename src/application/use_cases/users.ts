@@ -29,7 +29,8 @@ export const updateUser = async (data: any) => {
 };
 export const sayHello = (data: any) => data.user.sayHello(data.name);
 
-export const getAllUsername = async () => await User.findAll(RepositoryService);
+export const getAllUsername = async () =>
+  (await User.findAll(RepositoryService)).map((u: any) => u.username);
 
 export const load = async (credentials: any) =>
   await User.load(RepositoryService, { credentials });

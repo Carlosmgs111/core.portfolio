@@ -42,9 +42,11 @@ exports.deleteSkill = deleteSkill;
 const updateSkill = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, uuid } = data;
     yield (yield Skill_1.Skill.load(dependencies_1.RepositoryService, { credentials: { uuid } })).update(dependencies_1.RepositoryService, data);
-    return yield (0, exports.getSkillByUUID)({
-        credentials: { uuid },
-        related: [["User", { attributes: ["username"], as: "Users" }]],
-    });
+    return formatSkills([
+        yield (0, exports.getSkillByUUID)({
+            credentials: { uuid },
+            related: [["User", { attributes: ["username"], as: "Users" }]],
+        }),
+    ])[0];
 });
 exports.updateSkill = updateSkill;

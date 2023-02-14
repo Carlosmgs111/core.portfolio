@@ -109,7 +109,7 @@ export class User {
 
   static findAll = async (DatabaseService: any, options: any = {}) =>
     (await DatabaseService.findAll(DatabaseService.entities.User, options)).map(
-      (user: any) => user.dataValues.username
+      (user: any) => filterAttrs(user, ["privilege", "password"])
     );
 
   remove = async (RepositoryService: any) => {

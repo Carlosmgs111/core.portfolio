@@ -8,6 +8,7 @@ import {
   sayHello,
   changeUsername,
   updateAvatar,
+  getAllUsername,
 } from "../../../../../../application/use_cases/users";
 import {
   createUserSchema,
@@ -47,5 +48,6 @@ export default router
     expressHandlerAdapter(removeUser)
   )
   .patch("/username/change", expressHandlerAdapter(changeUsername))
+  .get("/username/all", expressHandlerAdapter(getAllUsername))
   .patch("/avatar/update", expressHandlerAdapter(updateAvatar))
   .use("/password", passwordRoutes);
