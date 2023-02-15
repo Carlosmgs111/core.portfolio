@@ -58,8 +58,15 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
   };
 
   updateOne = async (entity: any, Entity: any, options: any) => {
-    const model = await models[entity].updateOne(this.adapter(options), Entity);
-    return model._doc;
+    try {
+      const model = await models[entity].updateOne(
+        this.adapter(options),
+        Entity
+      );
+      return model._doc;
+    } catch (e: any) {
+      return boom.conflict("Entity with same attribute!");
+    }
   };
 
   createOneRelationshipN2N = async (refs: any) => {

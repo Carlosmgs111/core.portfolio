@@ -114,9 +114,13 @@ export class Certification {
       credentials: { uuid: this.uuid },
       related: [["Institution", { attributes: ["name"], as: "Institution" }]],
     });
-    
+    console.log(data.emitedBy, emitedBy);
     if (data.emitedBy && emitedBy !== data.emitedBy) {
       console.log("Must change relationship".bgYellow);
+      await RepositoryService.unsetOneRelationship2One(
+        { certifications: { uuid: this.uuid } },
+        [["Institution", { as: "Institution" }]]
+      );
       await RepositoryService.setOneRelationship2One(
         { certifications: { uuid: this.uuid } },
         [
@@ -135,6 +139,7 @@ export class Certification {
       },
       { credentials: { uuid: this.uuid } }
     );
+
     return this;
   };
 

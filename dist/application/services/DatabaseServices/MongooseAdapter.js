@@ -54,8 +54,13 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
             return yield models_1.default[entity].deleteOne(this.adapter(options));
         });
         this.updateOne = (entity, Entity, options) => __awaiter(this, void 0, void 0, function* () {
-            const model = yield models_1.default[entity].updateOne(this.adapter(options), Entity);
-            return model._doc;
+            try {
+                const model = yield models_1.default[entity].updateOne(this.adapter(options), Entity);
+                return model._doc;
+            }
+            catch (e) {
+                return boom_1.default.conflict("Entity with same attribute!");
+            }
         });
         this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
             for (let ref of refs) {
