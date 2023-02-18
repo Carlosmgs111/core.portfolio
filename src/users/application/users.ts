@@ -1,4 +1,4 @@
-import { User } from "../../domain/entities/User";
+import { User } from "../domain/User";
 import { RepositoryService } from "../../config/dependencies";
 // ! implementar el uso de ´boom´ a traves de un ´interface´
 import boom from "@hapi/boom";

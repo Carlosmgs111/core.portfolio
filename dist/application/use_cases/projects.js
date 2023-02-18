@@ -12,7 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.migrateRelationship2OneToN2N = exports.migrateDescriptionToDescriptions = exports.updateProject = exports.deleteProject = exports.addManyProject = exports.addProject = exports.getOwnProjects = exports.getProjects = void 0;
 const dependencies_1 = require("../../config/dependencies");
 const Project_1 = require("../../domain/entities/Project");
-const User_1 = require("../../domain/entities/User");
+const User_1 = require("../../users/domain/User");
 const utils_1 = require("../../utils");
 const JWT_1 = require("../../infrastructure/auth/JWT");
 const formatProjects = (projects) => projects.map((project) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project), { buildedBy: project.Users.map(({ username }) => username) }), ["Users"]));

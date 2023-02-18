@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocalStrategy = void 0;
 const passport_local_1 = require("passport-local");
-const register_1 = require("../../../../application/use_cases/register");
+const register_1 = require("../../../../users/application/register");
 exports.LocalStrategy = new passport_local_1.Strategy({
     usernameField: "email",
     passwordField: "password"

@@ -1,4 +1,4 @@
-import { User } from "../../domain/entities/User";
+import { User } from "../domain/User";
 import { RepositoryService, AuthServices } from "../../config/dependencies";
 import { filterAttrs, encryptData, decryptData } from "../../domain/utils";
 import config from "../../config";

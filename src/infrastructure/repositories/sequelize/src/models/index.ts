@@ -2,7 +2,11 @@ import { labelCases } from "../utils";
 import { DataTypes } from "sequelize";
 import { sequelize } from "..";
 // * Models import
-import { User, user_schema, user_table } from "./User";
+import {
+  User,
+  user_schema,
+  user_table,
+} from "../../../../../users/infrastructure/repositories/sequelize//User";
 import { Project, project_schema, project_table } from "./Project";
 import {
   Institution,

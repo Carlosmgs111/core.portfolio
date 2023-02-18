@@ -2,7 +2,7 @@ import boom from "@hapi/boom";
 import config from "../../../../config";
 import { SignJWT, jwtVerify, decodeJwt } from "jose";
 import { findBy } from "../../../../application/use_cases/CRUD";
-import { load } from "../../../../application/use_cases/users";
+import { load } from "../../../../users/application/users";
 
 interface UserJwtPayload {
   uuid: string; // The user Id

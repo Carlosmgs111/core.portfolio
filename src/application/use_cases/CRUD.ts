@@ -1,4 +1,4 @@
-import { User } from "../../domain/entities/User";
+import { User } from "../../users/domain/User";
 import { RepositoryService } from "../../config/dependencies";
 
 const entities: any = { User };

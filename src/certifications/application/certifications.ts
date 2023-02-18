@@ -1,6 +1,6 @@
 import { RepositoryService } from "../../config/dependencies";
 import { Certification } from "../domain/Certification";
-import { User } from "../../domain/entities/User";
+import { User } from "../../users/domain/User";
 import boom from "@hapi/boom";
 import { verifyToken2 } from "../../infrastructure/auth/JWT";
 import { formatCertifications } from "../domain/DTO";

@@ -3,7 +3,7 @@ import {
   updateCertification,
   getOwnCertifications,
 } from "../../../../certifications/application/certifications";
-import { getAllUsername } from "../../../../application/use_cases/users";
+import { getAllUsername } from "../../../../users/application/users";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
 

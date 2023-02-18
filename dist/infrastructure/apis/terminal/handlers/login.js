@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginHandler = void 0;
-const register_1 = require("../../../../application/use_cases/register");
+const register_1 = require("../../../../users/application/register");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 const jose_1 = require("jose");

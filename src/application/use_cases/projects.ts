@@ -1,6 +1,6 @@
 import { RepositoryService } from "../../config/dependencies";
 import { Project } from "../../domain/entities/Project";
-import { User } from "../../domain/entities/User";
+import { User } from "../../users/domain/User";
 import { filterAttrs } from "../../utils";
 import { verifyToken2 } from "../../infrastructure/auth/JWT";
 

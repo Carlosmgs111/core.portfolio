@@ -22,7 +22,7 @@ var __rest = (this && this.__rest) || function (s, e) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createNewNote = exports.getMyNotes = void 0;
 const Note_1 = require("../../domain/entities/Note");
-const User_1 = require("../../domain/entities/User");
+const User_1 = require("../../users/domain/User");
 const dependencies_1 = require("../../config/dependencies");
 const getMyNotes = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user } = data;

@@ -1,15 +1,12 @@
 import { Router } from "express";
-import {
-  signup,
-  signin,
-} from "../../../../../application/use_cases/register";
+import { signup, signin } from "../../../../../application/register";
 import {
   createUserSchema,
   getUserSchema,
   updateUserSchema,
-} from "../../../../schemas/user.schema";
-import { validatorHandler } from "../../middlewares/validator.handler";
-import { expressHandlerAdapter } from "../../../../../adapters/apis/express";
+} from "../../../../../../infrastructure/schemas/user.schema";
+import { validatorHandler } from "../../../../../../infrastructure/apis/express/middlewares/validator.handler";
+import { expressHandlerAdapter } from "../../../../../../adapters/apis/express";
 
 const router = Router();
 

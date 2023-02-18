@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createOne = exports.findBy = void 0;
-const User_1 = require("../../domain/entities/User");
+const User_1 = require("../../users/domain/User");
 const dependencies_1 = require("../../config/dependencies");
 const entities = { User: User_1.User };
 const findBy = (label, findBy) => __awaiter(void 0, void 0, void 0, function* () {

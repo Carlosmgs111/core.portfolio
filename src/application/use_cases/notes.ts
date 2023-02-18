@@ -1,5 +1,5 @@
 import { Note } from "../../domain/entities/Note";
-import { User } from "../../domain/entities/User";
+import { User } from "../../users/domain/User";
 import { RepositoryService } from "../../config/dependencies";
 
 export const getMyNotes = async (data: any) => {

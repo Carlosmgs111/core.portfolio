@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.removeCertification = exports.updateCertification = exports.addManyCertifications = exports.addNewCertification = exports.getCertificationByUUID = exports.getOwnCertifications = exports.getCertifications = void 0;
 const dependencies_1 = require("../../config/dependencies");
 const Certification_1 = require("../domain/Certification");
-const User_1 = require("../../domain/entities/User");
+const User_1 = require("../../users/domain/User");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const JWT_1 = require("../../infrastructure/auth/JWT");
 const DTO_1 = require("../domain/DTO");
