@@ -90,9 +90,10 @@ User.authLoad = (RepositoryService, options = {}) => __awaiter(void 0, void 0, v
 });
 User.find = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
     const { credentials } = options;
+    console.log({ credentials });
     if (!credentials)
         throw boom_1.default.conflict("Idexation must be provided!");
-    const account = yield RepositoryService.findOne(RepositoryService.entities.User, Object.assign(Object.assign({}, options), { credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["email", "username"], false) }));
+    const account = yield RepositoryService.findOne(RepositoryService.entities.User, Object.assign(Object.assign({}, options), { credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["email", "username", "uuid"], false) }));
     if (!account)
         throw boom_1.default.conflict("Account doesn´t exist!");
     return account;

@@ -4,7 +4,16 @@ import Certification from "./Certification";
 import Institution from "./Institution";
 import Post from "./Post";
 import Skill from "./Skill";
+import Note from "./Note";
 
-const models: any = { Project, User, Certification, Institution, Post, Skill };
+const models: any = {
+  Project,
+  User,
+  Certification,
+  Institution,
+  Post,
+  Skill,
+  Note,
+};
 
 export default models;

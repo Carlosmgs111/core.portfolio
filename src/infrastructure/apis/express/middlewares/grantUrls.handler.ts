@@ -16,6 +16,7 @@ export const grantUrls = (urlsGranted: string[][][]) => {
     req.token = (authorization || "").replace("Bearer ", "");
 
     let query;
+    let param;
     let toGrantUrl;
 
     (() => {
@@ -28,10 +29,18 @@ export const grantUrls = (urlsGranted: string[][][]) => {
 
     let isGranted = false;
     for (var urlGranted of urlsGranted) {
-      let [pathsGranted, methodsGranted = []]: any = urlGranted;
-      methodsGranted = ["GET", ...methodsGranted];
+      let [grantedPaths, grantedMethods = []]: any = urlGranted;
+      // console.log({ grantedPaths });
+
+      grantedMethods = ["GET", ...grantedMethods];
+      grantedPaths.map((grantedPath: any) => {
+        if (grantedPath.includes(":")) {
+          // isGranted = true;
+          console.log({ grantedPath });
+        }
+      });
       const isIncluded =
-        pathsGranted.includes(toGrantUrl) && methodsGranted.includes(method);
+        grantedPaths.includes(toGrantUrl) && grantedMethods.includes(method);
       if (isIncluded) {
         isGranted = true;
         break;

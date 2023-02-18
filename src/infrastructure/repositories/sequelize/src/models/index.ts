@@ -16,6 +16,7 @@ import {
 } from "./Certification";
 import { Post, post_schema, post_table } from "./Post";
 import { Skill, skill_schema, skill_table } from "./Skill";
+import { Note, note_schema, note_table } from "./Note";
 
 const joinTableNames: any = {};
 const joinTableSchema: any = {};
@@ -77,6 +78,7 @@ const models: any = {
   Certification,
   Post,
   Skill,
+  Note,
   ...createJoinTable(User, Institution),
   ...createJoinTable(User, Certification),
   ...createJoinTable(User, Skill),
@@ -90,6 +92,7 @@ export const tableNames = {
   skill_table,
   project_table,
   post_table,
+  note_table,
   ...joinTableNames,
 };
 
@@ -100,6 +103,7 @@ export const tableSchemas = {
   skill_schema,
   project_schema,
   post_schema,
+  note_schema,
   ...joinTableSchema,
 };
 

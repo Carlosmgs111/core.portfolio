@@ -30,8 +30,17 @@ app
   .use(
     grantUrls([
       [["signin", "signup"], ["POST"]],
-      [["certifications", "institutions", "skills", "projects", "cqrs"]],
-      [["users/username/all"]],
+      [["certifications", "certifications/:username"]],
+      [
+        [
+          "institutions",
+          "skills",
+          "projects",
+          "cqrs",
+          "users/username/all",
+          "notes",
+        ],
+      ],
     ])
   )
   /* to check */

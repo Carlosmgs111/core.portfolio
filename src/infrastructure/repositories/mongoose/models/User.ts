@@ -9,6 +9,7 @@ export interface IUser extends Document {
   Institutions: Array<any>;
   Projects: Array<any>;
   Skills: Array<any>;
+  Notes: Array<any>;
   privilege: string;
   avatar: string;
   createdAt: number;
@@ -48,6 +49,7 @@ const userSchema = new Schema<IUser>({
   Institutions: [{ type: String, ref: "Institution" }],
   Projects: [{ type: String, ref: "Project" }],
   Skills: [{ type: String, ref: "Skill" }],
+  Notes: [{ type: String, ref: "Note" }],
   createdAt: {
     type: Number,
     required: true,

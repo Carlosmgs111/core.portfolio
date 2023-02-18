@@ -9,5 +9,14 @@ const Certification_1 = __importDefault(require("./Certification"));
 const Institution_1 = __importDefault(require("./Institution"));
 const Post_1 = __importDefault(require("./Post"));
 const Skill_1 = __importDefault(require("./Skill"));
-const models = { Project: Project_1.default, User: User_1.default, Certification: Certification_1.default, Institution: Institution_1.default, Post: Post_1.default, Skill: Skill_1.default };
+const Note_1 = __importDefault(require("./Note"));
+const models = {
+    Project: Project_1.default,
+    User: User_1.default,
+    Certification: Certification_1.default,
+    Institution: Institution_1.default,
+    Post: Post_1.default,
+    Skill: Skill_1.default,
+    Note: Note_1.default,
+};
 exports.default = models;

@@ -11,6 +11,7 @@ const Institution_1 = require("./Institution");
 const Certification_1 = require("./Certification");
 const Post_1 = require("./Post");
 const Skill_1 = require("./Skill");
+const Note_1 = require("./Note");
 const joinTableNames = {};
 const joinTableSchema = {};
 const createJoinTable = (A, B) => {
@@ -64,17 +65,20 @@ const models = Object.assign(Object.assign(Object.assign(Object.assign({ User: U
     Institution: Institution_1.Institution,
     Certification: Certification_1.Certification,
     Post: Post_1.Post,
-    Skill: Skill_1.Skill }, createJoinTable(User_1.User, Institution_1.Institution)), createJoinTable(User_1.User, Certification_1.Certification)), createJoinTable(User_1.User, Skill_1.Skill)), createJoinTable(User_1.User, Project_1.Project));
+    Skill: Skill_1.Skill,
+    Note: Note_1.Note }, createJoinTable(User_1.User, Institution_1.Institution)), createJoinTable(User_1.User, Certification_1.Certification)), createJoinTable(User_1.User, Skill_1.Skill)), createJoinTable(User_1.User, Project_1.Project));
 exports.tableNames = Object.assign({ institution_table: Institution_1.institution_table,
     user_table: User_1.user_table,
     certification_table: Certification_1.certification_table,
     skill_table: Skill_1.skill_table,
     project_table: Project_1.project_table,
-    post_table: Post_1.post_table }, joinTableNames);
+    post_table: Post_1.post_table,
+    note_table: Note_1.note_table }, joinTableNames);
 exports.tableSchemas = Object.assign({ institution_schema: Institution_1.institution_schema,
     certification_schema: Certification_1.certification_schema,
     user_schema: User_1.user_schema,
     skill_schema: Skill_1.skill_schema,
     project_schema: Project_1.project_schema,
-    post_schema: Post_1.post_schema }, joinTableSchema);
+    post_schema: Post_1.post_schema,
+    note_schema: Note_1.note_schema }, joinTableSchema);
 exports.default = models;

@@ -58,6 +58,7 @@ export class User extends Model {
       as: "Posts",
       foreignKey: "userUUID",
     });
+    this.hasMany(models.Note, { as: "Notes", foreignKey: "userUUID" });
   }
 }
 

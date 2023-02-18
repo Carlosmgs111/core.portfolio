@@ -11,6 +11,7 @@ const institution_routes_1 = __importDefault(require("./institution.routes"));
 const auth_routes_1 = __importDefault(require("./auth.routes"));
 const post_routes_1 = __importDefault(require("./post.routes"));
 const skill_routes_1 = __importDefault(require("./skill.routes"));
+const note_routes_1 = __importDefault(require("./note.routes"));
 const router = (0, express_1.Router)();
 exports.default = router
     .use("/projects", project_routes_1.default)
@@ -19,4 +20,5 @@ exports.default = router
     .use("/institutions", institution_routes_1.default)
     .use("/posts", post_routes_1.default)
     .use("/skills", skill_routes_1.default)
+    .use("/notes", note_routes_1.default)
     .use("", auth_routes_1.default);

@@ -34,6 +34,7 @@ const userSchema = new mongoose_1.Schema({
     Institutions: [{ type: String, ref: "Institution" }],
     Projects: [{ type: String, ref: "Project" }],
     Skills: [{ type: String, ref: "Skill" }],
+    Notes: [{ type: String, ref: "Note" }],
     createdAt: {
         type: Number,
         required: true,

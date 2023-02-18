@@ -12,6 +12,7 @@ const grantUrls = (urlsGranted) => {
         const { url, method, params, headers: { authorization }, } = req;
         req.token = (authorization || "").replace("Bearer ", "");
         let query;
+        let param;
         let toGrantUrl;
         (() => {
             const grantedUrl = url
@@ -22,9 +23,16 @@ const grantUrls = (urlsGranted) => {
         })();
         let isGranted = false;
         for (var urlGranted of urlsGranted) {
-            let [pathsGranted, methodsGranted = []] = urlGranted;
-            methodsGranted = ["GET", ...methodsGranted];
-            const isIncluded = pathsGranted.includes(toGrantUrl) && methodsGranted.includes(method);
+            let [grantedPaths, grantedMethods = []] = urlGranted;
+            // console.log({ grantedPaths });
+            grantedMethods = ["GET", ...grantedMethods];
+            grantedPaths.map((grantedPath) => {
+                if (grantedPath.includes(":")) {
+                    // isGranted = true;
+                    console.log({ grantedPath });
+                }
+            });
+            const isIncluded = grantedPaths.includes(toGrantUrl) && grantedMethods.includes(method);
             if (isIncluded) {
                 isGranted = true;
                 break;

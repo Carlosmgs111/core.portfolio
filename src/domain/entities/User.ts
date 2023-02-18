@@ -91,6 +91,7 @@ export class User {
 
   static find = async (RepositoryService: any, options: any = {}) => {
     const { credentials } = options;
+    console.log({credentials})
     if (!credentials) throw boom.conflict("Idexation must be provided!");
     const account: any = await RepositoryService.findOne(
       RepositoryService.entities.User,
@@ -98,7 +99,7 @@ export class User {
         ...options,
         credentials: filterAttrs(
           getEntityProperties(credentials),
-          ["email", "username"],
+          ["email", "username", "uuid"],
           false
         ),
       }

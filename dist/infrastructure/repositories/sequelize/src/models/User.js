@@ -60,6 +60,7 @@ class User extends sequelize_1.Model {
             as: "Posts",
             foreignKey: "userUUID",
         });
+        this.hasMany(models.Note, { as: "Notes", foreignKey: "userUUID" });
     }
 }
 exports.User = User;
