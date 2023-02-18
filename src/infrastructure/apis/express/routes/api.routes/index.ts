@@ -1,6 +1,6 @@
 import { Router } from "express";
-import projectRoutes from "./project.routes";
-import userRoutes from "../../../../../users/infrastructure/apis/express/routes/api.routes//user.routes";
+import projectRoutes from "../../../../../projects/insfrastructure/apis/express/routes/api.routes/project.routes";
+import userRoutes from "../../../../../users/infrastructure/apis/express/routes/api.routes/user.routes";
 import certificationRoutes from "../../../../../certifications/infrastructure/apis/express/routes/api.routes/certification.routes";
 import institutionRoutes from "./institution.routes";
 import authRoutes from "../../../../../users/infrastructure/apis/express/routes/api.routes/auth.routes";

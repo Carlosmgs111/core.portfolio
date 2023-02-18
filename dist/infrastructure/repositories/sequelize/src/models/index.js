@@ -5,8 +5,8 @@ const utils_1 = require("../utils");
 const sequelize_1 = require("sequelize");
 const __1 = require("..");
 // * Models import
-const User_1 = require("../../../../../users/infrastructure/repositories/sequelize//User");
-const Project_1 = require("./Project");
+const User_1 = require("../../../../../users/infrastructure/repositories/sequelize/User");
+const Project_1 = require("../../../../../projects/insfrastructure/repositories/sequelize/Project");
 const Institution_1 = require("./Institution");
 const Certification_1 = require("../../../../../certifications/infrastructure/repositories/sequelize/Certification");
 const Post_1 = require("./Post");

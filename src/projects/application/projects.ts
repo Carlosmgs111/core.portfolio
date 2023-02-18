@@ -1,5 +1,5 @@
 import { RepositoryService } from "../../config/dependencies";
-import { Project } from "../../domain/entities/Project";
+import { Project } from "../../projects/domain//Project";
 import { User } from "../../users/domain/User";
 import { filterAttrs } from "../../utils";
 import { verifyToken2 } from "../../infrastructure/auth/JWT";

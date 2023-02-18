@@ -4,8 +4,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const project_routes_1 = __importDefault(require("./project.routes"));
-const user_routes_1 = __importDefault(require("../../../../../users/infrastructure/apis/express/routes/api.routes//user.routes"));
+const project_routes_1 = __importDefault(require("../../../../../projects/insfrastructure/apis/express/routes/api.routes/project.routes"));
+const user_routes_1 = __importDefault(require("../../../../../users/infrastructure/apis/express/routes/api.routes/user.routes"));
 const certification_routes_1 = __importDefault(require("../../../../../certifications/infrastructure/apis/express/routes/api.routes/certification.routes"));
 const institution_routes_1 = __importDefault(require("./institution.routes"));
 const auth_routes_1 = __importDefault(require("../../../../../users/infrastructure/apis/express/routes/api.routes/auth.routes"));

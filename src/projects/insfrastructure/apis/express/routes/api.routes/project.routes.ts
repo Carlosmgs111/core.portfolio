@@ -7,8 +7,8 @@ import {
   updateProject,
   migrateDescriptionToDescriptions,
   migrateRelationship2OneToN2N,
-} from "../../../../../application/use_cases/projects";
-import { expressHandlerAdapter } from "../../../../../adapters/apis/express";
+} from "../../../../../application/projects";
+import { expressHandlerAdapter } from "../../../../../../adapters/apis/express";
 
 const router = Router();
 

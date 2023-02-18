@@ -1,4 +1,4 @@
-import Project from "./Project";
+import Project from "../../../../projects/insfrastructure/repositories/mongoose/Project";
 import User from "../../../../users/infrastructure/repositories/mongoose/User";
 import Certification from "../../../../certifications/infrastructure/repositories/mongoose/Certification";
 import Institution from "./Institution";

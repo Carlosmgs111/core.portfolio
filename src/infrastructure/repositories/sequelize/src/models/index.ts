@@ -6,8 +6,12 @@ import {
   User,
   user_schema,
   user_table,
-} from "../../../../../users/infrastructure/repositories/sequelize//User";
-import { Project, project_schema, project_table } from "./Project";
+} from "../../../../../users/infrastructure/repositories/sequelize/User";
+import {
+  Project,
+  project_schema,
+  project_table,
+} from "../../../../../projects/insfrastructure/repositories/sequelize/Project";
 import {
   Institution,
   institution_schema,
