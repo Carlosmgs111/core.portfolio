@@ -8,8 +8,8 @@ const User_1 = __importDefault(require("../../../../users/infrastructure/reposit
 const Certification_1 = __importDefault(require("../../../../certifications/infrastructure/repositories/mongoose/Certification"));
 const Institution_1 = __importDefault(require("../../../../institutions/infrastructure/repositories/mongoose/Institution"));
 const Post_1 = __importDefault(require("../../../../posts/insfrasctructure/repositories/mongoose/Post"));
-const Skill_1 = __importDefault(require("./Skill"));
-const Note_1 = __importDefault(require("./Note"));
+const Skill_1 = __importDefault(require("../../../../skills/infrastructure/repositories/mongoose/Skill"));
+const Note_1 = __importDefault(require("../../../../notes/insfrastructure/repositories/mongoose/Note"));
 const models = {
     Project: Project_1.default,
     User: User_1.default,

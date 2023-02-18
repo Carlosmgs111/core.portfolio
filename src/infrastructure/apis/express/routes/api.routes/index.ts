@@ -5,8 +5,8 @@ import certificationRoutes from "../../../../../certifications/infrastructure/ap
 import institutionRoutes from "../../../../../institutions/infrastructure/apis/express/routes/api.routes//institution.routes";
 import authRoutes from "../../../../../users/infrastructure/apis/express/routes/api.routes/auth.routes";
 import postRoutes from "../../../../../posts/insfrasctructure/apis/express/routes/api.routes/post.routes";
-import skillRoutes from "./skill.routes";
-import noteRoutes from "./note.routes";
+import skillRoutes from "../../../../../skills/infrastructure/apis/express/routes/api.routes/skill.routes";
+import noteRoutes from "../../../../../notes/insfrastructure/apis/express/routes/api.routes/note.routes";
 
 const router = Router();
 

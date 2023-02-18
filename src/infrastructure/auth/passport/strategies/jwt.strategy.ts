@@ -1,7 +1,7 @@
 import { Strategy, ExtractJwt, StrategyOptions } from "passport-jwt";
 import boom from "@hapi/boom";
 import config from "../../../../config";
-import { findBy } from "../../../../application/use_cases/CRUD";
+import { findBy } from "../../../../users/application/CRUD";
 
 const opts: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),

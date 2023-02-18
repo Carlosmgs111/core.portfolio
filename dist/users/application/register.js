@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetPassword = exports.resetAuthPassword = exports.update = exports.unsubscribe = exports.authSignin = exports.signin = exports.signup = void 0;
 const User_1 = require("../domain/User");
 const dependencies_1 = require("../../config/dependencies");
-const utils_1 = require("../../domain/utils");
+const utils_1 = require("../../utils");
 const config_1 = __importDefault(require("../../config"));
 const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password } = credentials;

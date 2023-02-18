@@ -1,4 +1,4 @@
-import { Skill } from "../../domain/entities/Skill";
+import { Skill } from "../domain/Skill";
 import { RepositoryService } from "../../config/dependencies";
 // ! implementar el uso de ´boom´ a traves de un ´interface´
 import boom from "@hapi/boom";

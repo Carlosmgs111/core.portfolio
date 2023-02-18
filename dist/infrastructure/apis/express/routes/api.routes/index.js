@@ -10,8 +10,8 @@ const certification_routes_1 = __importDefault(require("../../../../../certifica
 const institution_routes_1 = __importDefault(require("../../../../../institutions/infrastructure/apis/express/routes/api.routes//institution.routes"));
 const auth_routes_1 = __importDefault(require("../../../../../users/infrastructure/apis/express/routes/api.routes/auth.routes"));
 const post_routes_1 = __importDefault(require("../../../../../posts/insfrasctructure/apis/express/routes/api.routes/post.routes"));
-const skill_routes_1 = __importDefault(require("./skill.routes"));
-const note_routes_1 = __importDefault(require("./note.routes"));
+const skill_routes_1 = __importDefault(require("../../../../../skills/infrastructure/apis/express/routes/api.routes/skill.routes"));
+const note_routes_1 = __importDefault(require("../../../../../notes/insfrastructure/apis/express/routes/api.routes/note.routes"));
 const router = (0, express_1.Router)();
 exports.default = router
     .use("/projects", project_routes_1.default)

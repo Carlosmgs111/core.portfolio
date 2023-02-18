@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import { sequelize } from "..";
+import { sequelize } from "../../../../infrastructure/repositories/sequelize/src";
 
 export const note_table = "Notes";
 export const note_schema = {

@@ -10,8 +10,8 @@ const Project_1 = require("../../../../../projects/insfrastructure/repositories/
 const Institution_1 = require("../../../../../institutions/infrastructure/repositories/sequelize/Institution");
 const Certification_1 = require("../../../../../certifications/infrastructure/repositories/sequelize/Certification");
 const Post_1 = require("../../../../../posts/insfrasctructure/repositories/sequelize/Post");
-const Skill_1 = require("../../../../../skills/insfrasctructure/repositories/sequelize/Skill");
-const Note_1 = require("../../../../../notes/insfrasctructure/repositories/sequelize/Note");
+const Skill_1 = require("../../../../../skills/infrastructure/repositories/sequelize/Skill");
+const Note_1 = require("../../../../../notes/insfrastructure/repositories/sequelize/Note");
 const joinTableNames = {};
 const joinTableSchema = {};
 const createJoinTable = (A, B) => {

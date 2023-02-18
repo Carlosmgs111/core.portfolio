@@ -1,4 +1,14 @@
 import { plural, singular } from "pluralize";
+import cryptojs from "crypto-js";
+
+export function encryptData(data: string, key: string) {
+  return cryptojs.RC4.encrypt(data, key).toString();
+}
+
+export function decryptData(data: string, key: string) {
+  const bytes = cryptojs.RC4.decrypt(data, key);
+  return bytes.toString(cryptojs.enc.Utf8);
+}
 
 export const filterAttrs = (
   obj: any,
@@ -8,7 +18,7 @@ export const filterAttrs = (
   const newObj: any = {};
   for (var attr in obj) {
     // if (!obj[attr]) console.log(`⚠️ ${attr}: Its null or undefined ⚠️`.yellow);
-    if (!oclusive === toRemove.includes(attr) ) {
+    if (!oclusive === toRemove.includes(attr)) {
       newObj[attr] = obj[attr];
     }
   }

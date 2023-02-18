@@ -1,6 +1,6 @@
 import { User } from "../domain/User";
 import { RepositoryService, AuthServices } from "../../config/dependencies";
-import { filterAttrs, encryptData, decryptData } from "../../domain/utils";
+import { filterAttrs, encryptData, decryptData } from "../../utils";
 import config from "../../config";
 import { verifyToken2 } from "../../infrastructure/auth/JWT";
 import boom from "@hapi/boom";

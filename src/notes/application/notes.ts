@@ -1,4 +1,4 @@
-import { Note } from "../../domain/entities/Note";
+import { Note } from "../domain/Note";
 import { User } from "../../users/domain/User";
 import { RepositoryService } from "../../config/dependencies";
 

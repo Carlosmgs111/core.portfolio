@@ -5,8 +5,8 @@ import {
   getAllSkills,
   deleteSkill,
   updateSkill,
-} from "../../../../../application/use_cases/skills";
-import { expressHandlerAdapter } from "../../../../../adapters/apis/express";
+} from "../../../../../application/skills";
+import { expressHandlerAdapter } from "../../../../../../adapters/apis/express";
 
 const router = Router();
 
