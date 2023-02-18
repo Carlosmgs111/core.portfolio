@@ -1,9 +1,9 @@
-import { createToken, verifyToken2 } from "../../../infrastructure/auth/JWT";
+import { createToken, verifyToken2 } from "../../infrastructure/auth/JWT";
 import {
   expiresIn1Month,
   fifteenMinutes,
-} from "../../../infrastructure/auth/expires";
-import config from "../../../config";
+} from "../../infrastructure/auth/expires";
+import config from "../../config";
 
 export class AuthServices {
   constructor() {}

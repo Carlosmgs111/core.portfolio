@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { getCertifications } from "../../../../../application/use_cases/certifications";
+import { getCertifications } from "../../../../../application/certifications";
 // import { validatorHandler } from "../middlewares/validator.handler";
 
 const router = Router();

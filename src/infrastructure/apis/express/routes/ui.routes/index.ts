@@ -1,6 +1,6 @@
-// ? Used for render views 
+// ? Used for render views
 import { Router } from "express";
-import certificationRoutes from "./certification.routes";
+import certificationRoutes from "../../../../../certifications/infrastructure/apis/express/routes/ui.routes/certification.routes";
 
 const router = Router();
 

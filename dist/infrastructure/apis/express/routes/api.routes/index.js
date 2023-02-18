@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
 const project_routes_1 = __importDefault(require("./project.routes"));
 const user_routes_1 = __importDefault(require("./user.routes"));
-const certification_routes_1 = __importDefault(require("./certification.routes"));
+const certification_routes_1 = __importDefault(require("../../../../../certifications/infrastructure/apis/express/routes/api.routes/certification.routes"));
 const institution_routes_1 = __importDefault(require("./institution.routes"));
 const auth_routes_1 = __importDefault(require("./auth.routes"));
 const post_routes_1 = __importDefault(require("./post.routes"));

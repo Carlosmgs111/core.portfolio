@@ -5,14 +5,14 @@ import {
   getCertifications,
   removeCertification,
   updateCertification,
-} from "../../../../../application/use_cases/certifications";
-import { expressHandlerAdapter } from "../../../../../adapters/apis/express";
-import { validatorHandler } from "../../middlewares/validator.handler";
+} from "../../../../../application/certifications";
+import { expressHandlerAdapter } from "../../../../../../adapters/apis/express";
+import { validatorHandler } from "../../../../../../infrastructure/apis/express/middlewares/validator.handler";
 import {
   createCertification,
   createCertifications,
   updateCertification as updateCertificationSchema,
-} from "../../../../schemas/certification.schema";
+} from "../../../../../../infrastructure/schemas/certification.schema";
 
 const router = Router();
 

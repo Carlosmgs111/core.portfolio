@@ -13,7 +13,7 @@ import {
   Certification,
   certification_schema,
   certification_table,
-} from "./Certification";
+} from "../../../../../certifications/infrastructure/repositories/sequelize/Certification";
 import { Post, post_schema, post_table } from "./Post";
 import { Skill, skill_schema, skill_table } from "./Skill";
 import { Note, note_schema, note_table } from "./Note";

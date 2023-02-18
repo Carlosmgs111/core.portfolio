@@ -1,6 +1,6 @@
 import Project from "./Project";
 import User from "./User";
-import Certification from "./Certification";
+import Certification from "../../../../certifications/infrastructure/repositories/mongoose/Certification";
 import Institution from "./Institution";
 import Post from "./Post";
 import Skill from "./Skill";

@@ -1,5 +1,5 @@
 import Queue from "bull";
-import config from "../../../config";
+import config from "../../config";
 
 const { redisUrlProd, redisUrlDev } = config;
 const redisUrlConnection = redisUrlDev || redisUrlProd;

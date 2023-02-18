@@ -1,8 +1,8 @@
-import { connect } from "../../../infrastructure/repositories/mongoose";
-import models from "../../../infrastructure/repositories/mongoose/models";
+import { connect } from "../../infrastructure/repositories/mongoose";
+import models from "../../infrastructure/repositories/mongoose/models";
 import { model } from "mongoose";
-import { labelCases, Mapfy, setEnums } from "../../../utils";
-import { filterAttrs } from "../../../utils";
+import { labelCases, Mapfy, setEnums } from "../../utils";
+import { filterAttrs } from "../../utils";
 
 import boom from "@hapi/boom";
 export default class MongooseAdapter /* implements DatabaseAdapter */ {

@@ -1,7 +1,7 @@
 import { Router } from "express";
 import projectRoutes from "./project.routes";
 import userRoutes from "./user.routes";
-import certificationRoutes from "./certification.routes";
+import certificationRoutes from "../../../../../certifications/infrastructure/apis/express/routes/api.routes/certification.routes";
 import institutionRoutes from "./institution.routes";
 import authRoutes from "./auth.routes";
 import postRoutes from "./post.routes";

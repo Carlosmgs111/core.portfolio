@@ -1,9 +1,9 @@
-import { Adapters } from "../application/services/DatabaseServices";
+import { Adapters } from "../services/DatabaseServices";
 import {
   DatabaseService as DBS,
   AuthServices as AS,
   CQRSService,
-} from "../application/services";
+} from "../services";
 
 const repositoryServices = {
   CQRS: () => new CQRSService(),
