@@ -2,7 +2,7 @@ import Project from "../../../../projects/insfrastructure/repositories/mongoose/
 import User from "../../../../users/infrastructure/repositories/mongoose/User";
 import Certification from "../../../../certifications/infrastructure/repositories/mongoose/Certification";
 import Institution from "../../../../institutions/infrastructure/repositories/mongoose/Institution";
-import Post from "./Post";
+import Post from "../../../../posts/insfrasctructure/repositories/mongoose/Post";
 import Skill from "./Skill";
 import Note from "./Note";
 

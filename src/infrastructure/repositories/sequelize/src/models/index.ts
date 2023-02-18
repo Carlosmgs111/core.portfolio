@@ -22,9 +22,13 @@ import {
   certification_schema,
   certification_table,
 } from "../../../../../certifications/infrastructure/repositories/sequelize/Certification";
-import { Post, post_schema, post_table } from "./Post";
-import { Skill, skill_schema, skill_table } from "./Skill";
-import { Note, note_schema, note_table } from "./Note";
+import {
+  Post,
+  post_schema,
+  post_table,
+} from "../../../../../posts/insfrasctructure/repositories/sequelize/Post";
+import { Skill, skill_schema, skill_table } from "../../../../../skills/insfrasctructure/repositories/sequelize/Skill";
+import { Note, note_schema, note_table } from "../../../../../notes/insfrasctructure/repositories/sequelize/Note";
 
 const joinTableNames: any = {};
 const joinTableSchema: any = {};

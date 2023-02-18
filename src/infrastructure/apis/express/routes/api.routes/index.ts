@@ -4,7 +4,7 @@ import userRoutes from "../../../../../users/infrastructure/apis/express/routes/
 import certificationRoutes from "../../../../../certifications/infrastructure/apis/express/routes/api.routes/certification.routes";
 import institutionRoutes from "../../../../../institutions/infrastructure/apis/express/routes/api.routes//institution.routes";
 import authRoutes from "../../../../../users/infrastructure/apis/express/routes/api.routes/auth.routes";
-import postRoutes from "./post.routes";
+import postRoutes from "../../../../../posts/insfrasctructure/apis/express/routes/api.routes/post.routes";
 import skillRoutes from "./skill.routes";
 import noteRoutes from "./note.routes";
 

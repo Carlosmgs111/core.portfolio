@@ -1,4 +1,4 @@
-import { Post } from '../../domain/entities/Post'
+import { Post } from '../domain/Post'
 import { RepositoryService } from '../../config/dependencies'
 
 export const addPost = async (data: any) => {
