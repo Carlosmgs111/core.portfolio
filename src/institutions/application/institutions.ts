@@ -1,4 +1,4 @@
-import { Institution } from "../../domain/entities/Institution";
+import { Institution } from "../domain/Institution";
 import { RepositoryService } from "../../config/dependencies";
 import { verifyToken2 } from "../../infrastructure/auth/JWT";
 import boom from "@hapi/boom";

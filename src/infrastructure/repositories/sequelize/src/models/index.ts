@@ -16,7 +16,7 @@ import {
   Institution,
   institution_schema,
   institution_table,
-} from "./Institution";
+} from "../../../../../institutions/infrastructure/repositories/sequelize/Institution";
 import {
   Certification,
   certification_schema,

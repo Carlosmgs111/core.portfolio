@@ -2,12 +2,11 @@ import {
   getAllInstitutions,
   addNewInstitution,
   linkToIntitution,
-} from "../../../../application/use_cases/institutions";
+} from "../../../../institutions/application/institutions";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
-
 
 export const institutionsHandler = async (state: any) => {
   let running = true;

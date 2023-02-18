@@ -2,7 +2,7 @@ import { Router } from "express";
 import projectRoutes from "../../../../../projects/insfrastructure/apis/express/routes/api.routes/project.routes";
 import userRoutes from "../../../../../users/infrastructure/apis/express/routes/api.routes/user.routes";
 import certificationRoutes from "../../../../../certifications/infrastructure/apis/express/routes/api.routes/certification.routes";
-import institutionRoutes from "./institution.routes";
+import institutionRoutes from "../../../../../institutions/infrastructure/apis/express/routes/api.routes//institution.routes";
 import authRoutes from "../../../../../users/infrastructure/apis/express/routes/api.routes/auth.routes";
 import postRoutes from "./post.routes";
 import skillRoutes from "./skill.routes";

@@ -4,8 +4,8 @@ import {
   getAllInstitutions,
   updateInstitution,
   deleteInstitution
-} from "../../../../../application/use_cases/institutions";
-import { expressHandlerAdapter } from "../../../../../adapters/apis/express";
+} from "../../../../../application/institutions";
+import { expressHandlerAdapter } from "../../../../../../adapters/apis/express";
 
 const router = Router();
 
