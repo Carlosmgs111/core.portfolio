@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Note = exports.note_schema = exports.note_table = void 0;
 const sequelize_1 = require("sequelize");
-const src_1 = require("../../../../../services/DatabaseServices/SequelizeAdapter/infrastructure/src");
+const __1 = require("..");
 exports.note_table = "Notes";
 exports.note_schema = {
     uuid: {
@@ -38,12 +38,12 @@ class Note extends sequelize_1.Model {
         this.belongsTo(models.Institution, {
             as: "Institution",
             targetKey: "uuid",
-            foreignKey: "userUUID",
+            foreignKey: "institutionUUID",
         });
     }
 }
 exports.Note = Note;
 Note.init(exports.note_schema, {
-    sequelize: src_1.sequelize,
+    sequelize: __1.sequelize,
     modelName: exports.note_table,
 });

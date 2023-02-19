@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../../../../../infrastructure/repositories/sequelize/src";
+import { sequelize } from "../../../../../services/DatabaseServices/SequelizeAdapter/infrastructure/src";
 
 export const institution_table = "Institutions";
 export const institution_schema = {

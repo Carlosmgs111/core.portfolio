@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Project = exports.project_schema = exports.project_table = void 0;
 const sequelize_1 = require("sequelize");
-const src_1 = require("../../../../../services/DatabaseServices/SequelizeAdapter/infrastructure/src");
+const __1 = require("..");
 exports.project_table = "Projects";
 exports.project_schema = {
     uuid: {
@@ -34,4 +34,4 @@ class Project extends sequelize_1.Model {
     }
 }
 exports.Project = Project;
-Project.init(exports.project_schema, { sequelize: src_1.sequelize, modelName: exports.project_table });
+Project.init(exports.project_schema, { sequelize: __1.sequelize, modelName: exports.project_table });

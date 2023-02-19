@@ -1,5 +1,5 @@
-import models from "../../infrastructure/repositories/sequelize/src/models";
-import { labelCases, Mapfy, setEnums } from "../../utils";
+import models from "./infrastructure/src/models";
+import { labelCases, Mapfy, setEnums } from "../../../utils";
 import { v4 as uuidv4 } from "uuid";
 import boom from "@hapi/boom";
 
