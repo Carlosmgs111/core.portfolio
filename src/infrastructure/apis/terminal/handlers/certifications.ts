@@ -2,8 +2,8 @@ import {
   getCertifications,
   updateCertification,
   getOwnCertifications,
-} from "../../../../certifications/application/certifications";
-import { getAllUsername } from "../../../../users/application/users";
+} from "../../../../modules/certifications/application/certifications";
+import { getAllUsername } from "../../../../modules/users/application/users";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
 

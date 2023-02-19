@@ -6,37 +6,37 @@ import {
   User,
   user_schema,
   user_table,
-} from "../../../../../users/infrastructure/repositories/sequelize/User";
+} from "../../../../../modules/users/infrastructure/repositories/sequelize/User";
 import {
   Project,
   project_schema,
   project_table,
-} from "../../../../../projects/insfrastructure/repositories/sequelize/Project";
+} from "../../../../../modules/projects/insfrastructure/repositories/sequelize/Project";
 import {
   Institution,
   institution_schema,
   institution_table,
-} from "../../../../../institutions/infrastructure/repositories/sequelize/Institution";
+} from "../../../../../modules/institutions/infrastructure/repositories/sequelize/Institution";
 import {
   Certification,
   certification_schema,
   certification_table,
-} from "../../../../../certifications/infrastructure/repositories/sequelize/Certification";
+} from "../../../../../modules/certifications/infrastructure/repositories/sequelize/Certification";
 import {
   Post,
   post_schema,
   post_table,
-} from "../../../../../posts/insfrasctructure/repositories/sequelize/Post";
+} from "../../../../../modules/posts/insfrasctructure/repositories/sequelize/Post";
 import {
   Skill,
   skill_schema,
   skill_table,
-} from "../../../../../skills/infrastructure/repositories/sequelize/Skill";
+} from "../../../../../modules/skills/infrastructure/repositories/sequelize/Skill";
 import {
   Note,
   note_schema,
   note_table,
-} from "../../../../../notes/insfrastructure/repositories/sequelize/Note";
+} from "../../../../../modules/notes/insfrastructure/repositories/sequelize/Note";
 
 const joinTableNames: any = {};
 const joinTableSchema: any = {};

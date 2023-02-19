@@ -1,0 +1,87 @@
+"use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.resetPassword = exports.resetAuthPassword = exports.update = exports.unsubscribe = exports.authSignin = exports.signin = exports.signup = void 0;
+const User_1 = require("../domain/User");
+const dependencies_1 = require("../../../config/dependencies");
+const utils_1 = require("../../../utils");
+const config_1 = __importDefault(require("../../../config"));
+const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    const { username, email, password } = credentials;
+    if (email)
+        console.log("Authentication Signup use case must be implemented! ".bgYellow);
+    return yield User_1.User.create(dependencies_1.RepositoryService, credentials);
+});
+exports.signup = signup;
+const signin = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    const account = yield User_1.User.authLoad(dependencies_1.RepositoryService, {
+        credentials,
+        // related: [["Institution"], ["Certification"]],
+    });
+    if (!account)
+        throw new Error("The account doesn't exist!");
+    let response = dependencies_1.AuthServices.getAuthPackage((0, utils_1.filterAttrs)(account, ["uuid", "email", "username", "privilege", "createdAt", "avatar"], false));
+    return response;
+});
+exports.signin = signin;
+const authSignin = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    dependencies_1.RepositoryService;
+    const entity = yield User_1.User.authLoad(dependencies_1.RepositoryService, credentials);
+    if (!entity)
+        throw new Error("The account doesn't exist!");
+    const isMatch = entity.comparePassword(credentials.password);
+    if (!isMatch)
+        throw new Error("The account doesn't exist!");
+    return entity;
+});
+exports.authSignin = authSignin;
+const unsubscribe = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    dependencies_1.RepositoryService;
+    const account = yield User_1.User.authLoad(dependencies_1.RepositoryService, credentials);
+    if (account)
+        yield account.remove(dependencies_1.RepositoryService);
+});
+exports.unsubscribe = unsubscribe;
+const update = (credentials, data) => __awaiter(void 0, void 0, void 0, function* () {
+    dependencies_1.RepositoryService;
+    const account = yield User_1.User.authLoad(dependencies_1.RepositoryService, credentials);
+    if (account)
+        yield account.update(dependencies_1.RepositoryService, data);
+});
+exports.update = update;
+// ! possible vulnerability detected!
+const resetAuthPassword = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    dependencies_1.RepositoryService;
+    const { token } = credentials;
+    console.log({ token });
+    const { email, cipheredPassword } = dependencies_1.AuthServices.verifyKey(token);
+    const newPassword = (0, utils_1.decryptData)(cipheredPassword, config_1.default.jwtSignupSecret || "");
+    const account = yield User_1.User.authLoad(dependencies_1.RepositoryService, {
+        credentials: { email },
+    });
+    const oldPassword = account.password;
+    account.changePassword(dependencies_1.RepositoryService, { newPassword, oldPassword }); // ! check this method
+    return "OK";
+});
+exports.resetAuthPassword = resetAuthPassword;
+const resetPassword = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    const { oldPassword, newPassword, username, token, user } = credentials;
+    console.log({ user });
+    const result = yield user.changePassword(dependencies_1.RepositoryService, {
+        newPassword,
+        oldPassword,
+    });
+    return { changed: result };
+});
+exports.resetPassword = resetPassword;

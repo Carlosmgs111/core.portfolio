@@ -2,7 +2,7 @@ import config from "../../../config";
 import jwt from "jsonwebtoken";
 import { expiresIn1Month } from "../expires";
 import { jwtVerify } from "jose";
-import { signin } from "../../../users/application/users";
+import { signin } from "../../../modules/users/application/users";
 
 export const createToken = (
   params: any,

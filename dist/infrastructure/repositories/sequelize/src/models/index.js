@@ -5,13 +5,13 @@ const utils_1 = require("../utils");
 const sequelize_1 = require("sequelize");
 const __1 = require("..");
 // * Models import
-const User_1 = require("../../../../../users/infrastructure/repositories/sequelize/User");
-const Project_1 = require("../../../../../projects/insfrastructure/repositories/sequelize/Project");
-const Institution_1 = require("../../../../../institutions/infrastructure/repositories/sequelize/Institution");
-const Certification_1 = require("../../../../../certifications/infrastructure/repositories/sequelize/Certification");
-const Post_1 = require("../../../../../posts/insfrasctructure/repositories/sequelize/Post");
-const Skill_1 = require("../../../../../skills/infrastructure/repositories/sequelize/Skill");
-const Note_1 = require("../../../../../notes/insfrastructure/repositories/sequelize/Note");
+const User_1 = require("../../../../../modules/users/infrastructure/repositories/sequelize/User");
+const Project_1 = require("../../../../../modules/projects/insfrastructure/repositories/sequelize/Project");
+const Institution_1 = require("../../../../../modules/institutions/infrastructure/repositories/sequelize/Institution");
+const Certification_1 = require("../../../../../modules/certifications/infrastructure/repositories/sequelize/Certification");
+const Post_1 = require("../../../../../modules/posts/insfrasctructure/repositories/sequelize/Post");
+const Skill_1 = require("../../../../../modules/skills/infrastructure/repositories/sequelize/Skill");
+const Note_1 = require("../../../../../modules/notes/insfrastructure/repositories/sequelize/Note");
 const joinTableNames = {};
 const joinTableSchema = {};
 const createJoinTable = (A, B) => {

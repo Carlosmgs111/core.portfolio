@@ -2,7 +2,7 @@ import {
   getAllInstitutions,
   addNewInstitution,
   linkToIntitution,
-} from "../../../../institutions/application/institutions";
+} from "../../../../modules/institutions/application/institutions";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
 

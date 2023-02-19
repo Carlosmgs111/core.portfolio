@@ -13,8 +13,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.certificationsHandler = void 0;
-const certifications_1 = require("../../../../certifications/application/certifications");
-const users_1 = require("../../../../users/application/users");
+const certifications_1 = require("../../../../modules/certifications/application/certifications");
+const users_1 = require("../../../../modules/users/application/users");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));

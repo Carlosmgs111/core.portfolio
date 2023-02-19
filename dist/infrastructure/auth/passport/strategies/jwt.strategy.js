@@ -16,7 +16,7 @@ exports.JwtStrategy = void 0;
 const passport_jwt_1 = require("passport-jwt");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const config_1 = __importDefault(require("../../../../config"));
-const CRUD_1 = require("../../../../users/application/CRUD");
+const CRUD_1 = require("../../../../modules/users/application/CRUD");
 const opts = {
     jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: config_1.default.jwtAccessSecret,

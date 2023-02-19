@@ -2,7 +2,7 @@ import {
   getCertifications,
   updateCertification,
   getOwnCertifications,
-} from "../../../../certifications/application/certifications";
+} from "../../../../modules/certifications/application/certifications";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
 

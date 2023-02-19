@@ -16,7 +16,7 @@ exports.authMiddleware = exports.checkRoles = exports.checkAdminRole = exports.c
 const boom_1 = __importDefault(require("@hapi/boom"));
 const config_1 = __importDefault(require("../../../../config"));
 const jose_1 = require("jose");
-const users_1 = require("../../../../users/application/users");
+const users_1 = require("../../../../modules/users/application/users");
 const verifyToken = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const { authorization } = req.headers;
     const token = (authorization || "").replace("Bearer ", "");
