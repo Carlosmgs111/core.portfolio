@@ -5,6 +5,7 @@ import { Certification } from "../../../../modules/certifications/entity";
 import { Institution } from "../../../../modules/institutions/entity";
 import { addNewCertification } from "../../../../modules/certifications/use_cases";
 
+
 describe("Aggregates of certificates", () => {
   const userCredentials = {
     uuid: "123",
@@ -27,15 +28,12 @@ describe("Aggregates of certificates", () => {
 
   beforeAll(async () => {
     // spyFindOne.mockResolvedValue(userCredentials);
-    user = await User.create(
-      RepositoryService,
-      userCredentials
-    );
+    user = await User.create(RepositoryService, userCredentials);
     console.log({ user });
-    institution = await Institution.create(
-      RepositoryService,
-      { ...institutionData, user }
-    );
+    institution = await Institution.create(RepositoryService, {
+      ...institutionData,
+      user,
+    });
     // jest.clearAllMocks() / ? for clear all mocks
   });
 

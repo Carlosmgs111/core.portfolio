@@ -10,14 +10,15 @@ export const fakeDatabase: any = {
   Users_Skills: [],
 };
 
-async function create(this: any, fake: any) {
-  fakeDatabase[this.Entity].push(fake);
+async function createOne(this: any, entity: any, fake: any) {
+  fakeDatabase[entity].push(fake);
+  return fake
 }
 
-async function findOne(this: any, fake: any) {
+async function findOne(this: any, entity: any, fake: any) {
   const { credentials } = fake;
   const recovered =
-    fakeDatabase[this.Entity].filter((value: any) => {
+    fakeDatabase[entity].filter((value: any) => {
       for (let attr in credentials) {
         for (let val in value) {
           if (credentials[attr] === value[val]) return value;
@@ -27,10 +28,10 @@ async function findOne(this: any, fake: any) {
   return recovered;
 }
 
-async function removeOne(this: any, fake: any) {
+async function removeOne(this: any, entity: any, fake: any) {
   let index = 0;
   const { credentials } = fake;
-  fakeDatabase[this.Entity].forEach((value: any, idx: any) => {
+  fakeDatabase[entity].forEach((value: any, idx: any) => {
     for (let attr in credentials) {
       for (let val in value) {
         if (credentials[attr] === value[val]) {
@@ -40,12 +41,12 @@ async function removeOne(this: any, fake: any) {
       }
     }
   });
-  fakeDatabase[this.Entity].splice(index, 1);
+  fakeDatabase[entity].splice(index, 1);
   return null;
 }
 
 export const DatabaseServiceStub = {
-  create,
+  createOne,
   findOne,
   find: async function () {
     return fakeDatabase["some to add here"];
@@ -58,7 +59,7 @@ export const DatabaseServiceStub = {
   entities: setEnums(Object.entries(fakeDatabase).flatMap((m: any) => m[0])),
 };
 
-export const spyCreate = jest.spyOn(DatabaseServiceStub, "create");
+export const spyCreateOne = jest.spyOn(DatabaseServiceStub, "createOne");
 export const spyFindOne = jest.spyOn(DatabaseServiceStub, "findOne");
 export const spyFind = jest.spyOn(DatabaseServiceStub, "find");
 
@@ -66,6 +67,6 @@ export default jest.mock("../../config/dependencies", () => {
   // jest.fn().mockImplementation(() => DatabaseServiceStub)
   return {
     __esModule: true,
-    DatabaseService: DatabaseServiceStub,
+    RepositoryService: DatabaseServiceStub,
   };
 });
