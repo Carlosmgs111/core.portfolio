@@ -9,8 +9,9 @@
   "scripts": {
     "start": "node dist/index.js PROD",
     "dev:ubuntu": "rsync -av --include='*/' --exclude='*.ts' ./src/  ./dist && tsc-watch --onSuccess \"node dist/index.js DEV\" ",
-    "dev": "robocopy ./src ./dist /S /E /s /nfl /ndl /xf *.ts /e | tsc-watch --onSuccess \"node dist/index.js DEV\" ",
+    "dev": "yarn copy && tsc-watch --onSuccess \"node dist/index.js DEV\" ",
     "test": "jest",
+    "copy": "IF NOT EXIST ./dist (robocopy ./src ./dist /S /E /s /nfl /ndl /xf *.ts /e) | echo 'copied succesfully!'",
     "test:e2e": "jest --config ./src/testing/e2e/jest-e2e.json --detectOpenHandles",
     "build": "tsc",
     "postgres:migrations:generate": "cd \"src/infrastructure/repositories/sequelize\" && yarn build && sequelize-cli migration:generate --name",
