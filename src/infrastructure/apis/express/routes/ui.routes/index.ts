@@ -1,6 +1,6 @@
 // ? Used for render views
 import { Router } from "express";
-import certificationRoutes from "../../../../../modules/certifications/infrastructure/apis/express/routes/ui.routes/certification.routes";
+import certificationRoutes from "../../../../../modules/certifications/routes/express.ui.routes";
 
 const router = Router();
 

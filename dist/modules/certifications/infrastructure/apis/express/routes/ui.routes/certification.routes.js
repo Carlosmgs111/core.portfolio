@@ -10,10 +10,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const certifications_1 = require("../../../../../application/certifications");
+const entity_1 = require("../../../../../entity");
 // import { validatorHandler } from "../middlewares/validator.handler";
 const router = (0, express_1.Router)();
 exports.default = router.get("/", (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
-    const certifications = yield (0, certifications_1.getCertifications)(req);
+    const certifications = yield (0, entity_1.getCertifications)(req);
     res.render("hello", { message: "Hola Mundo!", list: certifications });
 }));

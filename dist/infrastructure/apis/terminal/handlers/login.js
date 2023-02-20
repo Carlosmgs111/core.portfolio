@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginHandler = void 0;
-const register_1 = require("../../../../modules/users/application/register");
+const use_cases_1 = require("../../../../modules/users/use_cases");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 const jose_1 = require("jose");
@@ -37,7 +37,7 @@ const signupHandler = (state) => __awaiter(void 0, void 0, void 0, function* () 
     ]);
     if (rePassword !== password)
         throw new Error("Password doesn't match");
-    console.log(yield (0, register_1.signup)({
+    console.log(yield (0, use_cases_1.signup)({
         email,
         password,
         username,
@@ -53,7 +53,7 @@ const signinHandler = (state) => __awaiter(void 0, void 0, void 0, function* () 
             mask: "*".magenta,
         },
     ]);
-    const { token } = yield (0, register_1.signin)({
+    const { token } = yield (0, use_cases_1.login)({
         email,
         password,
     });
@@ -78,7 +78,7 @@ const unsubscribeHandler = () => __awaiter(void 0, void 0, void 0, function* () 
         },
     ]);
     if (confirm)
-        yield (0, register_1.unsubscribe)({ email, password });
+        yield (0, use_cases_1.unsubscribe)({ email, password });
 });
 const loginHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     let running = true;

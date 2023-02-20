@@ -10,9 +10,9 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.createOne = exports.findBy = void 0;
-const User_1 = require("../domain/User");
+const entity_1 = require("../entity");
 const dependencies_1 = require("../../../config/dependencies");
-const entities = { User: User_1.User };
+const entities = { User: entity_1.User };
 const findBy = (label, findBy) => __awaiter(void 0, void 0, void 0, function* () {
     // console.log({ findBy });
     return yield entities[label].find(dependencies_1.RepositoryService, { credentials: findBy });

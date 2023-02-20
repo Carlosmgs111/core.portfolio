@@ -1,7 +1,7 @@
 import {
   getProjects,
   getOwnProjects,
-} from "../../../../modules/projects/application/projects";
+} from "../../../../modules/projects/use_cases";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
 

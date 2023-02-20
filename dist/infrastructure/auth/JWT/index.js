@@ -17,7 +17,7 @@ const config_1 = __importDefault(require("../../../config"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const expires_1 = require("../expires");
 const jose_1 = require("jose");
-const users_1 = require("../../../modules/users/application/users");
+const use_cases_1 = require("../../../modules/users/use_cases");
 const createToken = (params, expiresIn = expires_1.expiresIn1Month, secret = config_1.default.jwtAccessSecret) => {
     return jsonwebtoken_1.default.sign(Object.assign({ sub: params._id || params.sub }, params), secret || "", {
         expiresIn,
@@ -45,7 +45,7 @@ const verifyToken2 = (token, signature = config_1.default.jwtAccessSecret) => __
         const { uuid, email, username } = verified.payload;
         console.log({ uuid, email, username });
         return {
-            user: yield (0, users_1.signin)({
+            user: yield (0, use_cases_1.signin)({
                 uuid,
                 email,
                 username,

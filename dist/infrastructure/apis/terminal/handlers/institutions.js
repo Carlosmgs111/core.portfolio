@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.institutionsHandler = void 0;
-const institutions_1 = require("../../../../modules/institutions/application/institutions");
+const use_cases_1 = require("../../../../modules/institutions/use_cases");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
@@ -28,7 +28,7 @@ const institutionsHandler = (state) => __awaiter(void 0, void 0, void 0, functio
     ];
     const choices = [add, update, removeOne, read, exit];
     const options = {
-        [read]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, institutions_1.getAllInstitutions)({})); }),
+        [read]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, use_cases_1.getAllInstitutions)({})); }),
         [exit]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),
     };
     while (running) {

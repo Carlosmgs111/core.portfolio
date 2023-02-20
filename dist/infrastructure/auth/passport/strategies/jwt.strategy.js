@@ -16,7 +16,7 @@ exports.JwtStrategy = void 0;
 const passport_jwt_1 = require("passport-jwt");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const config_1 = __importDefault(require("../../../../config"));
-const CRUD_1 = require("../../../../modules/users/application/CRUD");
+const use_cases_1 = require("../../../../modules/users/use_cases");
 const opts = {
     jwtFromRequest: passport_jwt_1.ExtractJwt.fromAuthHeaderAsBearerToken(),
     secretOrKey: config_1.default.jwtAccessSecret,
@@ -25,7 +25,7 @@ exports.JwtStrategy = new passport_jwt_1.Strategy(opts, (payload, done) => __awa
     const { email, } = payload;
     // console.log({ JwtStrategyEmail:email });
     try {
-        const entity = yield (0, CRUD_1.findBy)("Account", { email });
+        const entity = yield (0, use_cases_1.findBy)("Account", { email });
         // console.log({ entity });
         if (entity) {
             return done(null, entity);

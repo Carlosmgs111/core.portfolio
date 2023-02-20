@@ -12,10 +12,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.sequelize = void 0;
 const models_1 = __importDefault(require("./infrastructure/src/models"));
 const utils_1 = require("../../../utils");
 const uuid_1 = require("uuid");
 const boom_1 = __importDefault(require("@hapi/boom"));
+const src_1 = require("./infrastructure/src");
+Object.defineProperty(exports, "sequelize", { enumerable: true, get: function () { return src_1.sequelize; } });
 class SequelizeAdapter {
     // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
     constructor({} = {}) {

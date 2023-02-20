@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetPassword = exports.resetAuthPassword = exports.update = exports.unsubscribe = exports.authSignin = exports.signin = exports.signup = void 0;
-const User_1 = require("../domain/User");
+const entity_1 = require("../entity");
 const dependencies_1 = require("../../../config/dependencies");
 const utils_1 = require("../../../utils");
 const config_1 = __importDefault(require("../../../config"));
@@ -21,11 +21,11 @@ const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password } = credentials;
     if (email)
         console.log("Authentication Signup use case must be implemented! ".bgYellow);
-    return yield User_1.User.create(dependencies_1.RepositoryService, credentials);
+    return yield entity_1.User.create(dependencies_1.RepositoryService, credentials);
 });
 exports.signup = signup;
 const signin = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const account = yield User_1.User.authLoad(dependencies_1.RepositoryService, {
+    const account = yield entity_1.User.authLoad(dependencies_1.RepositoryService, {
         credentials,
         // related: [["Institution"], ["Certification"]],
     });
@@ -37,7 +37,7 @@ const signin = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
 exports.signin = signin;
 const authSignin = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     dependencies_1.RepositoryService;
-    const entity = yield User_1.User.authLoad(dependencies_1.RepositoryService, credentials);
+    const entity = yield entity_1.User.authLoad(dependencies_1.RepositoryService, credentials);
     if (!entity)
         throw new Error("The account doesn't exist!");
     const isMatch = entity.comparePassword(credentials.password);
@@ -48,14 +48,14 @@ const authSignin = (credentials) => __awaiter(void 0, void 0, void 0, function* 
 exports.authSignin = authSignin;
 const unsubscribe = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     dependencies_1.RepositoryService;
-    const account = yield User_1.User.authLoad(dependencies_1.RepositoryService, credentials);
+    const account = yield entity_1.User.authLoad(dependencies_1.RepositoryService, credentials);
     if (account)
         yield account.remove(dependencies_1.RepositoryService);
 });
 exports.unsubscribe = unsubscribe;
 const update = (credentials, data) => __awaiter(void 0, void 0, void 0, function* () {
     dependencies_1.RepositoryService;
-    const account = yield User_1.User.authLoad(dependencies_1.RepositoryService, credentials);
+    const account = yield entity_1.User.authLoad(dependencies_1.RepositoryService, credentials);
     if (account)
         yield account.update(dependencies_1.RepositoryService, data);
 });
@@ -67,7 +67,7 @@ const resetAuthPassword = (credentials) => __awaiter(void 0, void 0, void 0, fun
     console.log({ token });
     const { email, cipheredPassword } = dependencies_1.AuthServices.verifyKey(token);
     const newPassword = (0, utils_1.decryptData)(cipheredPassword, config_1.default.jwtSignupSecret || "");
-    const account = yield User_1.User.authLoad(dependencies_1.RepositoryService, {
+    const account = yield entity_1.User.authLoad(dependencies_1.RepositoryService, {
         credentials: { email },
     });
     const oldPassword = account.password;

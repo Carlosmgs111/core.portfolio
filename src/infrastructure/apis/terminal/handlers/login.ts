@@ -1,8 +1,8 @@
 import {
-  signin,
+  login,
   signup,
   unsubscribe,
-} from "../../../../modules/users/application/register";
+} from "../../../../modules/users/use_cases";
 import inquirer from "inquirer";
 import { Enumfy, execFunc } from "../../../../utils";
 import { decodeJwt } from "jose";
@@ -49,7 +49,7 @@ const signinHandler = async (state: any) => {
     },
   ]);
 
-  const { token } = await signin({
+  const { token } = await login({
     email,
     password,
   });

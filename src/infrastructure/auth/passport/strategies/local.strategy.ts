@@ -1,10 +1,10 @@
 import { Strategy } from "passport-local";
-import { authSignin } from "../../../../modules/users/application/register";
+import { authSignin } from "../../../../modules/users/use_cases";
 
 export const LocalStrategy = new Strategy(
   {
     usernameField: "email",
-    passwordField: "password"
+    passwordField: "password",
   },
   async function (email, password, done) {
     try {

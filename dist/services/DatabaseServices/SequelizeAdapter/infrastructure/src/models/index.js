@@ -5,13 +5,13 @@ const utils_1 = require("../utils");
 const sequelize_1 = require("sequelize");
 const __1 = require("..");
 // * Models import
-const User_1 = require("../../../../../../modules/users/infrastructure/repositories/sequelize/User");
-const Project_1 = require("../../../../../../modules/projects/insfrastructure/repositories/sequelize/Project");
-const Institution_1 = require("../../../../../../modules/institutions/infrastructure/repositories/sequelize/Institution");
-const Certification_1 = require("../../../../../../modules/certifications/infrastructure/repositories/sequelize/Certification");
-const Post_1 = require("../../../../../../modules/posts/insfrasctructure/repositories/sequelize/Post");
-const Skill_1 = require("../../../../../../modules/skills/infrastructure/repositories/sequelize/Skill");
-const Note_1 = require("../../../../../../modules/notes/insfrastructure/repositories/sequelize/Note");
+const sequelize_2 = require("../../../../../../modules/users/models/sequelize");
+const sequelize_3 = require("../../../../../../modules/projects/models/sequelize");
+const sequelize_4 = require("../../../../../../modules/institutions/models/sequelize");
+const sequelize_5 = require("../../../../../../modules/certifications/models/sequelize");
+const sequelize_6 = require("../../../../../../modules/posts/models/sequelize");
+const sequelize_7 = require("../../../../../../modules/skills/models/sequelize");
+const sequelize_8 = require("../../../../../../modules/notes/models/sequelize");
 const joinTableNames = {};
 const joinTableSchema = {};
 const createJoinTable = (A, B) => {
@@ -60,25 +60,25 @@ const createJoinTable = (A, B) => {
         }),
     };
 };
-const models = Object.assign(Object.assign(Object.assign(Object.assign({ User: User_1.User,
-    Project: Project_1.Project,
-    Institution: Institution_1.Institution,
-    Certification: Certification_1.Certification,
-    Post: Post_1.Post,
-    Skill: Skill_1.Skill,
-    Note: Note_1.Note }, createJoinTable(User_1.User, Institution_1.Institution)), createJoinTable(User_1.User, Certification_1.Certification)), createJoinTable(User_1.User, Skill_1.Skill)), createJoinTable(User_1.User, Project_1.Project));
-exports.tableNames = Object.assign({ institution_table: Institution_1.institution_table,
-    user_table: User_1.user_table,
-    certification_table: Certification_1.certification_table,
-    skill_table: Skill_1.skill_table,
-    project_table: Project_1.project_table,
-    post_table: Post_1.post_table,
-    note_table: Note_1.note_table }, joinTableNames);
-exports.tableSchemas = Object.assign({ institution_schema: Institution_1.institution_schema,
-    certification_schema: Certification_1.certification_schema,
-    user_schema: User_1.user_schema,
-    skill_schema: Skill_1.skill_schema,
-    project_schema: Project_1.project_schema,
-    post_schema: Post_1.post_schema,
-    note_schema: Note_1.note_schema }, joinTableSchema);
+const models = Object.assign(Object.assign(Object.assign(Object.assign({ User: sequelize_2.User,
+    Project: sequelize_3.Project,
+    Institution: sequelize_4.Institution,
+    Certification: sequelize_5.Certification,
+    Post: sequelize_6.Post,
+    Skill: sequelize_7.Skill,
+    Note: sequelize_8.Note }, createJoinTable(sequelize_2.User, sequelize_4.Institution)), createJoinTable(sequelize_2.User, sequelize_5.Certification)), createJoinTable(sequelize_2.User, sequelize_7.Skill)), createJoinTable(sequelize_2.User, sequelize_3.Project));
+exports.tableNames = Object.assign({ institution_table: sequelize_4.institution_table,
+    user_table: sequelize_2.user_table,
+    certification_table: sequelize_5.certification_table,
+    skill_table: sequelize_7.skill_table,
+    project_table: sequelize_3.project_table,
+    post_table: sequelize_6.post_table,
+    note_table: sequelize_8.note_table }, joinTableNames);
+exports.tableSchemas = Object.assign({ institution_schema: sequelize_4.institution_schema,
+    certification_schema: sequelize_5.certification_schema,
+    user_schema: sequelize_2.user_schema,
+    skill_schema: sequelize_7.skill_schema,
+    project_schema: sequelize_3.project_schema,
+    post_schema: sequelize_6.post_schema,
+    note_schema: sequelize_8.note_schema }, joinTableSchema);
 exports.default = models;

@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.userHandler = void 0;
-const certifications_1 = require("../../../../modules/certifications/application/certifications");
+const use_cases_1 = require("../../../../modules/certifications/use_cases");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
@@ -22,8 +22,8 @@ const listCertificationsHandler = (state) => __awaiter(void 0, void 0, void 0, f
     const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
     const choices = [all, owns, byUser, test];
     const options = {
-        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getCertifications)({})); }),
-        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getOwnCertifications)({ token })); }),
+        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, use_cases_1.getCertifications)({})); }),
+        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, use_cases_1.getOwnCertifications)({ token })); }),
         [test]: () => { },
     };
     const { option } = yield inquirer_1.default.prompt([

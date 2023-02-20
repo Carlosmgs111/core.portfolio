@@ -13,14 +13,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.certificationsHandler = void 0;
-const certifications_1 = require("../../../../modules/certifications/application/certifications");
-const users_1 = require("../../../../modules/users/application/users");
+const use_cases_1 = require("../../../../modules/certifications/use_cases");
+const use_cases_2 = require("../../../../modules/users/use_cases");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
 const listByUsernameHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     let running = true;
-    const usernames = yield (0, users_1.getAllUsername)();
+    const usernames = yield (0, use_cases_2.getAllUsername)();
     const exit = "Salir";
     const choices = [...usernames, exit];
     while (running) {
@@ -32,7 +32,7 @@ const listByUsernameHandler = (state) => __awaiter(void 0, void 0, void 0, funct
                 choices,
             },
         ]);
-        console.log(yield (0, certifications_1.getCertifications)({ username: option }));
+        console.log(yield (0, use_cases_1.getCertifications)({ username: option }));
         if (option === exit)
             running = false;
     }
@@ -42,8 +42,8 @@ const listCertificationsHandler = (state) => __awaiter(void 0, void 0, void 0, f
     const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
     const choices = [all, owns, byUser, test];
     const options = {
-        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getCertifications)({})); }),
-        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, certifications_1.getOwnCertifications)({ token })); }),
+        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, use_cases_1.getCertifications)({})); }),
+        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, use_cases_1.getOwnCertifications)({ token })); }),
         [byUser]: () => __awaiter(void 0, void 0, void 0, function* () { return yield listByUsernameHandler(state); }),
         [test]: () => { },
     };

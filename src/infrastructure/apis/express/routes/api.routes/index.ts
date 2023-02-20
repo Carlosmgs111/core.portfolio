@@ -1,12 +1,12 @@
 import { Router } from "express";
-import projectRoutes from "../../../../../modules/projects/insfrastructure/apis/express/routes/api.routes/project.routes";
-import userRoutes from "../../../../../modules/users/infrastructure/apis/express/routes/api.routes/user.routes";
-import certificationRoutes from "../../../../../modules/certifications/infrastructure/apis/express/routes/api.routes/certification.routes";
-import institutionRoutes from "../../../../../modules/institutions/infrastructure/apis/express/routes/api.routes//institution.routes";
-import authRoutes from "../../../../../modules/users/infrastructure/apis/express/routes/api.routes/auth.routes";
-import postRoutes from "../../../../../modules/posts/insfrasctructure/apis/express/routes/api.routes/post.routes";
-import skillRoutes from "../../../../../modules/skills/infrastructure/apis/express/routes/api.routes/skill.routes";
-import noteRoutes from "../../../../../modules/notes/insfrastructure/apis/express/routes/api.routes/note.routes";
+import projectRoutes from "../../../../../modules/projects/routes/express.routes";
+import userRoutes from "../../../../../modules/users/routes/express.routes";
+import certificationRoutes from "../../../../../modules/certifications/routes/express.api.routes";
+import institutionRoutes from "../../../../../modules/institutions/routes/express.routes";
+import authRoutes from "../../../../../modules/users/routes/express.auth.routes";
+import postRoutes from "../../../../../modules/posts/routes/express.routes";
+import skillRoutes from "../../../../../modules/skills/routes/express.routes";
+import noteRoutes from "../../../../../modules/notes/routes/express.routes";
 
 const router = Router();
 

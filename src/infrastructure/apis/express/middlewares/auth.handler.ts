@@ -1,8 +1,8 @@
 import boom from "@hapi/boom";
 import config from "../../../../config";
 import { SignJWT, jwtVerify, decodeJwt } from "jose";
-import { findBy } from "../../../../modules/users/application/CRUD";
-import { load } from "../../../../modules/users/application/users";
+import { findBy } from "../../../../modules/users/use_cases";
+import { load } from "../../../../modules/users/use_cases";
 
 interface UserJwtPayload {
   uuid: string; // The user Id
@@ -64,6 +64,10 @@ export function checkRoles(...roles: string[]) {
 export async function authMiddleware(req: any, res: any, next: Function) {
   try {
     const payload = await verifyToken(req);
+    console.log(await load({
+      uuid: payload.uuid,
+      email: payload.email,
+    }))
     req.user = await load({
       uuid: payload.uuid,
       email: payload.email,
