@@ -16,7 +16,6 @@ require("colors");
 const index_1 = __importDefault(require("./infrastructure/apis/express/index"));
 const terminal_1 = __importDefault(require("./infrastructure/apis/terminal"));
 const dependencies_1 = require("./config/dependencies");
-require("./infrastructure/repositories/mongoose");
 dependencies_1.RepositoryService.info();
 (() => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, index_1.default)();

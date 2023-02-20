@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Certification = exports.certification_schema = exports.certification_table = void 0;
 const sequelize_1 = require("sequelize");
-const SequelizeAdapter_1 = require("../../../services/DatabaseServices/SequelizeAdapter");
+const src_1 = require("../../../services/DatabaseServices/SequelizeAdapter/infrastructure/src");
 exports.certification_table = "Certifications";
 exports.certification_schema = {
     uuid: {
@@ -51,6 +51,6 @@ class Certification extends sequelize_1.Model {
 }
 exports.Certification = Certification;
 Certification.init(exports.certification_schema, {
-    sequelize: SequelizeAdapter_1.sequelize,
+    sequelize: src_1.sequelize,
     modelName: exports.certification_table,
 });

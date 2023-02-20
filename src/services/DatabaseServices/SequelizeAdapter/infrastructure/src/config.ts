@@ -1,4 +1,6 @@
-import {
+import config from "../../../../../config";
+
+const {
   postgresUserDev,
   postgresPasswordDev,
   postgresHostDev,
@@ -9,7 +11,7 @@ import {
   postgresHostProd,
   postgresPortProd,
   postgresDatabaseProd,
-} from "./config.env";
+} = config;
 
 const PROD = !true; // ? true for use in production
 const USER = !PROD

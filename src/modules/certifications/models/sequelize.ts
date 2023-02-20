@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import  {sequelize}  from "../../../services/DatabaseServices/SequelizeAdapter";
+import { sequelize } from "../../../services/DatabaseServices/SequelizeAdapter/infrastructure/src";
 
 export const certification_table = "Certifications";
 export const certification_schema = {

@@ -199,8 +199,8 @@ $RECYCLE.BIN/
 postgresdata
 data
 mysqldata
-src/infrastructure/repositories/sequelize/dist
-src/infrastructure/repositories/sequelize/migrations
+src/services/DatabaseServices/SequelizeAdapter/infrastructure/dist
+src/services/DatabaseServices/SequelizeAdapter/infrastructure/migrations
 seeders
 /datasets
 # End of https://www.toptal.com/developers/gitignore/api/windows,git,node,linux

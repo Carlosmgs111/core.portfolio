@@ -1,13 +1,17 @@
 "use strict";
-const config_env_1 = require("./config.env");
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+const config_1 = __importDefault(require("../../../../../config"));
+const { postgresUserDev, postgresPasswordDev, postgresHostDev, postgresPortDev, postgresDatabaseDev, postgresUserProd, postgresPasswordProd, postgresHostProd, postgresPortProd, postgresDatabaseProd, } = config_1.default;
 const PROD = !true; // ? true for use in production
 const USER = !PROD
-    ? encodeURIComponent(config_env_1.postgresUserDev || "")
-    : encodeURIComponent(config_env_1.postgresUserProd || "");
+    ? encodeURIComponent(postgresUserDev || "")
+    : encodeURIComponent(postgresUserProd || "");
 const PASSWORD = !PROD
-    ? encodeURIComponent(config_env_1.postgresPasswordDev || "")
-    : encodeURIComponent(config_env_1.postgresPasswordProd || "");
-const URI = `postgres://${USER}:${PASSWORD}@${!PROD ? config_env_1.postgresHostDev : config_env_1.postgresHostProd}:${!PROD ? config_env_1.postgresPortDev : config_env_1.postgresPortProd}/${!PROD ? config_env_1.postgresDatabaseDev : config_env_1.postgresDatabaseProd}`;
+    ? encodeURIComponent(postgresPasswordDev || "")
+    : encodeURIComponent(postgresPasswordProd || "");
+const URI = `postgres://${USER}:${PASSWORD}@${!PROD ? postgresHostDev : postgresHostProd}:${!PROD ? postgresPortDev : postgresPortProd}/${!PROD ? postgresDatabaseDev : postgresDatabaseProd}`;
 module.exports = {
     development: {
         url: URI,

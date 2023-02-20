@@ -1,6 +1,7 @@
 import { Sequelize } from "sequelize";
-import {
-  postgresUserProd,
+import config from "../../../../../config";
+
+const  {postgresUserProd,
   postgresPasswordProd,
   postgresHostProd,
   postgresPortProd,
@@ -15,7 +16,7 @@ import {
   postgresPasswordTest,
   postgresHostTest,
   postgresPortTest,
-} from "./config.env";
+}= config
 
 let ENV = null;
 if (process.argv.includes("DEV")) ENV = "DEV";

@@ -1,8 +1,7 @@
-import models from "./infrastructure/src/models";
+import { models } from "./infrastructure/models";
 import { labelCases, Mapfy, setEnums } from "../../../utils";
 import { v4 as uuidv4 } from "uuid";
 import boom from "@hapi/boom";
-import { sequelize } from "./infrastructure/src";
 
 export default class SequelizeAdapter {
   serviceDescription: string = "Sequelize Database Service Adapter";
@@ -224,5 +223,3 @@ export default class SequelizeAdapter {
 
   entities = setEnums(Object.entries(models).flatMap((m: any) => m[0]));
 }
-
-export { sequelize };
