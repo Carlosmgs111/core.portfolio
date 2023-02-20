@@ -3,8 +3,10 @@ import request from "supertest";
 import { generateOneUser } from "../fakers/user.fake";
 import { app } from "../../infrastructure/apis/express";
 import { generateOneProject } from "../fakers/project.fake";
-import { Project } from "../../infrastructure/repositories/sequelize/src/models/Project";
-import { sequelize } from "../../infrastructure/repositories/sequelize/src";
+import { sequelize } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/src";
+import { models } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/models";
+
+const { Project } = models;
 
 describe("Test for get all projects endpoint", () => {
   let server: any = null;

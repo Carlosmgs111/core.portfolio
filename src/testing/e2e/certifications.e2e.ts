@@ -3,13 +3,17 @@ import { app } from "../../infrastructure/apis/express";
 import { generateOneProject } from "../fakers/project.fake";
 import { generateOneUser } from "../fakers/user.fake";
 import { generateOneInstitution } from "../fakers/institution.fake";
-import { sequelize } from "../../infrastructure/repositories/sequelize/src";
-import { User } from "../../infrastructure/repositories/sequelize/src/models/User";
-import { Institution } from "../../infrastructure/repositories/sequelize/src/models/Institution";
-import { Certification } from "../../infrastructure/repositories/sequelize/src/models/Certification";
-import { Users_Certifications } from "../../infrastructure/repositories/sequelize/src/models/User_Certification";
-import { Users_Institutions } from "../../infrastructure/repositories/sequelize/src/models/User_Institution";
+import { sequelize } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/src";
+import { models } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/models";
 import { generateOneCertification } from "../fakers/certification.fake";
+
+const {
+  User,
+  Institution,
+  Certification,
+  Users_Certifications,
+  Users_Institutions,
+} = models;
 
 describe("Creation of a new certification", () => {
   let user: any;
@@ -25,9 +29,9 @@ describe("Creation of a new certification", () => {
     await Institution.sync({ force: true });
     await Certification.sync({ force: true });
     await Users_Certifications.sync({ force: true });
-    await Users_Institutions.sync({force:true})
+    await Users_Institutions.sync({ force: true });
     user = generateOneUser();
-    await request(app).post("/api/v1/signup").send(user)
+    await request(app).post("/api/v1/signup").send(user);
     const { token }: any = (await request(app).get("/api/v1/signin").send(user))
       .body;
     userToken = token;
