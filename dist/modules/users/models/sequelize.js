@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.User = exports.user_schema = exports.user_table = void 0;
 const sequelize_1 = require("sequelize");
-const src_1 = require("../../../services/DatabaseServices/SequelizeAdapter/infrastructure/src");
+const infrastructure_1 = require("../../../services/DatabaseServices/SequelizeAdapter/infrastructure");
 exports.user_table = "Users";
 exports.user_schema = {
     uuid: {
@@ -64,4 +64,4 @@ class User extends sequelize_1.Model {
     }
 }
 exports.User = User;
-User.init(exports.user_schema, { sequelize: src_1.sequelize, modelName: exports.user_table });
+User.init(exports.user_schema, { sequelize: infrastructure_1.sequelize, modelName: exports.user_table });

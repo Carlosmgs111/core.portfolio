@@ -1,5 +1,5 @@
 import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../../../services/DatabaseServices/SequelizeAdapter/infrastructure/src";
+import { sequelize } from "../../../services/DatabaseServices/SequelizeAdapter/infrastructure";
 
 export const user_table = "Users";
 export const user_schema = {

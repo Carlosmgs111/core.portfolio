@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Institution = exports.institution_schema = exports.institution_table = void 0;
 const sequelize_1 = require("sequelize");
-const src_1 = require("../../../services/DatabaseServices/SequelizeAdapter/infrastructure/src");
+const infrastructure_1 = require("../../../services/DatabaseServices/SequelizeAdapter/infrastructure");
 exports.institution_table = "Institutions";
 exports.institution_schema = {
     uuid: {
@@ -38,6 +38,6 @@ class Institution extends sequelize_1.Model {
 }
 exports.Institution = Institution;
 Institution.init(exports.institution_schema, {
-    sequelize: src_1.sequelize,
+    sequelize: infrastructure_1.sequelize,
     modelName: exports.institution_table,
 });

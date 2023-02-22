@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Skill = exports.skill_schema = exports.skill_table = void 0;
 const sequelize_1 = require("sequelize");
-const src_1 = require("../../../services/DatabaseServices/SequelizeAdapter/infrastructure/src");
+const infrastructure_1 = require("../../../services/DatabaseServices/SequelizeAdapter/infrastructure");
 exports.skill_table = "Skills";
 exports.skill_schema = {
     uuid: {
@@ -28,4 +28,4 @@ class Skill extends sequelize_1.Model {
     }
 }
 exports.Skill = Skill;
-Skill.init(exports.skill_schema, { sequelize: src_1.sequelize, modelName: exports.skill_table });
+Skill.init(exports.skill_schema, { sequelize: infrastructure_1.sequelize, modelName: exports.skill_table });
