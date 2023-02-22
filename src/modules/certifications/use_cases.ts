@@ -2,7 +2,7 @@ import { RepositoryService } from "../../config/dependencies";
 import { Certification } from "./entity";
 import { User } from "../users/entity";
 import boom from "@hapi/boom";
-import { verifyToken2 } from "../../infrastructure/auth/JWT";
+import { verifyToken2 } from "../../services/AuthServices";
 import { formatCertifications } from "./DTOs";
 
 export const getCertifications = async (data: any) => {

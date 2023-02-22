@@ -4,11 +4,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = require("express");
-const express_password_routes_1 = __importDefault(require("./express.password.routes"));
-const use_cases_1 = require("../use_cases");
-const user_schema_1 = require("../../../infrastructure/schemas/user.schema");
-const validator_handler_1 = require("../../../infrastructure/apis/express/middlewares/validator.handler");
-const express_2 = require("../../../adapters/apis/express");
+const password_routes_1 = __importDefault(require("./password.routes"));
+const use_cases_1 = require("../../use_cases");
+const user_schema_1 = require("../../../../infrastructure/schemas/user.schema");
+const validator_handler_1 = require("../../../../infrastructure/apis/express/middlewares/validator.handler");
+const express_2 = require("../../../../adapters/apis/express");
 const router = (0, express_1.Router)();
 exports.default = router
     .get("/sayhello", (0, express_2.expressHandlerAdapter)(use_cases_1.sayHello))
@@ -18,4 +18,4 @@ exports.default = router
     .patch("/username/change", (0, express_2.expressHandlerAdapter)(use_cases_1.changeUsername))
     .get("/username/all", (0, express_2.expressHandlerAdapter)(use_cases_1.getAllUsername))
     .patch("/avatar/update", (0, express_2.expressHandlerAdapter)(use_cases_1.updateAvatar))
-    .use("/password", express_password_routes_1.default);
+    .use("/password", password_routes_1.default);

@@ -17,7 +17,7 @@ const dependencies_1 = require("../../config/dependencies");
 const entity_1 = require("./entity");
 const entity_2 = require("../users/entity");
 const boom_1 = __importDefault(require("@hapi/boom"));
-const JWT_1 = require("../../infrastructure/auth/JWT");
+const AuthServices_1 = require("../../services/AuthServices");
 const DTOs_1 = require("./DTOs");
 const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
@@ -42,7 +42,7 @@ const getCertifications = (data) => __awaiter(void 0, void 0, void 0, function* 
 exports.getCertifications = getCertifications;
 const getOwnCertifications = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { token } = data;
-    const { user } = yield (0, JWT_1.verifyToken2)(token);
+    const { user } = yield (0, AuthServices_1.verifyToken2)(token);
     return yield entity_2.User.certifications(dependencies_1.RepositoryService, {
         username: user.username,
     });

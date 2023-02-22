@@ -11,8 +11,6 @@ const cors_1 = __importDefault(require("cors"));
 const routes_1 = __importDefault(require("./routes"));
 const path_1 = require("path");
 const error_handler_1 = require("./middlewares/error.handler");
-// import authRoutes from "./routes/auth.routes";
-// import passport from "../../auth/passport";
 const grantUrls_handler_1 = require("./middlewares/grantUrls.handler");
 // Create a new app server
 exports.app = (0, express_1.default)();

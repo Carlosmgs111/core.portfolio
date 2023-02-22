@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteInstitution = exports.unlinkFromInstitution = exports.linkToIntitution = exports.updateInstitution = exports.getAllInstitutions = exports.addNewInstitution = void 0;
 const entity_1 = require("./entity");
 const dependencies_1 = require("../../config/dependencies");
-const JWT_1 = require("../../infrastructure/auth/JWT");
+const AuthServices_1 = require("../../services/AuthServices");
 const boom_1 = __importDefault(require("@hapi/boom"));
 const addNewInstitution = (data) => __awaiter(void 0, void 0, void 0, function* () {
     if (!data.user)
@@ -34,7 +34,7 @@ const updateInstitution = (data) => __awaiter(void 0, void 0, void 0, function* 
 exports.updateInstitution = updateInstitution;
 const linkToIntitution = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { institutionUUID, token } = data;
-    const { user } = yield (0, JWT_1.verifyToken2)(token);
+    const { user } = yield (0, AuthServices_1.verifyToken2)(token);
     dependencies_1.RepositoryService.createOneRelationshipN2N([
         { label: "user", uuid: user.uuid },
         { label: "institution", uuid: institutionUUID },

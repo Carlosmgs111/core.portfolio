@@ -1,37 +1,26 @@
 import { Router } from "express";
-import passwordRoutes from "./express.password.routes";
+import passwordRoutes from "./password.routes";
 import {
   registerUser,
   removeUser,
   updateUser,
-  signin,
   sayHello,
   changeUsername,
   updateAvatar,
   getAllUsername,
-} from "../use_cases";
+} from "../../use_cases";
 import {
   createUserSchema,
   getUserSchema,
   updateUserSchema,
-} from "../../../infrastructure/schemas/user.schema";
-import { validatorHandler } from "../../../infrastructure/apis/express/middlewares/validator.handler";
-import { expressHandlerAdapter } from "../../../adapters/apis/express";
+} from "../../../../infrastructure/schemas/user.schema";
+import { validatorHandler } from "../../../../infrastructure/apis/express/middlewares/validator.handler";
+import { expressHandlerAdapter } from "../../../../adapters/apis/express";
 
 const router = Router();
 
 export default router
-  .get(
-    "/",
-    validatorHandler(getUserSchema, "body"),
-    expressHandlerAdapter(signin)
-  )
   .get("/sayhello", expressHandlerAdapter(sayHello))
-  .get(
-    "/:email",
-    validatorHandler(getUserSchema, "params"),
-    expressHandlerAdapter(signin)
-  )
   .post(
     "/",
     validatorHandler(createUserSchema, "body"),

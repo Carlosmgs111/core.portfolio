@@ -10,8 +10,6 @@ import {
   boomErrorHandler,
   ormErrorHandler,
 } from "./middlewares/error.handler";
-// import authRoutes from "./routes/auth.routes";
-// import passport from "../../auth/passport";
 import { grantUrls } from "./middlewares/grantUrls.handler";
 // Create a new app server
 

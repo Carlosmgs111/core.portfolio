@@ -29,7 +29,7 @@ const grantUrls = (urlsGranted) => {
             grantedPaths.map((grantedPath) => {
                 if (grantedPath.includes(":")) {
                     // isGranted = true;
-                    console.log({ grantedPath });
+                    // console.log({ grantedPath });
                 }
             });
             const isIncluded = grantedPaths.includes(toGrantUrl) && grantedMethods.includes(method);

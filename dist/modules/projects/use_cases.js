@@ -14,10 +14,10 @@ const dependencies_1 = require("../../config/dependencies");
 const entity_1 = require("./entity");
 const entity_2 = require("../users/entity");
 const utils_1 = require("../../utils");
-const JWT_1 = require("../../infrastructure/auth/JWT");
 const formatProjects = (projects) => projects.map((project) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project), { buildedBy: project.Users.map(({ username }) => username) }), ["Users"]));
 const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
+    console.log({ user });
     const projects = yield entity_1.Project.findAll(dependencies_1.RepositoryService, {
         related: [["User", { attributes: ["username"] }]],
         size,
@@ -27,8 +27,9 @@ const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getProjects = getProjects;
 const getOwnProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({ data });
     const { token } = data;
-    const { user } = yield (0, JWT_1.verifyToken2)(token);
+    const { user } = yield dependencies_1.AuthServices.verifyKey(token);
     return yield entity_2.User.projects(dependencies_1.RepositoryService, user);
 });
 exports.getOwnProjects = getOwnProjects;

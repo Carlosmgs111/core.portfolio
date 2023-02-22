@@ -17,7 +17,7 @@ const config_1 = __importDefault(require("../../../config"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const expires_1 = require("../expires");
 const jose_1 = require("jose");
-const use_cases_1 = require("../../../modules/users/use_cases");
+const use_cases_1 = require("../../../modules/shared/auth/use_cases");
 const createToken = (params, expiresIn = expires_1.expiresIn1Month, secret = config_1.default.jwtAccessSecret) => {
     return jsonwebtoken_1.default.sign(Object.assign({ sub: params._id || params.sub }, params), secret || "", {
         expiresIn,

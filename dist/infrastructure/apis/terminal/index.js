@@ -27,8 +27,8 @@ inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.de
 colors_1.default;
 exports.default = () => __awaiter(void 0, void 0, void 0, function* () {
     const tokens = {
-        re: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiNWMwMDJkNWEtODUwMC00MDE1LThjMWQtYmIyZjNiMjYxOWVmIiwidXNlcm5hbWUiOiJyZWFwZXJuNyIsImVtYWlsIjoicmVhcGVyMzQzbjdAZ21haWwuY29tIiwiaWF0IjoxNjcxNTYwNzM1LCJleHAiOjE2NzQxNTI3MzV9.LF6kH1g-7R3GDlQMAtQgzdQZb0XgZfK-_IGdJNP-vv4",
-        cm: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1dWlkIjoiZDU3NDI3YjQtNmU5MC00OTI3LWI3OWYtODc4MzBmN2UxODMwIiwidXNlcm5hbWUiOiJjbWdzMTExIiwiZW1haWwiOiJjYXJsb3NtZ3MxMTFAb3V0bG9vay5jb20iLCJpYXQiOjE2NzE1NTg3NTEsImV4cCI6MTY3NDE1MDc1MX0.bXXYbEEu0nbr7nYUHDZXnOIiZcFz0x9lDbW6lkAWeg8",
+        re: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOjE2NzU2MzI1Nzc1MDksInV1aWQiOiIzOTVhZTE5OS1mOGU2LTRjNmEtODQ1ZS0zODdiNmE3MDQ3NTgiLCJ1c2VybmFtZSI6InJlYXBlcjM0MyIsImVtYWlsIjoicmVhcGVyMzQzbjdAZ21haWwuY29tIiwicHJpdmlsZWdlIjoiYWRtaW4iLCJhdmF0YXIiOiJodHRwczovL2ltYWdlczIuYWxwaGFjb2RlcnMuY29tLzExOS90aHVtYi0xOTIwLTExOTg0Mi5qcGciLCJpYXQiOjE2NzcwOTM3MjcsImV4cCI6MTY3OTY4NTcyN30.7cQJQbfZ55Le10Pe495YA6T5EbkiLaBjPOJ-QJrPwVo",
+        cm: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJjcmVhdGVkQXQiOjE2NzQ3MDg1NzA1NTgsInV1aWQiOiIyNGZkODZkOC0zNTgwLTRjYWItYWExZS02ZTM4NzMzNGQwOWIiLCJ1c2VybmFtZSI6ImNtZ3MxMTEiLCJlbWFpbCI6ImNhcmxvc21nczExMUBvdXRsb29rLmNvbSIsInByaXZpbGVnZSI6ImFkbWluIiwiYXZhdGFyIjoiaHR0cHM6Ly9pLnJlZGQuaXQvY2RhZzV5ajkwZmM1MS5qcGciLCJpYXQiOjE2NzcwOTU4OTEsImV4cCI6MTY3OTY4Nzg5MX0.lHvHHTBHq0q1ne-AF1wFztyDwKJoSbuIseGk0JFtSN4",
         no: null,
     };
     const usernames = { re: "reapern7", cm: "cmgs111" };

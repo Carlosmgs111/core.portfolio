@@ -2,7 +2,7 @@ import {
   login,
   signup,
   unsubscribe,
-} from "../../../../modules/users/use_cases";
+} from "../../../../modules/shared/auth/use_cases";
 import inquirer from "inquirer";
 import { Enumfy, execFunc } from "../../../../utils";
 import { decodeJwt } from "jose";

@@ -36,7 +36,7 @@ export const grantUrls = (urlsGranted: string[][][]) => {
       grantedPaths.map((grantedPath: any) => {
         if (grantedPath.includes(":")) {
           // isGranted = true;
-          console.log({ grantedPath });
+          // console.log({ grantedPath });
         }
       });
       const isIncluded =

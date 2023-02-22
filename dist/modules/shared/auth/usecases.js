@@ -9,20 +9,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.LocalStrategy = void 0;
-const passport_local_1 = require("passport-local");
-const use_cases_1 = require("../../../../modules/shared/auth/use_cases");
-exports.LocalStrategy = new passport_local_1.Strategy({
-    usernameField: "email",
-    passwordField: "password",
-}, function (email, password, done) {
-    return __awaiter(this, void 0, void 0, function* () {
-        try {
-            const entity = yield (0, use_cases_1.authSignin)({ email, password });
-            return done(null, entity);
-        }
-        catch (e) {
-            done(e, false);
-        }
+exports.login = void 0;
+const entity_1 = require("../../users/entity");
+const dependencies_1 = require("../../../config/dependencies");
+const utils_1 = require("../../../utils");
+const login = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    const account = yield entity_1.User.authLoad(dependencies_1.RepositoryService, {
+        credentials,
+        // related: [["Institution"], ["Certification"]],
     });
+    if (!account)
+        throw new Error("The account doesn't exist!");
+    let response = dependencies_1.AuthServices.getAuthPackage((0, utils_1.filterAttrs)(account, ["uuid", "email", "username", "privilege", "createdAt", "avatar"], false));
+    return response;
 });
+exports.login = login;

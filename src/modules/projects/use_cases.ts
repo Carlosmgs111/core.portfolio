@@ -1,8 +1,7 @@
-import { RepositoryService } from "../../config/dependencies";
+import { RepositoryService, AuthServices } from "../../config/dependencies";
 import { Project } from "./entity";
 import { User } from "../users/entity";
 import { filterAttrs } from "../../utils";
-import { verifyToken2 } from "../../infrastructure/auth/JWT";
 
 const formatProjects = (projects: [Project]) =>
   projects.map((project: any) =>
@@ -17,6 +16,7 @@ const formatProjects = (projects: [Project]) =>
 
 export const getProjects = async (data: any) => {
   const { username, user, size, page } = data;
+  console.log({ user });
   const projects = await Project.findAll(RepositoryService, {
     related: [["User", { attributes: ["username"] }]],
     size,
@@ -26,8 +26,9 @@ export const getProjects = async (data: any) => {
 };
 
 export const getOwnProjects = async (data: any) => {
+  console.log({ data });
   const { token } = data;
-  const { user } = await verifyToken2(token);
+  const { user } = await AuthServices.verifyKey(token);
   return await User.projects(RepositoryService, user);
 };
 

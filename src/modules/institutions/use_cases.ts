@@ -1,6 +1,6 @@
 import { Institution } from "./entity";
 import { RepositoryService } from "../../config/dependencies";
-import { verifyToken2 } from "../../infrastructure/auth/JWT";
+import { verifyToken2 } from "../../services/AuthServices";
 import boom from "@hapi/boom";
 
 export const addNewInstitution = async (data: any) => {
