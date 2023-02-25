@@ -3,7 +3,7 @@ import { app } from "../../infrastructure/apis/express";
 import { generateOneProject } from "../fakers/project.fake";
 import { generateOneUser } from "../fakers/user.fake";
 import { generateOneInstitution } from "../fakers/institution.fake";
-import { sequelize } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/src";
+import { sequelize } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure";
 import { models } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/models";
 import { generateOneCertification } from "../fakers/certification.fake";
 

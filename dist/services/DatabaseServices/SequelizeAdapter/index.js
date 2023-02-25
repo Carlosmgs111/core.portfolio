@@ -34,7 +34,6 @@ class SequelizeAdapter {
         });
         this.findOne = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             try {
-                console.log(this.adapter(options));
                 const entityFounded = yield models_1.models[entity].findOne(this.adapter(options));
                 if (!entityFounded)
                     return null;

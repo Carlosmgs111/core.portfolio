@@ -1,53 +1,72 @@
 import { DatabaseService, Adapters } from "../DatabaseServices";
-import { createQueue } from "../QueueServices";
+import { createQueueService } from "../QueueServices";
 
 export class CQRSService {
   QueryService = DatabaseService(Adapters.MongooseAdapter);
   CommandService = DatabaseService(Adapters.SequelizeAdapter);
   lastSync: number = new Date().getTime();
 
-  private createOneInQueryService = createQueue("createOneInQueryService");
-  private createManyInQueryService = createQueue("createManyInQueryService");
-  private createOneRelationshipN2NInQueryService = createQueue(
-    "createOneRelationshipN2NInQueryService"
-  );
-  private removeOneRelationshipN2NInQueryService = createQueue(
-    "removeOneRelationshipN2NInQueryService"
-  );
-  private setOneRelationship2OneInQueryService = createQueue(
-    "setOneRelationship2OneInQueryService"
-  );
-  private unsetOneRelationship2OneInQueryService = createQueue(
-    "unsetOneRelationship2OneInQueryService"
-  );
-  private updateOneInQueryService = createQueue("updateOneInQueryService");
-  private removeOneInQueryService = createQueue("removeOneInQueryService");
+  private queueService = createQueueService();
 
   constructor() {
-    this.createOneInQueryService.setProcess(this.QueryService.createOne);
-    this.createManyInQueryService.setProcess(this.QueryService.createMany);
-    this.createOneRelationshipN2NInQueryService.setProcess(
+    setTimeout(()=>{this.queueService.createQueue("queryServiceCreateOne");
+    this.queueService.receiveMessage(
+      "queryServiceCreateOne",
+      this.QueryService.createOne
+    );
+    this.queueService.createQueue("queryServiceCreateMany");
+    this.queueService.receiveMessage(
+      "queryServiceCreateMany",
+      this.QueryService.createMany
+    );
+    this.queueService.createQueue("queryServiceCreateOneRelationshipN2N");
+    this.queueService.receiveMessage(
+      "queryServiceCreateOneRelationshipN2N",
       this.QueryService.createOneRelationshipN2N
     );
-    this.removeOneRelationshipN2NInQueryService.setProcess(
+    this.queueService.createQueue("queryServiceRemoveOneRelationshipN2N");
+    this.queueService.receiveMessage(
+      "queryServiceRemoveOneRelationshipN2N",
       this.QueryService.removeOneRelationshipN2N
     );
-    this.setOneRelationship2OneInQueryService.setProcess(
+    this.queueService.createQueue("queryServiceSetOneRelationship2One");
+    this.queueService.receiveMessage(
+      "queryServiceSetOneRelationship2One",
       this.QueryService.setOneRelationship2One
     );
-    this.unsetOneRelationship2OneInQueryService.setProcess(
+    this.queueService.createQueue("queryServiceUnsetOneRelationship2One");
+    this.queueService.receiveMessage(
+      "queryServiceUnsetOneRelationship2One",
       this.QueryService.unsetOneRelationship2One
     );
-    this.updateOneInQueryService.setProcess(this.QueryService.updateOne);
-    this.removeOneInQueryService.setProcess(this.QueryService.removeOne);
+    this.queueService.createQueue("queryServiceUpdateOne");
+    this.queueService.receiveMessage(
+      "queryServiceUpdateOne",
+      this.QueryService.updateOne
+    );
+    this.queueService.createQueue("queryServiceRemoveOne");
+    this.queueService.receiveMessage(
+      "queryServiceRemoveOne",
+      this.QueryService.removeOne
+    );},
+    2000)
+    
   }
 
   createOne = async (entity: any, Entity: any, options: any = {}) => {
-    this.createOneInQueryService.addJob([entity, Entity, options]);
+    this.queueService.sendMessage("queryServiceCreateOne", [
+      entity,
+      Entity,
+      options,
+    ]);
     return await this.CommandService.createOne(entity, Entity, options);
   };
   createMany = async (entity: any, entities: any, options: any = {}) => {
-    this.createManyInQueryService.addJob([entity, entities, options]);
+    this.queueService.sendMessage("queryServiceCreateMany", [
+      entity,
+      entities,
+      options,
+    ]);
     return await this.CommandService.createMany(entity, entities, options);
   };
   findOne = async (entity: any, options: any = {}) =>
@@ -55,27 +74,34 @@ export class CQRSService {
   findAll = async (entity: any, options: any = {}) =>
     await this.QueryService.findAll(entity, options);
   removeOne = async (entity: any, options: any) => {
-    this.removeOneInQueryService.addJob([entity, options]);
+    this.queueService.sendMessage("queryServiceRemoveOne", [entity, options]);
     return await this.CommandService.removeOne(entity, options);
   };
   updateOne = async (entity: any, Entity: any, options: any = {}) => {
-    this.updateOneInQueryService.addJob([entity, Entity, options]);
+    this.queueService.sendMessage("queryServiceUpdateOne", [
+      entity,
+      Entity,
+      options,
+    ]);
     return await this.CommandService.updateOne(entity, Entity, options);
   };
   setOneRelationship2One = async (entity: any, refs: any) => {
-    this.setOneRelationship2OneInQueryService.addJob([entity, refs]);
+    this.queueService.sendMessage("queryServiceSetOneRelationship2One", [
+      entity,
+      refs,
+    ]);
     return await this.CommandService.setOneRelationship2One(entity, refs);
   };
   unsetOneRelationship2One = async (entity: any, refs: any) => {
-    this.unsetOneRelationship2OneInQueryService.addJob([entity, refs]);
+    this.queueService.sendMessage("queryServiceUnsetOneRelationship2One", [entity, refs]);
     return await this.CommandService.unsetOneRelationship2One(entity, refs);
   };
   createOneRelationshipN2N = async (refs: any) => {
-    this.createOneRelationshipN2NInQueryService.addJob([refs]);
+    this.queueService.sendMessage("queryServiceCreateOneRelationshipN2N", [refs]);
     return await this.CommandService.createOneRelationshipN2N(refs);
   };
   removeOneRelationshipN2N = async (refs: any) => {
-    this.removeOneRelationshipN2NInQueryService.addJob([refs]);
+    this.queueService.sendMessage("queryServiceRemoveOneRelationshipN2N", [refs]);
     return await this.CommandService.removeOneRelationshipN2N(refs);
   };
   checkOneRelationshipN2N = this.CommandService.checkOneRelationshipN2N;

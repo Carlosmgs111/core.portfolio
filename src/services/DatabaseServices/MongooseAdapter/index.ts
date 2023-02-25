@@ -58,6 +58,7 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
   };
 
   updateOne = async (entity: any, Entity: any, options: any) => {
+    console.log({ entity, Entity, options });
     try {
       const model = await models[entity].updateOne(
         this.adapter(options),

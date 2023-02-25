@@ -39,7 +39,6 @@ export default class SequelizeAdapter {
 
   findOne = async (entity: any, options: any = {}) => {
     try {
-      console.log(this.adapter(options));
       const entityFounded = await models[entity].findOne(this.adapter(options));
       if (!entityFounded) return null;
       return entityFounded.dataValues;

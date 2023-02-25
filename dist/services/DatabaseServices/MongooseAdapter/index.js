@@ -54,6 +54,7 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
             return yield models_1.default[entity].deleteOne(this.adapter(options));
         });
         this.updateOne = (entity, Entity, options) => __awaiter(this, void 0, void 0, function* () {
+            console.log({ entity, Entity, options });
             try {
                 const model = yield models_1.default[entity].updateOne(this.adapter(options), Entity);
                 return model._doc;

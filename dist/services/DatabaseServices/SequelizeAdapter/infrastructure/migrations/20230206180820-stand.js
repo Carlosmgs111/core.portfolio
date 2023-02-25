@@ -14,27 +14,17 @@ const { user_table, certification_table, project_table, institution_table, post_
 module.exports = {
     up(queryInterface, Sequelize) {
         return __awaiter(this, void 0, void 0, function* () {
-            // console.log({ models });
-            // await queryInterface.createTable(user_table, user_schema);
-            // await queryInterface.createTable(institution_table, institution_schema);
-            // await queryInterface.createTable(certification_table, certification_schema);
-            // await queryInterface.createTable(project_table, project_schema);
-            // await queryInterface.createTable(post_table, post_schema);
-            // await queryInterface.createTable(skill_table, skill_schema);
-            // await queryInterface.createTable(
-            //   users_certifications_table,
-            //   users_certifications_schema
-            // );
-            // await queryInterface.createTable(
-            //   users_institutions_table,
-            //   users_institutions_schema
-            // );
-            // await queryInterface.createTable(
-            //   users_projects_table,
-            //   users_projects_schema
-            // );
-            // await queryInterface.createTable(users_skills_table, users_skills_schema);
-            // await queryInterface.removeColumn(project_table, "user_uuid");
+            console.log({ models: models_1.models });
+            yield queryInterface.createTable(user_table, user_schema);
+            yield queryInterface.createTable(institution_table, institution_schema);
+            yield queryInterface.createTable(certification_table, certification_schema);
+            yield queryInterface.createTable(project_table, project_schema);
+            yield queryInterface.createTable(post_table, post_schema);
+            yield queryInterface.createTable(skill_table, skill_schema);
+            yield queryInterface.createTable(users_certifications_table, users_certifications_schema);
+            yield queryInterface.createTable(users_institutions_table, users_institutions_schema);
+            yield queryInterface.createTable(users_projects_table, users_projects_schema);
+            yield queryInterface.createTable(users_skills_table, users_skills_schema);
             yield queryInterface.createTable(note_table, note_schema);
         });
     },

@@ -14,31 +14,31 @@ if (process.argv.includes("PROD"))
     ENV = "PROD";
 let database = (() => {
     if (ENV === "DEV")
-        return postgresDatabaseDev || "";
+        return postgresDatabaseDev;
     if (ENV === "PROD")
-        return postgresDatabaseProd || "";
-    return postgresDatabaseTest || "";
+        return postgresDatabaseProd;
+    return postgresDatabaseTest;
 })();
 let user = (() => {
     if (ENV === "DEV")
-        return postgresUserDev || "";
+        return postgresUserDev;
     if (ENV === "PROD")
-        return postgresUserProd || "";
-    return postgresUserTest || "";
+        return postgresUserProd;
+    return postgresUserTest;
 })();
 let PASSWORD = (() => {
     if (ENV === "DEV")
-        return encodeURIComponent(postgresPasswordDev || "");
+        return encodeURIComponent(postgresPasswordDev);
     if (ENV === "PROD")
-        return encodeURIComponent(postgresPasswordProd || "");
-    return encodeURIComponent(postgresPasswordTest || "");
+        return encodeURIComponent(postgresPasswordProd);
+    return encodeURIComponent(postgresPasswordTest);
 })();
 let host = (() => {
     if (ENV === "DEV")
-        return postgresHostDev || "";
+        return postgresHostDev;
     if (ENV === "PROD")
-        return postgresHostProd || "";
-    return postgresHostTest || "";
+        return postgresHostProd;
+    return postgresHostTest;
 })();
 let port = (() => {
     if (ENV === "DEV")

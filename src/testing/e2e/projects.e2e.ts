@@ -3,7 +3,7 @@ import request from "supertest";
 import { generateOneUser } from "../fakers/user.fake";
 import { app } from "../../infrastructure/apis/express";
 import { generateOneProject } from "../fakers/project.fake";
-import { sequelize } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/src";
+import { sequelize } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure";
 import { models } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/models";
 
 const { Project } = models;

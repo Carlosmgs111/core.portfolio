@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("dotenv").config();
 const config = {
     mongoDBLocalUrl: String(process.env.MONGODB_LOCAL_URL || ""),
-    mongoDBLocalTestUrl: String(process.env.MONGODB_LOCAL_TEST_URL || ""),
+    mongoDBTestUrl: String(process.env.MONGODB_TEST_URL || ""),
     mongoDBAtlasURL: String(process.env.MONGODB_ATLAS_URL || ""),
     /*  */
     postgresDatabaseProd: String(process.env.POSTGRES_DATABASE_PROD || ""),

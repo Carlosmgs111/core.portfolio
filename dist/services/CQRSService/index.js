@@ -17,46 +17,54 @@ class CQRSService {
         this.QueryService = (0, DatabaseServices_1.DatabaseService)(DatabaseServices_1.Adapters.MongooseAdapter);
         this.CommandService = (0, DatabaseServices_1.DatabaseService)(DatabaseServices_1.Adapters.SequelizeAdapter);
         this.lastSync = new Date().getTime();
-        this.createOneInQueryService = (0, QueueServices_1.createQueue)("createOneInQueryService");
-        this.createManyInQueryService = (0, QueueServices_1.createQueue)("createManyInQueryService");
-        this.createOneRelationshipN2NInQueryService = (0, QueueServices_1.createQueue)("createOneRelationshipN2NInQueryService");
-        this.removeOneRelationshipN2NInQueryService = (0, QueueServices_1.createQueue)("removeOneRelationshipN2NInQueryService");
-        this.setOneRelationship2OneInQueryService = (0, QueueServices_1.createQueue)("setOneRelationship2OneInQueryService");
-        this.unsetOneRelationship2OneInQueryService = (0, QueueServices_1.createQueue)("unsetOneRelationship2OneInQueryService");
-        this.updateOneInQueryService = (0, QueueServices_1.createQueue)("updateOneInQueryService");
-        this.removeOneInQueryService = (0, QueueServices_1.createQueue)("removeOneInQueryService");
+        this.queueService = (0, QueueServices_1.createQueueService)();
         this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            this.createOneInQueryService.addJob([entity, Entity, options]);
+            this.queueService.sendMessage("queryServiceCreateOne", [
+                entity,
+                Entity,
+                options,
+            ]);
             return yield this.CommandService.createOne(entity, Entity, options);
         });
         this.createMany = (entity, entities, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            this.createManyInQueryService.addJob([entity, entities, options]);
+            this.queueService.sendMessage("queryServiceCreateMany", [
+                entity,
+                entities,
+                options,
+            ]);
             return yield this.CommandService.createMany(entity, entities, options);
         });
         this.findOne = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () { return yield this.QueryService.findOne(entity, options); });
         this.findAll = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () { return yield this.QueryService.findAll(entity, options); });
         this.removeOne = (entity, options) => __awaiter(this, void 0, void 0, function* () {
-            this.removeOneInQueryService.addJob([entity, options]);
+            this.queueService.sendMessage("queryServiceRemoveOne", [entity, options]);
             return yield this.CommandService.removeOne(entity, options);
         });
         this.updateOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            this.updateOneInQueryService.addJob([entity, Entity, options]);
+            this.queueService.sendMessage("queryServiceUpdateOne", [
+                entity,
+                Entity,
+                options,
+            ]);
             return yield this.CommandService.updateOne(entity, Entity, options);
         });
         this.setOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
-            this.setOneRelationship2OneInQueryService.addJob([entity, refs]);
+            this.queueService.sendMessage("queryServiceSetOneRelationship2One", [
+                entity,
+                refs,
+            ]);
             return yield this.CommandService.setOneRelationship2One(entity, refs);
         });
         this.unsetOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
-            this.unsetOneRelationship2OneInQueryService.addJob([entity, refs]);
+            this.queueService.sendMessage("queryServiceUnsetOneRelationship2One", [entity, refs]);
             return yield this.CommandService.unsetOneRelationship2One(entity, refs);
         });
         this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
-            this.createOneRelationshipN2NInQueryService.addJob([refs]);
+            this.queueService.sendMessage("queryServiceCreateOneRelationshipN2N", [refs]);
             return yield this.CommandService.createOneRelationshipN2N(refs);
         });
         this.removeOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
-            this.removeOneRelationshipN2NInQueryService.addJob([refs]);
+            this.queueService.sendMessage("queryServiceRemoveOneRelationshipN2N", [refs]);
             return yield this.CommandService.removeOneRelationshipN2N(refs);
         });
         this.checkOneRelationshipN2N = this.CommandService.checkOneRelationshipN2N;
@@ -71,14 +79,24 @@ class CQRSService {
                 commandDatabaseInterfaceName: this.CommandService.serviceDescription,
             };
         };
-        this.createOneInQueryService.setProcess(this.QueryService.createOne);
-        this.createManyInQueryService.setProcess(this.QueryService.createMany);
-        this.createOneRelationshipN2NInQueryService.setProcess(this.QueryService.createOneRelationshipN2N);
-        this.removeOneRelationshipN2NInQueryService.setProcess(this.QueryService.removeOneRelationshipN2N);
-        this.setOneRelationship2OneInQueryService.setProcess(this.QueryService.setOneRelationship2One);
-        this.unsetOneRelationship2OneInQueryService.setProcess(this.QueryService.unsetOneRelationship2One);
-        this.updateOneInQueryService.setProcess(this.QueryService.updateOne);
-        this.removeOneInQueryService.setProcess(this.QueryService.removeOne);
+        setTimeout(() => {
+            this.queueService.createQueue("queryServiceCreateOne");
+            this.queueService.receiveMessage("queryServiceCreateOne", this.QueryService.createOne);
+            this.queueService.createQueue("queryServiceCreateMany");
+            this.queueService.receiveMessage("queryServiceCreateMany", this.QueryService.createMany);
+            this.queueService.createQueue("queryServiceCreateOneRelationshipN2N");
+            this.queueService.receiveMessage("queryServiceCreateOneRelationshipN2N", this.QueryService.createOneRelationshipN2N);
+            this.queueService.createQueue("queryServiceRemoveOneRelationshipN2N");
+            this.queueService.receiveMessage("queryServiceRemoveOneRelationshipN2N", this.QueryService.removeOneRelationshipN2N);
+            this.queueService.createQueue("queryServiceSetOneRelationship2One");
+            this.queueService.receiveMessage("queryServiceSetOneRelationship2One", this.QueryService.setOneRelationship2One);
+            this.queueService.createQueue("queryServiceUnsetOneRelationship2One");
+            this.queueService.receiveMessage("queryServiceUnsetOneRelationship2One", this.QueryService.unsetOneRelationship2One);
+            this.queueService.createQueue("queryServiceUpdateOne");
+            this.queueService.receiveMessage("queryServiceUpdateOne", this.QueryService.updateOne);
+            this.queueService.createQueue("queryServiceRemoveOne");
+            this.queueService.receiveMessage("queryServiceRemoveOne", this.QueryService.removeOne);
+        }, 2000);
     }
 }
 exports.CQRSService = CQRSService;
