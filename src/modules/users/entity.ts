@@ -34,7 +34,7 @@ export class User {
   }) {
     this.uuid = uuid;
     this.username = username;
-    this.email = email;
+    this.email = !email ? `${uuid}@${username}.email` : email;
     this.password = password;
     this.privilege = privilege;
     this.avatar = avatar;
@@ -90,7 +90,7 @@ export class User {
 
   static find = async (RepositoryService: any, options: any = {}) => {
     const { credentials } = options;
-    console.log({credentials})
+    console.log({ credentials });
     if (!credentials) throw boom.conflict("Idexation must be provided!");
     const account: any = await RepositoryService.findOne(
       RepositoryService.entities.User,

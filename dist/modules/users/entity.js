@@ -49,7 +49,7 @@ class User {
         });
         this.uuid = uuid;
         this.username = username;
-        this.email = email;
+        this.email = !email ? `${uuid}@${username}.email` : email;
         this.password = password;
         this.privilege = privilege;
         this.avatar = avatar;

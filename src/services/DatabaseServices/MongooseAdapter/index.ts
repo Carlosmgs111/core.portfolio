@@ -18,7 +18,7 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
     Entity: any,
     options: any = {}
   ): Promise<typeof model | null> => {
-    const newEntity = await models[entity].create(Entity);
+    let newEntity = await models[entity].create(Entity);
     return newEntity._doc;
   };
 

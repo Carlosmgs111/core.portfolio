@@ -21,7 +21,7 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
     constructor({}) {
         this.serviceDescription = "Mongoose Database Service Adapter";
         this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const newEntity = yield models_1.default[entity].create(Entity);
+            let newEntity = yield models_1.default[entity].create(Entity);
             return newEntity._doc;
         });
         this.createMany = (entity, entities, options) => __awaiter(this, void 0, void 0, function* () {

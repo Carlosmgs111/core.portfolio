@@ -19,6 +19,7 @@ class CQRSService {
         this.lastSync = new Date().getTime();
         this.queueService = (0, QueueServices_1.createQueueService)();
         this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            // console.log({ entity, Entity, options });
             this.queueService.sendMessage("queryServiceCreateOne", [
                 entity,
                 Entity,
@@ -56,15 +57,22 @@ class CQRSService {
             return yield this.CommandService.setOneRelationship2One(entity, refs);
         });
         this.unsetOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
-            this.queueService.sendMessage("queryServiceUnsetOneRelationship2One", [entity, refs]);
+            this.queueService.sendMessage("queryServiceUnsetOneRelationship2One", [
+                entity,
+                refs,
+            ]);
             return yield this.CommandService.unsetOneRelationship2One(entity, refs);
         });
         this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
-            this.queueService.sendMessage("queryServiceCreateOneRelationshipN2N", [refs]);
+            this.queueService.sendMessage("queryServiceCreateOneRelationshipN2N", [
+                refs,
+            ]);
             return yield this.CommandService.createOneRelationshipN2N(refs);
         });
         this.removeOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
-            this.queueService.sendMessage("queryServiceRemoveOneRelationshipN2N", [refs]);
+            this.queueService.sendMessage("queryServiceRemoveOneRelationshipN2N", [
+                refs,
+            ]);
             return yield this.CommandService.removeOneRelationshipN2N(refs);
         });
         this.checkOneRelationshipN2N = this.CommandService.checkOneRelationshipN2N;
@@ -80,22 +88,30 @@ class CQRSService {
             };
         };
         setTimeout(() => {
-            this.queueService.createQueue("queryServiceCreateOne");
-            this.queueService.receiveMessage("queryServiceCreateOne", this.QueryService.createOne);
-            this.queueService.createQueue("queryServiceCreateMany");
-            this.queueService.receiveMessage("queryServiceCreateMany", this.QueryService.createMany);
-            this.queueService.createQueue("queryServiceCreateOneRelationshipN2N");
-            this.queueService.receiveMessage("queryServiceCreateOneRelationshipN2N", this.QueryService.createOneRelationshipN2N);
-            this.queueService.createQueue("queryServiceRemoveOneRelationshipN2N");
-            this.queueService.receiveMessage("queryServiceRemoveOneRelationshipN2N", this.QueryService.removeOneRelationshipN2N);
-            this.queueService.createQueue("queryServiceSetOneRelationship2One");
-            this.queueService.receiveMessage("queryServiceSetOneRelationship2One", this.QueryService.setOneRelationship2One);
-            this.queueService.createQueue("queryServiceUnsetOneRelationship2One");
-            this.queueService.receiveMessage("queryServiceUnsetOneRelationship2One", this.QueryService.unsetOneRelationship2One);
-            this.queueService.createQueue("queryServiceUpdateOne");
-            this.queueService.receiveMessage("queryServiceUpdateOne", this.QueryService.updateOne);
-            this.queueService.createQueue("queryServiceRemoveOne");
-            this.queueService.receiveMessage("queryServiceRemoveOne", this.QueryService.removeOne);
+            this.queueService
+                .createQueue("queryServiceCreateOne")
+                .receiveMessage("queryServiceCreateOne", this.QueryService.createOne);
+            this.queueService
+                .createQueue("queryServiceCreateMany")
+                .receiveMessage("queryServiceCreateMany", this.QueryService.createMany);
+            this.queueService
+                .createQueue("queryServiceCreateOneRelationshipN2N")
+                .receiveMessage("queryServiceCreateOneRelationshipN2N", this.QueryService.createOneRelationshipN2N);
+            this.queueService
+                .createQueue("queryServiceRemoveOneRelationshipN2N")
+                .receiveMessage("queryServiceRemoveOneRelationshipN2N", this.QueryService.removeOneRelationshipN2N);
+            this.queueService
+                .createQueue("queryServiceSetOneRelationship2One")
+                .receiveMessage("queryServiceSetOneRelationship2One", this.QueryService.setOneRelationship2One);
+            this.queueService
+                .createQueue("queryServiceUnsetOneRelationship2One")
+                .receiveMessage("queryServiceUnsetOneRelationship2One", this.QueryService.unsetOneRelationship2One);
+            this.queueService
+                .createQueue("queryServiceUpdateOne")
+                .receiveMessage("queryServiceUpdateOne", this.QueryService.updateOne);
+            this.queueService
+                .createQueue("queryServiceRemoveOne")
+                .receiveMessage("queryServiceRemoveOne", this.QueryService.removeOne);
         }, 2000);
     }
 }
