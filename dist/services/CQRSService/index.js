@@ -19,7 +19,6 @@ class CQRSService {
         this.lastSync = new Date().getTime();
         this.queueService = (0, QueueServices_1.createQueueService)();
         this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            // console.log({ entity, Entity, options });
             this.queueService.sendMessage("queryServiceCreateOne", [
                 entity,
                 Entity,
@@ -88,30 +87,35 @@ class CQRSService {
             };
         };
         setTimeout(() => {
-            this.queueService
-                .createQueue("queryServiceCreateOne")
-                .receiveMessage("queryServiceCreateOne", this.QueryService.createOne);
-            this.queueService
-                .createQueue("queryServiceCreateMany")
-                .receiveMessage("queryServiceCreateMany", this.QueryService.createMany);
-            this.queueService
-                .createQueue("queryServiceCreateOneRelationshipN2N")
-                .receiveMessage("queryServiceCreateOneRelationshipN2N", this.QueryService.createOneRelationshipN2N);
-            this.queueService
-                .createQueue("queryServiceRemoveOneRelationshipN2N")
-                .receiveMessage("queryServiceRemoveOneRelationshipN2N", this.QueryService.removeOneRelationshipN2N);
-            this.queueService
-                .createQueue("queryServiceSetOneRelationship2One")
-                .receiveMessage("queryServiceSetOneRelationship2One", this.QueryService.setOneRelationship2One);
-            this.queueService
-                .createQueue("queryServiceUnsetOneRelationship2One")
-                .receiveMessage("queryServiceUnsetOneRelationship2One", this.QueryService.unsetOneRelationship2One);
-            this.queueService
-                .createQueue("queryServiceUpdateOne")
-                .receiveMessage("queryServiceUpdateOne", this.QueryService.updateOne);
-            this.queueService
-                .createQueue("queryServiceRemoveOne")
-                .receiveMessage("queryServiceRemoveOne", this.QueryService.removeOne);
+            try {
+                this.queueService
+                    .createExchange("queryServiceCreateOne")
+                    .receiveMessage("queryServiceCreateOne", this.QueryService.createOne);
+                this.queueService
+                    .createExchange("queryServiceCreateMany")
+                    .receiveMessage("queryServiceCreateMany", this.QueryService.createMany);
+                this.queueService
+                    .createExchange("queryServiceCreateOneRelationshipN2N")
+                    .receiveMessage("queryServiceCreateOneRelationshipN2N", this.QueryService.createOneRelationshipN2N);
+                this.queueService
+                    .createExchange("queryServiceRemoveOneRelationshipN2N")
+                    .receiveMessage("queryServiceRemoveOneRelationshipN2N", this.QueryService.removeOneRelationshipN2N);
+                this.queueService
+                    .createExchange("queryServiceSetOneRelationship2One")
+                    .receiveMessage("queryServiceSetOneRelationship2One", this.QueryService.setOneRelationship2One);
+                this.queueService
+                    .createExchange("queryServiceUnsetOneRelationship2One")
+                    .receiveMessage("queryServiceUnsetOneRelationship2One", this.QueryService.unsetOneRelationship2One);
+                this.queueService
+                    .createExchange("queryServiceUpdateOne")
+                    .receiveMessage("queryServiceUpdateOne", this.QueryService.updateOne);
+                this.queueService
+                    .createExchange("queryServiceRemoveOne")
+                    .receiveMessage("queryServiceRemoveOne", this.QueryService.removeOne);
+            }
+            catch (e) {
+                console.log(e.message.bgRed);
+            }
         }, 2000);
     }
 }

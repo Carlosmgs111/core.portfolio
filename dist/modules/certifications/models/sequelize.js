@@ -25,7 +25,7 @@ exports.certification_schema = {
     },
     title: { allowNull: false, type: sequelize_1.DataTypes.STRING, unique: true },
     image: { allowNull: false, type: sequelize_1.DataTypes.STRING, unique: true },
-    url: { allowNull: false, type: sequelize_1.DataTypes.STRING },
+    url: { allowNull: false, type: sequelize_1.DataTypes.STRING, unique: true },
     tags: {
         allowNull: true,
         type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),

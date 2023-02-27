@@ -22,7 +22,7 @@ export const certification_schema = {
   },
   title: { allowNull: false, type: DataTypes.STRING, unique: true },
   image: { allowNull: false, type: DataTypes.STRING, unique: true },
-  url: { allowNull: false, type: DataTypes.STRING },
+  url: { allowNull: false, type: DataTypes.STRING, unique: true },
   tags: {
     allowNull: true,
     type: DataTypes.ARRAY(DataTypes.STRING),

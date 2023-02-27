@@ -13,41 +13,60 @@ const createQueueService = () => new QueueService();
 exports.createQueueService = createQueueService;
 class QueueService {
     constructor() {
-        this.setup = () => amqplib_1.default
-            .connect("amqp://localhost")
-            .then((connection) => (this.connection = connection))
-            .catch((error) => console.log(error.message.bgRed));
-        this.createQueue = (queueName) => {
-            this.connection.createChannel().then((channel) => {
-                channel.assertQueue(queueName);
+        this.setup = () => {
+            amqplib_1.default
+                .connect("amqp://localhost")
+                .then((connection) => {
+                this.connection = connection;
+                connection
+                    .createChannel()
+                    .then((channel) => (this.channel = channel))
+                    .catch((error) => console.log(error.message.red));
+                process.on("SIGINT", () => connection.close());
+            })
+                .catch((error) => console.log(error.message.bgRed));
+        };
+        this.createExchange = (exchangeName) => {
+            this.channel.assertExchange(exchangeName, "fanout", {
+                durable: false,
+                exclusive: false,
             });
             return this;
         };
-        this.sendMessage = (queueName, message) => {
-            this.connection
-                .createChannel()
-                .then((channel) => channel.sendToQueue(queueName, Buffer.from(JSON.stringify(message))));
+        this.sendMessage = (exchangeName, message) => {
+            this.channel
+                .assertExchange(exchangeName, "fanout", {
+                durable: false,
+                exclusive: false,
+            })
+                .catch((e) => console.log(e));
+            this.channel.publish(exchangeName, `${exchangeName}_1`, Buffer.from(JSON.stringify(message)));
             return this;
         };
-        this.receiveMessage = (queueName, cb) => {
-            this.connection.createChannel().then((channel) => {
-                channel.assertQueue(queueName, { durable: true });
-                channel
-                    .consume(queueName, (message) => {
+        this.receiveMessage = (exchangeName, cb) => {
+            this.channel
+                .assertQueue(`${exchangeName}_1`, { exclusive: false, durable: true })
+                .then((q) => {
+                const { queue } = q;
+                if (exchangeName === "queryServiceCreateMany")
+                    console.log({ queue });
+                this.channel.bindQueue(queue, exchangeName, exchangeName);
+                this.channel.consume(queue, (message) => {
+                    const decoded = JSON.parse(message.content.toString());
                     if (message !== null) {
-                        if (Array.isArray(JSON.parse(message.content.toString())))
-                            cb(...JSON.parse(message.content.toString())).catch((e) => {
+                        if (Array.isArray(decoded))
+                            cb(...decoded).catch((e) => {
                                 console.log(e.message.bgRed);
                             });
                         else
-                            cb(JSON.parse(message.content.toString())).catch((e) => {
+                            cb(decoded).catch((e) => {
                                 console.log(e.message.bgRed);
                             });
-                        channel.ack(message);
+                        this.channel.ack(message);
                     }
-                })
-                    .catch((error) => console.log(error.message.red));
-            });
+                });
+            })
+                .catch((error) => console.log(error.message));
             return this;
         };
         this.setup();
