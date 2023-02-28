@@ -2,6 +2,7 @@ import { Adapters } from "../services/DatabaseServices";
 import {
   DatabaseService as DBS,
   AuthServices as AS,
+  TaskMessageService as TMS,
   CQRSService,
 } from "../services";
 
@@ -10,8 +11,8 @@ const repositoryServices = {
   DBS: () => DBS(Adapters.MongooseAdapter),
 };
 
+export const TaskMessageService = new TMS();
 export const RepositoryService = repositoryServices.CQRS();
-
 export const AuthServices = new AS();
 
 const apiVersions = ["v1"];

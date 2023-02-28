@@ -1,9 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.CQRSService = exports.AuthServices = exports.DatabaseService = void 0;
+exports.TaskMessageService = exports.CQRSService = exports.AuthServices = exports.DatabaseService = void 0;
 const DatabaseServices_1 = require("./DatabaseServices");
 Object.defineProperty(exports, "DatabaseService", { enumerable: true, get: function () { return DatabaseServices_1.DatabaseService; } });
 const AuthServices_1 = require("./AuthServices");
 Object.defineProperty(exports, "AuthServices", { enumerable: true, get: function () { return AuthServices_1.AuthServices; } });
 const CQRSService_1 = require("./CQRSService");
 Object.defineProperty(exports, "CQRSService", { enumerable: true, get: function () { return CQRSService_1.CQRSService; } });
+const TaskMessageService_1 = require("./TaskMessageService");
+Object.defineProperty(exports, "TaskMessageService", { enumerable: true, get: function () { return TaskMessageService_1.TaskMessageService; } });

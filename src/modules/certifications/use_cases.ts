@@ -1,4 +1,4 @@
-import { RepositoryService } from "../../config/dependencies";
+import { RepositoryService, TaskMessageService } from "../../config/dependencies";
 import { Certification } from "./entity";
 import { User } from "../users/entity";
 import boom from "@hapi/boom";

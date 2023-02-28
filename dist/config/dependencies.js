@@ -1,12 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uiConfig = exports.apiConfig = exports.AuthServices = exports.RepositoryService = void 0;
+exports.uiConfig = exports.apiConfig = exports.AuthServices = exports.RepositoryService = exports.TaskMessageService = void 0;
 const DatabaseServices_1 = require("../services/DatabaseServices");
 const services_1 = require("../services");
 const repositoryServices = {
     CQRS: () => new services_1.CQRSService(),
     DBS: () => (0, services_1.DatabaseService)(DatabaseServices_1.Adapters.MongooseAdapter),
 };
+exports.TaskMessageService = new services_1.TaskMessageService();
 exports.RepositoryService = repositoryServices.CQRS();
 exports.AuthServices = new services_1.AuthServices();
 const apiVersions = ["v1"];

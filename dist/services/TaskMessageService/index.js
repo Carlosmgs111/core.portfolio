@@ -3,15 +3,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.QueueService = exports.createQueueService = void 0;
+exports.TaskMessageService = void 0;
 const config_1 = __importDefault(require("../../config"));
 const amqplib_1 = __importDefault(require("amqplib"));
 const { rabbitMQUrlDev, rabbitMQUrlProd } = config_1.default;
 const rabbitMQUrl = rabbitMQUrlDev || rabbitMQUrlProd;
 console.log(!rabbitMQUrl ? "PRODUCTION".bgGreen : "DEVELOPMENT".bgYellow);
-const createQueueService = () => new QueueService();
-exports.createQueueService = createQueueService;
-class QueueService {
+class TaskMessageService {
     constructor() {
         this.setup = () => {
             (connection, channel) => {
@@ -26,13 +24,13 @@ class QueueService {
                     .createChannel()
                     .then((channel) => (this.channel = channel))
                     .catch((error) => console.log(error.message.red));
-                process.on("SIGINT", () => connection.close());
+                // process.on("SIGINT", () => connection.close());
             })
                 .catch((error) => console.log(error.message.bgRed));
         };
-        this.createExchange = (exchangeName) => {
+        this.createExchange = (exchangeName, type = "fanout") => {
             if (this.channel) {
-                this.channel.assertExchange(exchangeName, "fanout", {
+                this.channel.assertExchange(exchangeName, type, {
                     durable: false,
                     exclusive: false,
                 });
@@ -42,10 +40,10 @@ class QueueService {
             }
             return this;
         };
-        this.sendMessage = (exchangeName, message) => {
+        this.sendMessage = (exchangeName, message, type = "fanout") => {
             if (this.channel) {
                 this.channel
-                    .assertExchange(exchangeName, "fanout", {
+                    .assertExchange(exchangeName, type, {
                     durable: false,
                     exclusive: false,
                 })
@@ -63,8 +61,6 @@ class QueueService {
                     .assertQueue(`${exchangeName}_1`, { exclusive: false, durable: true })
                     .then((q) => {
                     const { queue } = q;
-                    if (exchangeName === "queryServiceCreateMany")
-                        console.log({ queue });
                     this.channel.bindQueue(queue, exchangeName, exchangeName);
                     this.channel.consume(queue, (message) => {
                         const decoded = JSON.parse(message.content.toString());
@@ -91,4 +87,4 @@ class QueueService {
         this.setup();
     }
 }
-exports.QueueService = QueueService;
+exports.TaskMessageService = TaskMessageService;
