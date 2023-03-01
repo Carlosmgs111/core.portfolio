@@ -7,6 +7,7 @@ import authRoutes from "../../../../../modules/shared/auth/routes/express.routes
 import postRoutes from "../../../../../modules/posts/routes/express.routes";
 import skillRoutes from "../../../../../modules/skills/routes/express.routes";
 import noteRoutes from "../../../../../modules/notes/routes/express.routes";
+import imagesRoutes from "../../../../../services/ImageGeneration/routes/express.routes";
 
 const router = Router();
 
@@ -18,4 +19,5 @@ export default router
   .use("/posts", postRoutes)
   .use("/skills", skillRoutes)
   .use("/notes", noteRoutes)
+  .use("/images", imagesRoutes)
   .use("", authRoutes);

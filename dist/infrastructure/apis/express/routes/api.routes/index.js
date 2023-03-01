@@ -12,6 +12,7 @@ const express_routes_4 = __importDefault(require("../../../../../modules/shared/
 const express_routes_5 = __importDefault(require("../../../../../modules/posts/routes/express.routes"));
 const express_routes_6 = __importDefault(require("../../../../../modules/skills/routes/express.routes"));
 const express_routes_7 = __importDefault(require("../../../../../modules/notes/routes/express.routes"));
+const express_routes_8 = __importDefault(require("../../../../../services/ImageGeneration/routes/express.routes"));
 const router = (0, express_1.Router)();
 exports.default = router
     .use("/projects", express_routes_1.default)
@@ -21,4 +22,5 @@ exports.default = router
     .use("/posts", express_routes_5.default)
     .use("/skills", express_routes_6.default)
     .use("/notes", express_routes_7.default)
+    .use("/images", express_routes_8.default)
     .use("", express_routes_4.default);

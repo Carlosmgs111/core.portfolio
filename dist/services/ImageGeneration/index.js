@@ -12,12 +12,22 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-require("colors");
-const index_1 = __importDefault(require("./infrastructure/apis/express/index"));
-const terminal_1 = __importDefault(require("./infrastructure/apis/terminal"));
-const dependencies_1 = require("./config/dependencies");
-dependencies_1.RepositoryService.info();
-(() => __awaiter(void 0, void 0, void 0, function* () {
-    yield (0, index_1.default)();
-    yield (0, terminal_1.default)();
-}))();
+exports.generateImage = void 0;
+const fs_1 = __importDefault(require("fs"));
+const dependencies_1 = require("../../config/dependencies");
+const generateImage = (data) => {
+    const { prompt } = data;
+    console.log({ prompt });
+    dependencies_1.TaskMessageService.sendMessage("generateImage", [prompt]);
+    dependencies_1.TaskMessageService.receiveMessage("imageGenerated", (message, options) => __awaiter(void 0, void 0, void 0, function* () {
+        console.log("Message received");
+        const { title, format } = options;
+        const decodedImage = Buffer.from(message, "base64");
+        fs_1.default.writeFile(`datasets/images/${title}.${format}`, decodedImage, (err) => {
+            if (err)
+                throw err;
+            console.log("La imagen fue guardada correctamente");
+        });
+    }));
+};
+exports.generateImage = generateImage;
