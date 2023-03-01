@@ -16,8 +16,16 @@ require("colors");
 const index_1 = __importDefault(require("./infrastructure/apis/express/index"));
 const terminal_1 = __importDefault(require("./infrastructure/apis/terminal"));
 const dependencies_1 = require("./config/dependencies");
+const fs_1 = __importDefault(require("fs"));
+dependencies_1.TaskMessageService.sendMessage("generateImage", "Generate Image");
 dependencies_1.TaskMessageService.receiveMessage("imageGenerated", (message) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ message });
+    console.log("Message received");
+    const decodedImage = Buffer.from(message, "base64");
+    fs_1.default.writeFile("datasets/images/image.png", decodedImage, (err) => {
+        if (err)
+            throw err;
+        console.log("La imagen fue guardada correctamente");
+    });
 }));
 dependencies_1.RepositoryService.info();
 (() => __awaiter(void 0, void 0, void 0, function* () {
