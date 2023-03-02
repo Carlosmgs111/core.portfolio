@@ -15,19 +15,27 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateImage = void 0;
 const fs_1 = __importDefault(require("fs"));
 const dependencies_1 = require("../../config/dependencies");
-const generateImage = (data) => {
+const generateImage = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { prompt } = data;
-    console.log({ prompt });
     dependencies_1.TaskMessageService.sendMessage("generateImage", [prompt]);
-    dependencies_1.TaskMessageService.receiveMessage("imageGenerated", (message, options) => __awaiter(void 0, void 0, void 0, function* () {
-        console.log("Message received");
-        const { title, format } = options;
-        const decodedImage = Buffer.from(message, "base64");
-        fs_1.default.writeFile(`datasets/images/${title}.${format}`, decodedImage, (err) => {
-            if (err)
-                throw err;
-            console.log("La imagen fue guardada correctamente");
-        });
-    }));
-};
+    const getImage = new Promise((resolve, reject) => {
+        dependencies_1.TaskMessageService.receiveMessage("imageGenerated", (image, options) => __awaiter(void 0, void 0, void 0, function* () {
+            resolve(image);
+            console.log("image received");
+            const { title, format } = options;
+            const decodedImage = Buffer.from(image, "base64");
+            fs_1.default.writeFile(`datasets/images/${title}.${format}`, decodedImage, (err) => {
+                if (err)
+                    throw err;
+                console.log("La imagen fue guardada correctamente");
+            });
+        }));
+    });
+    const response = yield getImage
+        .then((image) => image)
+        .catch((e) => console.log(e.message.bgRed))
+        .finally(() => console.log("Finished!".bgGreen));
+    console.log({ response });
+    return response;
+});
 exports.generateImage = generateImage;
