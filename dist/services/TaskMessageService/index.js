@@ -63,14 +63,15 @@ class TaskMessageService {
                     const { queue } = q;
                     this.channel.bindQueue(queue, exchangeName, exchangeName);
                     this.channel.consume(queue, (message) => {
+                        var _a, _b, _c, _d;
                         const decoded = JSON.parse(message.content.toString());
                         if (message !== null) {
                             if (Array.isArray(decoded))
-                                cb(...decoded).catch((e) => {
+                                (_b = (_a = cb(...decoded)) === null || _a === void 0 ? void 0 : _a.then((message) => console.log(`Received ${message.slice(0, 100)}...`.bgBlue))) === null || _b === void 0 ? void 0 : _b.catch((e) => {
                                     console.log(e.message.bgRed);
                                 });
                             else
-                                cb(decoded).catch((e) => {
+                                (_d = (_c = cb(decoded)) === null || _c === void 0 ? void 0 : _c.then((message) => console.log(`Received ${message.slice(0, 100)}...`.bgBlue))) === null || _d === void 0 ? void 0 : _d.catch((e) => {
                                     console.log(e.message.bgRed);
                                 });
                             this.channel.ack(message);

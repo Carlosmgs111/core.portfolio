@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.capitalize = exports.normalize = exports.labelCases = exports.execFunc = exports.Enumfy = exports.setEnums = exports.getActionTypes = exports.settingName = exports.Mapfy = exports.getEntityProperties = exports.filterAttrs = exports.decryptData = exports.encryptData = void 0;
+exports.capitalize = exports.normalize = exports.labelCases = exports.execFunc = exports.Enumfy = exports.setEnums = exports.getActionTypes = exports.settingName = exports.UnMapfy = exports.Mapfy = exports.getEntityProperties = exports.filterAttrs = exports.decryptData = exports.encryptData = void 0;
 const pluralize_1 = require("pluralize");
 const crypto_js_1 = __importDefault(require("crypto-js"));
 function encryptData(data, key) {
@@ -46,6 +46,8 @@ const getEntityProperties = (Entity) => {
 exports.getEntityProperties = getEntityProperties;
 const Mapfy = (object) => new Map(Object.entries(object));
 exports.Mapfy = Mapfy;
+const UnMapfy = (map) => Object.fromEntries(map.entries());
+exports.UnMapfy = UnMapfy;
 const settingName = (value) => "set" + value.slice(0, 1).toUpperCase() + value.slice(1);
 exports.settingName = settingName;
 const getActionTypes = (object) => {

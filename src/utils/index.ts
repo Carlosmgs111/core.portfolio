@@ -35,6 +35,8 @@ export const getEntityProperties = (Entity: any) => {
 
 export const Mapfy = (object: any) => new Map(Object.entries(object));
 
+export const UnMapfy = (map: any) => Object.fromEntries(map.entries());
+
 export const settingName = (value: any) =>
   "set" + value.slice(0, 1).toUpperCase() + value.slice(1);
 

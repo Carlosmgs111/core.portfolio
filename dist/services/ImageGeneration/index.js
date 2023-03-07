@@ -15,27 +15,43 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.generateImage = void 0;
 const fs_1 = __importDefault(require("fs"));
 const dependencies_1 = require("../../config/dependencies");
-const generateImage = (data) => __awaiter(void 0, void 0, void 0, function* () {
+const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, function* () {
     const { prompt } = data;
-    dependencies_1.TaskMessageService.sendMessage("generateImage", [prompt]);
     const getImage = new Promise((resolve, reject) => {
+        console.log({ resolve });
         dependencies_1.TaskMessageService.receiveMessage("imageGenerated", (image, options) => __awaiter(void 0, void 0, void 0, function* () {
-            resolve(image);
-            console.log("image received");
-            const { title, format } = options;
-            const decodedImage = Buffer.from(image, "base64");
-            fs_1.default.writeFile(`datasets/images/${title}.${format}`, decodedImage, (err) => {
-                if (err)
-                    throw err;
-                console.log("La imagen fue guardada correctamente");
-            });
+            try {
+                console.log("image received".bgYellow);
+                const { title, format } = options;
+                const decodedImage = Buffer.from(image, "base64");
+                fs_1.default.writeFile(`datasets/images/${title}.${format}`, decodedImage, (err) => {
+                    if (err)
+                        throw err;
+                    console.log("La imagen fue guardada correctamente");
+                });
+                console.log("Resolving...".bgMagenta);
+                if (responseCb)
+                    responseCb({ imageGenerated: image });
+                resolve(image);
+                console.log("Resolved.".bgWhite);
+            }
+            catch (error) {
+                console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
+                reject(error);
+            }
+            return image;
         }));
     });
+    dependencies_1.TaskMessageService.sendMessage("generateImage", [prompt]);
     const response = yield getImage
-        .then((image) => image)
+        .then((image) => {
+        console.log(image === null || image === void 0 ? void 0 : image.slice(0, 100).bgMagenta);
+        return image;
+    })
         .catch((e) => console.log(e.message.bgRed))
         .finally(() => console.log("Finished!".bgGreen));
-    console.log({ response });
+    console.log("Successed!".bgGreen);
     return response;
 });
 exports.generateImage = generateImage;
+dependencies_1.SocketService.addEvent({ generateImage: exports.generateImage });

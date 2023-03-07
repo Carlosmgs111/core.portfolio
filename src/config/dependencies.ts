@@ -4,6 +4,7 @@ import {
   AuthServices as AS,
   TaskMessageService as TMS,
   CQRSService,
+  SocketService as SS,
 } from "../services";
 
 const repositoryServices = {
@@ -14,6 +15,7 @@ const repositoryServices = {
 export const TaskMessageService = new TMS();
 export const RepositoryService = repositoryServices.CQRS();
 export const AuthServices = new AS();
+export const SocketService = new SS();
 
 const apiVersions = ["v1"];
 const uiVersions = ["v1"];

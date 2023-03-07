@@ -16,6 +16,12 @@ require("colors");
 const index_1 = __importDefault(require("./infrastructure/apis/express/index"));
 const terminal_1 = __importDefault(require("./infrastructure/apis/terminal"));
 const dependencies_1 = require("./config/dependencies");
+dependencies_1.SocketService.addEvent({
+    mensaje: (data, responseCb) => {
+        console.log({ data });
+        responseCb({ messageReceived: `Received: ${data}` });
+    },
+});
 dependencies_1.RepositoryService.info();
 (() => __awaiter(void 0, void 0, void 0, function* () {
     yield (0, index_1.default)();

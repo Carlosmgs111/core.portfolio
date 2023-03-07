@@ -72,13 +72,21 @@ export class TaskMessageService {
             const decoded = JSON.parse(message.content.toString());
             if (message !== null) {
               if (Array.isArray(decoded))
-                cb(...decoded).catch((e: any) => {
-                  console.log(e.message.bgRed);
-                });
+                cb(...decoded)
+                  ?.then((message: any) =>
+                    console.log(`Received ${message.slice(0, 100)}...`.bgBlue)
+                  )
+                  ?.catch((e: any) => {
+                    console.log(e.message.bgRed);
+                  });
               else
-                cb(decoded).catch((e: any) => {
-                  console.log(e.message.bgRed);
-                });
+                cb(decoded)
+                  ?.then((message: any) =>
+                    console.log(`Received ${message.slice(0, 100)}...`.bgBlue)
+                  )
+                  ?.catch((e: any) => {
+                    console.log(e.message.bgRed);
+                  });
 
               this.channel.ack(message);
             }

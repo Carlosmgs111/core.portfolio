@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.uiConfig = exports.apiConfig = exports.AuthServices = exports.RepositoryService = exports.TaskMessageService = void 0;
+exports.uiConfig = exports.apiConfig = exports.SocketService = exports.AuthServices = exports.RepositoryService = exports.TaskMessageService = void 0;
 const DatabaseServices_1 = require("../services/DatabaseServices");
 const services_1 = require("../services");
 const repositoryServices = {
@@ -10,6 +10,7 @@ const repositoryServices = {
 exports.TaskMessageService = new services_1.TaskMessageService();
 exports.RepositoryService = repositoryServices.CQRS();
 exports.AuthServices = new services_1.AuthServices();
+exports.SocketService = new services_1.SocketService();
 const apiVersions = ["v1"];
 const uiVersions = ["v1"];
 exports.apiConfig = {
