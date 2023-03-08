@@ -2,48 +2,54 @@ import fs from "fs";
 import { TaskMessageService, SocketService } from "../../config/dependencies";
 
 export const generateImage = async (data: any, responseCb: any) => {
-  const { prompt } = data;
+  const { prompt, options = {} } = data;
   const getImage = new Promise((resolve: any, reject: any) => {
-    console.log({ resolve });
-    TaskMessageService.receiveMessage(
-      "imageGenerated",
-      async (image: any, options: any) => {
-        try {
-          console.log("image received".bgYellow);
-          const { title, format } = options;
-          const decodedImage = Buffer.from(image, "base64");
+    TaskMessageService.receiveMessage("imageGenerated", async (images: any) => {
+      console.log("images received".bgYellow);
+      try {
+        for (let image of images) {
+          const { encoded_image, img_title, img_format } = image;
+          const decodedImage = Buffer.from(encoded_image, "base64");
           fs.writeFile(
-            `datasets/images/${title}.${format}`,
+            `datasets/images/${img_title}.${img_format}`,
             decodedImage,
             (err) => {
               if (err) throw err;
               console.log("La imagen fue guardada correctamente");
             }
           );
-          console.log("Resolving...".bgMagenta);
-          if (responseCb) responseCb({ imageGenerated: image });
-          resolve(image);
-          console.log("Resolved.".bgWhite);
-        } catch (error: any) {
-          console.error(
-            `Ocurrió un error al guardar la imagen: ${error}`.bgRed
-          );
-          reject(error);
         }
-        return image;
+        console.log("Resolving...".bgMagenta);
+        if (responseCb) responseCb({ generatedImages: images });
+        resolve(images);
+        console.log("Resolved.".bgWhite);
+      } catch (error: any) {
+        console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
+        reject(error);
       }
-    );
+      return images;
+    });
   });
-  TaskMessageService.sendMessage("generateImage", [prompt]);
+  TaskMessageService.sendMessage("generateImage", [
+    prompt,
+    ...Object.entries(options).flatMap((b) => b[1]),
+  ]);
   const response = await getImage
-    .then((image: any) => {
-      console.log(image?.slice(0, 100).bgMagenta);
-      return image;
+    .then((images: any) => {
+      console.log(images?.slice(0, 100).bgMagenta);
+      return images;
     })
     .catch((e: any) => console.log(e.message.bgRed))
     .finally(() => console.log("Finished!".bgGreen));
   console.log("Successed!".bgGreen);
   return response;
 };
+
+export const availabelSettings = () => ({
+  outputs: [1, 4],
+  sizes: [128, 256, 512, 768, 1024],
+  inferenceSteps: { min: 1, max: 500 },
+  guidanceScale: { min: 1, max: 20 },
+});
 
 SocketService.addEvent({ generateImage });

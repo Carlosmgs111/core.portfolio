@@ -29,6 +29,7 @@ app
     grantUrls([
       [["signin", "signup"], ["POST"]],
       [["certifications", "certifications/:username"]],
+      [["images/availablesettings"]],
       [
         [
           "institutions",

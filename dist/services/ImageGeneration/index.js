@@ -12,41 +12,45 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.generateImage = void 0;
+exports.availabelSettings = exports.generateImage = void 0;
 const fs_1 = __importDefault(require("fs"));
 const dependencies_1 = require("../../config/dependencies");
 const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, function* () {
-    const { prompt } = data;
+    const { prompt, options = {} } = data;
     const getImage = new Promise((resolve, reject) => {
-        console.log({ resolve });
-        dependencies_1.TaskMessageService.receiveMessage("imageGenerated", (image, options) => __awaiter(void 0, void 0, void 0, function* () {
+        dependencies_1.TaskMessageService.receiveMessage("imageGenerated", (images) => __awaiter(void 0, void 0, void 0, function* () {
+            console.log("images received".bgYellow);
             try {
-                console.log("image received".bgYellow);
-                const { title, format } = options;
-                const decodedImage = Buffer.from(image, "base64");
-                fs_1.default.writeFile(`datasets/images/${title}.${format}`, decodedImage, (err) => {
-                    if (err)
-                        throw err;
-                    console.log("La imagen fue guardada correctamente");
-                });
+                for (let image of images) {
+                    const { encoded_image, img_title, img_format } = image;
+                    const decodedImage = Buffer.from(encoded_image, "base64");
+                    fs_1.default.writeFile(`datasets/images/${img_title}.${img_format}`, decodedImage, (err) => {
+                        if (err)
+                            throw err;
+                        console.log("La imagen fue guardada correctamente");
+                    });
+                }
                 console.log("Resolving...".bgMagenta);
                 if (responseCb)
-                    responseCb({ imageGenerated: image });
-                resolve(image);
+                    responseCb({ generatedImages: images });
+                resolve(images);
                 console.log("Resolved.".bgWhite);
             }
             catch (error) {
                 console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
                 reject(error);
             }
-            return image;
+            return images;
         }));
     });
-    dependencies_1.TaskMessageService.sendMessage("generateImage", [prompt]);
+    dependencies_1.TaskMessageService.sendMessage("generateImage", [
+        prompt,
+        ...Object.entries(options).flatMap((b) => b[1]),
+    ]);
     const response = yield getImage
-        .then((image) => {
-        console.log(image === null || image === void 0 ? void 0 : image.slice(0, 100).bgMagenta);
-        return image;
+        .then((images) => {
+        console.log(images === null || images === void 0 ? void 0 : images.slice(0, 100).bgMagenta);
+        return images;
     })
         .catch((e) => console.log(e.message.bgRed))
         .finally(() => console.log("Finished!".bgGreen));
@@ -54,4 +58,11 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
     return response;
 });
 exports.generateImage = generateImage;
+const availabelSettings = () => ({
+    outputs: [1, 4],
+    sizes: [128, 256, 512, 768, 1024],
+    inferenceSteps: { min: 1, max: 500 },
+    guidanceScale: { min: 1, max: 20 },
+});
+exports.availabelSettings = availabelSettings;
 dependencies_1.SocketService.addEvent({ generateImage: exports.generateImage });

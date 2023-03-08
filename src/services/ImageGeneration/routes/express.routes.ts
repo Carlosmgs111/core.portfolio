@@ -1,7 +1,9 @@
 import { Router } from "express";
-import { generateImage } from "../";
+import { generateImage, availabelSettings } from "../";
 import { expressHandlerAdapter } from "../../../adapters/apis/express";
 
 const router = Router();
 
-export default router.post("/generate", expressHandlerAdapter(generateImage));
+export default router
+  .post("/generate", expressHandlerAdapter(generateImage))
+  .get("/availablesettings", expressHandlerAdapter(availabelSettings));

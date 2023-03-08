@@ -27,6 +27,7 @@ exports.app
     .use((0, grantUrls_handler_1.grantUrls)([
     [["signin", "signup"], ["POST"]],
     [["certifications", "certifications/:username"]],
+    [["images/availablesettings"]],
     [
         [
             "institutions",
