@@ -6,4 +6,5 @@ const express_2 = require("../../../adapters/apis/express");
 const router = (0, express_1.Router)();
 exports.default = router
     .post("/generate", (0, express_2.expressHandlerAdapter)(__1.generateImage))
-    .get("/availablesettings", (0, express_2.expressHandlerAdapter)(__1.availabelSettings));
+    .get("/availablesettings", (0, express_2.expressHandlerAdapter)(__1.availabelSettings))
+    .post("/modifyimages", (0, express_2.expressHandlerAdapter)(__1.modifyImages));

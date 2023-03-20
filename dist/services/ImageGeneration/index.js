@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.availabelSettings = exports.generateImage = void 0;
+exports.availabelSettings = exports.modifyImages = exports.generateImage = void 0;
 const fs_1 = __importDefault(require("fs"));
 const dependencies_1 = require("../../config/dependencies");
 const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, function* () {
@@ -58,6 +58,11 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
     return response;
 });
 exports.generateImage = generateImage;
+const modifyImages = (data) => {
+    const { images } = data;
+    console.log({ images });
+};
+exports.modifyImages = modifyImages;
 const availabelSettings = () => ({
     outputs: [1, 4],
     sizes: [128, 256, 512, 768, 1024],

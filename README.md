@@ -1,65 +1,31 @@
-# Portfolio
+# Blogfolio Core
 
-Welcome to my portfolio platform.
-Here you will find my projects and my resume.
+This is the core repository of Blogfolio (backend), where I put into practice not only what I've learned about Typescript, backend development and APIs, but also good practices when implementing clean architectures, and design principles, all in order to return the project as maintainable and extensible as possible.
 
-### Projects
+The first approach to the maintainable implementation was using hexagonal architecture, and little by little I was structuring it until I reached what I consider an intermediate implementation, where projects of medium complexity can add and implement new design patterns and architecture.
 
-- Portfolio platform (core.portfolio):
-- Portfolio application (app.portfolio - UI):
+Structure:
 
-  En si mismo este plataform es uno de mis proyectos, aqui encontrara la gran mayoria, sino es que todas mis habilidades tanto tecnicas como de manejo y planeacion de proyectos.
-
-  Algunos ejemplos de estas habilidades son:
-
-  - Tecnicas:
-
-    - Lenguajes:
-
-      - Python
-      - JavaScript
-      - Java
-      - SQL
-      - HTML
-      - CSS
-      - Cypher
-
-    - Frameworks:
-
-      - NodeJS
-      - ReactJS
-      - ExpressJS
-      - Mongoose
-      - Sequelize (Postgres)
-
-    - Database:
-    
-      - MongoDB
-      - Postgres
-      - Neo4J
-
-    - Test:
-
-      - Mocha
-
-  - Manejo:
-
-    - Git
-    - GitHub
-    - Heroku
-    - Firebase
-
-  - Gestion:
-
-    - Patrones de diseño
-    - Arquitectura de software
-    - Modelos de datos
-    - Diseño de base de datos
-    - Diseño de interfaces de usuario
-    - Diseño de interfaces de aplicaciones
-    - Diseño de proyectos:
-
-      - DDD (Domain Driven Design)
-      - Microservices
-      - TDD (Test Driven Development)
-      - BDD (Behavior Driven Design)
+```shell
+.
+└─ src
+    ├─ config
+    ├─ infrastructure
+    ├─ modules
+    │   ├─ certifications
+    │   │   ├─ models
+    │   │   │   ├─ sequelize 
+    │   │   │   └─ mongoose
+    │   │   ├─ routes
+    │   │   ├─ DTOs
+    │   │   ├─ entity
+    │   │   └─ use_cases
+    │   ├─ ...
+    │   ...
+    ├─ services
+    │   ├─ RepositoryService
+    │   ├─ TaskMessageService
+    │   ...
+    ├─ shared
+    ...
+```

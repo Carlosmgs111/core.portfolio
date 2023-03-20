@@ -36,7 +36,7 @@ class TaskMessageService {
                 });
             }
             else {
-                setTimeout(() => this.createExchange(exchangeName), 2000);
+                setTimeout(() => this.createExchange(exchangeName), 1000);
             }
             return this;
         };
@@ -51,7 +51,7 @@ class TaskMessageService {
                 this.channel.publish(exchangeName, `${exchangeName}_1`, Buffer.from(JSON.stringify(message)));
             }
             else {
-                setTimeout(() => this.sendMessage(exchangeName, message), 2000);
+                setTimeout(() => this.sendMessage(exchangeName, message), 1000);
             }
             return this;
         };
@@ -67,11 +67,11 @@ class TaskMessageService {
                         const decoded = JSON.parse(message.content.toString());
                         if (message !== null) {
                             if (Array.isArray(decoded))
-                                (_b = (_a = cb(...decoded)) === null || _a === void 0 ? void 0 : _a.then((message) => console.log(`Received ${message.slice(0, 100)}...`.bgBlue))) === null || _b === void 0 ? void 0 : _b.catch((e) => {
+                                (_b = (_a = cb(...decoded)) === null || _a === void 0 ? void 0 : _a.then((message) => console.log(`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.bgBlue))) === null || _b === void 0 ? void 0 : _b.catch((e) => {
                                     console.log(e.message.bgRed);
                                 });
                             else
-                                (_d = (_c = cb(decoded)) === null || _c === void 0 ? void 0 : _c.then((message) => console.log(`Received ${message.slice(0, 100)}...`.bgBlue))) === null || _d === void 0 ? void 0 : _d.catch((e) => {
+                                (_d = (_c = cb(decoded)) === null || _c === void 0 ? void 0 : _c.then((message) => console.log(`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.bgBlue))) === null || _d === void 0 ? void 0 : _d.catch((e) => {
                                     console.log(e.message.bgRed);
                                 });
                             this.channel.ack(message);

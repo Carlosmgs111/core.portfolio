@@ -45,6 +45,11 @@ export const generateImage = async (data: any, responseCb: any) => {
   return response;
 };
 
+export const modifyImages = (data: any) => {
+  const { images } = data;
+  console.log({ images });
+};
+
 export const availabelSettings = () => ({
   outputs: [1, 4],
   sizes: [128, 256, 512, 768, 1024],

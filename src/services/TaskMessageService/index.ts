@@ -37,7 +37,7 @@ export class TaskMessageService {
         exclusive: false,
       });
     } else {
-      setTimeout(() => this.createExchange(exchangeName), 2000);
+      setTimeout(() => this.createExchange(exchangeName), 1000);
     }
     return this;
   };
@@ -56,7 +56,7 @@ export class TaskMessageService {
         Buffer.from(JSON.stringify(message))
       );
     } else {
-      setTimeout(() => this.sendMessage(exchangeName, message), 2000);
+      setTimeout(() => this.sendMessage(exchangeName, message), 1000);
     }
     return this;
   };
@@ -74,7 +74,7 @@ export class TaskMessageService {
               if (Array.isArray(decoded))
                 cb(...decoded)
                   ?.then((message: any) =>
-                    console.log(`Received ${message.slice(0, 100)}...`.bgBlue)
+                    console.log(`Received ${message?.slice(0, 100)}...`.bgBlue)
                   )
                   ?.catch((e: any) => {
                     console.log(e.message.bgRed);
@@ -82,7 +82,7 @@ export class TaskMessageService {
               else
                 cb(decoded)
                   ?.then((message: any) =>
-                    console.log(`Received ${message.slice(0, 100)}...`.bgBlue)
+                    console.log(`Received ${message?.slice(0, 100)}...`.bgBlue)
                   )
                   ?.catch((e: any) => {
                     console.log(e.message.bgRed);
