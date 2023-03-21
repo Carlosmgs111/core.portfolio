@@ -22,11 +22,11 @@ const verifyToken = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const token = (authorization || "").replace("Bearer ", "");
     try {
         const verified = yield (0, jose_1.jwtVerify)(token, new TextEncoder().encode(config_1.default.jwtAccessSecret));
-        //console.log({verified})
+        //({verified})
         return verified.payload;
     }
     catch (e) {
-        console.log("Invalid Token!");
+        ("Invalid Token!");
         throw new Error("Invalid token");
     }
 });
@@ -34,7 +34,7 @@ exports.verifyToken = verifyToken;
 // * for check api-key and verify its privilege
 function checkApiKey(req, res, next) {
     const apiKey = req.headers["api-key"];
-    console.log({ apiKey });
+    ({ apiKey });
     if (apiKey === config_1.default.apiKey) {
         next();
     }
@@ -71,7 +71,7 @@ function authMiddleware(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const payload = yield (0, exports.verifyToken)(req);
-            console.log(yield (0, use_cases_1.load)({
+            (yield (0, use_cases_1.load)({
                 uuid: payload.uuid,
                 email: payload.email,
             }));
@@ -81,7 +81,7 @@ function authMiddleware(req, res, next) {
             });
         }
         catch (e) {
-            console.log({ e });
+            ({ e });
             next(boom_1.default.unauthorized());
         }
         finally {

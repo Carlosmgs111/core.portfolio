@@ -43,7 +43,7 @@ export default class SequelizeAdapter {
       if (!entityFounded) return null;
       return entityFounded.dataValues;
     } catch (e: any) {
-      console.log(e.message.red);
+      (e.message.red);
       throw boom.internal(e.message);
     }
   };
@@ -58,7 +58,8 @@ export default class SequelizeAdapter {
 
   updateOne = async (entity: any, Entity: any, options: any = {}) => {
     const updated = await models[entity].update(Entity, this.adapter(options));
-    return updated.dataValues;
+    ({ updated });
+    return this.getResult(updated);
   };
 
   createOneRelationshipN2N = async (refs: any) => {
@@ -114,14 +115,14 @@ export default class SequelizeAdapter {
     for (let ref of refs) {
       const label = Mapfy(ref).keys().next().value;
       const query = Mapfy(ref).values().next().value;
-      // console.log({ label, query });
+      // ({ label, query });
       const referenced = await models[labelCases(label).CS].findOne({
         where: query,
       });
       relations2One[`${label}UUID`] = referenced.uuid;
     }
-    // console.log({ relations2One });
-    // console.log({ mainLabel, mainQuery });
+    // ({ relations2One });
+    // ({ mainLabel, mainQuery });
     models[labelCases(mainLabel).CS].update(relations2One, {
       where: mainQuery,
     });
@@ -212,6 +213,11 @@ export default class SequelizeAdapter {
     });
     return include;
   }
+
+  getResult = (result: any) => {
+    if (Array.isArray(result))
+      return result.map((o: any) => Boolean(o)).includes(true);
+  };
 
   // * A function that is called in the constructor of the class. It is used to associate the models in
   // * the database.

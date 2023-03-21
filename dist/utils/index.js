@@ -27,7 +27,7 @@ exports.decryptData = decryptData;
 const filterAttrs = (obj, toRemove, oclusive = true) => {
     const newObj = {};
     for (var attr in obj) {
-        // if (!obj[attr]) console.log(`⚠️ ${attr}: Its null or undefined ⚠️`.yellow);
+        // if (!obj[attr]) (`⚠️ ${attr}: Its null or undefined ⚠️`.yellow);
         if (!oclusive === toRemove.includes(attr)) {
             newObj[attr] = obj[attr];
         }
@@ -75,14 +75,14 @@ const Enumfy = (object) => {
 exports.Enumfy = Enumfy;
 const execFunc = (func) => __awaiter(void 0, void 0, void 0, function* () {
     if (typeof func !== "function") {
-        console.log("Not implemented yet!".red);
+        ("Not implemented yet!".red);
         return;
     }
     try {
         yield func();
     }
     catch (e) {
-        console.log(e.message.red);
+        (e.message.red);
     }
 });
 exports.execFunc = execFunc;

@@ -69,7 +69,7 @@ Note.createOne = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, 
     return note;
 });
 Note.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log({ data });
+    // ({ data });
     const notesCreated = yield RepositoryService.createMany(RepositoryService.entities.Note, data.map((c) => new Note(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
     for (let note in notesCreated) {
         yield RepositoryService.setOneRelationship2One({ notes: { uuid: notesCreated[note].uuid } }, [
@@ -85,7 +85,7 @@ Note.load = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, fu
     if (!note)
         throw new Error("Incorrect credentials!");
     const loadedNote = new Note(note);
-    console.log({ loadedNote });
+    ({ loadedNote });
     return loadedNote;
 });
 Note.find = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {
@@ -93,7 +93,7 @@ Note.find = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, fu
     return note;
 });
 Note.findAll = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ options });
+    ({ options });
     const notes = yield RepositoryService.findAll(RepositoryService.entities.Note, options);
     return notes;
 });

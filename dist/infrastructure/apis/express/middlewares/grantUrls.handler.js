@@ -24,12 +24,12 @@ const grantUrls = (urlsGranted) => {
         let isGranted = false;
         for (var urlGranted of urlsGranted) {
             let [grantedPaths, grantedMethods = []] = urlGranted;
-            // console.log({ grantedPaths });
+            // ({ grantedPaths });
             grantedMethods = ["GET", ...grantedMethods];
             grantedPaths.map((grantedPath) => {
                 if (grantedPath.includes(":")) {
                     // isGranted = true;
-                    // console.log({ grantedPath });
+                    // ({ grantedPath });
                 }
             });
             const isIncluded = grantedPaths.includes(toGrantUrl) && grantedMethods.includes(method);

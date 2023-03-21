@@ -13,8 +13,8 @@ const listCertificationsHandler = async (state: any) => {
   const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
   const choices = [all, owns, byUser, test];
   const options = {
-    [all]: async () => console.log(await getCertifications({})),
-    [owns]: async () => console.log(await getOwnCertifications({ token })),
+    [all]: async () => (await getCertifications({})),
+    [owns]: async () => (await getOwnCertifications({ token })),
     [test]: () => {},
   };
   const { option } = await inquirer.prompt([

@@ -51,13 +51,8 @@ export const deleteSkill = async (data: any) => {
 
 export const updateSkill = async (data: any) => {
   const { user, uuid } = data;
-  await (
+  const result = await (
     await Skill.load(RepositoryService, { credentials: { uuid } })
   ).update(RepositoryService, data);
-  return formatSkills([
-    await getSkillByUUID({
-      credentials: { uuid },
-      related: [["User", { attributes: ["username"], as: "Users" }]],
-    }),
-  ])[0];
+  return { updated: result };
 };

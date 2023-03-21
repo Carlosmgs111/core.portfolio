@@ -9,7 +9,6 @@ export class CQRSService {
   private TaskMessageService: any = TaskMessageService;
 
   constructor() {
-    
     this.TaskMessageService.createExchange(
       "queryServiceCreateOne"
     ).receiveMessage("queryServiceCreateOne", this.QueryService.createOne);
@@ -76,12 +75,15 @@ export class CQRSService {
     return await this.CommandService.removeOne(entity, options);
   };
   updateOne = async (entity: any, Entity: any, options: any = {}) => {
-    this.TaskMessageService.sendMessage("queryServiceUpdateOne", [
-      entity,
-      Entity,
-      options,
-    ]);
-    return await this.CommandService.updateOne(entity, Entity, options);
+    const result = await this.CommandService.updateOne(entity, Entity, options);
+    console.log({ result });
+    if (result)
+      this.TaskMessageService.sendMessage("queryServiceUpdateOne", [
+        entity,
+        Entity,
+        options,
+      ]);
+    return result;
   };
   setOneRelationship2One = async (entity: any, refs: any) => {
     this.TaskMessageService.sendMessage("queryServiceSetOneRelationship2One", [

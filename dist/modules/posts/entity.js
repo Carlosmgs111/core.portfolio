@@ -43,7 +43,7 @@ Post.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     const exist = yield RepositoryService.findOne(RepositoryService.entities.Post, {
         credentials: (0, utils_1.filterAttrs)(data, ["token", "user"]),
     });
-    console.log({ exist });
+    ({ exist });
     if (exist)
         throw boom_1.default.conflict("Entity exist yet!");
     const uuid = (0, uuid_1.v4)();

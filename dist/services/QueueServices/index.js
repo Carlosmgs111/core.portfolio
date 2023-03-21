@@ -8,7 +8,7 @@ const config_1 = __importDefault(require("../../config"));
 const amqplib_1 = __importDefault(require("amqplib"));
 const { rabbitMQUrlDev, rabbitMQUrlProd } = config_1.default;
 const rabbitMQUrl = rabbitMQUrlDev || rabbitMQUrlProd;
-console.log(!rabbitMQUrl ? "PRODUCTION".bgGreen : "DEVELOPMENT".bgYellow);
+(!rabbitMQUrl ? "PRODUCTION".bgGreen : "DEVELOPMENT".bgYellow);
 const createQueueService = () => new QueueService();
 exports.createQueueService = createQueueService;
 class QueueService {
@@ -25,10 +25,10 @@ class QueueService {
                 connection
                     .createChannel()
                     .then((channel) => (this.channel = channel))
-                    .catch((error) => console.log(error.message.red));
+                    .catch((error) => (error.message.red));
                 process.on("SIGINT", () => connection.close());
             })
-                .catch((error) => console.log(error.message.bgRed));
+                .catch((error) => (error.message.bgRed));
         };
         this.createExchange = (exchangeName) => {
             if (this.channel) {
@@ -49,7 +49,7 @@ class QueueService {
                     durable: false,
                     exclusive: false,
                 })
-                    .catch((e) => console.log(e));
+                    .catch((e) => (e));
                 this.channel.publish(exchangeName, `${exchangeName}_1`, Buffer.from(JSON.stringify(message)));
             }
             else {
@@ -64,24 +64,24 @@ class QueueService {
                     .then((q) => {
                     const { queue } = q;
                     if (exchangeName === "queryServiceCreateMany")
-                        console.log({ queue });
+                        ({ queue });
                     this.channel.bindQueue(queue, exchangeName, exchangeName);
                     this.channel.consume(queue, (message) => {
                         const decoded = JSON.parse(message.content.toString());
                         if (message !== null) {
                             if (Array.isArray(decoded))
                                 cb(...decoded).catch((e) => {
-                                    console.log(e.message.bgRed);
+                                    (e.message.bgRed);
                                 });
                             else
                                 cb(decoded).catch((e) => {
-                                    console.log(e.message.bgRed);
+                                    (e.message.bgRed);
                                 });
                             this.channel.ack(message);
                         }
                     });
                 })
-                    .catch((error) => console.log(error.message));
+                    .catch((error) => (error.message));
             }
             else {
                 setTimeout(() => this.receiveMessage(exchangeName, cb), 1000);

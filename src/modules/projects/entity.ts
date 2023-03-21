@@ -1,3 +1,4 @@
+import { filterAttrs } from "../../utils";
 import { v4 as uuidv4 } from "uuid";
 
 type IProject = {
@@ -122,7 +123,10 @@ export class Project {
     this.updatedAt = new Date().getTime();
     return await RepositoryService.updateOne(
       RepositoryService.entities.Project,
-      { ...this, ...data },
+      {
+        updatedAt: this.updatedAt,
+        ...filterAttrs(data, ["uuid", "user", "token"]),
+      },
       { credentials: { uuid: this.uuid } }
     );
   };

@@ -29,7 +29,7 @@ describe("Aggregates of certificates", () => {
   beforeAll(async () => {
     // spyFindOne.mockResolvedValue(userCredentials);
     user = await User.create(RepositoryService, userCredentials);
-    console.log({ user });
+    ({ user });
     institution = await Institution.create(RepositoryService, {
       ...institutionData,
       user,
@@ -48,10 +48,10 @@ describe("Aggregates of certificates", () => {
         url: "https://url_angular.com",
         user,
       };
-      // console.log({ fakeCollection });
-      // console.log({RepositoryService})
+      // ({ fakeCollection });
+      // ({RepositoryService})
       certification = await addNewCertification(certificationData);
-      console.log({ certification });
+      ({ certification });
       // expect(certification.Institution).toEqual(institution.uuid);
       expect(certification.createdAt).toBeGreaterThan(0);
       expect(certification.updatedAt).toBeGreaterThan(0);

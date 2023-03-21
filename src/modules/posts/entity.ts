@@ -35,7 +35,7 @@ export class Post {
         credentials: filterAttrs(data, ["token", "user"]),
       }
     );
-    console.log({ exist });
+    ({ exist });
     if (exist) throw boom.conflict("Entity exist yet!");
 
     const uuid = uuidv4();

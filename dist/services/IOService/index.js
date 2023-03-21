@@ -16,9 +16,9 @@ class SocketService {
             },
         });
         this.socketServer.on("connection", (socket) => {
-            console.log("Connected!");
+            ("Connected!");
             socket.addListener("mensaje", (data) => {
-                console.log({ data });
+                ({ data });
             });
         });
         this.socketServer.listen(7081);

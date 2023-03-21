@@ -13,7 +13,7 @@ exports.default = router
 (0, express_2.expressHandlerAdapter)(use_cases_1.addManyCertifications))
     .get("/", (0, express_2.expressHandlerAdapter)(use_cases_1.getCertifications))
     .get("/hello", (req, res) => {
-    console.log("hello");
+    ("hello");
     res.send("Hello");
 })
     .get("/:username", (0, express_2.expressHandlerAdapter)(use_cases_1.getCertifications))

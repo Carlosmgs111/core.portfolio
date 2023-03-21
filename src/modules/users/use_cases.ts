@@ -6,11 +6,11 @@ export const registerUser = async (data: any) => {
 };
 export const removeUser = async (data: any) => {
   const user = await User.authLoad(RepositoryService, data);
-  console.log({ user });
+  ({ user });
   return await user.remove(RepositoryService);
 };
 export const updateUser = async (data: any) => {
-  console.log({ data });
+  ({ data });
   return await (
     await User.authLoad(RepositoryService, data)
   ).update(RepositoryService, data);
@@ -25,7 +25,7 @@ export const load = async (credentials: any) =>
 
 export const changeUsername = async (credentials: any) => {
   const { user, newUsername } = credentials;
-  console.log({ user, newUsername });
+  ({ user, newUsername });
   await user.update(RepositoryService, { username: newUsername });
 };
 
@@ -37,7 +37,7 @@ export const updateAvatar = async (credentials: any) => {
 const entities: any = { User };
 
 export const findBy = async (label: string, findBy: any) => {
-  // console.log({ findBy });
+  // ({ findBy });
   return await entities[label].find(RepositoryService, { credentials: findBy });
 };
 
@@ -53,7 +53,7 @@ export const update = async (credentials: any, data: any) => {
 
 export const resetPassword = async (credentials: any) => {
   const { oldPassword, newPassword, username, token, user } = credentials;
-  console.log({ user });
+  ({ user });
   const result = await user.changePassword(RepositoryService, {
     newPassword,
     oldPassword,

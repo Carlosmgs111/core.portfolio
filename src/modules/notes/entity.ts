@@ -40,7 +40,7 @@ export class Note {
   };
 
   static createMany = async (RepositoryService: any, data: any) => {
-    // console.log({ data });
+    // ({ data });
     const notesCreated = await RepositoryService.createMany(
       RepositoryService.entities.Note,
       data.map((c: any) => new Note({ ...c, uuid: c.uuid || uuidv4() }))
@@ -63,7 +63,7 @@ export class Note {
     const note = await Note.find(RepositoryService, options);
     if (!note) throw new Error("Incorrect credentials!");
     const loadedNote = new Note(note);
-    console.log({ loadedNote });
+    ({ loadedNote });
     return loadedNote;
   };
 
@@ -76,7 +76,7 @@ export class Note {
   };
 
   static findAll = async (RepositoryService: any, options: any = {}) => {
-    console.log({options})
+    ({options})
     const notes: any = await RepositoryService.findAll(
       RepositoryService.entities.Note,
       options

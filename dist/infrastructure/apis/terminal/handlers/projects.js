@@ -22,8 +22,8 @@ const listProjectsHandler = (state) => __awaiter(void 0, void 0, void 0, functio
     const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
     const choices = [all, owns, byUser, test];
     const options = {
-        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, use_cases_1.getProjects)({})); }),
-        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, use_cases_1.getOwnProjects)({ token })); }),
+        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return (yield (0, use_cases_1.getProjects)({})); }),
+        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return (yield (0, use_cases_1.getOwnProjects)({ token })); }),
         [test]: () => { },
     };
     const { option } = yield inquirer_1.default.prompt([

@@ -30,13 +30,13 @@ export const grantUrls = (urlsGranted: string[][][]) => {
     let isGranted = false;
     for (var urlGranted of urlsGranted) {
       let [grantedPaths, grantedMethods = []]: any = urlGranted;
-      // console.log({ grantedPaths });
+      // ({ grantedPaths });
 
       grantedMethods = ["GET", ...grantedMethods];
       grantedPaths.map((grantedPath: any) => {
         if (grantedPath.includes(":")) {
           // isGranted = true;
-          // console.log({ grantedPath });
+          // ({ grantedPath });
         }
       });
       const isIncluded =

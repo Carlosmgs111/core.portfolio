@@ -29,7 +29,7 @@ const signupHandler = async (state: any) => {
 
   if (rePassword !== password) throw new Error("Password doesn't match");
 
-  console.log(
+  (
     await signup({
       email,
       password,

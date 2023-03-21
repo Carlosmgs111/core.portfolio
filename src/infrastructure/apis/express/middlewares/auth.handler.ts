@@ -19,11 +19,11 @@ export const verifyToken = async (req: any) => {
       token,
       new TextEncoder().encode(config.jwtAccessSecret)
     );
-    //console.log({verified})
+    //({verified})
 
     return verified.payload as unknown as UserJwtPayload;
   } catch (e) {
-    console.log("Invalid Token!");
+    ("Invalid Token!");
     throw new Error("Invalid token");
   }
 };
@@ -31,7 +31,7 @@ export const verifyToken = async (req: any) => {
 // * for check api-key and verify its privilege
 export function checkApiKey(req: any, res: any, next: Function) {
   const apiKey = req.headers["api-key"];
-  console.log({ apiKey });
+  ({ apiKey });
   if (apiKey === config.apiKey) {
     next();
   } else {
@@ -64,7 +64,7 @@ export function checkRoles(...roles: string[]) {
 export async function authMiddleware(req: any, res: any, next: Function) {
   try {
     const payload = await verifyToken(req);
-    console.log(await load({
+    (await load({
       uuid: payload.uuid,
       email: payload.email,
     }))
@@ -73,7 +73,7 @@ export async function authMiddleware(req: any, res: any, next: Function) {
       email: payload.email,
     });
   } catch (e: any) {
-    console.log({ e });
+    ({ e });
     next(boom.unauthorized());
   } finally {
     next();

@@ -17,7 +17,7 @@ const utils_1 = require("../../utils");
 const formatProjects = (projects) => projects.map((project) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project), { buildedBy: project.Users.map(({ username }) => username) }), ["Users"]));
 const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
-    console.log({ user });
+    ({ user });
     const projects = yield entity_1.Project.findAll(dependencies_1.RepositoryService, {
         related: [["User", { attributes: ["username"] }]],
         size,
@@ -27,7 +27,7 @@ const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.getProjects = getProjects;
 const getOwnProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ data });
+    ({ data });
     const { token } = data;
     const { user } = yield dependencies_1.AuthServices.verifyKey(token);
     return yield entity_2.User.projects(dependencies_1.RepositoryService, user);
@@ -48,22 +48,17 @@ const deleteProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.deleteProject = deleteProject;
 const updateProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, uuid } = data;
-    yield (yield entity_1.Project.load(dependencies_1.RepositoryService, { credentials: { uuid } })).update(dependencies_1.RepositoryService, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"]));
-    return formatProjects([
-        yield entity_1.Project.find(dependencies_1.RepositoryService, {
-            credentials: { uuid },
-            related: [["User", { attributes: ["username"] }]],
-        }),
-    ])[0];
+    const result = yield (yield entity_1.Project.load(dependencies_1.RepositoryService, { credentials: { uuid } })).update(dependencies_1.RepositoryService, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"]));
+    return { updated: result };
 });
 exports.updateProject = updateProject;
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
 const migrateDescriptionToDescriptions = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const projects = yield dependencies_1.RepositoryService.findAll(dependencies_1.RepositoryService.entities.Project);
-    console.log({ projects });
+    ({ projects });
     for (var project of projects) {
         const descriptions = project.description.split(". ");
-        console.log({ descriptions });
+        ({ descriptions });
         yield (0, exports.updateProject)({ uuid: project.uuid, descriptions, user: data.user });
     }
     return "OK!";
@@ -84,7 +79,7 @@ const migrateRelationship2OneToN2N = () => __awaiter(void 0, void 0, void 0, fun
     for (let project of projects) {
         const { User, Users } = project;
         if (User && Users.length === 0) {
-            console.log({ User, Users });
+            ({ User, Users });
             /* await RepositoryService.CommandService.createOneRelationshipN2N([
               [{ project: { uuid: project.uuid } }, { user: { uuid: User.uuid } }],
             ]); */

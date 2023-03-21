@@ -5,7 +5,7 @@ export const generateImage = async (data: any, responseCb: any) => {
   const { prompt, options = {} } = data;
   const getImage = new Promise((resolve: any, reject: any) => {
     TaskMessageService.receiveMessage("imageGenerated", async (images: any) => {
-      console.log("images received".bgYellow);
+      ("images received".bgYellow);
       try {
         for (let image of images) {
           const { encoded_image, img_title, img_format } = image;
@@ -15,14 +15,14 @@ export const generateImage = async (data: any, responseCb: any) => {
             decodedImage,
             (err) => {
               if (err) throw err;
-              console.log("La imagen fue guardada correctamente");
+              ("La imagen fue guardada correctamente");
             }
           );
         }
-        console.log("Resolving...".bgMagenta);
+        ("Resolving...".bgMagenta);
         if (responseCb) responseCb({ generatedImages: images });
         resolve(images);
-        console.log("Resolved.".bgWhite);
+        ("Resolved.".bgWhite);
       } catch (error: any) {
         console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
         reject(error);
@@ -36,18 +36,18 @@ export const generateImage = async (data: any, responseCb: any) => {
   ]);
   const response = await getImage
     .then((images: any) => {
-      console.log(images?.slice(0, 100).bgMagenta);
+      (images?.slice(0, 100).bgMagenta);
       return images;
     })
-    .catch((e: any) => console.log(e.message.bgRed))
-    .finally(() => console.log("Finished!".bgGreen));
-  console.log("Successed!".bgGreen);
+    .catch((e: any) => (e.message.bgRed))
+    .finally(() => ("Finished!".bgGreen));
+  ("Successed!".bgGreen);
   return response;
 };
 
 export const modifyImages = (data: any) => {
   const { images } = data;
-  console.log({ images });
+  ({ images });
 };
 
 export const availabelSettings = () => ({

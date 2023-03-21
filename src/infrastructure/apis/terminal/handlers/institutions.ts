@@ -19,7 +19,7 @@ export const institutionsHandler = async (state: any) => {
   ];
   const choices = [add, update, removeOne, read, exit];
   const options = {
-    [read]: async () => console.log(await getAllInstitutions({})),
+    [read]: async () => (await getAllInstitutions({})),
     [exit]: async () => (running = false),
   };
   while (running) {

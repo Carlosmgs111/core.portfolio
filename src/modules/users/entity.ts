@@ -53,7 +53,6 @@ export class User {
         ),
       }
     );
-    console.log({ exist });
     if (exist) throw boom.conflict("Entity exist yet!");
     const uuid = uuidv4();
     const account = new User({
@@ -90,7 +89,6 @@ export class User {
 
   static find = async (RepositoryService: any, options: any = {}) => {
     const { credentials } = options;
-    console.log({ credentials });
     if (!credentials) throw boom.conflict("Idexation must be provided!");
     const account: any = await RepositoryService.findOne(
       RepositoryService.entities.User,
@@ -156,7 +154,7 @@ export class User {
   hashPassword = async (password: string | undefined) => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password || this.password, salt);
-    console.log({ hash });
+    ({ hash });
     this.password = hash;
     return hash;
   };

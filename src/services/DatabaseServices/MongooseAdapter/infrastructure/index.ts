@@ -12,10 +12,10 @@ export const { connection } = mongoose;
 
 // Callback once connection open
 connection.once("open", () => {
-  console.log("Mongodb connection stablished");
+  ("Mongodb connection stablished");
 });
 
 connection.on("error", (err) => {
-  console.log(err);
+  (err);
   process.exit(0);
 });

@@ -23,7 +23,7 @@ describe("Creation of a new certification", () => {
 
   beforeAll(async () => {
     server = app.listen(4080, () =>
-      console.log("Test server running at port 4080")
+      ("Test server running at port 4080")
     );
     await User.sync({ force: true });
     await Institution.sync({ force: true });
@@ -50,8 +50,8 @@ describe("Creation of a new certification", () => {
 
   describe("Create a new certification and related with existing entities", () => {
     test("Create a new certification", async () => {
-      await console.log({ user });
-      await console.log({ institution });
+      await ({ user });
+      await ({ institution });
       const { body } = await request(app)
         .post("/api/v1/certifications/")
         .send({
@@ -59,7 +59,7 @@ describe("Creation of a new certification", () => {
           emitedBy: institution.name,
         })
         .set("Authorization", `Bearer ${userToken}`);
-      await console.log({ body });
+      await ({ body });
     });
   });
 });

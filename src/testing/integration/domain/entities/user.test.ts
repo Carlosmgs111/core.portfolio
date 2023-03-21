@@ -2,7 +2,7 @@ import { fakeDatabase } from "../../../mocks/DatabaseService.stub";
 import { User } from "../../../../modules/users/entity";
 import { RepositoryService } from "../../../../config/dependencies";
 
-// console.log({ RepositoryService });
+// ({ RepositoryService });
 
 describe("Life cycle of user", () => {
   const userCredentials = {

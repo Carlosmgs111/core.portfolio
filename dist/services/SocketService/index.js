@@ -25,11 +25,11 @@ class SocketService {
             });
         };
         this.server.on("connection", (socket) => {
-            console.log("Connected!");
+            ("Connected!");
             this.sockets[socket.id] = socket;
             this.setEvents(socket);
             socket.on("disconnect", () => {
-                console.log(socket.id.bgRed);
+                (socket.id.bgRed);
                 const newSockets = (0, utils_1.Mapfy)(this.sockets);
                 newSockets.delete(socket.id);
                 this.sockets = (0, utils_1.UnMapfy)(newSockets);

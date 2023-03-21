@@ -51,5 +51,5 @@ exports.sequelize = new sequelize_1.Sequelize(database, user, PASSWORD, {
     host,
     port,
     dialect: "postgres",
-    logging: false, //console.log
+    logging: false, //
 });

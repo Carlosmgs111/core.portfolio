@@ -16,7 +16,7 @@ const formatProjects = (projects: [Project]) =>
 
 export const getProjects = async (data: any) => {
   const { username, user, size, page } = data;
-  console.log({ user });
+  ({ user });
   const projects = await Project.findAll(RepositoryService, {
     related: [["User", { attributes: ["username"] }]],
     size,
@@ -26,7 +26,7 @@ export const getProjects = async (data: any) => {
 };
 
 export const getOwnProjects = async (data: any) => {
-  console.log({ data });
+  ({ data });
   const { token } = data;
   const { user } = await AuthServices.verifyKey(token);
   return await User.projects(RepositoryService, user);
@@ -53,16 +53,11 @@ export const deleteProject = async (data: any) => {
 
 export const updateProject = async (data: any) => {
   const { user, uuid } = data;
-  await (
+  const result = await (
     await Project.load(RepositoryService, { credentials: { uuid } })
   ).update(RepositoryService, filterAttrs(data, ["uuid", "user", "token"]));
 
-  return formatProjects([
-    await Project.find(RepositoryService, {
-      credentials: { uuid },
-      related: [["User", { attributes: ["username"] }]],
-    }),
-  ])[0];
+  return { updated: result };
 };
 
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
@@ -70,10 +65,10 @@ export const migrateDescriptionToDescriptions = async (data: any) => {
   const projects = await RepositoryService.findAll(
     RepositoryService.entities.Project
   );
-  console.log({ projects });
+  ({ projects });
   for (var project of projects) {
     const descriptions = project.description.split(". ");
-    console.log({ descriptions });
+    ({ descriptions });
     await updateProject({ uuid: project.uuid, descriptions, user: data.user });
   }
   return "OK!";
@@ -94,7 +89,7 @@ export const migrateRelationship2OneToN2N = async () => {
   for (let project of projects) {
     const { User, Users } = project;
     if (User && Users.length === 0) {
-      console.log({ User, Users });
+      ({ User, Users });
       /* await RepositoryService.CommandService.createOneRelationshipN2N([
         [{ project: { uuid: project.uuid } }, { user: { uuid: User.uuid } }],
       ]); */

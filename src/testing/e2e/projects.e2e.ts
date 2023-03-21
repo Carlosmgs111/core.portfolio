@@ -14,7 +14,7 @@ describe("Test for get all projects endpoint", () => {
 
   beforeAll(async () => {
     server = app.listen(4040, () =>
-      console.log("Test server running at port 4040")
+      ("Test server running at port 4040")
     );
     await Project.sync({ force: true });
     const user = generateOneUser();
@@ -34,7 +34,7 @@ describe("Test for get all projects endpoint", () => {
         .post("/api/v1/projects")
         .send(generateOneProject())
         .set("Authorization", `Bearer ${userToken}`);
-      await console.log({ body });
+      await ({ body });
     });
   });
 
@@ -45,7 +45,7 @@ describe("Test for get all projects endpoint", () => {
         .set("Authorization", `Bearer ${userToken}`)
         .expect(200);
 
-      await console.log({ body });
+      await ({ body });
       expect.arrayContaining(body);
       expect(body.length).toEqual(1);
     });

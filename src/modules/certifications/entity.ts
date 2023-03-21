@@ -47,7 +47,6 @@ export class Certification {
   };
 
   static createMany = async (RepositoryService: any, data: any) => {
-    // console.log({ data });
     const certificationsCreated = await RepositoryService.createMany(
       RepositoryService.entities.Certification,
       data.map(
@@ -78,7 +77,6 @@ export class Certification {
         ],
       ]);
     }
-    // console.log({ certificationsCreated });
     return certificationsCreated;
   };
 
@@ -86,7 +84,6 @@ export class Certification {
     const certification = await Certification.find(RepositoryService, options);
     if (!certification) throw new Error("Incorrect credentials!");
     const loadedCertification = new Certification(certification);
-    console.log({ loadedCertification });
     return loadedCertification;
   };
 
@@ -114,9 +111,9 @@ export class Certification {
       credentials: { uuid: this.uuid },
       related: [["Institution", { attributes: ["name"], as: "Institution" }]],
     });
-    console.log(data.emitedBy, emitedBy);
+    data.emitedBy, emitedBy;
     if (data.emitedBy && emitedBy !== data.emitedBy) {
-      console.log("Must change relationship".bgYellow);
+      "Must change relationship".bgYellow;
       await RepositoryService.unsetOneRelationship2One(
         { certifications: { uuid: this.uuid } },
         [["Institution", { as: "Institution" }]]
@@ -131,7 +128,7 @@ export class Certification {
       );
     }
 
-    await RepositoryService.updateOne(
+    return await RepositoryService.updateOne(
       RepositoryService.entities.Certification,
       {
         updatedAt: this.updatedAt,
@@ -139,8 +136,6 @@ export class Certification {
       },
       { credentials: { uuid: this.uuid } }
     );
-
-    return this;
   };
 
   remove = async (RepositoryService: any, options: any = {}) => {

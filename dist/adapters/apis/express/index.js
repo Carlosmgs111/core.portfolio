@@ -14,7 +14,10 @@ const expressHandlerAdapter = (handler) => {
     return (req, res, next) => __awaiter(void 0, void 0, void 0, function* () {
         const { body, params, query, user, token } = req;
         try {
-            return res.send(yield handler(Object.assign(Object.assign(Object.assign(Object.assign({}, body), params), query), { user, token })));
+            let code = 200;
+            let result = yield handler(Object.assign(Object.assign(Object.assign(Object.assign({}, body), params), query), { user,
+                token }));
+            return res.send(result).status(code);
         }
         catch (e) {
             next(e);

@@ -67,15 +67,10 @@ const addManyCertifications = (data) => __awaiter(void 0, void 0, void 0, functi
 exports.addManyCertifications = addManyCertifications;
 const updateCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, uuid } = data;
-    yield (yield entity_1.Certification.load(dependencies_1.RepositoryService, {
+    const result = yield (yield entity_1.Certification.load(dependencies_1.RepositoryService, {
         credentials: { uuid },
     })).update(dependencies_1.RepositoryService, data);
-    return (0, DTOs_1.formatCertifications)([
-        Object.assign(Object.assign({}, (yield (0, exports.getCertificationByUUID)({
-            credentials: { uuid },
-            related: [["Institution", { attributes: ["name"], as: "Institution" }]],
-        }))), { Users: [user] }),
-    ])[0];
+    return { updated: result };
 });
 exports.updateCertification = updateCertification;
 const removeCertification = (data) => __awaiter(void 0, void 0, void 0, function* () {

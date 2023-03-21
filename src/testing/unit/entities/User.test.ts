@@ -7,7 +7,7 @@ describe("User entity behavior", () => {
   let fakeUser: any;
   beforeEach(async () => {
     fakeUser = generateOneUser();
-    console.log({ fakeUser });
+    ({ fakeUser });
   });
   describe("User entity life cycle", () => {
     test("Creation of new entity", async () => {
@@ -16,8 +16,8 @@ describe("User entity behavior", () => {
         RepositoryService,
         fakeUser
       );
-      console.log({ newUser });
-      console.log({ fakeDatabase });
+      ({ newUser });
+      ({ fakeDatabase });
       expect(fakeUser.password).not.toEqual(newUser.password);
       expect(spyFindOne).toHaveBeenCalled();
       expect(spyCreateOne).toHaveBeenCalled();

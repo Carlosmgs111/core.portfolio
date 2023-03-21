@@ -17,7 +17,7 @@ export const testsHandler = async (state: any) => {
   const choices = [checkN2N, removeN2N, exit];
   const options = {
     [checkN2N]: async () => {
-      console.log(
+      (
         await sequelizeAdapter.checkOneRelationshipN2N(
           { certification: { title: "0" } },
           { user: { username } }
@@ -25,7 +25,7 @@ export const testsHandler = async (state: any) => {
       );
     },
     [removeN2N]: async () => {
-      console.log(
+      (
         await mongooseAdapter.removeOneRelationshipN2N([
           [{ institution: { name: "EDTeam" } }, { user: { username } }],
         ])

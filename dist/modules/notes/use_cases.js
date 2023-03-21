@@ -26,7 +26,7 @@ const entity_2 = require("../users/entity");
 const dependencies_1 = require("../../config/dependencies");
 const getMyNotes = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { user } = data;
-    console.log({ user });
+    ({ user });
     const myNotes = (yield entity_2.User.find(dependencies_1.RepositoryService, {
         credentials: { uuid: user.uuid },
         related: [["Note"]],

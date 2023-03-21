@@ -12,8 +12,8 @@ const listProjectsHandler = async (state: any) => {
   const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
   const choices = [all, owns, byUser, test];
   const options = {
-    [all]: async () => console.log(await getProjects({})),
-    [owns]: async () => console.log(await getOwnProjects({ token })),
+    [all]: async () => (await getProjects({})),
+    [owns]: async () => (await getOwnProjects({ token })),
     [test]: () => {},
   };
   const { option } = await inquirer.prompt([

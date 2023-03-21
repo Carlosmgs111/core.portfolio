@@ -23,10 +23,10 @@ const opts = {
 };
 exports.JwtStrategy = new passport_jwt_1.Strategy(opts, (payload, done) => __awaiter(void 0, void 0, void 0, function* () {
     const { email, } = payload;
-    // console.log({ JwtStrategyEmail:email });
+    // ({ JwtStrategyEmail:email });
     try {
         const entity = yield (0, use_cases_1.findBy)("Account", { email });
-        // console.log({ entity });
+        // ({ entity });
         if (entity) {
             return done(null, entity);
         }

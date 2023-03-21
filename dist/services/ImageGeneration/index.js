@@ -19,7 +19,7 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
     const { prompt, options = {} } = data;
     const getImage = new Promise((resolve, reject) => {
         dependencies_1.TaskMessageService.receiveMessage("imageGenerated", (images) => __awaiter(void 0, void 0, void 0, function* () {
-            console.log("images received".bgYellow);
+            ("images received".bgYellow);
             try {
                 for (let image of images) {
                     const { encoded_image, img_title, img_format } = image;
@@ -27,14 +27,14 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
                     fs_1.default.writeFile(`datasets/images/${img_title}.${img_format}`, decodedImage, (err) => {
                         if (err)
                             throw err;
-                        console.log("La imagen fue guardada correctamente");
+                        ("La imagen fue guardada correctamente");
                     });
                 }
-                console.log("Resolving...".bgMagenta);
+                ("Resolving...".bgMagenta);
                 if (responseCb)
                     responseCb({ generatedImages: images });
                 resolve(images);
-                console.log("Resolved.".bgWhite);
+                ("Resolved.".bgWhite);
             }
             catch (error) {
                 console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
@@ -49,18 +49,18 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
     ]);
     const response = yield getImage
         .then((images) => {
-        console.log(images === null || images === void 0 ? void 0 : images.slice(0, 100).bgMagenta);
+        (images === null || images === void 0 ? void 0 : images.slice(0, 100).bgMagenta);
         return images;
     })
-        .catch((e) => console.log(e.message.bgRed))
-        .finally(() => console.log("Finished!".bgGreen));
-    console.log("Successed!".bgGreen);
+        .catch((e) => (e.message.bgRed))
+        .finally(() => ("Finished!".bgGreen));
+    ("Successed!".bgGreen);
     return response;
 });
 exports.generateImage = generateImage;
 const modifyImages = (data) => {
     const { images } = data;
-    console.log({ images });
+    ({ images });
 };
 exports.modifyImages = modifyImages;
 const availabelSettings = () => ({

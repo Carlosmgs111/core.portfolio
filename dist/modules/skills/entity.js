@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 var _a;
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Skill = void 0;
+const utils_1 = require("../../utils");
 const uuid_1 = require("uuid");
 class Skill {
     constructor({ uuid, userUUID, name, description, image, tags }) {
@@ -28,7 +29,7 @@ class Skill {
         });
         this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
             this.updatedAt = new Date().getTime();
-            return yield RepositoryService.updateOne(RepositoryService.entities.Skill, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
+            return yield RepositoryService.updateOne(RepositoryService.entities.Skill, Object.assign({ updatedAt: this.updatedAt }, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.userUUID = userUUID;
@@ -69,14 +70,14 @@ Skill.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0
 });
 Skill.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const skill = yield Skill.find(RepositoryService, credentials);
-    console.log({ Model: RepositoryService.Model, credentials });
+    ({ Model: RepositoryService.Model, credentials });
     if (!skill)
         throw new Error("Incorrect credentials!");
     const loadedSkill = new Skill(skill);
     return loadedSkill;
 });
 Skill.find = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ options });
+    ({ options });
     const skill = yield RepositoryService.findOne(RepositoryService.entities.Skill, options);
     return skill;
 });

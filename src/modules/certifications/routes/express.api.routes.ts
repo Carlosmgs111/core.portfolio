@@ -29,7 +29,7 @@ export default router
   )
   .get("/", expressHandlerAdapter(getCertifications))
   .get("/hello", (req: any, res: any) => {
-    console.log("hello");
+    ("hello");
     res.send("Hello");
   })
   .get("/:username", expressHandlerAdapter(getCertifications))

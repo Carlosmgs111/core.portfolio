@@ -1,4 +1,7 @@
-import { RepositoryService, TaskMessageService } from "../../config/dependencies";
+import {
+  RepositoryService,
+  TaskMessageService,
+} from "../../config/dependencies";
 import { Certification } from "./entity";
 import { User } from "../users/entity";
 import boom from "@hapi/boom";
@@ -65,20 +68,12 @@ export const addManyCertifications = async (data: any) => {
 
 export const updateCertification = async (data: any) => {
   const { user, uuid } = data;
-  await (
+  const result = await (
     await Certification.load(RepositoryService, {
       credentials: { uuid },
     })
   ).update(RepositoryService, data);
-  return formatCertifications([
-    {
-      ...(await getCertificationByUUID({
-        credentials: { uuid },
-        related: [["Institution", { attributes: ["name"], as: "Institution" }]],
-      })),
-      Users: [user],
-    },
-  ])[0];
+  return { updated: result };
 };
 
 export const removeCertification = async (data: any) => {

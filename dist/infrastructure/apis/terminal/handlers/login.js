@@ -37,7 +37,7 @@ const signupHandler = (state) => __awaiter(void 0, void 0, void 0, function* () 
     ]);
     if (rePassword !== password)
         throw new Error("Password doesn't match");
-    console.log(yield (0, use_cases_1.signup)({
+    (yield (0, use_cases_1.signup)({
         email,
         password,
         username,

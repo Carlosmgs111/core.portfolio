@@ -30,10 +30,10 @@ const testsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const choices = [checkN2N, removeN2N, exit];
     const options = {
         [checkN2N]: () => __awaiter(void 0, void 0, void 0, function* () {
-            console.log(yield sequelizeAdapter.checkOneRelationshipN2N({ certification: { title: "0" } }, { user: { username } }));
+            (yield sequelizeAdapter.checkOneRelationshipN2N({ certification: { title: "0" } }, { user: { username } }));
         }),
         [removeN2N]: () => __awaiter(void 0, void 0, void 0, function* () {
-            console.log(yield mongooseAdapter.removeOneRelationshipN2N([
+            (yield mongooseAdapter.removeOneRelationshipN2N([
                 [{ institution: { name: "EDTeam" } }, { user: { username } }],
             ]));
         }),

@@ -4,7 +4,7 @@ import { RepositoryService } from "../../config/dependencies";
 
 export const getMyNotes = async (data: any) => {
   const { user } = data;
-  console.log({ user });
+  ({ user });
   const myNotes = (
     await User.find(RepositoryService, {
       credentials: { uuid: user.uuid },

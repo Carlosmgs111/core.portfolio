@@ -40,7 +40,7 @@ class SequelizeAdapter {
                 return entityFounded.dataValues;
             }
             catch (e) {
-                console.log(e.message.red);
+                (e.message.red);
                 throw boom_1.default.internal(e.message);
             }
         });
@@ -51,7 +51,8 @@ class SequelizeAdapter {
         });
         this.updateOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const updated = yield models_1.models[entity].update(Entity, this.adapter(options));
-            return updated.dataValues;
+            ({ updated });
+            return this.getResult(updated);
         });
         this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
             let succesfully = false;
@@ -96,14 +97,14 @@ class SequelizeAdapter {
             for (let ref of refs) {
                 const label = (0, utils_1.Mapfy)(ref).keys().next().value;
                 const query = (0, utils_1.Mapfy)(ref).values().next().value;
-                // console.log({ label, query });
+                // ({ label, query });
                 const referenced = yield models_1.models[(0, utils_1.labelCases)(label).CS].findOne({
                     where: query,
                 });
                 relations2One[`${label}UUID`] = referenced.uuid;
             }
-            // console.log({ relations2One });
-            // console.log({ mainLabel, mainQuery });
+            // ({ relations2One });
+            // ({ mainLabel, mainQuery });
             models_1.models[(0, utils_1.labelCases)(mainLabel).CS].update(relations2One, {
                 where: mainQuery,
             });
@@ -150,6 +151,10 @@ class SequelizeAdapter {
         this.adapter = (OPS) => {
             const { credentials = {}, related = [], size = 100, page = 0, as = null, } = OPS;
             return Object.assign(Object.assign({}, OPS), { where: credentials, include: this.formatIncludeClosure(related), limit: Number(size), offset: Number(page), alias: as });
+        };
+        this.getResult = (result) => {
+            if (Array.isArray(result))
+                return result.map((o) => Boolean(o)).includes(true);
         };
         // * A function that is called in the constructor of the class. It is used to associate the models in
         // * the database.

@@ -28,7 +28,7 @@ const institutionsHandler = (state) => __awaiter(void 0, void 0, void 0, functio
     ];
     const choices = [add, update, removeOne, read, exit];
     const options = {
-        [read]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, use_cases_1.getAllInstitutions)({})); }),
+        [read]: () => __awaiter(void 0, void 0, void 0, function* () { return (yield (0, use_cases_1.getAllInstitutions)({})); }),
         [exit]: () => __awaiter(void 0, void 0, void 0, function* () { return (running = false); }),
     };
     while (running) {

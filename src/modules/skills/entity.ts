@@ -1,3 +1,4 @@
+import { filterAttrs } from "../../utils";
 import { v4 as uuidv4 } from "uuid";
 
 type ISkill = {
@@ -61,14 +62,14 @@ export class Skill {
 
   static load = async (RepositoryService: any, credentials: any) => {
     const skill = await Skill.find(RepositoryService, credentials);
-    console.log({ Model: RepositoryService.Model, credentials });
+    ({ Model: RepositoryService.Model, credentials });
     if (!skill) throw new Error("Incorrect credentials!");
     const loadedSkill = new Skill(skill);
     return loadedSkill;
   };
 
   static find = async (RepositoryService: any, options: any) => {
-    console.log({options})
+    ({ options });
     const skill: any = await RepositoryService.findOne(
       RepositoryService.entities.Skill,
       options
@@ -92,7 +93,10 @@ export class Skill {
     this.updatedAt = new Date().getTime();
     return await RepositoryService.updateOne(
       RepositoryService.entities.Skill,
-      { ...this, ...data },
+      {
+        updatedAt: this.updatedAt,
+        ...filterAttrs(data, ["uuid", "user", "token"]),
+      },
       { credentials: { uuid: this.uuid } }
     );
   };

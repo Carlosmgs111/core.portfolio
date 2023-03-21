@@ -13,9 +13,9 @@ exports.connect = connect;
 exports.connection = mongoose_1.default.connection;
 // Callback once connection open
 exports.connection.once("open", () => {
-    console.log("Mongodb connection stablished");
+    ("Mongodb connection stablished");
 });
 exports.connection.on("error", (err) => {
-    console.log(err);
+    (err);
     process.exit(0);
 });

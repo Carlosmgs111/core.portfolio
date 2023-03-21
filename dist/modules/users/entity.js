@@ -34,7 +34,7 @@ class User {
         this.hashPassword = (password) => __awaiter(this, void 0, void 0, function* () {
             const salt = yield bcrypt_1.default.genSalt(10);
             const hash = yield bcrypt_1.default.hash(password || this.password, salt);
-            console.log({ hash });
+            ({ hash });
             this.password = hash;
             return hash;
         });
@@ -63,7 +63,6 @@ User.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     const exist = yield RepositoryService.findOne(RepositoryService.entities.User, {
         credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(data), ["email", "username"], false),
     });
-    console.log({ exist });
     if (exist)
         throw boom_1.default.conflict("Entity exist yet!");
     const uuid = (0, uuid_1.v4)();
@@ -90,7 +89,6 @@ User.authLoad = (RepositoryService, options = {}) => __awaiter(void 0, void 0, v
 });
 User.find = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
     const { credentials } = options;
-    console.log({ credentials });
     if (!credentials)
         throw boom_1.default.conflict("Idexation must be provided!");
     const account = yield RepositoryService.findOne(RepositoryService.entities.User, Object.assign(Object.assign({}, options), { credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["email", "username", "uuid"], false) }));

@@ -18,12 +18,12 @@ const registerUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.registerUser = registerUser;
 const removeUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield entity_1.User.authLoad(dependencies_1.RepositoryService, data);
-    console.log({ user });
+    ({ user });
     return yield user.remove(dependencies_1.RepositoryService);
 });
 exports.removeUser = removeUser;
 const updateUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ data });
+    ({ data });
     return yield (yield entity_1.User.authLoad(dependencies_1.RepositoryService, data)).update(dependencies_1.RepositoryService, data);
 });
 exports.updateUser = updateUser;
@@ -35,7 +35,7 @@ const load = (credentials) => __awaiter(void 0, void 0, void 0, function* () { r
 exports.load = load;
 const changeUsername = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const { user, newUsername } = credentials;
-    console.log({ user, newUsername });
+    ({ user, newUsername });
     yield user.update(dependencies_1.RepositoryService, { username: newUsername });
 });
 exports.changeUsername = changeUsername;
@@ -47,7 +47,7 @@ exports.updateAvatar = updateAvatar;
 /*  */
 const entities = { User: entity_1.User };
 const findBy = (label, findBy) => __awaiter(void 0, void 0, void 0, function* () {
-    // console.log({ findBy });
+    // ({ findBy });
     return yield entities[label].find(dependencies_1.RepositoryService, { credentials: findBy });
 });
 exports.findBy = findBy;
@@ -65,7 +65,7 @@ const update = (credentials, data) => __awaiter(void 0, void 0, void 0, function
 exports.update = update;
 const resetPassword = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const { oldPassword, newPassword, username, token, user } = credentials;
-    console.log({ user });
+    ({ user });
     const result = yield user.changePassword(dependencies_1.RepositoryService, {
         newPassword,
         oldPassword,

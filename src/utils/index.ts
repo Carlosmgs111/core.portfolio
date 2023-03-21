@@ -17,7 +17,7 @@ export const filterAttrs = (
 ) => {
   const newObj: any = {};
   for (var attr in obj) {
-    // if (!obj[attr]) console.log(`⚠️ ${attr}: Its null or undefined ⚠️`.yellow);
+    // if (!obj[attr]) (`⚠️ ${attr}: Its null or undefined ⚠️`.yellow);
     if (!oclusive === toRemove.includes(attr)) {
       newObj[attr] = obj[attr];
     }
@@ -64,13 +64,13 @@ export const Enumfy = (object: Array<String> | Object) => {
 
 export const execFunc = async (func: Function | any) => {
   if (typeof func !== "function") {
-    console.log("Not implemented yet!".red);
+    ("Not implemented yet!".red);
     return;
   }
   try {
     await func();
   } catch (e: any) {
-    console.log(e.message.red);
+    (e.message.red);
   }
 };
 

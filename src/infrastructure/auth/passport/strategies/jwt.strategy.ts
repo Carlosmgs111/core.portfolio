@@ -10,10 +10,10 @@ const opts: StrategyOptions = {
 
 export const JwtStrategy = new Strategy(opts, async (payload, done) => {
   const { email,} = payload;
-  // console.log({ JwtStrategyEmail:email });
+  // ({ JwtStrategyEmail:email });
   try {
     const entity = await findBy("Account", { email });
-    // console.log({ entity });
+    // ({ entity });
     if (entity) {
       return done(null, entity);
     }

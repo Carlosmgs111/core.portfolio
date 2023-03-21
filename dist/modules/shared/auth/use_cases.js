@@ -32,7 +32,7 @@ exports.login = login;
 const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password } = credentials;
     if (email)
-        console.log("Authentication Signup use case must be implemented! ".bgYellow);
+        ("Authentication Signup use case must be implemented! ".bgYellow);
     return yield entity_1.User.create(dependencies_1.RepositoryService, credentials);
 });
 exports.signup = signup;
@@ -65,7 +65,7 @@ exports.signin = signin;
 const resetAuthPassword = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     dependencies_1.RepositoryService;
     const { token } = credentials;
-    console.log({ token });
+    ({ token });
     const { email, cipheredPassword } = dependencies_1.AuthServices.verifyKey(token);
     const newPassword = (0, utils_1.decryptData)(cipheredPassword, config_1.default.jwtSignupSecret || "");
     const account = yield entity_1.User.authLoad(dependencies_1.RepositoryService, {

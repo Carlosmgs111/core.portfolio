@@ -23,7 +23,7 @@ export const login = async (credentials: any) => {
 export const signup = async (credentials: any) => {
   const { username, email, password } = credentials;
   if (email)
-    console.log(
+    (
       "Authentication Signup use case must be implemented! ".bgYellow
     );
   return await User.create(RepositoryService, credentials);
@@ -59,7 +59,7 @@ export const signin = async (data: any) => {
 export const resetAuthPassword = async (credentials: any) => {
   RepositoryService;
   const { token } = credentials;
-  console.log({ token });
+  ({ token });
   const { email, cipheredPassword } = AuthServices.verifyKey(token);
   const newPassword = decryptData(
     cipheredPassword,

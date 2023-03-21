@@ -12,12 +12,12 @@ export class SocketService {
 
   constructor() {
     this.server.on("connection", (socket: Socket) => {
-      console.log("Connected!");
+      ("Connected!");
       this.sockets[socket.id] = socket;
       this.setEvents(socket);
 
       socket.on("disconnect", () => {
-        console.log(socket.id.bgRed);
+        (socket.id.bgRed);
         const newSockets = Mapfy(this.sockets);
         newSockets.delete(socket.id);
         this.sockets = UnMapfy(newSockets);
