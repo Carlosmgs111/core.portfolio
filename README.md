@@ -11,6 +11,8 @@ Structure:
 └─ src
     ├─ config
     ├─ infrastructure
+    │   └─ apis
+    │       └─ express
     ├─ modules
     │   ├─ certifications
     │   │   ├─ models
@@ -21,6 +23,7 @@ Structure:
     │   │   ├─ entity
     │   │   └─ use_cases
     │   ├─ ...
+    │   ├─ shared
     │   ...
     ├─ services
     │   ├─ RepositoryService
