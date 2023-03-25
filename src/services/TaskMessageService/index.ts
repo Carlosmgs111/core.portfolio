@@ -3,7 +3,7 @@ import amqp from "amqplib";
 
 const { rabbitMQUrlDev, rabbitMQUrlProd } = config;
 const rabbitMQUrl = rabbitMQUrlDev || rabbitMQUrlProd;
-(!rabbitMQUrl ? "PRODUCTION".bgGreen : "DEVELOPMENT".bgYellow);
+console.log(!rabbitMQUrlDev ? "MQ PRODUCTION".bgGreen : "MQ DEVELOPMENT".bgYellow);
 
 export class TaskMessageService {
   connection: any;

@@ -8,7 +8,7 @@ const config_1 = __importDefault(require("../../config"));
 const amqplib_1 = __importDefault(require("amqplib"));
 const { rabbitMQUrlDev, rabbitMQUrlProd } = config_1.default;
 const rabbitMQUrl = rabbitMQUrlDev || rabbitMQUrlProd;
-(!rabbitMQUrl ? "PRODUCTION".bgGreen : "DEVELOPMENT".bgYellow);
+console.log(!rabbitMQUrlDev ? "MQ PRODUCTION".bgGreen : "MQ DEVELOPMENT".bgYellow);
 class TaskMessageService {
     constructor() {
         this.setup = () => {

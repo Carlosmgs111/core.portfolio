@@ -39,7 +39,7 @@ const config = {
   redisPassword: String(process.env.REDIS_PASSWORD || ""),
   /*  */
   rabbitMQUrlDev: String(process.env.RABBITMQ_URL_DEV || ""),
-  rabbitMQUrlProd: String(process.env.RABBITMQ_URLPROD || ""),
+  rabbitMQUrlProd: String(process.env.RABBITMQ_URL_PROD || ""),
   // apiKey: String(process.env.API_KEY),
   // emailAddress: process.env.EMAIL_ADDRESS,
   // emailAppPassword: process.env.EMAIL_APP_PASSWORD,
