@@ -23,10 +23,10 @@ class TaskMessageService {
                 connection
                     .createChannel()
                     .then((channel) => (this.channel = channel))
-                    .catch((error) => (error.message.red));
+                    .catch((error) => error.message.red);
                 // process.on("SIGINT", () => connection.close());
             })
-                .catch((error) => (error.message.bgRed));
+                .catch((error) => error.message.bgRed);
         };
         this.createExchange = (exchangeName, type = "fanout") => {
             if (this.channel) {
@@ -47,7 +47,7 @@ class TaskMessageService {
                     durable: false,
                     exclusive: false,
                 })
-                    .catch((e) => (e));
+                    .catch((e) => e);
                 this.channel.publish(exchangeName, `${exchangeName}_1`, Buffer.from(JSON.stringify(message)));
             }
             else {
@@ -67,18 +67,18 @@ class TaskMessageService {
                         const decoded = JSON.parse(message.content.toString());
                         if (message !== null) {
                             if (Array.isArray(decoded))
-                                (_b = (_a = cb(...decoded)) === null || _a === void 0 ? void 0 : _a.then((message) => (`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.bgBlue))) === null || _b === void 0 ? void 0 : _b.catch((e) => {
-                                    (e.message.bgRed);
+                                (_b = (_a = cb(...decoded)) === null || _a === void 0 ? void 0 : _a.then((message) => console.log(`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.bgBlue))) === null || _b === void 0 ? void 0 : _b.catch((e) => {
+                                    e.message.bgRed;
                                 });
                             else
-                                (_d = (_c = cb(decoded)) === null || _c === void 0 ? void 0 : _c.then((message) => (`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.bgBlue))) === null || _d === void 0 ? void 0 : _d.catch((e) => {
-                                    (e.message.bgRed);
+                                (_d = (_c = cb(decoded)) === null || _c === void 0 ? void 0 : _c.then((message) => console.log(`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.bgBlue))) === null || _d === void 0 ? void 0 : _d.catch((e) => {
+                                    e.message.bgRed;
                                 });
                             this.channel.ack(message);
                         }
                     });
                 })
-                    .catch((error) => (error.message));
+                    .catch((error) => error.message);
             }
             else {
                 setTimeout(() => this.receiveMessage(exchangeName, cb), 1000);

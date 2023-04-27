@@ -19,7 +19,7 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
     const { prompt, options = {} } = data;
     const getImage = new Promise((resolve, reject) => {
         dependencies_1.TaskMessageService.receiveMessage("imageGenerated", (images) => __awaiter(void 0, void 0, void 0, function* () {
-            ("images received".bgYellow);
+            console.log("images received".bgYellow);
             try {
                 for (let image of images) {
                     const { encoded_image, img_title, img_format } = image;
@@ -27,20 +27,20 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
                     fs_1.default.writeFile(`datasets/images/${img_title}.${img_format}`, decodedImage, (err) => {
                         if (err)
                             throw err;
-                        ("La imagen fue guardada correctamente");
+                        console.log("La imagen fue guardada correctamente");
                     });
                 }
-                ("Resolving...".bgMagenta);
+                console.log("Resolving...".bgMagenta);
                 if (responseCb)
                     responseCb({ generatedImages: images });
                 resolve(images);
-                ("Resolved.".bgWhite);
+                console.log("Resolved.".bgWhite);
             }
             catch (error) {
                 console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
                 reject(error);
             }
-            return images;
+            return { generatedImages: images };
         }));
     });
     dependencies_1.TaskMessageService.sendMessage("generateImage", [
@@ -49,12 +49,12 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
     ]);
     const response = yield getImage
         .then((images) => {
-        (images === null || images === void 0 ? void 0 : images.slice(0, 100).bgMagenta);
+        images === null || images === void 0 ? void 0 : images.slice(0, 100).bgMagenta;
         return images;
     })
-        .catch((e) => (e.message.bgRed))
-        .finally(() => ("Finished!".bgGreen));
-    ("Successed!".bgGreen);
+        .catch((e) => e.message.bgRed)
+        .finally(() => "Finished!".bgGreen);
+    "Successed!".bgGreen;
     return response;
 });
 exports.generateImage = generateImage;

@@ -3,7 +3,9 @@ import amqp from "amqplib";
 
 const { rabbitMQUrlDev, rabbitMQUrlProd } = config;
 const rabbitMQUrl = rabbitMQUrlDev || rabbitMQUrlProd;
-console.log(!rabbitMQUrlDev ? "MQ PRODUCTION".bgGreen : "MQ DEVELOPMENT".bgYellow);
+console.log(
+  !rabbitMQUrlDev ? "MQ PRODUCTION".bgGreen : "MQ DEVELOPMENT".bgYellow
+);
 
 export class TaskMessageService {
   connection: any;
@@ -24,10 +26,10 @@ export class TaskMessageService {
         connection
           .createChannel()
           .then((channel: any) => (this.channel = channel))
-          .catch((error: any) => (error.message.red));
+          .catch((error: any) => error.message.red);
         // process.on("SIGINT", () => connection.close());
       })
-      .catch((error: any) => (error.message.bgRed));
+      .catch((error: any) => error.message.bgRed);
   };
 
   createExchange = (exchangeName: any, type: any = "fanout") => {
@@ -49,7 +51,7 @@ export class TaskMessageService {
           durable: false,
           exclusive: false,
         })
-        .catch((e: any) => (e));
+        .catch((e: any) => e);
       this.channel.publish(
         exchangeName,
         `${exchangeName}_1`,
@@ -74,25 +76,25 @@ export class TaskMessageService {
               if (Array.isArray(decoded))
                 cb(...decoded)
                   ?.then((message: any) =>
-                    (`Received ${message?.slice(0, 100)}...`.bgBlue)
+                    console.log(`Received ${message?.slice(0, 100)}...`.bgBlue)
                   )
                   ?.catch((e: any) => {
-                    (e.message.bgRed);
+                    e.message.bgRed;
                   });
               else
                 cb(decoded)
                   ?.then((message: any) =>
-                    (`Received ${message?.slice(0, 100)}...`.bgBlue)
+                    console.log(`Received ${message?.slice(0, 100)}...`.bgBlue)
                   )
                   ?.catch((e: any) => {
-                    (e.message.bgRed);
+                    e.message.bgRed;
                   });
 
               this.channel.ack(message);
             }
           });
         })
-        .catch((error: any) => (error.message));
+        .catch((error: any) => error.message);
     } else {
       setTimeout(() => this.receiveMessage(exchangeName, cb), 1000);
     }
