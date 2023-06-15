@@ -31,8 +31,8 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
                     });
                 }
                 console.log("Resolving...".bgMagenta);
-                if (responseCb)
-                    responseCb({ generatedImages: images });
+                // ? ⬇️ Important! always return a object, which unique key is the name of returning connection and its value is the result of function
+                // if (responseCb) responseCb({ generatedImages: images }); // ? ⬅️ This pass result to callback provided by SocketService
                 resolve(images);
                 console.log("Resolved.".bgWhite);
             }
@@ -40,7 +40,7 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
                 console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
                 reject(error);
             }
-            return { generatedImages: images };
+            return { generatedImages: images }; // ? ⬅️ This return result to TaskMessageService
         }));
     });
     dependencies_1.TaskMessageService.sendMessage("generateImage", [
@@ -55,6 +55,9 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
         .catch((e) => e.message.bgRed)
         .finally(() => "Finished!".bgGreen);
     "Successed!".bgGreen;
+    // ? ⬇️ Important! always return a object, which unique key is the name of returning connection and its value is the result of function
+    if (responseCb)
+        responseCb({ generatedImages: response });
     return response;
 });
 exports.generateImage = generateImage;

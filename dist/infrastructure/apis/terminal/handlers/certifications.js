@@ -32,7 +32,7 @@ const listByUsernameHandler = (state) => __awaiter(void 0, void 0, void 0, funct
                 choices,
             },
         ]);
-        (yield (0, use_cases_1.getCertifications)({ username: option }));
+        yield (0, use_cases_1.getCertifications)({ username: option });
         if (option === exit)
             running = false;
     }
@@ -42,8 +42,8 @@ const listCertificationsHandler = (state) => __awaiter(void 0, void 0, void 0, f
     const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
     const choices = [all, owns, byUser, test];
     const options = {
-        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return (yield (0, use_cases_1.getCertifications)({})); }),
-        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return (yield (0, use_cases_1.getOwnCertifications)({ token })); }),
+        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return console.log(yield (0, use_cases_1.getCertifications)({})); }),
+        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return yield (0, use_cases_1.getOwnCertifications)({ token }); }),
         [byUser]: () => __awaiter(void 0, void 0, void 0, function* () { return yield listByUsernameHandler(state); }),
         [test]: () => { },
     };

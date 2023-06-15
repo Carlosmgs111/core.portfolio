@@ -25,14 +25,14 @@ const login = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     });
     if (!account)
         throw new Error("The account doesn't exist!");
-    let response = dependencies_1.AuthServices.getAuthPackage((0, utils_1.filterAttrs)(account, ["uuid", "email", "username", "privilege", "createdAt", "avatar"], false));
+    let response = dependencies_1.AuthServices.getAuthPackage(Object.assign(Object.assign({}, (0, utils_1.filterAttrs)(account, ["uuid", "email", "username", "privilege", "createdAt", "avatar"], false)), { apiKey: config_1.default.apiKey }));
     return response;
 });
 exports.login = login;
 const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password } = credentials;
     if (email)
-        ("Authentication Signup use case must be implemented! ".bgYellow);
+        console.log("Authentication Signup use case must be implemented! ".bgYellow);
     return yield entity_1.User.create(dependencies_1.RepositoryService, credentials);
 });
 exports.signup = signup;

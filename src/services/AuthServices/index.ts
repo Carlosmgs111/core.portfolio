@@ -1,5 +1,5 @@
 // import { createToken, verifyToken2 } from "../../infrastructure/auth/JWT";
-import { expiresIn1Month, fifteenMinutes } from "./expires";
+import { expiresIn1Month, expiresIn2H, fifteenMinutes } from "./expires";
 import config from "../../config";
 import jwt from "jsonwebtoken";
 import { jwtVerify } from "jose";
@@ -19,14 +19,13 @@ export const verifyToken = (
   token: any,
   signature: any = config.jwtSignupSecret
 ) => {
-  ({ signature });
   try {
     const payload: any = jwt.verify(token, signature);
     ({ payload });
     if (!payload) throw new Error("Invalid Payload!");
     return payload;
   } catch (e) {
-    (e);
+    e;
     throw new Error("Invalid Token!");
   }
 };
@@ -35,7 +34,6 @@ export const verifyToken2 = async (
   token: any,
   signature: any = config.jwtAccessSecret
 ) => {
-  ({ token, signature });
   try {
     const verified = await jwtVerify(
       token,
@@ -51,8 +49,6 @@ export const verifyToken2 = async (
       }),
     };
   } catch (e: any) {
-    ({ ERROR: e.message });
-    ("Invalid Token!");
     throw new Error("Invalid token");
   }
 };
@@ -69,10 +65,9 @@ export class AuthServices {
   };
 
   getAuthPackage = (params: any) => {
-    const token = createToken(params, expiresIn1Month);
+    const token = createToken(params, expiresIn2H);
     return {
       token,
-      expire: expiresIn1Month,
       apiKey: config.apiKey,
     };
   };

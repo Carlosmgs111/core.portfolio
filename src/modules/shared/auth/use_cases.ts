@@ -10,20 +10,21 @@ export const login = async (credentials: any) => {
     // related: [["Institution"], ["Certification"]],
   });
   if (!account) throw new Error("The account doesn't exist!");
-  let response = AuthServices.getAuthPackage(
-    filterAttrs(
+  let response = AuthServices.getAuthPackage({
+    ...filterAttrs(
       account,
       ["uuid", "email", "username", "privilege", "createdAt", "avatar"],
       false
-    )
-  );
+    ),
+    apiKey: config.apiKey,
+  });
   return response;
 };
 
 export const signup = async (credentials: any) => {
   const { username, email, password } = credentials;
   if (email)
-    (
+    console.log(
       "Authentication Signup use case must be implemented! ".bgYellow
     );
   return await User.create(RepositoryService, credentials);

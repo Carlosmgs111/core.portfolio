@@ -18,12 +18,10 @@ const registerUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
 exports.registerUser = registerUser;
 const removeUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const user = yield entity_1.User.authLoad(dependencies_1.RepositoryService, data);
-    ({ user });
     return yield user.remove(dependencies_1.RepositoryService);
 });
 exports.removeUser = removeUser;
 const updateUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    ({ data });
     return yield (yield entity_1.User.authLoad(dependencies_1.RepositoryService, data)).update(dependencies_1.RepositoryService, data);
 });
 exports.updateUser = updateUser;
@@ -65,7 +63,6 @@ const update = (credentials, data) => __awaiter(void 0, void 0, void 0, function
 exports.update = update;
 const resetPassword = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const { oldPassword, newPassword, username, token, user } = credentials;
-    ({ user });
     const result = yield user.changePassword(dependencies_1.RepositoryService, {
         newPassword,
         oldPassword,

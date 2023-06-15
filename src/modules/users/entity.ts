@@ -89,7 +89,7 @@ export class User {
 
   static find = async (RepositoryService: any, options: any = {}) => {
     const { credentials } = options;
-    if (!credentials) throw boom.conflict("Idexation must be provided!");
+    if (!credentials) throw boom.conflict("Indexation must be provided!");
     const account: any = await RepositoryService.findOne(
       RepositoryService.entities.User,
       {

@@ -19,11 +19,9 @@ export const verifyToken = async (req: any) => {
       token,
       new TextEncoder().encode(config.jwtAccessSecret)
     );
-    //({verified})
 
     return verified.payload as unknown as UserJwtPayload;
   } catch (e) {
-    ("Invalid Token!");
     throw new Error("Invalid token");
   }
 };
@@ -64,10 +62,6 @@ export function checkRoles(...roles: string[]) {
 export async function authMiddleware(req: any, res: any, next: Function) {
   try {
     const payload = await verifyToken(req);
-    (await load({
-      uuid: payload.uuid,
-      email: payload.email,
-    }))
     req.user = await load({
       uuid: payload.uuid,
       email: payload.email,

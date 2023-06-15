@@ -22,11 +22,9 @@ const verifyToken = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const token = (authorization || "").replace("Bearer ", "");
     try {
         const verified = yield (0, jose_1.jwtVerify)(token, new TextEncoder().encode(config_1.default.jwtAccessSecret));
-        //({verified})
         return verified.payload;
     }
     catch (e) {
-        ("Invalid Token!");
         throw new Error("Invalid token");
     }
 });
@@ -71,10 +69,6 @@ function authMiddleware(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const payload = yield (0, exports.verifyToken)(req);
-            (yield (0, use_cases_1.load)({
-                uuid: payload.uuid,
-                email: payload.email,
-            }));
             req.user = yield (0, use_cases_1.load)({
                 uuid: payload.uuid,
                 email: payload.email,

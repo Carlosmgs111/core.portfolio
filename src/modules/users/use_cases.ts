@@ -6,11 +6,9 @@ export const registerUser = async (data: any) => {
 };
 export const removeUser = async (data: any) => {
   const user = await User.authLoad(RepositoryService, data);
-  ({ user });
   return await user.remove(RepositoryService);
 };
 export const updateUser = async (data: any) => {
-  ({ data });
   return await (
     await User.authLoad(RepositoryService, data)
   ).update(RepositoryService, data);
@@ -53,7 +51,6 @@ export const update = async (credentials: any, data: any) => {
 
 export const resetPassword = async (credentials: any) => {
   const { oldPassword, newPassword, username, token, user } = credentials;
-  ({ user });
   const result = await user.changePassword(RepositoryService, {
     newPassword,
     oldPassword,

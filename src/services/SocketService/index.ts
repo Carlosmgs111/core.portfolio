@@ -1,4 +1,5 @@
 import { Server, Socket } from "socket.io";
+import io from "socket.io-client";
 import { Mapfy, UnMapfy } from "../../utils";
 
 export class SocketService {
@@ -8,9 +9,12 @@ export class SocketService {
     },
   });
   sockets: any = {};
+  clients: any = {};
   events: any = [];
 
-  constructor() {
+  constructor(
+    clients: any = [{ alias: "imageService", address: "http://127.0.0.1:8765" }]
+  ) {
     this.server.on("connection", (socket: Socket) => {
       console.log(`${socket.id} Connected!`.green);
       this.sockets[socket.id] = socket;
@@ -23,16 +27,30 @@ export class SocketService {
         this.sockets = UnMapfy(newSockets);
       });
     });
+    if (clients) {
+      for (let client of clients) {
+        this.clients[client.alias] = io(client.address);
+      }
+    }
+    console.log({ clients: this.clients });
   }
 
+  addClient = (client: any) =>
+    (this.clients[client.alias] = io(client.address));
+
   addEvent = (event: any) => this.events.push(event);
+
+  sendMessage = (event: any, payload: any) => {
+    this.clients[event.alias].emit(event.event, payload);
+    const [name, cb] = Mapfy(event).entries().next().value;
+  };
 
   private setEvents = (socket: any) => {
     this.events.forEach((event: any) => {
       const [name, cb] = Mapfy(event).entries().next().value;
       socket.addListener(name, (data: any) => {
-        cb(data, (r: any) => {
-          const [response, result] = Mapfy(r).entries().next().value;
+        cb(data, (_result: any) => {
+          const [response, result] = Mapfy(_result).entries().next().value;
           socket.emit(response, result);
         });
       });

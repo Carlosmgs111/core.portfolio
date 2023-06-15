@@ -20,20 +20,23 @@ export const generateImage = async (data: any, responseCb: any) => {
           );
         }
         console.log("Resolving...".bgMagenta);
-        if (responseCb) responseCb({ generatedImages: images });
+        // ? ⬇️ Important! always return a object, which unique key is the name of returning connection and its value is the result of function
+        // if (responseCb) responseCb({ generatedImages: images }); // ? ⬅️ This pass result to callback provided by SocketService
         resolve(images);
         console.log("Resolved.".bgWhite);
       } catch (error: any) {
         console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
         reject(error);
       }
-      return { generatedImages: images };
+      return { generatedImages: images }; // ? ⬅️ This return result to TaskMessageService
     });
   });
+
   TaskMessageService.sendMessage("generateImage", [
     prompt,
     ...Object.entries(options).flatMap((b) => b[1]),
   ]);
+
   const response = await getImage
     .then((images: any) => {
       images?.slice(0, 100).bgMagenta;
@@ -42,6 +45,8 @@ export const generateImage = async (data: any, responseCb: any) => {
     .catch((e: any) => e.message.bgRed)
     .finally(() => "Finished!".bgGreen);
   "Successed!".bgGreen;
+  // ? ⬇️ Important! always return a object, which unique key is the name of returning connection and its value is the result of function
+  if (responseCb) responseCb({ generatedImages: response })
   return response;
 };
 
