@@ -26,9 +26,15 @@ class SocketService {
         this.setEvents = (socket) => {
             this.events.forEach((event) => {
                 const [name, cb] = (0, utils_1.Mapfy)(event).entries().next().value;
-                socket.addListener(name, (data) => {
-                    cb(data, (_result) => {
-                        const [response, result] = (0, utils_1.Mapfy)(_result).entries().next().value;
+                socket.addListener(name, (payload) => {
+                    const [response, data] = (0, utils_1.Mapfy)(payload).entries().next().value;
+                    if (Array.isArray(data)) {
+                        cb(...data, (result) => {
+                            socket.emit(response, result);
+                        });
+                        return;
+                    }
+                    cb(data, (result) => {
                         socket.emit(response, result);
                     });
                 });

@@ -48,9 +48,15 @@ export class SocketService {
   private setEvents = (socket: any) => {
     this.events.forEach((event: any) => {
       const [name, cb] = Mapfy(event).entries().next().value;
-      socket.addListener(name, (data: any) => {
-        cb(data, (_result: any) => {
-          const [response, result] = Mapfy(_result).entries().next().value;
+      socket.addListener(name, (payload: any) => {
+        const [response, data] = Mapfy(payload).entries().next().value;
+        if (Array.isArray(data)) {
+          cb(...data, (result: any) => {
+            socket.emit(response, result);
+          });
+          return;
+        }
+        cb(data, (result: any) => {
           socket.emit(response, result);
         });
       });

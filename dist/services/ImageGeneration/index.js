@@ -31,8 +31,7 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
                     });
                 }
                 console.log("Resolving...".bgMagenta);
-                // ? ⬇️ Important! always return a object, which unique key is the name of returning connection and its value is the result of function
-                // if (responseCb) responseCb({ generatedImages: images }); // ? ⬅️ This pass result to callback provided by SocketService
+                // if (responseCb) responseCb(images); // ? ⬅️ This pass result to callback provided by SocketService
                 resolve(images);
                 console.log("Resolved.".bgWhite);
             }
@@ -53,11 +52,10 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
         return images;
     })
         .catch((e) => e.message.bgRed)
-        .finally(() => "Finished!".bgGreen);
-    "Successed!".bgGreen;
-    // ? ⬇️ Important! always return a object, which unique key is the name of returning connection and its value is the result of function
+        .finally(() => console.log("Finished!".bgGreen));
+    console.log("Successed!".bgGreen);
     if (responseCb)
-        responseCb({ generatedImages: response });
+        responseCb(response); // ? ⬅️ This pass result to callback provided by SocketService
     return response;
 });
 exports.generateImage = generateImage;
