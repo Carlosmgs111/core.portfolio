@@ -60,7 +60,7 @@ exports.verifyToken2 = verifyToken2;
 class AuthServices {
     constructor() {
         this.createShortTimeKey = (payload) => {
-            return (0, exports.createToken)(payload, expires_1.fifteenMinutes, config_1.default.jwtSignupSecret);
+            return (0, exports.createToken)(payload, expires_1.expiresIn15Minutes, config_1.default.jwtSignupSecret);
         };
         this.verifyKey = (key) => {
             return (0, exports.verifyToken2)(key);

@@ -1,5 +1,5 @@
 // import { createToken, verifyToken2 } from "../../infrastructure/auth/JWT";
-import { expiresIn1Month, expiresIn2H, fifteenMinutes } from "./expires";
+import { expiresIn1Month, expiresIn2H, expiresIn15Minutes } from "./expires";
 import config from "../../config";
 import jwt from "jsonwebtoken";
 import { jwtVerify } from "jose";
@@ -57,7 +57,7 @@ export class AuthServices {
   constructor() {}
 
   createShortTimeKey = (payload: any) => {
-    return createToken(payload, fifteenMinutes, config.jwtSignupSecret);
+    return createToken(payload, expiresIn15Minutes, config.jwtSignupSecret);
   };
 
   verifyKey = (key: any): any => {

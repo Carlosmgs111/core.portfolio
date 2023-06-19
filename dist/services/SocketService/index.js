@@ -19,9 +19,16 @@ class SocketService {
         this.events = [];
         this.addClient = (client) => (this.clients[client.alias] = (0, socket_io_client_1.default)(client.address));
         this.addEvent = (event) => this.events.push(event);
-        this.sendMessage = (event, payload) => {
-            this.clients[event.alias].emit(event.event, payload);
-            const [name, cb] = (0, utils_1.Mapfy)(event).entries().next().value;
+        this.sendMessage = (payload, receiverFunc) => {
+            const [service, _params] = (0, utils_1.Mapfy)(payload).entries().next().value;
+            const [sendTo, ...params] = (0, utils_1.Mapfy)(_params).entries().next().value;
+            console.log({ service, sendTo, params });
+            let responseName = "receiver_function_not_provided";
+            if (receiverFunc) {
+                responseName = receiverFunc.name;
+                this.clients[service].on(responseName, receiverFunc);
+            }
+            this.clients[service].emit(sendTo, { [responseName]: [...params] });
         };
         this.setEvents = (socket) => {
             this.events.forEach((event) => {
