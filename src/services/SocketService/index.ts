@@ -71,15 +71,12 @@ export class SocketService {
       const [name, cb] = Mapfy(event).entries().next().value;
       socket.addListener(name, (payload: any) => {
         const [response, data] = Mapfy(payload).entries().next().value;
-        if (Array.isArray(data)) {
-          cb(...data, (result: any) => {
-            socket.emit(response, result);
-          });
-          return;
-        }
-        cb(data, (result: any) => {
+        (async () => {
+          let result;
+          if (Array.isArray(data)) result = await cb(...data);
+          else result = await cb(data);
           socket.emit(response, result);
-        });
+        })();
       });
     });
   };

@@ -15,7 +15,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.availabelSettings = exports.modifyImages = exports.generateImage = void 0;
 const fs_1 = __importDefault(require("fs"));
 const dependencies_1 = require("../../config/dependencies");
-const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, function* () {
+const generateImage = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { prompt, options = {} } = data;
     const getImage = new Promise((resolve, reject) => {
         dependencies_1.TaskMessageService.receiveMessage("imageGenerated", (images) => __awaiter(void 0, void 0, void 0, function* () {
@@ -31,7 +31,6 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
                     });
                 }
                 console.log("Resolving...".bgMagenta);
-                // if (responseCb) responseCb(images); // ? ⬅️ This pass result to callback provided by SocketService
                 resolve(images);
                 console.log("Resolved.".bgWhite);
             }
@@ -54,11 +53,10 @@ const generateImage = (data, responseCb) => __awaiter(void 0, void 0, void 0, fu
         .catch((e) => e.message.bgRed)
         .finally(() => console.log("Finished!".bgGreen));
     console.log("Successed!".bgGreen);
-    if (responseCb)
-        responseCb(response); // ? ⬅️ This pass result to callback provided by SocketService
     return response;
 });
 exports.generateImage = generateImage;
+dependencies_1.SocketService.addEvent({ generateImage: exports.generateImage });
 const modifyImages = (data) => {
     const { images } = data;
     ({ images });
@@ -71,4 +69,3 @@ const availabelSettings = () => ({
     guidanceScale: { min: 1, max: 20 },
 });
 exports.availabelSettings = availabelSettings;
-dependencies_1.SocketService.addEvent({ generateImage: exports.generateImage });

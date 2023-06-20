@@ -1,11 +1,10 @@
 import fs from "fs";
 import { TaskMessageService, SocketService } from "../../config/dependencies";
 
-export const generateImage = async (data: any, responseCb: any) => {
+export const generateImage = async (data: any) => {
   const { prompt, options = {} } = data;
 
   const getImage = new Promise((resolve: any, reject: any) => {
-
     TaskMessageService.receiveMessage("imageGenerated", async (images: any) => {
       console.log("images received".bgYellow);
       try {
@@ -22,7 +21,6 @@ export const generateImage = async (data: any, responseCb: any) => {
           );
         }
         console.log("Resolving...".bgMagenta);
-        // if (responseCb) responseCb(images); // ? ⬅️ This pass result to callback provided by SocketService
         resolve(images);
         console.log("Resolved.".bgWhite);
       } catch (error: any) {
@@ -31,7 +29,6 @@ export const generateImage = async (data: any, responseCb: any) => {
       }
       return { generatedImages: images }; // ? ⬅️ This return result to TaskMessageService
     });
-
   });
 
   TaskMessageService.sendMessage("generateImage", [
@@ -47,9 +44,10 @@ export const generateImage = async (data: any, responseCb: any) => {
     .catch((e: any) => e.message.bgRed)
     .finally(() => console.log("Finished!".bgGreen));
   console.log("Successed!".bgGreen);
-  if (responseCb) responseCb(response); // ? ⬅️ This pass result to callback provided by SocketService
   return response;
 };
+
+SocketService.addEvent({ generateImage });
 
 export const modifyImages = (data: any) => {
   const { images } = data;
@@ -62,5 +60,3 @@ export const availabelSettings = () => ({
   inferenceSteps: { min: 1, max: 500 },
   guidanceScale: { min: 1, max: 20 },
 });
-
-SocketService.addEvent({ generateImage });
