@@ -1,5 +1,6 @@
 import config from "../../config";
 import amqp from "amqplib";
+import { Mapfy } from "../../utils";
 
 const { rabbitMQUrlDev, rabbitMQUrlProd } = config;
 const rabbitMQUrl = rabbitMQUrlDev || rabbitMQUrlProd;
@@ -44,7 +45,15 @@ export class TaskMessageService {
     return this;
   };
 
-  sendMessage = (exchangeName: any, message: any, type: any = "fanout") => {
+  sendMessage = (
+    payload: any,
+    receiverFunc: any = undefined,
+    type: any = "fanout"
+  ) => {
+    const [exchangeName, _payload] = Mapfy(payload).entries().next().value;
+    const [functionName, message] = Mapfy(_payload).entries().next().value;
+    // if (receiverFunc) this.receiveMessage({ receiverFunc });
+    console.log({ exchangeName, functionName, message });
     if (this.channel) {
       this.channel
         .assertExchange(exchangeName, type, {
@@ -54,16 +63,18 @@ export class TaskMessageService {
         .catch((e: any) => e);
       this.channel.publish(
         exchangeName,
-        `${exchangeName}_1`,
+        `${functionName}_1`,
         Buffer.from(JSON.stringify(message))
       );
     } else {
-      setTimeout(() => this.sendMessage(exchangeName, message), 1000);
+      setTimeout(() => this.sendMessage(payload, receiverFunc), 1000);
     }
     return this;
   };
 
-  receiveMessage = (exchangeName: any, cb: any) => {
+  receiveMessage = (payload: any) => {
+    const [exchangeName, cb] = Mapfy(payload).entries().next().value;
+    console.log({ exchangeName, cb });
     if (this.channel) {
       this.channel
         .assertQueue(`${exchangeName}_1`, { exclusive: false, durable: true })
@@ -75,17 +86,19 @@ export class TaskMessageService {
             if (message !== null) {
               if (Array.isArray(decoded))
                 cb(...decoded)
-                  ?.then((message: any) =>
-                    console.log(`Received ${message?.slice(0, 100)}...`.bgBlue)
-                  )
+                  ?.then((message: any) => {
+                    console.log({ message });
+                    console.log(`Received ${message?.slice(0, 100)}...`.bgBlue);
+                  })
                   ?.catch((e: any) => {
                     e.message.bgRed;
                   });
               else
                 cb(decoded)
-                  ?.then((message: any) =>
-                    console.log(`Received ${message?.slice(0, 100)}...`.bgBlue)
-                  )
+                  ?.then((message: any) => {
+                    console.log({ message });
+                    console.log(`Received ${message?.slice(0, 100)}...`.blue);
+                  })
                   ?.catch((e: any) => {
                     e.message.bgRed;
                   });
@@ -96,7 +109,7 @@ export class TaskMessageService {
         })
         .catch((error: any) => error.message);
     } else {
-      setTimeout(() => this.receiveMessage(exchangeName, cb), 1000);
+      setTimeout(() => this.receiveMessage(payload), 1000);
     }
     return this;
   };

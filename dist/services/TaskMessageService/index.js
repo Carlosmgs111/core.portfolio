@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TaskMessageService = void 0;
 const config_1 = __importDefault(require("../../config"));
 const amqplib_1 = __importDefault(require("amqplib"));
+const utils_1 = require("../../utils");
 const { rabbitMQUrlDev, rabbitMQUrlProd } = config_1.default;
 const rabbitMQUrl = rabbitMQUrlDev || rabbitMQUrlProd;
 console.log(!rabbitMQUrlDev ? "MQ PRODUCTION".bgGreen : "MQ DEVELOPMENT".bgYellow);
@@ -40,7 +41,11 @@ class TaskMessageService {
             }
             return this;
         };
-        this.sendMessage = (exchangeName, message, type = "fanout") => {
+        this.sendMessage = (payload, receiverFunc = undefined, type = "fanout") => {
+            const [exchangeName, _payload] = (0, utils_1.Mapfy)(payload).entries().next().value;
+            const [functionName, message] = (0, utils_1.Mapfy)(_payload).entries().next().value;
+            // if (receiverFunc) this.receiveMessage({ receiverFunc });
+            console.log({ exchangeName, functionName, message });
             if (this.channel) {
                 this.channel
                     .assertExchange(exchangeName, type, {
@@ -48,14 +53,16 @@ class TaskMessageService {
                     exclusive: false,
                 })
                     .catch((e) => e);
-                this.channel.publish(exchangeName, `${exchangeName}_1`, Buffer.from(JSON.stringify(message)));
+                this.channel.publish(exchangeName, `${functionName}_1`, Buffer.from(JSON.stringify(message)));
             }
             else {
-                setTimeout(() => this.sendMessage(exchangeName, message), 1000);
+                setTimeout(() => this.sendMessage(payload, receiverFunc), 1000);
             }
             return this;
         };
-        this.receiveMessage = (exchangeName, cb) => {
+        this.receiveMessage = (payload) => {
+            const [exchangeName, cb] = (0, utils_1.Mapfy)(payload).entries().next().value;
+            console.log({ exchangeName, cb });
             if (this.channel) {
                 this.channel
                     .assertQueue(`${exchangeName}_1`, { exclusive: false, durable: true })
@@ -67,11 +74,17 @@ class TaskMessageService {
                         const decoded = JSON.parse(message.content.toString());
                         if (message !== null) {
                             if (Array.isArray(decoded))
-                                (_b = (_a = cb(...decoded)) === null || _a === void 0 ? void 0 : _a.then((message) => console.log(`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.bgBlue))) === null || _b === void 0 ? void 0 : _b.catch((e) => {
+                                (_b = (_a = cb(...decoded)) === null || _a === void 0 ? void 0 : _a.then((message) => {
+                                    console.log({ message });
+                                    console.log(`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.bgBlue);
+                                })) === null || _b === void 0 ? void 0 : _b.catch((e) => {
                                     e.message.bgRed;
                                 });
                             else
-                                (_d = (_c = cb(decoded)) === null || _c === void 0 ? void 0 : _c.then((message) => console.log(`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.bgBlue))) === null || _d === void 0 ? void 0 : _d.catch((e) => {
+                                (_d = (_c = cb(decoded)) === null || _c === void 0 ? void 0 : _c.then((message) => {
+                                    console.log({ message });
+                                    console.log(`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.blue);
+                                })) === null || _d === void 0 ? void 0 : _d.catch((e) => {
                                     e.message.bgRed;
                                 });
                             this.channel.ack(message);
@@ -81,7 +94,7 @@ class TaskMessageService {
                     .catch((error) => error.message);
             }
             else {
-                setTimeout(() => this.receiveMessage(exchangeName, cb), 1000);
+                setTimeout(() => this.receiveMessage(payload), 1000);
             }
             return this;
         };

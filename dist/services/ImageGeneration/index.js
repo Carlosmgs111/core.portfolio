@@ -12,39 +12,50 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.availabelSettings = exports.modifyImages = exports.generateImage = void 0;
+exports.availabelSettings = exports.modifyImages = exports.generateImages = exports.generatedImages = void 0;
 const fs_1 = __importDefault(require("fs"));
 const dependencies_1 = require("../../config/dependencies");
-const generateImage = (data) => __awaiter(void 0, void 0, void 0, function* () {
+const generatedImages = (images) => __awaiter(void 0, void 0, void 0, function* () { });
+exports.generatedImages = generatedImages;
+const generateImages = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { prompt, options = {} } = data;
+    dependencies_1.TaskMessageService.sendMessage({
+        generateImages: {
+            generateImages: [
+                prompt,
+                ...Object.entries(options).flatMap((b) => b[1]),
+            ],
+        },
+    }
+    // imageGenerated
+    );
     const getImage = new Promise((resolve, reject) => {
-        dependencies_1.TaskMessageService.receiveMessage("imageGenerated", (images) => __awaiter(void 0, void 0, void 0, function* () {
-            console.log("images received".bgYellow);
-            try {
-                for (let image of images) {
-                    const { encoded_image, img_title, img_format } = image;
-                    const decodedImage = Buffer.from(encoded_image, "base64");
-                    fs_1.default.writeFile(`datasets/images/${img_title}.${img_format}`, decodedImage, (err) => {
-                        if (err)
-                            throw err;
-                        console.log("La imagen fue guardada correctamente");
-                    });
+        dependencies_1.TaskMessageService.receiveMessage({
+            generatedImages: (images) => __awaiter(void 0, void 0, void 0, function* () {
+                console.log("images received".bgYellow);
+                try {
+                    for (let image of images) {
+                        const { encoded_image, img_title, img_format } = image;
+                        const decodedImage = Buffer.from(encoded_image, "base64");
+                        fs_1.default.writeFile(`datasets/images/${img_title}.${img_format}`, decodedImage, (err) => {
+                            if (err)
+                                throw err;
+                            console.log("La imagen fue guardada correctamente");
+                        });
+                    }
+                    console.log("Resolving...".bgMagenta);
+                    resolve(images);
+                    console.log("Resolved.".bgWhite);
                 }
-                console.log("Resolving...".bgMagenta);
-                resolve(images);
-                console.log("Resolved.".bgWhite);
-            }
-            catch (error) {
-                console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
-                reject(error);
-            }
-            return { generatedImages: images }; // ? ⬅️ This return result to TaskMessageService
-        }));
+                catch (error) {
+                    console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
+                    reject(error);
+                }
+                return images; // ? ⬅️ This return result to TaskMessageService
+                return { generatedImages: images };
+            }),
+        });
     });
-    dependencies_1.TaskMessageService.sendMessage("generateImage", [
-        prompt,
-        ...Object.entries(options).flatMap((b) => b[1]),
-    ]);
     const response = yield getImage
         .then((images) => {
         images === null || images === void 0 ? void 0 : images.slice(0, 100).bgMagenta;
@@ -55,8 +66,8 @@ const generateImage = (data) => __awaiter(void 0, void 0, void 0, function* () {
     console.log("Successed!".bgGreen);
     return response;
 });
-exports.generateImage = generateImage;
-dependencies_1.SocketService.addEvent({ generateImage: exports.generateImage });
+exports.generateImages = generateImages;
+dependencies_1.SocketService.addEvent({ generateImages: exports.generateImages });
 const modifyImages = (data) => {
     const { images } = data;
     ({ images });
