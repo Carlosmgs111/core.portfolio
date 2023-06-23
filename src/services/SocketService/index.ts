@@ -30,7 +30,6 @@ export class SocketService {
         this.addClient(client);
       }
     }
-    console.log({ clients: this.clients });
     return this;
   }
 
@@ -71,12 +70,21 @@ export class SocketService {
       const [name, cb] = Mapfy(event).entries().next().value;
       socket.addListener(name, (payload: any) => {
         const [response, data] = Mapfy(payload).entries().next().value;
-        (async () => {
-          let result;
-          if (Array.isArray(data)) result = await cb(...data);
-          else result = await cb(data);
-          socket.emit(response, result);
-        })();
+        if (Array.isArray(data))
+          cb(...data)
+            .then((result: any) => {
+              socket.emit(response, result);
+              return result;
+            })
+            .catch((e: any) => console.log(e.message.bgRed))
+            .finally(() => console.log("Solved!".green));
+        else
+          cb(data)
+            .then((result: any) => {
+              socket.emit(response, result);
+              return result;
+            })
+            .finally(() => console.log("Solved!".green));
       });
     });
   };

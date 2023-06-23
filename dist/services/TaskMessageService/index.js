@@ -1,4 +1,13 @@
 "use strict";
+var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
+    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
+    return new (P || (P = Promise))(function (resolve, reject) {
+        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
+        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
+        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
+    });
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -46,57 +55,68 @@ class TaskMessageService {
             const [functionName, message] = (0, utils_1.Mapfy)(_payload).entries().next().value;
             // if (receiverFunc) this.receiveMessage({ receiverFunc });
             console.log({ exchangeName, functionName, message });
-            if (this.channel) {
-                this.channel
-                    .assertExchange(exchangeName, type, {
-                    durable: false,
-                    exclusive: false,
-                })
-                    .catch((e) => e);
-                this.channel.publish(exchangeName, `${functionName}_1`, Buffer.from(JSON.stringify(message)));
-            }
-            else {
-                setTimeout(() => this.sendMessage(payload, receiverFunc), 1000);
-            }
+            this.channel
+                .assertExchange(exchangeName, type, {
+                durable: false,
+                exclusive: false,
+            })
+                .catch((e) => e);
+            this.channel.publish(exchangeName, `${functionName}_1`, Buffer.from(JSON.stringify(message)));
             return this;
         };
         this.receiveMessage = (payload) => {
             const [exchangeName, cb] = (0, utils_1.Mapfy)(payload).entries().next().value;
-            console.log({ exchangeName, cb });
-            if (this.channel) {
-                this.channel
-                    .assertQueue(`${exchangeName}_1`, { exclusive: false, durable: true })
-                    .then((q) => {
-                    const { queue } = q;
-                    this.channel.bindQueue(queue, exchangeName, exchangeName);
-                    this.channel.consume(queue, (message) => {
-                        var _a, _b, _c, _d;
-                        const decoded = JSON.parse(message.content.toString());
-                        if (message !== null) {
-                            if (Array.isArray(decoded))
-                                (_b = (_a = cb(...decoded)) === null || _a === void 0 ? void 0 : _a.then((message) => {
-                                    console.log({ message });
-                                    console.log(`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.bgBlue);
-                                })) === null || _b === void 0 ? void 0 : _b.catch((e) => {
-                                    e.message.bgRed;
-                                });
-                            else
-                                (_d = (_c = cb(decoded)) === null || _c === void 0 ? void 0 : _c.then((message) => {
-                                    console.log({ message });
-                                    console.log(`Received ${message === null || message === void 0 ? void 0 : message.slice(0, 100)}...`.blue);
-                                })) === null || _d === void 0 ? void 0 : _d.catch((e) => {
-                                    e.message.bgRed;
-                                });
-                            this.channel.ack(message);
-                        }
+            return new Promise((resolve, reject) => {
+                const process = () => {
+                    const channel = this.channel;
+                    this.channel
+                        .assertQueue(`${exchangeName}_1`, {
+                        exclusive: false,
+                        durable: true,
+                    })
+                        .then((q) => __awaiter(this, void 0, void 0, function* () {
+                        const { queue } = q;
+                        this.channel.bindQueue(queue, exchangeName, exchangeName);
+                        const { consumerTag } = yield this.channel.consume(queue, (message) => {
+                            const decoded = JSON.parse(message.content.toString());
+                            if (message !== null) {
+                                if (Array.isArray(decoded))
+                                    cb(...decoded)
+                                        .then((_message) => {
+                                        resolve(_message);
+                                        return _message;
+                                    })
+                                        .catch((e) => {
+                                        reject(e);
+                                    });
+                                else
+                                    cb(decoded)
+                                        .then((message) => {
+                                        resolve(message);
+                                        return message;
+                                    })
+                                        .catch((e) => {
+                                        reject(e);
+                                    });
+                                channel.ack(message);
+                                // ? this is very important, once a message is received, the channel must be 
+                                // ? closed to avoid abnormal behavior in promise resolution
+                                channel.cancel(consumerTag);
+                            }
+                        });
+                    }))
+                        .catch((error) => {
+                        reject(error.message);
                     });
-                })
-                    .catch((error) => error.message);
-            }
-            else {
-                setTimeout(() => this.receiveMessage(payload), 1000);
-            }
-            return this;
+                };
+                if (!this.channel)
+                    setTimeout(process, 5000);
+                else
+                    process();
+            })
+                .then((data) => data)
+                .catch((e) => console.log(e.message.bgRed))
+                .finally(() => console.log("Finished!".bgGreen));
         };
         this.setup();
     }

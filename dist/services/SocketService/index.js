@@ -1,13 +1,4 @@
 "use strict";
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SocketService = void 0;
 const socket_io_1 = require("socket.io");
@@ -57,14 +48,21 @@ class SocketService {
                 const [name, cb] = (0, utils_1.Mapfy)(event).entries().next().value;
                 socket.addListener(name, (payload) => {
                     const [response, data] = (0, utils_1.Mapfy)(payload).entries().next().value;
-                    (() => __awaiter(this, void 0, void 0, function* () {
-                        let result;
-                        if (Array.isArray(data))
-                            result = yield cb(...data);
-                        else
-                            result = yield cb(data);
-                        socket.emit(response, result);
-                    }))();
+                    if (Array.isArray(data))
+                        cb(...data)
+                            .then((result) => {
+                            socket.emit(response, result);
+                            return result;
+                        })
+                            .catch((e) => console.log(e.message.bgRed))
+                            .finally(() => console.log("Solved!".green));
+                    else
+                        cb(data)
+                            .then((result) => {
+                            socket.emit(response, result);
+                            return result;
+                        })
+                            .finally(() => console.log("Solved!".green));
                 });
             });
         };
@@ -84,7 +82,6 @@ class SocketService {
                 this.addClient(client);
             }
         }
-        console.log({ clients: this.clients });
         return this;
     }
 }

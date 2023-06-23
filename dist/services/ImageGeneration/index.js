@@ -15,10 +15,30 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.availabelSettings = exports.modifyImages = exports.generateImages = exports.generatedImages = void 0;
 const fs_1 = __importDefault(require("fs"));
 const dependencies_1 = require("../../config/dependencies");
-const generatedImages = (images) => __awaiter(void 0, void 0, void 0, function* () { });
+const generatedImages = (images) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("images received".bgYellow);
+    try {
+        for (let image of images) {
+            const { encoded_image, img_title, img_format } = image;
+            const decodedImage = Buffer.from(encoded_image, "base64");
+            fs_1.default.writeFile(`datasets/images/${img_title}.${img_format}`, decodedImage, (err) => {
+                if (err)
+                    throw err;
+                console.log("La imagen fue guardada correctamente");
+            });
+        }
+    }
+    catch (error) {
+        console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
+        throw new Error(error.message);
+    }
+    console.log("returning images".bgCyan);
+    return images; // ? ⬅️ This return result to TaskMessageService
+});
 exports.generatedImages = generatedImages;
 const generateImages = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { prompt, options = {} } = data;
+    console.log("generateImages".bgMagenta);
     dependencies_1.TaskMessageService.sendMessage({
         generateImages: {
             generateImages: [
@@ -29,41 +49,9 @@ const generateImages = (data) => __awaiter(void 0, void 0, void 0, function* () 
     }
     // imageGenerated
     );
-    const getImage = new Promise((resolve, reject) => {
-        dependencies_1.TaskMessageService.receiveMessage({
-            generatedImages: (images) => __awaiter(void 0, void 0, void 0, function* () {
-                console.log("images received".bgYellow);
-                try {
-                    for (let image of images) {
-                        const { encoded_image, img_title, img_format } = image;
-                        const decodedImage = Buffer.from(encoded_image, "base64");
-                        fs_1.default.writeFile(`datasets/images/${img_title}.${img_format}`, decodedImage, (err) => {
-                            if (err)
-                                throw err;
-                            console.log("La imagen fue guardada correctamente");
-                        });
-                    }
-                    console.log("Resolving...".bgMagenta);
-                    resolve(images);
-                    console.log("Resolved.".bgWhite);
-                }
-                catch (error) {
-                    console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
-                    reject(error);
-                }
-                return images; // ? ⬅️ This return result to TaskMessageService
-                return { generatedImages: images };
-            }),
-        });
+    const response = yield dependencies_1.TaskMessageService.receiveMessage({
+        generatedImages: exports.generatedImages,
     });
-    const response = yield getImage
-        .then((images) => {
-        images === null || images === void 0 ? void 0 : images.slice(0, 100).bgMagenta;
-        return images;
-    })
-        .catch((e) => e.message.bgRed)
-        .finally(() => console.log("Finished!".bgGreen));
-    console.log("Successed!".bgGreen);
     return response;
 });
 exports.generateImages = generateImages;

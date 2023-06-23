@@ -1,10 +1,33 @@
 import fs from "fs";
 import { TaskMessageService, SocketService } from "../../config/dependencies";
 
-export const generatedImages = async (images: any) => {};
+export const generatedImages = async (images: any) => {
+  console.log("images received".bgYellow);
+  try {
+    for (let image of images) {
+      const { encoded_image, img_title, img_format } = image;
+      const decodedImage = Buffer.from(encoded_image, "base64");
+      fs.writeFile(
+        `datasets/images/${img_title}.${img_format}`,
+        decodedImage,
+        (err) => {
+          if (err) throw err;
+          console.log("La imagen fue guardada correctamente");
+        }
+      );
+    }
+  } catch (error: any) {
+    console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
+    throw new Error(error.message);
+  }
+  console.log("returning images".bgCyan)
+  return images; // ? ⬅️ This return result to TaskMessageService
+};
 
 export const generateImages = async (data: any) => {
+
   const { prompt, options = {} } = data;
+  console.log("generateImages".bgMagenta);
 
   TaskMessageService.sendMessage(
     {
@@ -18,46 +41,10 @@ export const generateImages = async (data: any) => {
     // imageGenerated
   );
 
-  const getImage = new Promise((resolve: any, reject: any) => {
-    TaskMessageService.receiveMessage({
-      generatedImages: async (images: any) => {
-        console.log("images received".bgYellow);
-        try {
-          for (let image of images) {
-            const { encoded_image, img_title, img_format } = image;
-            const decodedImage = Buffer.from(encoded_image, "base64");
-            fs.writeFile(
-              `datasets/images/${img_title}.${img_format}`,
-              decodedImage,
-              (err) => {
-                if (err) throw err;
-                console.log("La imagen fue guardada correctamente");
-              }
-            );
-          }
-          console.log("Resolving...".bgMagenta);
-          resolve(images);
-          console.log("Resolved.".bgWhite);
-        } catch (error: any) {
-          console.error(
-            `Ocurrió un error al guardar la imagen: ${error}`.bgRed
-          );
-          reject(error);
-        }
-        return images; // ? ⬅️ This return result to TaskMessageService
-        return { generatedImages: images };
-      },
-    });
+  const response = await TaskMessageService.receiveMessage({
+    generatedImages,
   });
 
-  const response = await getImage
-    .then((images: any) => {
-      images?.slice(0, 100).bgMagenta;
-      return images;
-    })
-    .catch((e: any) => e.message.bgRed)
-    .finally(() => console.log("Finished!".bgGreen));
-  console.log("Successed!".bgGreen);
   return response;
 };
 
