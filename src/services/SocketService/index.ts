@@ -77,14 +77,14 @@ export class SocketService {
               return result;
             })
             .catch((e: any) => console.log(e.message.bgRed))
-            .finally(() => console.log("Solved!".green));
+            // .finally(() => console.log("Solved!".green));
         else
           cb(data)
             .then((result: any) => {
               socket.emit(response, result);
               return result;
             })
-            .finally(() => console.log("Solved!".green));
+            // .finally(() => console.log("Solved!".green));
       });
     });
   };

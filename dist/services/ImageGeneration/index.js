@@ -16,7 +16,6 @@ exports.availabelSettings = exports.modifyImages = exports.generateImages = expo
 const fs_1 = __importDefault(require("fs"));
 const dependencies_1 = require("../../config/dependencies");
 const generatedImages = (images) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("images received".bgYellow);
     try {
         for (let image of images) {
             const { encoded_image, img_title, img_format } = image;
@@ -32,33 +31,25 @@ const generatedImages = (images) => __awaiter(void 0, void 0, void 0, function* 
         console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
         throw new Error(error.message);
     }
-    console.log("returning images".bgCyan);
     return images; // ? ⬅️ This return result to TaskMessageService
 });
 exports.generatedImages = generatedImages;
 const generateImages = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { prompt, options = {} } = data;
-    console.log("generateImages".bgMagenta);
-    dependencies_1.TaskMessageService.sendMessage({
+    const response = yield dependencies_1.TaskMessageService.sendMessage({
         generateImages: {
             generateImages: [
                 prompt,
                 ...Object.entries(options).flatMap((b) => b[1]),
             ],
         },
-    }
-    // imageGenerated
-    );
-    const response = yield dependencies_1.TaskMessageService.receiveMessage({
-        generatedImages: exports.generatedImages,
-    });
+    }, { generatedImages: exports.generatedImages });
     return response;
 });
 exports.generateImages = generateImages;
 dependencies_1.SocketService.addEvent({ generateImages: exports.generateImages });
 const modifyImages = (data) => {
     const { images } = data;
-    ({ images });
 };
 exports.modifyImages = modifyImages;
 const availabelSettings = () => ({

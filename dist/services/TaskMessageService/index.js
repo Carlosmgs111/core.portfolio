@@ -50,11 +50,10 @@ class TaskMessageService {
             }
             return this;
         };
-        this.sendMessage = (payload, receiverFunc = undefined, type = "fanout") => {
+        this.sendMessage = (payload, receiverFunc = undefined, conf = { type: "fanout" }) => {
+            const { type } = conf;
             const [exchangeName, _payload] = (0, utils_1.Mapfy)(payload).entries().next().value;
             const [functionName, message] = (0, utils_1.Mapfy)(_payload).entries().next().value;
-            // if (receiverFunc) this.receiveMessage({ receiverFunc });
-            console.log({ exchangeName, functionName, message });
             this.channel
                 .assertExchange(exchangeName, type, {
                 durable: false,
@@ -62,6 +61,8 @@ class TaskMessageService {
             })
                 .catch((e) => e);
             this.channel.publish(exchangeName, `${functionName}_1`, Buffer.from(JSON.stringify(message)));
+            if (receiverFunc)
+                return this.receiveMessage(receiverFunc);
             return this;
         };
         this.receiveMessage = (payload) => {
@@ -99,7 +100,7 @@ class TaskMessageService {
                                         reject(e);
                                     });
                                 channel.ack(message);
-                                // ? this is very important, once a message is received, the channel must be 
+                                // ? this is very important, once a message is received, the channel must be
                                 // ? closed to avoid abnormal behavior in promise resolution
                                 channel.cancel(consumerTag);
                             }
@@ -115,8 +116,8 @@ class TaskMessageService {
                     process();
             })
                 .then((data) => data)
-                .catch((e) => console.log(e.message.bgRed))
-                .finally(() => console.log("Finished!".bgGreen));
+                .catch((e) => console.log(e.message.bgRed));
+            // .finally(() => console.log("Finished!".bgGreen));
         };
         this.setup();
     }

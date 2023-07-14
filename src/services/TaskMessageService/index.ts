@@ -50,12 +50,11 @@ export class TaskMessageService {
   sendMessage = (
     payload: any,
     receiverFunc: any = undefined,
-    type: any = "fanout"
+    conf: any = { type: "fanout" }
   ) => {
+    const { type }: any = conf;
     const [exchangeName, _payload] = Mapfy(payload).entries().next().value;
     const [functionName, message] = Mapfy(_payload).entries().next().value;
-    // if (receiverFunc) this.receiveMessage({ receiverFunc });
-    console.log({ exchangeName, functionName, message });
     this.channel
       .assertExchange(exchangeName, type, {
         durable: false,
@@ -68,6 +67,7 @@ export class TaskMessageService {
       Buffer.from(JSON.stringify(message))
     );
 
+    if (receiverFunc) return this.receiveMessage(receiverFunc);
     return this;
   };
 
@@ -110,7 +110,7 @@ export class TaskMessageService {
                       });
 
                   channel.ack(message);
-                  // ? this is very important, once a message is received, the channel must be 
+                  // ? this is very important, once a message is received, the channel must be
                   // ? closed to avoid abnormal behavior in promise resolution
                   channel.cancel(consumerTag);
                 }
@@ -125,7 +125,7 @@ export class TaskMessageService {
       else process();
     })
       .then((data: any) => data)
-      .catch((e: any) => console.log(e.message.bgRed))
-      .finally(() => console.log("Finished!".bgGreen));
+      .catch((e: any) => console.log(e.message.bgRed));
+    // .finally(() => console.log("Finished!".bgGreen));
   };
 }

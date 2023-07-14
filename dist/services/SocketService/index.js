@@ -54,15 +54,15 @@ class SocketService {
                             socket.emit(response, result);
                             return result;
                         })
-                            .catch((e) => console.log(e.message.bgRed))
-                            .finally(() => console.log("Solved!".green));
+                            .catch((e) => console.log(e.message.bgRed));
+                    // .finally(() => console.log("Solved!".green));
                     else
                         cb(data)
                             .then((result) => {
                             socket.emit(response, result);
                             return result;
-                        })
-                            .finally(() => console.log("Solved!".green));
+                        });
+                    // .finally(() => console.log("Solved!".green));
                 });
             });
         };

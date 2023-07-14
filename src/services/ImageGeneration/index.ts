@@ -2,7 +2,6 @@ import fs from "fs";
 import { TaskMessageService, SocketService } from "../../config/dependencies";
 
 export const generatedImages = async (images: any) => {
-  console.log("images received".bgYellow);
   try {
     for (let image of images) {
       const { encoded_image, img_title, img_format } = image;
@@ -20,16 +19,13 @@ export const generatedImages = async (images: any) => {
     console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
     throw new Error(error.message);
   }
-  console.log("returning images".bgCyan)
   return images; // ? ⬅️ This return result to TaskMessageService
 };
 
 export const generateImages = async (data: any) => {
-
   const { prompt, options = {} } = data;
-  console.log("generateImages".bgMagenta);
 
-  TaskMessageService.sendMessage(
+  const response = await TaskMessageService.sendMessage(
     {
       generateImages: {
         generateImages: [
@@ -37,13 +33,9 @@ export const generateImages = async (data: any) => {
           ...Object.entries(options).flatMap((b) => b[1]),
         ],
       },
-    }
-    // imageGenerated
+    },
+    { generatedImages },
   );
-
-  const response = await TaskMessageService.receiveMessage({
-    generatedImages,
-  });
 
   return response;
 };
@@ -52,7 +44,6 @@ SocketService.addEvent({ generateImages });
 
 export const modifyImages = (data: any) => {
   const { images } = data;
-  ({ images });
 };
 
 export const availabelSettings = () => ({
