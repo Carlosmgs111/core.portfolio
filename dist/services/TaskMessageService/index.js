@@ -66,7 +66,13 @@ class TaskMessageService {
             return this;
         };
         this.receiveMessage = (payload) => {
-            const [exchangeName, cb] = (0, utils_1.Mapfy)(payload).entries().next().value;
+            let [exchangeName, cb] = ["", (...[]) => { }];
+            if (payload instanceof Function) {
+                [exchangeName, cb] = [payload.name, payload];
+            }
+            else if (payload instanceof Object) {
+                [exchangeName, cb] = (0, utils_1.Mapfy)(payload).entries().next().value;
+            }
             return new Promise((resolve, reject) => {
                 const process = () => {
                     const channel = this.channel;

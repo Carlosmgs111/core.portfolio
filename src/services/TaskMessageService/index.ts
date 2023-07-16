@@ -72,7 +72,13 @@ export class TaskMessageService {
   };
 
   receiveMessage = (payload: any): any => {
-    const [exchangeName, cb] = Mapfy(payload).entries().next().value;
+    let [exchangeName, cb]: ["", Function] = ["", (...[]) => {}];
+
+    if (payload instanceof Function) {
+      [exchangeName, cb] = [payload.name, payload];
+    } else if (payload instanceof Object) {
+      [exchangeName, cb] = Mapfy(payload).entries().next().value;
+    }
 
     return new Promise((resolve: any, reject: any) => {
       const process = () => {

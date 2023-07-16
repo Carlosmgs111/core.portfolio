@@ -31,7 +31,7 @@ const generatedImages = (images) => __awaiter(void 0, void 0, void 0, function* 
         console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
         throw new Error(error.message);
     }
-    return images; // ? ⬅️ This return result to TaskMessageService
+    return images;
 });
 exports.generatedImages = generatedImages;
 const generateImages = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -43,7 +43,7 @@ const generateImages = (data) => __awaiter(void 0, void 0, void 0, function* () 
                 ...Object.entries(options).flatMap((b) => b[1]),
             ],
         },
-    }, { generatedImages: exports.generatedImages });
+    }, exports.generatedImages);
     return response;
 });
 exports.generateImages = generateImages;

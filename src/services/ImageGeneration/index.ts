@@ -19,7 +19,7 @@ export const generatedImages = async (images: any) => {
     console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
     throw new Error(error.message);
   }
-  return images; // ? ⬅️ This return result to TaskMessageService
+  return images;
 };
 
 export const generateImages = async (data: any) => {
@@ -34,7 +34,7 @@ export const generateImages = async (data: any) => {
         ],
       },
     },
-    { generatedImages },
+    generatedImages
   );
 
   return response;
