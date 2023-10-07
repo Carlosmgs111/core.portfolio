@@ -51,7 +51,7 @@ class SequelizeAdapter {
         });
         this.updateOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const updated = yield models_1.models[entity].update(Entity, this.adapter(options));
-            ({ updated });
+            console.log({ updated });
             return this.getResult(updated);
         });
         this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {

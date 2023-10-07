@@ -75,7 +75,6 @@ export class CQRSService {
   };
   updateOne = async (entity: any, Entity: any, options: any = {}) => {
     const result = await this.CommandService.updateOne(entity, Entity, options);
-    console.log({ result });
     if (result)
       this.TaskMessageService.sendMessage({
         queryServiceUpdateOne: {
