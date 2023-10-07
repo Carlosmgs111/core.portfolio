@@ -203,4 +203,5 @@ src/services/DatabaseServices/SequelizeAdapter/infrastructure/dist
 src/services/DatabaseServices/SequelizeAdapter/infrastructure/migrations
 seeders
 /datasets
+dist
 # End of https://www.toptal.com/developers/gitignore/api/windows,git,node,linux

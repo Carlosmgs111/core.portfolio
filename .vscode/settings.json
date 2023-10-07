@@ -42,5 +42,7 @@
       "editor.selectionBackground": "#0D937333"
     }
   },
-  "peacock.color": "#c0e030"
+  "peacock.color": "#c0e030",
+  "editor.fontSize": 12,
+  "terminal.integrated.fontSize": 12
 }

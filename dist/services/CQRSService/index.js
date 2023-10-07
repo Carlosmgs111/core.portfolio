@@ -44,7 +44,6 @@ class CQRSService {
         });
         this.updateOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const result = yield this.CommandService.updateOne(entity, Entity, options);
-            console.log({ result });
             if (result)
                 this.TaskMessageService.sendMessage({
                     queryServiceUpdateOne: {

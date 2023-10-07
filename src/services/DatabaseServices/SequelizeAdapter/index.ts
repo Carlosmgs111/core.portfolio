@@ -58,7 +58,7 @@ export default class SequelizeAdapter {
 
   updateOne = async (entity: any, Entity: any, options: any = {}) => {
     const updated = await models[entity].update(Entity, this.adapter(options));
-    ({ updated });
+    console.log({ updated });
     return this.getResult(updated);
   };
 
