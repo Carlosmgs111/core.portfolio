@@ -1,10 +1,10 @@
 // import { spyFind } from "../__mocks__/DatabaseServiceStub";
 import request from "supertest";
-import { generateOneUser } from "../testing/fakers/user.fake";
-import { app } from "../infrastructure/apis/express";
-import { generateOneProject } from "../testing/fakers/project.fake";
-import { sequelize } from "../services/DatabaseServices/SequelizeAdapter/infrastructure";
-import { models } from "../services/DatabaseServices/SequelizeAdapter/infrastructure/models";
+import { generateOneUser } from "../fakers/user.fake";
+import { app } from "../../infrastructure/apis/express";
+import { generateOneProject } from "../fakers/project.fake";
+import { sequelize } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure";
+import { models } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/models";
 
 const { Project } = models;
 
@@ -14,7 +14,7 @@ describe("Test for get all projects endpoint", () => {
 
   beforeAll(async () => {
     server = app.listen(4040, () =>
-      ("Test server running at port 4040")
+      console.log("Test server running at port 4040")
     );
     await Project.sync({ force: true });
     const user = generateOneUser();
@@ -23,6 +23,7 @@ describe("Test for get all projects endpoint", () => {
       .body;
     userToken = token;
   });
+
   afterAll(async () => {
     await sequelize.close();
     await server.close();
@@ -34,7 +35,7 @@ describe("Test for get all projects endpoint", () => {
         .post("/api/v1/projects")
         .send(generateOneProject())
         .set("Authorization", `Bearer ${userToken}`);
-      await ({ body });
+      console.log({ body });
     });
   });
 
@@ -45,7 +46,7 @@ describe("Test for get all projects endpoint", () => {
         .set("Authorization", `Bearer ${userToken}`)
         .expect(200);
 
-      await ({ body });
+      console.log({ body });
       expect.arrayContaining(body);
       expect(body.length).toEqual(1);
     });

@@ -18,10 +18,6 @@ export class TaskMessageService {
   }
 
   setup = () => {
-    (connection: any, channel: any) => {
-      this.connection = connection;
-      this.channel = channel;
-    };
     amqp
       .connect(rabbitMQUrl)
       .then((connection: any) => {
@@ -29,18 +25,24 @@ export class TaskMessageService {
         connection
           .createChannel()
           .then((channel: any) => (this.channel = channel))
-          .catch((error: any) => error.message.red);
+          .catch((error: any) =>
+            console.log({ ["Error message in setup"]: error.message.red })
+          );
         // process.on("SIGINT", () => connection.close());
       })
-      .catch((error: any) => error.message.bgRed);
+      .catch((error: any) => console.log(error.message.bgRed));
   };
 
   createExchange = (exchangeName: any, type: any = "fanout") => {
     if (this.channel) {
-      this.channel.assertExchange(exchangeName, type, {
-        durable: false,
-        exclusive: false,
-      });
+      this.channel
+        .assertExchange(exchangeName, type, {
+          durable: false,
+          exclusive: false,
+        })
+        .catch((e: any) =>
+          console.log({ ["Error message in createExchange"]: e.message.red })
+        );
     } else {
       setTimeout(() => this.createExchange(exchangeName), 1000);
     }
@@ -60,7 +62,9 @@ export class TaskMessageService {
         durable: false,
         exclusive: false,
       })
-      .catch((e: any) => e);
+      .catch((e: any) =>
+        console.log({ ["Error message in sendMessage"]: e.message.red })
+      );
     this.channel.publish(
       exchangeName,
       `${functionName}_1`,
@@ -91,47 +95,63 @@ export class TaskMessageService {
           .then(async (q: any) => {
             const { queue } = q;
             this.channel.bindQueue(queue, exchangeName, exchangeName);
-            const { consumerTag } = await this.channel.consume(
-              queue,
-              (message: any) => {
+            const { consumerTag } = await this.channel
+              .consume(queue, (message: any) => {
                 const decoded = JSON.parse(message.content.toString());
-                if (message !== null) {
-                  if (Array.isArray(decoded))
-                    cb(...decoded)
-                      .then((_message: any) => {
-                        resolve(_message);
-                        return _message;
-                      })
-                      .catch((e: any) => {
-                        reject(e);
-                      });
-                  else
-                    cb(decoded)
-                      .then((message: any) => {
-                        resolve(message);
-                        return message;
-                      })
-                      .catch((e: any) => {
-                        reject(e);
-                      });
+                try {
+                  if (message !== null) {
+                    if (Array.isArray(decoded))
+                      cb(...decoded)
+                        .then((_message: any) => {
+                          resolve(_message);
+                          return _message;
+                        })
+                        .catch((e: any) => {
+                          console.log(e.message.red);
+                          reject(e);
+                          return;
+                        });
+                    else
+                      cb(decoded)
+                        .then((message: any) => {
+                          resolve(message);
+                          return message;
+                        })
+                        .catch((e: any) => {
+                          reject(e);
+                        });
 
-                  channel.ack(message);
-                  // ? this is very important, once a message is received, the channel must be
-                  // ? closed to avoid abnormal behavior in promise resolution
-                  channel.cancel(consumerTag);
+                    channel.ack(message);
+                    // ? this is very important, once a message is received, the channel must be
+                    // ? closed to avoid abnormal behavior in promise resolution
+                    channel.cancel(consumerTag);
+                  }
+                } catch (e: any) {
+                  console.log({ consumerTag });
+                  console.log(e.message.red);
+                  reject(e.message);
+                } finally {
+                  return;
                 }
-              }
-            );
+              })
+              .catch((e: any) => {
+                console.log(e.message.red);
+                reject(e.message);
+              });
           })
-          .catch((error: any) => {
-            reject(error.message);
-          });
+          .catch((error: any) => reject(error.message));
       };
       if (!this.channel) setTimeout(process, 5000);
       else process();
     })
-      .then((data: any) => data)
-      .catch((e: any) => console.log(e.message.bgRed));
-    // .finally(() => console.log("Finished!".bgGreen));
+      .then((data: any) => console.log({ data }))
+      .catch((e: any) => {
+        console.log(
+          "Error in catch callback of Promise returned from receiveMessage: "
+            .bgYellow,
+          e.message.bgRed
+        );
+      })
+      .finally(() => console.log("Finished!".bgGreen));
   };
 }
