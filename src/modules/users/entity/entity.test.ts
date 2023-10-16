@@ -11,7 +11,6 @@ describe("User entity behavior", () => {
   let fakeUser: any;
   beforeEach(async () => {
     fakeUser = generateOneUser();
-    console.log({ fakeUser });
   });
   describe("User entity life cycle", () => {
     test("Creation of new entity", async () => {
@@ -19,7 +18,6 @@ describe("User entity behavior", () => {
       expect(fakeUser.password).not.toEqual(newUser.password);
       expect(spyFindOne).toHaveBeenCalled();
       expect(spyCreateOne).toHaveBeenCalled();
-      // expect(spyCreate).toHaveBeenCalledWith(fakeUser)
     });
   });
 });
@@ -31,7 +29,6 @@ describe("Life cycle of user", () => {
     password: "p@55w0rd",
   };
   var user: User;
-  // const RepositoryService = new RepositoryService({});
 
   test("Create a new user with static method `new`", async () => {
     user = await User.create(RepositoryService, userCredentials);

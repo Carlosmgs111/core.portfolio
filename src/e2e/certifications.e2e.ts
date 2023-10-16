@@ -1,11 +1,11 @@
 import request from "supertest";
-import { app } from "../../infrastructure/apis/express";
-import { generateOneProject } from "../fakers/project.fake";
-import { generateOneUser } from "../fakers/user.fake";
-import { generateOneInstitution } from "../fakers/institution.fake";
-import { sequelize } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure";
-import { models } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/models";
-import { generateOneCertification } from "../fakers/certification.fake";
+import { app } from "../infrastructure/apis/express";
+import { generateOneProject } from "../testing/fakers/project.fake";
+import { generateOneUser } from "../testing/fakers/user.fake";
+import { generateOneInstitution } from "../testing/fakers/institution.fake";
+import { sequelize } from "../services/DatabaseServices/SequelizeAdapter/infrastructure";
+import { models } from "../services/DatabaseServices/SequelizeAdapter/infrastructure/models";
+import { generateOneCertification } from "../testing/fakers/certification.fake";
 
 const {
   User,
