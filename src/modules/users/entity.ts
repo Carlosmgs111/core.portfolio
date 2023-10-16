@@ -63,9 +63,12 @@ export class User {
       updatedAt: new Date().getTime(),
     });
     await account.hashPassword(account.password);
-    await RepositoryService.createOne(RepositoryService.entities.User, {
-      ...getEntityProperties(account),
-    });
+    const result = await RepositoryService.createOne(
+      RepositoryService.entities.User,
+      {
+        ...getEntityProperties(account),
+      }
+    );
     return account;
   };
 
@@ -154,7 +157,6 @@ export class User {
   hashPassword = async (password: string | undefined) => {
     const salt = await bcrypt.genSalt(10);
     const hash = await bcrypt.hash(password || this.password, salt);
-    ({ hash });
     this.password = hash;
     return hash;
   };

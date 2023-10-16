@@ -1,4 +1,5 @@
 import { setEnums } from "../../utils";
+
 export const fakeDatabase: any = {
   User: [],
   Project: [],
@@ -12,7 +13,7 @@ export const fakeDatabase: any = {
 
 async function createOne(this: any, entity: any, fake: any) {
   fakeDatabase[entity].push(fake);
-  return fake
+  return fake;
 }
 
 async function findOne(this: any, entity: any, fake: any) {
@@ -56,12 +57,15 @@ export const DatabaseServiceStub = {
   createOneRelationshipN2N: () => {},
   removeOneRelationshipN2N: () => {},
   setOneRelationship2One: () => {},
+  unsetOneRelationship2One: () => {},
   entities: setEnums(Object.entries(fakeDatabase).flatMap((m: any) => m[0])),
 };
 
 export const spyCreateOne = jest.spyOn(DatabaseServiceStub, "createOne");
 export const spyFindOne = jest.spyOn(DatabaseServiceStub, "findOne");
 export const spyFind = jest.spyOn(DatabaseServiceStub, "find");
+
+// * This modules always must be imported for correct replacement of real DatabaseService with its stub!
 
 export default jest.mock("../../config/dependencies", () => {
   // jest.fn().mockImplementation(() => DatabaseServiceStub)
