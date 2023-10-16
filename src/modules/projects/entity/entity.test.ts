@@ -1,4 +1,4 @@
-import { Project } from "../../../../modules/projects/entity";
+import { Project } from "./";
 
 describe("Lifecycle of project entity", () => {
   test("Create a new project", () => {

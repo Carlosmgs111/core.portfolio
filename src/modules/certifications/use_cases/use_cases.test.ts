@@ -1,9 +1,9 @@
-import "../../../mocks/DatabaseService.stub";
-import { RepositoryService } from "../../../../config/dependencies";
-import { User } from "../../../../modules/users/entity";
-import { Certification } from "../../../../modules/certifications/entity";
-import { Institution } from "../../../../modules/institutions/entity";
-import { addNewCertification } from "../../../../modules/certifications/use_cases";
+import "../../../testing/mocks/DatabaseService.stub";
+import { RepositoryService } from "../../../config/dependencies";
+import { User } from "../../users/entity";
+import { Certification } from "../../certifications/entity";
+import { Institution } from "../../institutions/entity";
+import { addNewCertification } from "./";
 
 
 describe("Aggregates of certificates", () => {

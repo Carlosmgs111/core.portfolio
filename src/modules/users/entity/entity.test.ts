@@ -1,7 +1,7 @@
 // import { fakeDatabase } from "../../../mocks/DatabaseService.stub";
-import "../../../mocks/DatabaseService.stub";
-import { RepositoryService } from "../../../../config/dependencies";
-import { User } from "../../../../modules/users/entity";
+import "../../../testing/mocks/DatabaseService.stub";
+import { RepositoryService } from "../../../config/dependencies";
+import { User } from "./";
 
 // ({ RepositoryService });
 

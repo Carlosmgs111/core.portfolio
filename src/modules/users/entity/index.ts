@@ -1,6 +1,6 @@
 import { v4 as uuidv4 } from "uuid";
 import bcrypt from "bcrypt";
-import { getEntityProperties, filterAttrs } from "../../utils";
+import { getEntityProperties, filterAttrs } from "../../../utils";
 import boom from "@hapi/boom";
 
 export class User {
