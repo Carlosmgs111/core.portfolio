@@ -11,17 +11,14 @@ describe("User entity behavior", () => {
   });
   describe("User entity life cycle", () => {
     test("Creation of new entity", async () => {
-      /* RepositoryService.setupEntity("User")
       const newUser = await User.create(
         RepositoryService,
         fakeUser
       );
-      ({ newUser });
-      ({ fakeDatabase });
       expect(fakeUser.password).not.toEqual(newUser.password);
       expect(spyFindOne).toHaveBeenCalled();
       expect(spyCreateOne).toHaveBeenCalled();
-      // expect(spyCreate).toHaveBeenCalledWith(fakeUser) */
+      // expect(spyCreate).toHaveBeenCalledWith(fakeUser)
     });
   });
 });

@@ -1,9 +1,28 @@
-// import { fakeDatabase } from "../../../mocks/DatabaseService.stub";
-import "../../../testing/mocks/DatabaseService.stub";
+import {
+  spyFindOne,
+  spyCreateOne,
+  fakeDatabase,
+} from "../../../testing/mocks/DatabaseService.stub";
+import { User } from "../../../modules/users/entity";
 import { RepositoryService } from "../../../config/dependencies";
-import { User } from "./";
+import { generateOneUser } from "../../../testing/fakers/user.fake";
 
-// ({ RepositoryService });
+describe("User entity behavior", () => {
+  let fakeUser: any;
+  beforeEach(async () => {
+    fakeUser = generateOneUser();
+    console.log({ fakeUser });
+  });
+  describe("User entity life cycle", () => {
+    test("Creation of new entity", async () => {
+      const newUser = await User.create(RepositoryService, fakeUser);
+      expect(fakeUser.password).not.toEqual(newUser.password);
+      expect(spyFindOne).toHaveBeenCalled();
+      expect(spyCreateOne).toHaveBeenCalled();
+      // expect(spyCreate).toHaveBeenCalledWith(fakeUser)
+    });
+  });
+});
 
 describe("Life cycle of user", () => {
   const userCredentials = {
