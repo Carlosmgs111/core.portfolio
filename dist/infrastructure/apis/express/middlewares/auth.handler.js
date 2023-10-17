@@ -75,7 +75,7 @@ function authMiddleware(req, res, next) {
             });
         }
         catch (e) {
-            ({ e });
+            console.log({ e });
             next(boom_1.default.unauthorized());
         }
         finally {

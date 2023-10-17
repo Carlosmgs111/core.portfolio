@@ -43,7 +43,7 @@ export class User {
   }
 
   static create = async (RepositoryService: any, data: any): Promise<any> => {
-    console.log({data})
+    
     const exist = await RepositoryService.findOne(
       RepositoryService.entities.User,
       {

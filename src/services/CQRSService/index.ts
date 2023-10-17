@@ -127,4 +127,9 @@ export class CQRSService {
       commandDatabaseInterfaceName: this.CommandService.serviceDescription,
     };
   };
+
+  close = async () => {
+    await this.CommandService.close();
+    await this.QueryService.close();
+  };
 }

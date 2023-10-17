@@ -12,7 +12,7 @@
     "dev": "yarn copy && tsc-watch --onSuccess \"node dist/index.js \" ",
     "test": "jest",
     "copy": "robocopy ./src ./dist /S /E /s /nfl /ndl /xf *.ts /e | echo 'copied succesfully!'",
-    "test:e2e": "jest --config ./src/testing/e2e/jest-e2e.json --detectOpenHandles",
+    "test:e2e": "jest --config ./src/testing/e2e/jest-e2e.json --detectOpenHandles --forceExit",
     "build": "tsc",
     "postgres:migrations:generate": "sequelize-cli migration:generate --name",
     "postgres:migrations:run": "sequelize-cli db:migrate",

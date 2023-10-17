@@ -18,7 +18,7 @@ const utils_1 = require("../../../utils");
 const utils_2 = require("../../../utils");
 const boom_1 = __importDefault(require("@hapi/boom"));
 class MongooseAdapter /* implements DatabaseAdapter */ {
-    constructor({}) {
+    constructor({} = {}) {
         this.serviceDescription = "Mongoose Database Service Adapter";
         this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             let newEntity = yield models_1.default[entity].create(Entity);
@@ -204,6 +204,9 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
             yield models_1.default[entity].update({}, { $unset: options });
         });
         this.entities = (0, utils_1.setEnums)(Object.entries(models_1.default).flatMap((m) => m[0]));
+        this.close = () => __awaiter(this, void 0, void 0, function* () {
+            yield infrastructure_1.connection.close();
+        });
         (0, infrastructure_1.connect)();
     }
 }

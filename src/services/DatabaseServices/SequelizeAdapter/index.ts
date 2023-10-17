@@ -1,13 +1,12 @@
 import { models } from "./infrastructure/models";
+import { sequelize } from "./infrastructure";
 import { labelCases, Mapfy, setEnums } from "../../../utils";
 import { v4 as uuidv4 } from "uuid";
 import boom from "@hapi/boom";
 
 export default class SequelizeAdapter {
   serviceDescription: string = "Sequelize Database Service Adapter";
-  Entity: any;
 
-  // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
   constructor({}: any = {}) {
     this.syncModels();
   }
@@ -43,7 +42,7 @@ export default class SequelizeAdapter {
       if (!entityFounded) return null;
       return entityFounded.dataValues;
     } catch (e: any) {
-      (e.message.red);
+      e.message.red;
       throw boom.internal(e.message);
     }
   };
@@ -227,4 +226,8 @@ export default class SequelizeAdapter {
   };
 
   entities = setEnums(Object.entries(models).flatMap((m: any) => m[0]));
+
+  close = async () => {
+    await sequelize.close();
+  };
 }

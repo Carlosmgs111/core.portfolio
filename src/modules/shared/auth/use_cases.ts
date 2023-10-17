@@ -23,10 +23,11 @@ export const login = async (credentials: any) => {
 
 export const signup = async (credentials: any) => {
   const { username, email, password } = credentials;
-  if (email)
-    console.log(
-      "Authentication Signup use case must be implemented! ".bgYellow
-    );
+  if (email) {
+    // console.log(
+    //   "Authentication Signup use case must be implemented! ".bgYellow
+    // );
+  }
   return await User.create(RepositoryService, credentials);
 };
 

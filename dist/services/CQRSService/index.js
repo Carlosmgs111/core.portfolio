@@ -96,6 +96,10 @@ class CQRSService {
                 commandDatabaseInterfaceName: this.CommandService.serviceDescription,
             };
         };
+        this.close = () => __awaiter(this, void 0, void 0, function* () {
+            yield this.CommandService.close();
+            yield this.QueryService.close();
+        });
         this.TaskMessageService.createExchange("queryServiceCreateOne").receiveMessage({ queryServiceCreateOne: this.QueryService.createOne });
         this.TaskMessageService.createExchange("queryServiceCreateMany").receiveMessage({ queryServiceCreateMany: this.QueryService.createMany });
         this.TaskMessageService.createExchange("queryServiceCreateOneRelationshipN2N").receiveMessage({

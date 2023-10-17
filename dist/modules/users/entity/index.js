@@ -59,7 +59,6 @@ class User {
 exports.User = User;
 _a = User;
 User.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log({ data });
     const exist = yield RepositoryService.findOne(RepositoryService.entities.User, {
         credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(data), ["email", "username"], false),
     });

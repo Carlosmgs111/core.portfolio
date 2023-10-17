@@ -13,11 +13,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const models_1 = require("./infrastructure/models");
+const infrastructure_1 = require("./infrastructure");
 const utils_1 = require("../../../utils");
 const uuid_1 = require("uuid");
 const boom_1 = __importDefault(require("@hapi/boom"));
 class SequelizeAdapter {
-    // ! Assingment of table in DDBB by use of '__identifier' parameter deprecated, use setModel instead
     constructor({} = {}) {
         this.serviceDescription = "Sequelize Database Service Adapter";
         this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
@@ -40,7 +40,7 @@ class SequelizeAdapter {
                 return entityFounded.dataValues;
             }
             catch (e) {
-                (e.message.red);
+                e.message.red;
                 throw boom_1.default.internal(e.message);
             }
         });
@@ -163,6 +163,9 @@ class SequelizeAdapter {
                 models_1.models[model].associate && models_1.models[model].associate(models_1.models);
         };
         this.entities = (0, utils_1.setEnums)(Object.entries(models_1.models).flatMap((m) => m[0]));
+        this.close = () => __awaiter(this, void 0, void 0, function* () {
+            yield infrastructure_1.sequelize.close();
+        });
         this.syncModels();
     }
     // ? pending to find an appropiated agnosthic name

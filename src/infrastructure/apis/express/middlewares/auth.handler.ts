@@ -67,7 +67,7 @@ export async function authMiddleware(req: any, res: any, next: Function) {
       email: payload.email,
     });
   } catch (e: any) {
-    ({ e });
+    console.log({ e });
     next(boom.unauthorized());
   } finally {
     next();

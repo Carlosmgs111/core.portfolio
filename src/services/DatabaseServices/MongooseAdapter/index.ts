@@ -1,4 +1,4 @@
-import { connect } from "./infrastructure";
+import { connect, connection } from "./infrastructure";
 import models from "./infrastructure/models";
 import { model } from "mongoose";
 import { labelCases, Mapfy, setEnums } from "../../../utils";
@@ -9,7 +9,7 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
   serviceDescription: string = "Mongoose Database Service Adapter";
   Entity: any;
 
-  constructor({}: any) {
+  constructor({}: any = {}) {
     connect();
   }
 
@@ -264,4 +264,8 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
   };
 
   entities = setEnums(Object.entries(models).flatMap((m: any) => m[0]));
+
+  close = async () => {
+    await connection.close();
+  };
 }

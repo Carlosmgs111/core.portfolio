@@ -8,7 +8,7 @@ const repositoryServices = {
     DBS: () => (0, services_1.DatabaseService)(DatabaseServices_1.Adapters.MongooseAdapter),
 };
 exports.TaskMessageService = new services_1.TaskMessageService();
-exports.RepositoryService = repositoryServices.CQRS();
+exports.RepositoryService = repositoryServices.DBS();
 exports.AuthServices = new services_1.AuthServices();
 exports.SocketService = new services_1.SocketService();
 const apiVersions = ["v1"];

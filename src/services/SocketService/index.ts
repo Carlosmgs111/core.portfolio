@@ -14,12 +14,12 @@ export class SocketService {
 
   constructor(clients: any = [{ imageService: "http://127.0.0.1:8765" }]) {
     this.server.on("connection", (socket: Socket) => {
-      console.log(`${socket.id} Connected!`.green);
+      // console.log(`${socket.id} Connected!`.green);
       this.sockets[socket.id] = socket;
       this.setEvents(socket);
 
       socket.on("disconnect", () => {
-        console.log(`${socket.id} Disconnected!`.red);
+        // console.log(`${socket.id} Disconnected!`.red);
         const newSockets = Mapfy(this.sockets);
         newSockets.delete(socket.id);
         this.sockets = UnMapfy(newSockets);
@@ -35,6 +35,7 @@ export class SocketService {
 
   addClient = (client: any) => {
     const [alias, address]: any = Mapfy(client).entries().next().value;
+
     this.clients[alias] = connect(address);
     this.clients[alias].on("connect", () => {
       console.log("Conexión establecida con el servidor.");
@@ -56,7 +57,7 @@ export class SocketService {
   sendMessage = (payload: any, receiverFunc: any) => {
     const [service, _params] = Mapfy(payload).entries().next().value;
     const [sendTo, params] = Mapfy(_params).entries().next().value;
-    console.log({ service, sendTo, params });
+
     let responseName = "receiver_function_not_provided";
     if (receiverFunc) {
       responseName = receiverFunc.name;
@@ -76,16 +77,25 @@ export class SocketService {
               socket.emit(response, result);
               return result;
             })
-            .catch((e: any) => console.log(e.message.bgRed))
-            // .finally(() => console.log("Solved!".green));
+            .catch((e: any) => console.log(e.message.bgRed));
+        // .finally(() => console.log("Solved!".green));
         else
-          cb(data)
-            .then((result: any) => {
-              socket.emit(response, result);
-              return result;
-            })
-            // .finally(() => console.log("Solved!".green));
+          cb(data).then((result: any) => {
+            socket.emit(response, result);
+            return result;
+          });
+        // .finally(() => console.log("Solved!".green));
       });
     });
+  };
+
+  close = async () => {
+    const clients = Mapfy(this.clients);
+
+    clients.forEach((client: any) => {
+      client.close();
+    });
+
+    await this.server.close();
   };
 }

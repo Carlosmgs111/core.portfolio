@@ -25,12 +25,14 @@ export class TaskMessageService {
         connection
           .createChannel()
           .then((channel: any) => (this.channel = channel))
-          .catch((error: any) =>
-            console.log({ ["Error message in setup"]: error.message.red })
-          );
-        // process.on("SIGINT", () => connection.close());
+          .catch((error: any) => {
+            console.log({ ["Error message in setup"]: error.message.red });
+          });
+        process.on("SIGINT", () => connection.close());
       })
-      .catch((error: any) => console.log(error.message.bgRed));
+      .catch((error: any) => {
+        console.log(error.message.bgRed);
+      });
   };
 
   createExchange = (exchangeName: any, type: any = "fanout") => {
@@ -40,9 +42,9 @@ export class TaskMessageService {
           durable: false,
           exclusive: false,
         })
-        .catch((e: any) =>
-          console.log({ ["Error message in createExchange"]: e.message.red })
-        );
+        .catch((e: any) => {
+          console.log({ ["Error message in createExchange"]: e.message.red });
+        });
     } else {
       setTimeout(() => this.createExchange(exchangeName), 1000);
     }
@@ -62,9 +64,9 @@ export class TaskMessageService {
         durable: false,
         exclusive: false,
       })
-      .catch((e: any) =>
-        console.log({ ["Error message in sendMessage"]: e.message.red })
-      );
+      .catch((e: any) => {
+        console.log({ ["Error message in sendMessage"]: e.message.red });
+      });
     this.channel.publish(
       exchangeName,
       `${functionName}_1`,
@@ -143,8 +145,10 @@ export class TaskMessageService {
       };
       if (!this.channel) setTimeout(process, 5000);
       else process();
-    })
-      .then((data: any) => console.log({ data }))
+    }) /*  */
+      .then((data: any) => {
+        /* console.log({ data }) */
+      })
       .catch((e: any) => {
         console.log(
           "Error in catch callback of Promise returned from receiveMessage: "
@@ -152,6 +156,13 @@ export class TaskMessageService {
           e.message.bgRed
         );
       })
-      .finally(() => console.log("Finished!".bgGreen));
+      .finally(() => {
+        console.log("Finished!".bgGreen);
+      });
+  };
+
+  close = async () => {
+    await this.channel.close();
+    await this.connection.close();
   };
 }

@@ -29,10 +29,14 @@ class TaskMessageService {
                 connection
                     .createChannel()
                     .then((channel) => (this.channel = channel))
-                    .catch((error) => console.log({ ["Error message in setup"]: error.message.red }));
-                // process.on("SIGINT", () => connection.close());
+                    .catch((error) => {
+                    console.log({ ["Error message in setup"]: error.message.red });
+                });
+                process.on("SIGINT", () => connection.close());
             })
-                .catch((error) => console.log(error.message.bgRed));
+                .catch((error) => {
+                console.log(error.message.bgRed);
+            });
         };
         this.createExchange = (exchangeName, type = "fanout") => {
             if (this.channel) {
@@ -41,7 +45,9 @@ class TaskMessageService {
                     durable: false,
                     exclusive: false,
                 })
-                    .catch((e) => console.log({ ["Error message in createExchange"]: e.message.red }));
+                    .catch((e) => {
+                    console.log({ ["Error message in createExchange"]: e.message.red });
+                });
             }
             else {
                 setTimeout(() => this.createExchange(exchangeName), 1000);
@@ -57,7 +63,9 @@ class TaskMessageService {
                 durable: false,
                 exclusive: false,
             })
-                .catch((e) => console.log({ ["Error message in sendMessage"]: e.message.red }));
+                .catch((e) => {
+                console.log({ ["Error message in sendMessage"]: e.message.red });
+            });
             this.channel.publish(exchangeName, `${functionName}_1`, Buffer.from(JSON.stringify(message)));
             if (receiverFunc)
                 return this.receiveMessage(receiverFunc);
@@ -133,14 +141,22 @@ class TaskMessageService {
                     setTimeout(process, 5000);
                 else
                     process();
+            }) /*  */
+                .then((data) => {
+                /* console.log({ data }) */
             })
-                .then((data) => console.log({ data }))
                 .catch((e) => {
                 console.log("Error in catch callback of Promise returned from receiveMessage: "
                     .bgYellow, e.message.bgRed);
             })
-                .finally(() => console.log("Finished!".bgGreen));
+                .finally(() => {
+                console.log("Finished!".bgGreen);
+            });
         };
+        this.close = () => __awaiter(this, void 0, void 0, function* () {
+            yield this.channel.close();
+            yield this.connection.close();
+        });
         this.setup();
     }
 }
