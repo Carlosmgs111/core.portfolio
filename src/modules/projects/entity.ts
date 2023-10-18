@@ -51,10 +51,11 @@ export class Project {
       RepositoryService.entities.Project,
       new Project({ ...data, uuid })
     );
-    await RepositoryService.setOneRelationship2One(
-      { project: { uuid: newProject.uuid } },
-      [{ user: { uuid: data.user.uuid } }]
-    );
+    // * Create relation Many to Many between User and Project entity
+    await RepositoryService.createOneRelationshipN2N([
+      [{ project: { uuid } }, { user: { uuid: data.user.uuid } }],
+    ]);
+
     return newProject;
   };
 

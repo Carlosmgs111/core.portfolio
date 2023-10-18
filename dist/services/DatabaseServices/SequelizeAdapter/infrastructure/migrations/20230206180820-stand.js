@@ -14,7 +14,6 @@ const { user_table, certification_table, project_table, institution_table, post_
 module.exports = {
     up(queryInterface, Sequelize) {
         return __awaiter(this, void 0, void 0, function* () {
-            console.log({ models: models_1.models });
             yield queryInterface.createTable(user_table, user_schema);
             yield queryInterface.createTable(institution_table, institution_schema);
             yield queryInterface.createTable(certification_table, certification_schema);

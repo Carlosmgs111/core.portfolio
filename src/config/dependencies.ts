@@ -9,7 +9,7 @@ import {
 
 const repositoryServices = {
   CQRS: () => new CQRSService(),
-  DBS: () => DBS(Adapters.MongooseAdapter),
+  DBS: () => DBS(/* Adapters.MongooseAdapter */),
 };
 
 export const TaskMessageService = new TMS();

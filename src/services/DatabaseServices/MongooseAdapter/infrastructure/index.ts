@@ -1,9 +1,12 @@
 import mongoose from "mongoose";
 import config from "../../../../config";
 
-const test = !false;
+let test = true;
+if (process.argv.includes("DEV")) test = false;
 
 const localURL = test ? config.mongoDBTestUrl : config.mongoDBLocalUrl;
+
+console.log({ test });
 
 export const connect = () =>
   mongoose.connect(localURL || config.mongoDBAtlasURL || "");
@@ -16,6 +19,6 @@ connection.once("open", () => {
 });
 
 connection.on("error", (err) => {
-  (err);
+  err;
   process.exit(0);
 });

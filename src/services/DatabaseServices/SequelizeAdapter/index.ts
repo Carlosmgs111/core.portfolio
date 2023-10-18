@@ -119,8 +119,6 @@ export default class SequelizeAdapter {
       });
       relations2One[`${label}UUID`] = referenced.uuid;
     }
-    // ({ relations2One });
-    // ({ mainLabel, mainQuery });
     models[labelCases(mainLabel).CS].update(relations2One, {
       where: mainQuery,
     });

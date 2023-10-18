@@ -132,4 +132,9 @@ export class CQRSService {
     await this.CommandService.close();
     await this.QueryService.close();
   };
+
+  dropAllEntities=async()=>{
+    await this.CommandService.dropAllEntities()
+    await this.QueryService.dropAllEntities()
+  }
 }

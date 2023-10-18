@@ -12,6 +12,7 @@ if (process.argv.includes("DEV"))
     ENV = "DEV";
 if (process.argv.includes("PROD"))
     ENV = "PROD";
+console.log({ ENV });
 let database = (() => {
     if (ENV === "DEV")
         return postgresDatabaseDev;
@@ -47,6 +48,7 @@ let port = (() => {
         return Number(postgresPortProd);
     return Number(postgresPortTest);
 })();
+console.log({ database, user, PASSWORD, host, port });
 exports.sequelize = new sequelize_1.Sequelize(database, user, PASSWORD, {
     host,
     port,

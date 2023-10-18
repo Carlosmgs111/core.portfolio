@@ -30,9 +30,11 @@ describe("Creation of a new certification", () => {
         .send(generateOneInstitution())
         .set("Authorization", `Bearer ${userToken}`)
     ).body;
+    jest.setTimeout(20000)
   });
 
   afterAll(async () => {
+    jest.setTimeout(20000)
     await server.close();
     // * Force cleanup of databases
     await RepositoryService.dropAllEntities();

@@ -6,8 +6,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.connection = exports.connect = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("../../../../config"));
-const test = !false;
+let test = true;
+if (process.argv.includes("DEV"))
+    test = false;
 const localURL = test ? config_1.default.mongoDBTestUrl : config_1.default.mongoDBLocalUrl;
+console.log({ test });
 const connect = () => mongoose_1.default.connect(localURL || config_1.default.mongoDBAtlasURL || "");
 exports.connect = connect;
 exports.connection = mongoose_1.default.connection;
@@ -16,6 +19,6 @@ exports.connection.once("open", () => {
     ("Mongodb connection stablished");
 });
 exports.connection.on("error", (err) => {
-    (err);
+    err;
     process.exit(0);
 });

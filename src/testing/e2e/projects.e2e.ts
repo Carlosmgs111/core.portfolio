@@ -25,9 +25,11 @@ describe("Test for get all projects endpoint", () => {
     const { token }: any = (await request(app).get("/api/v1/signin").send(user))
       .body;
     userToken = token;
+    jest.setTimeout(20000);
   });
 
   afterAll(async () => {
+    jest.setTimeout(20000);
     await server.close();
     // * Force cleanup of databases
     await RepositoryService.dropAllEntities();
@@ -52,7 +54,6 @@ describe("Test for get all projects endpoint", () => {
         .get("/api/v1/projects")
         .set("Authorization", `Bearer ${userToken}`)
         .expect(200);
-
       expect.arrayContaining(body);
       expect(body.length).toEqual(1);
     });
