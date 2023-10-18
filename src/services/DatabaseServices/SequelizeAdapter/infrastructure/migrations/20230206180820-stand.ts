@@ -29,7 +29,6 @@ const {
 
 export = {
   async up(queryInterface: any, Sequelize: any) {
-    console.log({ models });
     await queryInterface.createTable(user_table, user_schema);
     await queryInterface.createTable(institution_table, institution_schema);
     await queryInterface.createTable(certification_table, certification_schema);
@@ -52,5 +51,7 @@ export = {
     await queryInterface.createTable(note_table, note_schema);
   },
 
-  async down(queryInterface: any, Sequelize: any) {},
+  async down(queryInterface: any, Sequelize: any) {
+    await queryInterface.dropAllTables();
+  },
 };

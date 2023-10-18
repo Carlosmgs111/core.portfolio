@@ -19,7 +19,6 @@ const {
   postgresPortTest,
 } = config;
 
-
 let ENV = null;
 if (process.argv.includes("DEV")) ENV = "DEV";
 if (process.argv.includes("PROD")) ENV = "PROD";
@@ -56,4 +55,3 @@ export const sequelize = new Sequelize(database, user, PASSWORD, {
   dialect: "postgres",
   logging: false, //
 });
-

@@ -53,7 +53,10 @@ exports.app
     .use(error_handler_1.logErrors)
     .use(error_handler_1.ormErrorHandler)
     .use(error_handler_1.boomErrorHandler)
-    .use(error_handler_1.errorHandler);
+    .use(error_handler_1.errorHandler)
+    .on("error", (error) => {
+    console.log({ error });
+});
 exports.default = () => exports.app.listen(exports.app.get("port"), () => {
     console.log(`🚀💼 Portfolio app listening on port ${exports.app.get("port")}`);
 });

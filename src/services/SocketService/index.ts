@@ -90,12 +90,16 @@ export class SocketService {
   };
 
   close = async () => {
+    const { server } = this;
     const clients = Mapfy(this.clients);
+    const sockets = Mapfy(this.sockets);
 
     clients.forEach((client: any) => {
       client.close();
     });
+    
 
-    await this.server.close();
+    await server.disconnectSockets();
+    await server.close();
   };
 }

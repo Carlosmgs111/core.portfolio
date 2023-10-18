@@ -268,4 +268,8 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
   close = async () => {
     await connection.close();
   };
+
+  dropAllEntities = async () => {
+    await connection.dropDatabase();
+  };
 }

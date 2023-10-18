@@ -29,6 +29,8 @@ module.exports = {
         });
     },
     down(queryInterface, Sequelize) {
-        return __awaiter(this, void 0, void 0, function* () { });
+        return __awaiter(this, void 0, void 0, function* () {
+            yield queryInterface.dropAllTables();
+        });
     },
 };

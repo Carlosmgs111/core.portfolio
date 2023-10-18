@@ -1,5 +1,6 @@
 import SequelizeAdapter from "./SequelizeAdapter";
 import MongooseAdapter from "./MongooseAdapter";
+import { DatabaseAdapterType } from "./DatabaseAdapterType";
 
 export const Adapters: any = {
   SequelizeAdapter,
@@ -7,7 +8,7 @@ export const Adapters: any = {
 };
 
 export const DatabaseService = (adapter: any = Adapters.SequelizeAdapter) => {
-  class DatabaseService extends adapter  {
+  class DatabaseService extends adapter {
     constructor(props: any) {
       super(props);
     }
@@ -17,5 +18,6 @@ export const DatabaseService = (adapter: any = Adapters.SequelizeAdapter) => {
       return { databaseInterfaceName: this.serviceDescription };
     }
   }
+  
   return new DatabaseService({});
 };

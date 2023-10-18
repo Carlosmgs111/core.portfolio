@@ -32,9 +32,7 @@ exports.login = login;
 const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password } = credentials;
     if (email) {
-        // console.log(
-        //   "Authentication Signup use case must be implemented! ".bgYellow
-        // );
+        console.log("Authentication Signup use case must be implemented! ".bgYellow);
     }
     return yield entity_1.User.create(dependencies_1.RepositoryService, credentials);
 });

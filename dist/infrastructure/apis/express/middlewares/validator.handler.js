@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.validatorHandler = void 0;
 const boom_1 = __importDefault(require("@hapi/boom"));
 function validatorHandler(schema, property) {
-    return (req, res, next) => {
+    return function (req, res, next) {
         const data = req[property];
         const { error } = schema.validate(data, { abortEarly: false });
         if (error) {

@@ -74,16 +74,14 @@ class SocketService {
             });
         };
         this.close = () => __awaiter(this, void 0, void 0, function* () {
-            yield this.server.close();
-            yield this.server.disconnectSockets();
+            const { server } = this;
             const clients = (0, utils_1.Mapfy)(this.clients);
             const sockets = (0, utils_1.Mapfy)(this.sockets);
             clients.forEach((client) => {
                 client.close();
             });
-            sockets.forEach((socket) => {
-                socket.client.close();
-            });
+            yield server.disconnectSockets();
+            yield server.close();
         });
         this.server.on("connection", (socket) => {
             // console.log(`${socket.id} Connected!`.green);

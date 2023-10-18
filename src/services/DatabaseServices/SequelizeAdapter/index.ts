@@ -57,7 +57,6 @@ export default class SequelizeAdapter {
 
   updateOne = async (entity: any, Entity: any, options: any = {}) => {
     const updated = await models[entity].update(Entity, this.adapter(options));
-    console.log({ updated });
     return this.getResult(updated);
   };
 
@@ -220,14 +219,19 @@ export default class SequelizeAdapter {
 
   // * A function that is called in the constructor of the class. It is used to associate the models in
   // * the database.
-  private syncModels = () => {
-    for (var model in models)
-      models[model].associate && models[model].associate(models);
+  private syncModels = async () => {
+    for (var model in models) {
+      models[model].associate && (await models[model].associate(models));
+    }
   };
 
   entities = setEnums(Object.entries(models).flatMap((m: any) => m[0]));
 
   close = async () => {
     await sequelize.close();
+  };
+
+  dropAllEntities = async () => {
+    await sequelize.sync({ force: true });
   };
 }

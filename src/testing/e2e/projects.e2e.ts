@@ -2,7 +2,6 @@ import request from "supertest";
 import { generateOneUser } from "../fakers/user.fake";
 import { app } from "../../infrastructure/apis/express";
 import { generateOneProject } from "../fakers/project.fake";
-import { connection } from "../../services/DatabaseServices/MongooseAdapter/infrastructure";
 import { models } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/models";
 import {
   SocketService,
@@ -21,25 +20,22 @@ describe("Test for get all projects endpoint", () => {
     server = app.listen(4040, () =>
       console.log("Test server running at port 4040")
     );
-    await Project.sync({ force: true });
-    await connection.dropDatabase();
     const user = generateOneUser();
     await request(app).post("/api/v1/signup").send(user);
     const { token }: any = (await request(app).get("/api/v1/signin").send(user))
       .body;
     userToken = token;
-
-    jest.setTimeout(10000);
-  }, 10000);
+  });
 
   afterAll(async () => {
-    jest.setTimeout(10000);
     await server.close();
+    // * Force cleanup of databases
+    await RepositoryService.dropAllEntities();
     // * Close all services
     await SocketService.close();
     await RepositoryService.close();
     await TaskMessageService.close();
-  }, 10000);
+  });
 
   describe("test for create projects", () => {
     test("should add a new project", async () => {

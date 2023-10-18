@@ -207,6 +207,9 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
         this.close = () => __awaiter(this, void 0, void 0, function* () {
             yield infrastructure_1.connection.close();
         });
+        this.dropAllEntities = () => __awaiter(this, void 0, void 0, function* () {
+            yield infrastructure_1.connection.dropDatabase();
+        });
         (0, infrastructure_1.connect)();
     }
 }

@@ -7,7 +7,6 @@ import {
 } from "../../../../infrastructure/schemas/user.schema";
 import { validatorHandler } from "../../../../infrastructure/apis/express/middlewares/validator.handler";
 import { expressHandlerAdapter } from "../../../../adapters/apis/express";
-
 const router = Router();
 
 export default router

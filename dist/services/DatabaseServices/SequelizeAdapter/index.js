@@ -51,7 +51,6 @@ class SequelizeAdapter {
         });
         this.updateOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const updated = yield models_1.models[entity].update(Entity, this.adapter(options));
-            console.log({ updated });
             return this.getResult(updated);
         });
         this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
@@ -158,13 +157,17 @@ class SequelizeAdapter {
         };
         // * A function that is called in the constructor of the class. It is used to associate the models in
         // * the database.
-        this.syncModels = () => {
-            for (var model in models_1.models)
-                models_1.models[model].associate && models_1.models[model].associate(models_1.models);
-        };
+        this.syncModels = () => __awaiter(this, void 0, void 0, function* () {
+            for (var model in models_1.models) {
+                models_1.models[model].associate && (yield models_1.models[model].associate(models_1.models));
+            }
+        });
         this.entities = (0, utils_1.setEnums)(Object.entries(models_1.models).flatMap((m) => m[0]));
         this.close = () => __awaiter(this, void 0, void 0, function* () {
             yield infrastructure_1.sequelize.close();
+        });
+        this.dropAllEntities = () => __awaiter(this, void 0, void 0, function* () {
+            yield infrastructure_1.sequelize.sync({ force: true });
         });
         this.syncModels();
     }

@@ -3,7 +3,7 @@ import config from "../../../config";
 import morgan from "morgan";
 import cors from "cors";
 import routes from "./routes";
-import { join, dirname } from "path";                                            
+import { join, dirname } from "path";
 import {
   logErrors,
   errorHandler,
@@ -59,7 +59,10 @@ app
   .use(logErrors)
   .use(ormErrorHandler)
   .use(boomErrorHandler)
-  .use(errorHandler);
+  .use(errorHandler)
+  .on("error", (error: any) => {
+    console.log({ error });
+  });
 
 export default () =>
   app.listen(app.get("port"), () => {
