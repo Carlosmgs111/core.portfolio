@@ -9,11 +9,11 @@ import {
 
 const repositoryServices = {
   CQRS: () => new CQRSService(),
-  DBS: () => DBS(/* Adapters.MongooseAdapter */),
+  DBS: () => DBS(Adapters.MongooseAdapter),
 };
 
 export const TaskMessageService = new TMS();
-export const RepositoryService = repositoryServices.DBS();
+export const RepositoryService = repositoryServices.CQRS();
 export const AuthServices = new AS();
 export const SocketService: any = new SS();
 

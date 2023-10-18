@@ -48,7 +48,7 @@ let port = (() => {
         return Number(postgresPortProd);
     return Number(postgresPortTest);
 })();
-console.log({ database, user, PASSWORD, host, port });
+console.log({ database, user, host, port });
 exports.sequelize = new sequelize_1.Sequelize(database, user, PASSWORD, {
     host,
     port,

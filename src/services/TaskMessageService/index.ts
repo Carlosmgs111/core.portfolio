@@ -156,9 +156,9 @@ export class TaskMessageService {
           e.message.bgRed
         );
       })
-      .finally(() => {
-        console.log("Finished!".bgGreen);
-      });
+      // .finally(() => {
+      //   console.log("Finished!".bgGreen);
+      // });
   };
 
   close = async () => {
