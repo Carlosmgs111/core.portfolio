@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import config from "../../../../config";
 
 let test = true;
-if (process.argv.includes("DEV")) test = false;
+if (process.argv.includes("DEV") || process.argv.includes("PROD")) test = false;
 
 const localURL = test ? config.mongoDBTestUrl : config.mongoDBLocalUrl;
 

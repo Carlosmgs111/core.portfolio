@@ -31,7 +31,7 @@ class CQRSService {
                 queryServiceCreateMany: {
                     queryServiceCreateMany: [entity, entities, options],
                 },
-            });
+            }, { queryServiceCreateMany: this.QueryService.createMany });
             return yield this.CommandService.createMany(entity, entities, options);
         });
         this.findOne = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () { return yield this.QueryService.findOne(entity, options); });
@@ -105,7 +105,9 @@ class CQRSService {
             yield this.QueryService.dropAllEntities();
         });
         this.TaskMessageService.createExchange("queryServiceCreateOne").receiveMessage({ queryServiceCreateOne: this.QueryService.createOne });
-        this.TaskMessageService.createExchange("queryServiceCreateMany").receiveMessage({ queryServiceCreateMany: this.QueryService.createMany });
+        // this.TaskMessageService.createExchange(
+        //   "queryServiceCreateMany"
+        // ).receiveMessage({ queryServiceCreateMany: this.QueryService.createMany });
         this.TaskMessageService.createExchange("queryServiceCreateOneRelationshipN2N").receiveMessage({
             queryServiceCreateOneRelationshipN2N: this.QueryService.createOneRelationshipN2N,
         });

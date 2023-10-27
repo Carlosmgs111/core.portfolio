@@ -105,6 +105,7 @@ export class TaskMessageService {
                     if (Array.isArray(decoded))
                       cb(...decoded)
                         .then((_message: any) => {
+                          // console.log({ _message });
                           resolve(_message);
                           return _message;
                         })
@@ -115,18 +116,17 @@ export class TaskMessageService {
                         });
                     else
                       cb(decoded)
-                        .then((message: any) => {
-                          resolve(message);
-                          return message;
+                        .then((_message: any) => {
+                          resolve(_message);
+                          return _message;
                         })
                         .catch((e: any) => {
                           reject(e);
                         });
-
-                    channel.ack(message);
-                    // ? this is very important, once a message is received, the channel must be
-                    // ? closed to avoid abnormal behavior in promise resolution
-                    channel.cancel(consumerTag);
+                    // channel.ack(message);
+                    // ? The channel shouldn't be closed, but when it is closed avoid abnormal behavior in promise 
+                    // ? resolution, in this case with generate image service
+                    // channel.cancel(consumerTag);
                   }
                 } catch (e: any) {
                   console.log({ consumerTag });
@@ -147,7 +147,8 @@ export class TaskMessageService {
       else process();
     }) /*  */
       .then((data: any) => {
-        /* console.log({ data }) */
+         console.log({ data })
+        return data;
       })
       .catch((e: any) => {
         console.log(
@@ -155,10 +156,10 @@ export class TaskMessageService {
             .bgYellow,
           e.message.bgRed
         );
-      })
-      // .finally(() => {
-      //   console.log("Finished!".bgGreen);
-      // });
+      });
+    // .finally(() => {
+    //   console.log("Finished!".bgGreen);
+    // });
   };
 
   close = async () => {

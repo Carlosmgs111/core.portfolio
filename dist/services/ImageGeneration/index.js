@@ -44,6 +44,7 @@ const generateImages = (data) => __awaiter(void 0, void 0, void 0, function* () 
             ],
         },
     }, exports.generatedImages);
+    // console.log({ response });
     return response;
 });
 exports.generateImages = generateImages;

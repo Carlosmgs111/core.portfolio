@@ -7,7 +7,7 @@ exports.connection = exports.connect = void 0;
 const mongoose_1 = __importDefault(require("mongoose"));
 const config_1 = __importDefault(require("../../../../config"));
 let test = true;
-if (process.argv.includes("DEV"))
+if (process.argv.includes("DEV") || process.argv.includes("PROD"))
     test = false;
 const localURL = test ? config_1.default.mongoDBTestUrl : config_1.default.mongoDBLocalUrl;
 console.log({ test });

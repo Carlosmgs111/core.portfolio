@@ -12,9 +12,9 @@ export class CQRSService {
     this.TaskMessageService.createExchange(
       "queryServiceCreateOne"
     ).receiveMessage({ queryServiceCreateOne: this.QueryService.createOne });
-    this.TaskMessageService.createExchange(
-      "queryServiceCreateMany"
-    ).receiveMessage({ queryServiceCreateMany: this.QueryService.createMany });
+    // this.TaskMessageService.createExchange(
+    //   "queryServiceCreateMany"
+    // ).receiveMessage({ queryServiceCreateMany: this.QueryService.createMany });
     this.TaskMessageService.createExchange(
       "queryServiceCreateOneRelationshipN2N"
     ).receiveMessage({
@@ -56,11 +56,14 @@ export class CQRSService {
     return await this.CommandService.createOne(entity, Entity, options);
   };
   createMany = async (entity: any, entities: any, options: any = {}) => {
-    this.TaskMessageService.sendMessage({
-      queryServiceCreateMany: {
-        queryServiceCreateMany: [entity, entities, options],
+    this.TaskMessageService.sendMessage(
+      {
+        queryServiceCreateMany: {
+          queryServiceCreateMany: [entity, entities, options],
+        },
       },
-    });
+      { queryServiceCreateMany: this.QueryService.createMany }
+    );
     return await this.CommandService.createMany(entity, entities, options);
   };
   findOne = async (entity: any, options: any = {}) =>
@@ -133,8 +136,8 @@ export class CQRSService {
     await this.QueryService.close();
   };
 
-  dropAllEntities=async()=>{
-    await this.CommandService.dropAllEntities()
-    await this.QueryService.dropAllEntities()
-  }
+  dropAllEntities = async () => {
+    await this.CommandService.dropAllEntities();
+    await this.QueryService.dropAllEntities();
+  };
 }

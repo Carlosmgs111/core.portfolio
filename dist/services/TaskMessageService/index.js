@@ -98,6 +98,7 @@ class TaskMessageService {
                                     if (Array.isArray(decoded))
                                         cb(...decoded)
                                             .then((_message) => {
+                                            // console.log({ _message });
                                             resolve(_message);
                                             return _message;
                                         })
@@ -108,17 +109,17 @@ class TaskMessageService {
                                         });
                                     else
                                         cb(decoded)
-                                            .then((message) => {
-                                            resolve(message);
-                                            return message;
+                                            .then((_message) => {
+                                            resolve(_message);
+                                            return _message;
                                         })
                                             .catch((e) => {
                                             reject(e);
                                         });
-                                    channel.ack(message);
-                                    // ? this is very important, once a message is received, the channel must be
-                                    // ? closed to avoid abnormal behavior in promise resolution
-                                    channel.cancel(consumerTag);
+                                    // channel.ack(message);
+                                    // ? The channel shouldn't be closed, but when it is closed avoid abnormal behavior in promise 
+                                    // ? resolution, in this case with generate image service
+                                    // channel.cancel(consumerTag);
                                 }
                             }
                             catch (e) {
@@ -143,15 +144,16 @@ class TaskMessageService {
                     process();
             }) /*  */
                 .then((data) => {
-                /* console.log({ data }) */
+                console.log({ data });
+                return data;
             })
                 .catch((e) => {
                 console.log("Error in catch callback of Promise returned from receiveMessage: "
                     .bgYellow, e.message.bgRed);
-            })
-                .finally(() => {
-                console.log("Finished!".bgGreen);
             });
+            // .finally(() => {
+            //   console.log("Finished!".bgGreen);
+            // });
         };
         this.close = () => __awaiter(this, void 0, void 0, function* () {
             yield this.channel.close();

@@ -17,15 +17,15 @@ jobs:
         uses: actions/setup-node@v2
         with: 
           node-version: 16
-          cache: 'yarn'
+          cache: 'pnpm'
 
       - name: Install
         shell: bash
-        run: yarn install --legacy-peer-deps
+        run: pnpm install --legacy-peer-deps
 
       - name: Run unit test
         shell: bash
-        run: yarn run test
+        run: pnpm run test
   
   e2e-test:
     runs-on: ubuntu-latest
@@ -59,11 +59,11 @@ jobs:
 
       - name: Install
         shell: bash
-        run: yarn install --legacy-peer-deps
+        run: pnpm install --legacy-peer-deps
 
       - name: Run e2e test
         shell: bash
-        run: yarn run test:e2e
+        run: pnpm run test:e2e
         env:
           MONGO_DB_NAME: test
           MONGO_URL: mongodb://test:p%4055w0rd@localhost:27017/test?retryWrites=true&writeConcern=majority

@@ -36,7 +36,7 @@ export const generateImages = async (data: any) => {
     },
     generatedImages
   );
-
+  // console.log({ response });
   return response;
 };
 
