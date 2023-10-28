@@ -10,8 +10,8 @@ console.log(
 );
 
 export class TaskMessageService {
-  connection: any;
-  channel: any;
+  connection: any = null;
+  channel: any = null;
 
   constructor() {
     this.setup();
@@ -24,7 +24,9 @@ export class TaskMessageService {
         this.connection = connection;
         connection
           .createChannel()
-          .then((channel: any) => (this.channel = channel))
+          .then((channel: any) => {
+            this.channel = channel;
+          })
           .catch((error: any) => {
             console.log({ ["Error message in setup"]: error.message.red });
           });
@@ -35,9 +37,36 @@ export class TaskMessageService {
       });
   };
 
+  getChannel = () =>
+    new Promise((resolve: any, reject: any) => {
+      if (!this.channel) {
+        const delayedProcess = setTimeout(() => {
+          if (this.channel) {
+            resolve(this.channel);
+            clearTimeout(delayedProcess);
+          }
+          if (!this.channel) {
+            this.connection
+              .createChannel()
+              .then((channel: any) => {
+                this.channel = channel;
+                resolve([this.connection, channel]);
+              })
+              .catch((error: any) => {
+                console.log({ ["Error message in setup"]: error.message.red });
+                reject(error);
+              });
+            process.on("SIGINT", () => this.connection.close());
+          }
+        }, 5000);
+      } else {
+        resolve(this.channel);
+      }
+    }).then((data) => data);
+
   createExchange = (exchangeName: any, type: any = "fanout") => {
-    if (this.channel) {
-      this.channel
+    this.getChannel().then((_channel: any) => {
+      _channel
         .assertExchange(exchangeName, type, {
           durable: false,
           exclusive: false,
@@ -45,9 +74,8 @@ export class TaskMessageService {
         .catch((e: any) => {
           console.log({ ["Error message in createExchange"]: e.message.red });
         });
-    } else {
-      setTimeout(() => this.createExchange(exchangeName), 1000);
-    }
+    });
+
     return this;
   };
 
@@ -59,19 +87,22 @@ export class TaskMessageService {
     const { type }: any = conf;
     const [exchangeName, _payload] = Mapfy(payload).entries().next().value;
     const [functionName, message] = Mapfy(_payload).entries().next().value;
-    this.channel
-      .assertExchange(exchangeName, type, {
-        durable: false,
-        exclusive: false,
-      })
-      .catch((e: any) => {
-        console.log({ ["Error message in sendMessage"]: e.message.red });
-      });
-    this.channel.publish(
-      exchangeName,
-      `${functionName}_1`,
-      Buffer.from(JSON.stringify(message))
-    );
+
+    this.getChannel().then((_channel: any) => {
+      _channel
+        .assertExchange(exchangeName, type, {
+          durable: false,
+          exclusive: false,
+        })
+        .catch((e: any) => {
+          console.log({ ["Error message in sendMessage"]: e.message.red });
+        });
+      _channel.publish(
+        exchangeName,
+        `${functionName}_1`,
+        Buffer.from(JSON.stringify(message))
+      );
+    });
 
     if (receiverFunc) return this.receiveMessage(receiverFunc);
     return this;
@@ -87,17 +118,16 @@ export class TaskMessageService {
     }
 
     return new Promise((resolve: any, reject: any) => {
-      const process = () => {
-        const channel = this.channel;
-        this.channel
+      this.getChannel().then((_channel: any) => {
+        _channel
           .assertQueue(`${exchangeName}_1`, {
             exclusive: false,
             durable: true,
           })
           .then(async (q: any) => {
             const { queue } = q;
-            this.channel.bindQueue(queue, exchangeName, exchangeName);
-            const { consumerTag } = await this.channel
+            _channel.bindQueue(queue, exchangeName, exchangeName);
+            const { consumerTag } = await _channel
               .consume(queue, (message: any) => {
                 const decoded = JSON.parse(message.content.toString());
                 try {
@@ -105,7 +135,7 @@ export class TaskMessageService {
                     if (Array.isArray(decoded))
                       cb(...decoded)
                         .then((_message: any) => {
-                          // console.log({ _message });
+                          console.log({ _channel });
                           resolve(_message);
                           return _message;
                         })
@@ -123,13 +153,12 @@ export class TaskMessageService {
                         .catch((e: any) => {
                           reject(e);
                         });
-                    // channel.ack(message);
-                    // ? The channel shouldn't be closed, but when it is closed avoid abnormal behavior in promise 
+                    _channel.ack(message);
+                    // ? The channel shouldn't be closed, but when it is closed avoid abnormal behavior in promise
                     // ? resolution, in this case with generate image service
-                    // channel.cancel(consumerTag);
+                    //_channel.cancel(consumerTag);
                   }
                 } catch (e: any) {
-                  console.log({ consumerTag });
                   console.log(e.message.red);
                   reject(e.message);
                 } finally {
@@ -142,12 +171,10 @@ export class TaskMessageService {
               });
           })
           .catch((error: any) => reject(error.message));
-      };
-      if (!this.channel) setTimeout(process, 5000);
-      else process();
-    }) /*  */
+      });
+    })
       .then((data: any) => {
-         console.log({ data })
+        console.log({ data });
         return data;
       })
       .catch((e: any) => {
@@ -157,9 +184,9 @@ export class TaskMessageService {
           e.message.bgRed
         );
       });
-    // .finally(() => {
-    //   console.log("Finished!".bgGreen);
-    // });
+    //  .finally(() => {
+    //    console.log("Finished!".bgGreen);
+    //  });
   };
 
   close = async () => {
