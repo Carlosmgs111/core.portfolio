@@ -12,6 +12,7 @@ console.log(
 export class TaskMessageService {
   connection: any = null;
   channel: any = null;
+  consumers: any = {};
 
   constructor() {
     this.setup();
@@ -117,25 +118,34 @@ export class TaskMessageService {
       [exchangeName, cb] = Mapfy(payload).entries().next().value;
     }
 
-    return new Promise((resolve: any, reject: any) => {
-      this.getChannel().then((_channel: any) => {
-        _channel
-          .assertQueue(`${exchangeName}_1`, {
-            exclusive: false,
-            durable: true,
-          })
-          .then(async (q: any) => {
-            const { queue } = q;
-            _channel.bindQueue(queue, exchangeName, exchangeName);
-            const { consumerTag } = await _channel
-              .consume(queue, (message: any) => {
+    const queueName = `${exchangeName}_1`;
+
+    if (!Mapfy(this.consumers).has(queueName)) {
+      this.consumers[queueName] = (resolve: any, reject: any) => {
+        this.getChannel().then((_channel: any) => {
+          _channel
+            .assertQueue(queueName, {
+              exclusive: false,
+              durable: true,
+            })
+            .then(async (q: any) => {
+              const { queue } = q;
+              _channel.bindQueue(queue, exchangeName, exchangeName);
+              let callback = (message: any) => {
+                // console.log({ message });
+
+                if (message instanceof Function) {
+                  console.log("Message Function: ".green, message());
+                  return;
+                }
+
                 const decoded = JSON.parse(message.content.toString());
                 try {
                   if (message !== null) {
                     if (Array.isArray(decoded))
                       cb(...decoded)
                         .then((_message: any) => {
-                          console.log({ _channel });
+                          console.log({ _message });
                           resolve(_message);
                           return _message;
                         })
@@ -156,7 +166,6 @@ export class TaskMessageService {
                     _channel.ack(message);
                     // ? The channel shouldn't be closed, but when it is closed avoid abnormal behavior in promise
                     // ? resolution, in this case with generate image service
-                    //_channel.cancel(consumerTag);
                   }
                 } catch (e: any) {
                   console.log(e.message.red);
@@ -164,14 +173,19 @@ export class TaskMessageService {
                 } finally {
                   return;
                 }
-              })
-              .catch((e: any) => {
+              };
+              _channel.consume(queue, callback).catch((e: any) => {
                 console.log(e.message.red);
                 reject(e.message);
               });
-          })
-          .catch((error: any) => reject(error.message));
-      });
+            })
+            .catch((error: any) => reject(error.message));
+        });
+      };
+    }
+    
+    return new Promise((resolve: any, reject: any) => {
+      this.consumers[queueName](resolve, reject);
     })
       .then((data: any) => {
         console.log({ data });
@@ -184,9 +198,6 @@ export class TaskMessageService {
           e.message.bgRed
         );
       });
-    //  .finally(() => {
-    //    console.log("Finished!".bgGreen);
-    //  });
   };
 
   close = async () => {

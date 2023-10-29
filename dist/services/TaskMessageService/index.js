@@ -23,6 +23,7 @@ class TaskMessageService {
     constructor() {
         this.connection = null;
         this.channel = null;
+        this.consumers = {};
         this.setup = () => {
             amqplib_1.default
                 .connect(rabbitMQUrl)
@@ -108,63 +109,72 @@ class TaskMessageService {
             else if (payload instanceof Object) {
                 [exchangeName, cb] = (0, utils_1.Mapfy)(payload).entries().next().value;
             }
-            return new Promise((resolve, reject) => {
-                this.getChannel().then((_channel) => {
-                    _channel
-                        .assertQueue(`${exchangeName}_1`, {
-                        exclusive: false,
-                        durable: true,
-                    })
-                        .then((q) => __awaiter(this, void 0, void 0, function* () {
-                        const { queue } = q;
-                        _channel.bindQueue(queue, exchangeName, exchangeName);
-                        const { consumerTag } = yield _channel
-                            .consume(queue, (message) => {
-                            const decoded = JSON.parse(message.content.toString());
-                            try {
-                                if (message !== null) {
-                                    if (Array.isArray(decoded))
-                                        cb(...decoded)
-                                            .then((_message) => {
-                                            console.log({ _channel });
-                                            resolve(_message);
-                                            return _message;
-                                        })
-                                            .catch((e) => {
-                                            console.log(e.message.red);
-                                            reject(e);
-                                            return;
-                                        });
-                                    else
-                                        cb(decoded)
-                                            .then((_message) => {
-                                            resolve(_message);
-                                            return _message;
-                                        })
-                                            .catch((e) => {
-                                            reject(e);
-                                        });
-                                    _channel.ack(message);
-                                    // ? The channel shouldn't be closed, but when it is closed avoid abnormal behavior in promise
-                                    // ? resolution, in this case with generate image service
-                                    //_channel.cancel(consumerTag);
+            const queueName = `${exchangeName}_1`;
+            if (!(0, utils_1.Mapfy)(this.consumers).has(queueName)) {
+                this.consumers[queueName] = (resolve, reject) => {
+                    this.getChannel().then((_channel) => {
+                        _channel
+                            .assertQueue(queueName, {
+                            exclusive: false,
+                            durable: true,
+                        })
+                            .then((q) => __awaiter(this, void 0, void 0, function* () {
+                            const { queue } = q;
+                            _channel.bindQueue(queue, exchangeName, exchangeName);
+                            let callback = (message) => {
+                                // console.log({ message });
+                                if (message instanceof Function) {
+                                    console.log("Message Function: ".green, message());
+                                    return;
                                 }
-                            }
-                            catch (e) {
+                                const decoded = JSON.parse(message.content.toString());
+                                try {
+                                    if (message !== null) {
+                                        if (Array.isArray(decoded))
+                                            cb(...decoded)
+                                                .then((_message) => {
+                                                console.log({ _message });
+                                                resolve(_message);
+                                                return _message;
+                                            })
+                                                .catch((e) => {
+                                                console.log(e.message.red);
+                                                reject(e);
+                                                return;
+                                            });
+                                        else
+                                            cb(decoded)
+                                                .then((_message) => {
+                                                resolve(_message);
+                                                return _message;
+                                            })
+                                                .catch((e) => {
+                                                reject(e);
+                                            });
+                                        _channel.ack(message);
+                                        // ? The channel shouldn't be closed, but when it is closed avoid abnormal behavior in promise
+                                        // ? resolution, in this case with generate image service
+                                    }
+                                }
+                                catch (e) {
+                                    console.log(e.message.red);
+                                    reject(e.message);
+                                }
+                                finally {
+                                    return;
+                                }
+                            };
+                            _channel.consume(queue, callback).catch((e) => {
                                 console.log(e.message.red);
                                 reject(e.message);
-                            }
-                            finally {
-                                return;
-                            }
-                        })
-                            .catch((e) => {
-                            console.log(e.message.red);
-                            reject(e.message);
-                        });
-                    }))
-                        .catch((error) => reject(error.message));
-                });
+                            });
+                        }))
+                            .catch((error) => reject(error.message));
+                    });
+                };
+            }
+            return new Promise((resolve, reject) => {
+                this.consumers[queueName](resolve, reject);
             })
                 .then((data) => {
                 console.log({ data });
@@ -174,9 +184,6 @@ class TaskMessageService {
                 console.log("Error in catch callback of Promise returned from receiveMessage: "
                     .bgYellow, e.message.bgRed);
             });
-            //  .finally(() => {
-            //    console.log("Finished!".bgGreen);
-            //  });
         };
         this.close = () => __awaiter(this, void 0, void 0, function* () {
             yield this.channel.close();
