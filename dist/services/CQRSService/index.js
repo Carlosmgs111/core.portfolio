@@ -17,9 +17,8 @@ class CQRSService {
         this.QueryService = (0, DatabaseServices_1.DatabaseService)(DatabaseServices_1.Adapters.MongooseAdapter);
         this.CommandService = (0, DatabaseServices_1.DatabaseService)(DatabaseServices_1.Adapters.SequelizeAdapter);
         this.lastSync = new Date().getTime();
-        this.TaskMessageService = dependencies_1.TaskMessageService;
         this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            this.TaskMessageService.sendMessage({
+            dependencies_1.TaskMessageService.sendMessage({
                 queryServiceCreateOne: {
                     queryServiceCreateOne: [entity, Entity, options],
                 },
@@ -27,25 +26,25 @@ class CQRSService {
             return yield this.CommandService.createOne(entity, Entity, options);
         });
         this.createMany = (entity, entities, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            this.TaskMessageService.sendMessage({
+            dependencies_1.TaskMessageService.sendMessage({
                 queryServiceCreateMany: {
                     queryServiceCreateMany: [entity, entities, options],
                 },
-            }, { queryServiceCreateMany: this.QueryService.createMany });
+            }, { queryServiceCreateMany: this.QueryService.createMany }).then((result) => console.log({ result }));
             return yield this.CommandService.createMany(entity, entities, options);
         });
         this.findOne = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () { return yield this.QueryService.findOne(entity, options); });
         this.findAll = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () { return yield this.QueryService.findAll(entity, options); });
         this.removeOne = (entity, options) => __awaiter(this, void 0, void 0, function* () {
-            this.TaskMessageService.sendMessage({
+            dependencies_1.TaskMessageService.sendMessage({
                 queryServiceRemoveOne: { queryServiceRemoveOne: [entity, options] },
-            });
+            }, { queryServiceRemoveOne: this.QueryService.removeOne }).then((result) => console.log({ result }));
             return yield this.CommandService.removeOne(entity, options);
         });
         this.updateOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const result = yield this.CommandService.updateOne(entity, Entity, options);
             if (result)
-                this.TaskMessageService.sendMessage({
+                dependencies_1.TaskMessageService.sendMessage({
                     queryServiceUpdateOne: {
                         queryServiceUpdateOne: [entity, Entity, options],
                     },
@@ -53,7 +52,7 @@ class CQRSService {
             return result;
         });
         this.setOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
-            this.TaskMessageService.sendMessage({
+            dependencies_1.TaskMessageService.sendMessage({
                 queryServiceSetOneRelationship2One: {
                     queryServiceSetOneRelationship2One: [entity, refs],
                 },
@@ -61,7 +60,7 @@ class CQRSService {
             return yield this.CommandService.setOneRelationship2One(entity, refs);
         });
         this.unsetOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
-            this.TaskMessageService.sendMessage({
+            dependencies_1.TaskMessageService.sendMessage({
                 queryServiceUnsetOneRelationship2One: {
                     queryServiceUnsetOneRelationship2One: [entity, refs],
                 },
@@ -69,7 +68,7 @@ class CQRSService {
             return yield this.CommandService.unsetOneRelationship2One(entity, refs);
         });
         this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
-            this.TaskMessageService.sendMessage({
+            dependencies_1.TaskMessageService.sendMessage({
                 queryServiceCreateOneRelationshipN2N: {
                     queryServiceCreateOneRelationshipN2N: [refs],
                 },
@@ -77,7 +76,7 @@ class CQRSService {
             return yield this.CommandService.createOneRelationshipN2N(refs);
         });
         this.removeOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
-            this.TaskMessageService.sendMessage({
+            dependencies_1.TaskMessageService.sendMessage({
                 queryServiceRemoveOneRelationshipN2N: {
                     queryServiceRemoveOneRelationshipN2N: [refs],
                 },
@@ -104,24 +103,38 @@ class CQRSService {
             yield this.CommandService.dropAllEntities();
             yield this.QueryService.dropAllEntities();
         });
-        this.TaskMessageService.createExchange("queryServiceCreateOne").receiveMessage({ queryServiceCreateOne: this.QueryService.createOne });
-        // this.TaskMessageService.createExchange(
-        //   "queryServiceCreateMany"
-        // ).receiveMessage({ queryServiceCreateMany: this.QueryService.createMany });
-        this.TaskMessageService.createExchange("queryServiceCreateOneRelationshipN2N").receiveMessage({
+        dependencies_1.TaskMessageService.createExchange("queryServiceCreateOne");
+        dependencies_1.TaskMessageService.receiveMessage({
+            queryServiceCreateOne: this.QueryService.createOne,
+        });
+        // TaskMessageService.createExchange("queryServiceCreateMany");
+        // TaskMessageService.receiveMessage({
+        //   queryServiceCreateMany: this.QueryService.createMany,
+        // });
+        dependencies_1.TaskMessageService.createExchange("queryServiceCreateOneRelationshipN2N");
+        dependencies_1.TaskMessageService.receiveMessage({
             queryServiceCreateOneRelationshipN2N: this.QueryService.createOneRelationshipN2N,
         });
-        this.TaskMessageService.createExchange("queryServiceRemoveOneRelationshipN2N").receiveMessage({
+        dependencies_1.TaskMessageService.createExchange("queryServiceRemoveOneRelationshipN2N");
+        dependencies_1.TaskMessageService.receiveMessage({
             queryServiceRemoveOneRelationshipN2N: this.QueryService.removeOneRelationshipN2N,
         });
-        this.TaskMessageService.createExchange("queryServiceSetOneRelationship2One").receiveMessage({
+        dependencies_1.TaskMessageService.createExchange("queryServiceSetOneRelationship2One");
+        dependencies_1.TaskMessageService.receiveMessage({
             queryServiceSetOneRelationship2One: this.QueryService.setOneRelationship2One,
         });
-        this.TaskMessageService.createExchange("queryServiceUnsetOneRelationship2One").receiveMessage({
+        dependencies_1.TaskMessageService.createExchange("queryServiceUnsetOneRelationship2One");
+        dependencies_1.TaskMessageService.receiveMessage({
             queryServiceUnsetOneRelationship2One: this.QueryService.unsetOneRelationship2One,
         });
-        this.TaskMessageService.createExchange("queryServiceUpdateOne").receiveMessage({ queryServiceUpdateOne: this.QueryService.updateOne });
-        this.TaskMessageService.createExchange("queryServiceRemoveOne").receiveMessage({ queryServiceRemoveOne: this.QueryService.removeOne });
+        dependencies_1.TaskMessageService.createExchange("queryServiceUpdateOne");
+        dependencies_1.TaskMessageService.receiveMessage({
+            queryServiceUpdateOne: this.QueryService.updateOne,
+        });
+        // TaskMessageService.createExchange(
+        //   "queryServiceRemoveOne"
+        // )
+        //TaskMessageService.receiveMessage({ queryServiceRemoveOne: this.QueryService.removeOne });
     }
 }
 exports.CQRSService = CQRSService;
