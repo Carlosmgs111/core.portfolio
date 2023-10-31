@@ -31,12 +31,13 @@ const generatedImages = (images) => __awaiter(void 0, void 0, void 0, function* 
         console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
         throw new Error(error.message);
     }
+    console.log({ images });
     return images;
 });
 exports.generatedImages = generatedImages;
 const generateImages = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { prompt, options = {} } = data;
-    const response = yield dependencies_1.TaskMessageService.sendMessage({
+    dependencies_1.TaskMessageService.sendMessage({
         generateImages: {
             generateImages: [
                 prompt,
@@ -44,8 +45,6 @@ const generateImages = (data) => __awaiter(void 0, void 0, void 0, function* () 
             ],
         },
     }, exports.generatedImages);
-    // console.log({ response });
-    return response;
 });
 exports.generateImages = generateImages;
 dependencies_1.SocketService.addEvent({ generateImages: exports.generateImages });

@@ -61,7 +61,7 @@ export class CQRSService {
         },
       },
       { queryServiceCreateMany: this.QueryService.createMany }
-    ).then((result: any) => console.log({ result }));
+    );
     return await this.CommandService.createMany(entity, entities, options);
   };
   findOne = async (entity: any, options: any = {}) =>
@@ -74,7 +74,7 @@ export class CQRSService {
         queryServiceRemoveOne: { queryServiceRemoveOne: [entity, options] },
       },
       { queryServiceRemoveOne: this.QueryService.removeOne }
-    ).then((result: any) => console.log({ result }));
+    );
     return await this.CommandService.removeOne(entity, options);
   };
   updateOne = async (entity: any, Entity: any, options: any = {}) => {

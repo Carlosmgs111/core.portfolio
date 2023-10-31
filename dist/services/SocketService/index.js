@@ -54,21 +54,24 @@ class SocketService {
         this.setEvents = (socket) => {
             this.events.forEach((event) => {
                 const [name, cb] = (0, utils_1.Mapfy)(event).entries().next().value;
+                console.log({ name });
                 socket.addListener(name, (payload) => {
                     const [response, data] = (0, utils_1.Mapfy)(payload).entries().next().value;
+                    console.log({ response });
                     if (Array.isArray(data))
-                        cb(...data)
-                            .then((result) => {
-                            socket.emit(response, result);
-                            return result;
-                        })
-                            .catch((e) => console.log(e.message.bgRed));
+                        cb(...data);
+                    // .then((result: any) => {
+                    //   console.log({ result });
+                    //   socket.emit(response, result);
+                    //   return result;
+                    // })
+                    // .catch((e: any) => console.log(e.message.bgRed));
                     // .finally(() => console.log("Solved!".green));
                     else
-                        cb(data).then((result) => {
-                            socket.emit(response, result);
-                            return result;
-                        });
+                        cb(data); /* .then((result: any) => {
+                      socket.emit(response, result);
+                      return result;
+                    }); */
                     // .finally(() => console.log("Solved!".green));
                 });
             });

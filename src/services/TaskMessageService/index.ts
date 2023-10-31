@@ -111,7 +111,7 @@ export class TaskMessageService {
         })
         .catch((e: any) => console.log(e.message));
     });
-
+    console.log("SENDING!");
     if (receiverFunc) {
       return this.receiveMessage(receiverFunc);
     }
@@ -120,91 +120,48 @@ export class TaskMessageService {
 
   receiveMessage = (payload: any, type: any = TYPE): any => {
     let [exchangeName, cb]: ["", Function] = ["", (...[]) => {}];
-
     if (payload instanceof Function) {
       [exchangeName, cb] = [payload.name, payload];
     } else if (payload instanceof Object) {
       [exchangeName, cb] = Mapfy(payload).entries().next().value;
     }
-
     const formatedExchangeName = `${exchangeName}/type=${type}`;
     const queueName = `${formatedExchangeName}_1`;
 
     if (!Mapfy(this.consumers).has(queueName)) {
-      this.consumers[queueName] = (resolve: any, reject: any) => {
-        this.getChannel().then((_channel: any) => {
-          _channel
-            .assertQueue(queueName, {
-              exclusive: true,
-              // durable: true,
-            })
-            .then(async (q: any) => {
-              const { queue } = q;
-              _channel.bindQueue(queue, formatedExchangeName, queueName);
-              const { consumerTag } = await _channel
-                .consume(queue, (message: any) => {
-                  const decoded = JSON.parse(message.content.toString());
-                  try {
-                    // console.log({ ...decoded });
-                    if (message !== null) {
-                      if (Array.isArray(decoded))
-                        cb(...decoded)
-                          .then((_message: any) => {
-                            console.log({ _message });
-                            // console.log({ _channel });
-                            resolve(_message);
-                            return _message;
-                          })
-                          .catch((e: any) => {
-                            console.log(e.message.bgRed);
-                            reject(e);
-                            return;
-                          });
-                      else
-                        cb(decoded)
-                          .then((_message: any) => {
-                            resolve(_message);
-                            return _message;
-                          })
-                          .catch((e: any) => {
-                            reject(e);
-                          });
-                      _channel.ack(message);
-                    }
-                  } catch (e: any) {
-                    console.log(e.message.red);
-                    reject(e.message);
-                  } finally {
-                    return;
+      this.getChannel().then((_channel: any) => {
+        _channel
+          .assertQueue(queueName, {
+            exclusive: true,
+          })
+          .then(({ queue }: any) => {
+            console.log({ queue });
+            _channel
+              .bindQueue(queue, formatedExchangeName, queueName)
+              .catch((e: any) => console.log({ e: e.message }));
+            _channel
+              .consume(queue, (message: any) => {
+                const decoded = JSON.parse(message.content.toString());
+                try {
+                  if (message !== null) {
+                    if (Array.isArray(decoded)) cb(...decoded);
+                    else cb(decoded);
+                    _channel.ack(message);
                   }
-                })
-                .catch((e: any) => {
-                  console.log(e.message.red);
-                  reject(e.message);
-                });
-            })
-            .catch((error: any) => reject(error.message));
-        });
-      };
-    }
-
-    return new Promise((resolve: any, reject: any) => {
-      this.consumers[queueName](resolve, reject);
-    })
-      .then((data: any) => {
-        console.log({ data });
-        return data;
-      })
-      .catch((e: any) => {
-        console.log(
-          "Error in catch callback of Promise returned from receiveMessage: "
-            .bgYellow,
-          e.message.bgRed
-        );
+                } catch (e: any) {
+                } finally {
+                  return;
+                }
+              })
+              .then(({ consumerTag }: any) => {
+                this.consumers[queueName] = consumerTag;
+                // console.log({ consumerTag });
+                console.log(this.consumers);
+              })
+              .catch((e: any) => {});
+          });
       });
-    //  .finally(() => {
-    //    console.log("Finished!".bgGreen);
-    //  });
+    }
   };
 
   close = async () => {

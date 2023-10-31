@@ -30,7 +30,7 @@ class CQRSService {
                 queryServiceCreateMany: {
                     queryServiceCreateMany: [entity, entities, options],
                 },
-            }, { queryServiceCreateMany: this.QueryService.createMany }).then((result) => console.log({ result }));
+            }, { queryServiceCreateMany: this.QueryService.createMany });
             return yield this.CommandService.createMany(entity, entities, options);
         });
         this.findOne = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () { return yield this.QueryService.findOne(entity, options); });
@@ -38,7 +38,7 @@ class CQRSService {
         this.removeOne = (entity, options) => __awaiter(this, void 0, void 0, function* () {
             dependencies_1.TaskMessageService.sendMessage({
                 queryServiceRemoveOne: { queryServiceRemoveOne: [entity, options] },
-            }, { queryServiceRemoveOne: this.QueryService.removeOne }).then((result) => console.log({ result }));
+            }, { queryServiceRemoveOne: this.QueryService.removeOne });
             return yield this.CommandService.removeOne(entity, options);
         });
         this.updateOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
