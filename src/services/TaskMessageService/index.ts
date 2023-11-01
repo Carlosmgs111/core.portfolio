@@ -9,116 +9,106 @@ console.log(
   !rabbitMQUrlDev ? "MQ PRODUCTION".bgGreen : "MQ DEVELOPMENT".bgYellow
 );
 
-const TYPE = "direct";
-
 export class TaskMessageService {
   connection: any = null;
   channel: any = null;
-  consumers: any = {};
 
-  constructor() {}
+  constructor() {
+    this.setup();
+  }
 
-  getConnection = () =>
-    new Promise((resolve, reject) => {
-      if (this.connection) {
-        resolve(this.connection);
-      } else {
-        amqp
-          .connect(rabbitMQUrl)
-          .then((connection) => {
-            this.connection = connection;
-            resolve(connection);
+  setup = () => {
+    amqp
+      .connect(rabbitMQUrl)
+      .then((connection: any) => {
+        this.connection = connection;
+        connection
+          .createChannel()
+          .then((channel: any) => {
+            this.channel = channel;
           })
-          .catch((error) => {
-            console.error("Error al conectar a RabbitMQ:", error);
-            reject(error);
+          .catch((error: any) => {
+            console.log({ ["Error message in setup"]: error.message.red });
           });
-      }
-    });
+        process.on("SIGINT", () => connection.close());
+      })
+      .catch((error: any) => {
+        console.log(error.message.bgRed);
+      });
+  };
 
   getChannel = () =>
     new Promise((resolve: any, reject: any) => {
-      if (this.channel) {
-        resolve(this.channel);
-      } else {
-        this.getConnection()
-          .then((_connection: any) => {
-            _connection
+      if (!this.channel) {
+        const delayedProcess = setTimeout(() => {
+          if (this.channel) {
+            resolve(this.channel);
+            clearTimeout(delayedProcess);
+          }
+          if (!this.channel) {
+            this.connection
               .createChannel()
               .then((channel: any) => {
                 this.channel = channel;
-                resolve(channel);
+                resolve([this.connection, channel]);
               })
               .catch((error: any) => {
-                console.error("Error en setup:", error);
+                console.log({ ["Error message in setup"]: error.message.red });
                 reject(error);
               });
-          })
-          .catch((e) => console.log({ e }));
+            process.on("SIGINT", () => this.connection.close());
+          }
+        }, 5000);
+      } else {
+        resolve(this.channel);
       }
     }).then((data) => data);
 
-  createExchange = (exchangeName: any, type: any = TYPE) => {
-    const formatedExchangeName = `${exchangeName}/type=${type}`;
-    return new Promise((resolve, reject) => {
-      this.getChannel()
-        .then((_channel: any) => {
-          _channel
-            .assertExchange(formatedExchangeName, type, {
-              durable: false,
-              // exclusive: false,
-            })
-            .then(({ exchange }: any) => {
-              resolve(exchange);
-            })
-            .catch((e: any) => {
-              console.log({ "Error message in createExchange": e.message.red });
-            });
+  createExchange = (exchangeName: any, type: any = "fanout") => {
+    this.getChannel().then((_channel: any) => {
+      _channel
+        .assertExchange(exchangeName, type, {
+          durable: false,
+          exclusive: false,
         })
-        .catch((e) => console.log(e));
+        .catch((e: any) => {
+          console.log({ ["Error message in createExchange"]: e.message.red });
+        });
     });
+
+    return this;
   };
 
-  sendMessage = async (
+  sendMessage = (
     payload: any,
     receiverFunc: any = undefined,
-    conf: any = { type: TYPE }
+    conf: any = { type: "fanout" }
   ) => {
     const { type }: any = conf;
     const [exchangeName, _payload] = Mapfy(payload).entries().next().value;
     const [functionName, message] = Mapfy(_payload).entries().next().value;
-    const formatedExchangeName = `${exchangeName}/type=${type}`;
-    const queueName = `${formatedExchangeName}_1`;
 
-    this.createExchange(exchangeName).then(() => {
-      this.getChannel()
-        .then((_channel: any) => {
-          _channel
-            .assertExchange(formatedExchangeName, type, {
-              durable: false,
-              // exclusive: true,
-            })
-            .finally(() => {
-              _channel.publish(
-                formatedExchangeName,
-                queueName,
-                Buffer.from(JSON.stringify(message))
-              );
-            })
-            .catch((e: any) => {
-              console.log({ "Error message in sendMessage": e.message.red });
-            });
+    this.getChannel().then((_channel: any) => {
+      _channel
+        .assertExchange(exchangeName, type, {
+          durable: false,
+          exclusive: false,
         })
-        .catch((e: any) => console.log(e.message));
+        .catch((e: any) => {
+          console.log({ ["Error message in sendMessage"]: e.message.red });
+        });
+      _channel.publish(
+        exchangeName,
+        `${functionName}_1`,
+        Buffer.from(JSON.stringify(message))
+      );
     });
 
-    if (receiverFunc) {
-      return this.receiveMessage(receiverFunc);
-    }
+    if (receiverFunc) return this.receiveMessage(receiverFunc);
     return this;
   };
 
-  receiveMessage = (payload: any, type: any = TYPE): any => {
+  receiveMessage = (payload: any): any => {
     let [exchangeName, cb]: ["", Function] = ["", (...[]) => {}];
 
     if (payload instanceof Function) {
@@ -127,69 +117,61 @@ export class TaskMessageService {
       [exchangeName, cb] = Mapfy(payload).entries().next().value;
     }
 
-    const formatedExchangeName = `${exchangeName}/type=${type}`;
-    const queueName = `${formatedExchangeName}_1`;
-
-    if (!Mapfy(this.consumers).has(queueName)) {
-      this.consumers[queueName] = (resolve: any, reject: any) => {
-        this.getChannel().then((_channel: any) => {
-          _channel
-            .assertQueue(queueName, {
-              exclusive: true,
-              // durable: true,
-            })
-            .then(async (q: any) => {
-              const { queue } = q;
-              _channel.bindQueue(queue, formatedExchangeName, queueName);
-              const { consumerTag } = await _channel
-                .consume(queue, (message: any) => {
-                  const decoded = JSON.parse(message.content.toString());
-                  try {
-                    // console.log({ ...decoded });
-                    if (message !== null) {
-                      if (Array.isArray(decoded))
-                        cb(...decoded)
-                          .then((_message: any) => {
-                            console.log({ _message });
-                            // console.log({ _channel });
-                            resolve(_message);
-                            return _message;
-                          })
-                          .catch((e: any) => {
-                            console.log(e.message.bgRed);
-                            reject(e);
-                            return;
-                          });
-                      else
-                        cb(decoded)
-                          .then((_message: any) => {
-                            resolve(_message);
-                            return _message;
-                          })
-                          .catch((e: any) => {
-                            reject(e);
-                          });
-                      _channel.ack(message);
-                    }
-                  } catch (e: any) {
-                    console.log(e.message.red);
-                    reject(e.message);
-                  } finally {
-                    return;
+    return new Promise((resolve: any, reject: any) => {
+      this.getChannel().then((_channel: any) => {
+        _channel
+          .assertQueue(`${exchangeName}_1`, {
+            exclusive: false,
+            durable: true,
+          })
+          .then(async (q: any) => {
+            const { queue } = q;
+            _channel.bindQueue(queue, exchangeName, exchangeName);
+            const { consumerTag } = await _channel
+              .consume(queue, (message: any) => {
+                const decoded = JSON.parse(message.content.toString());
+                try {
+                  if (message !== null) {
+                    if (Array.isArray(decoded))
+                      cb(...decoded)
+                        .then((_message: any) => {
+                          console.log({ _channel });
+                          resolve(_message);
+                          return _message;
+                        })
+                        .catch((e: any) => {
+                          console.log(e.message.red);
+                          reject(e);
+                          return;
+                        });
+                    else
+                      cb(decoded)
+                        .then((_message: any) => {
+                          resolve(_message);
+                          return _message;
+                        })
+                        .catch((e: any) => {
+                          reject(e);
+                        });
+                    _channel.ack(message);
+                    // ? The channel shouldn't be closed, but when it is closed avoid abnormal behavior in promise
+                    // ? resolution, in this case with generate image service
+                    //_channel.cancel(consumerTag);
                   }
-                })
-                .catch((e: any) => {
+                } catch (e: any) {
                   console.log(e.message.red);
                   reject(e.message);
-                });
-            })
-            .catch((error: any) => reject(error.message));
-        });
-      };
-    }
-
-    return new Promise((resolve: any, reject: any) => {
-      this.consumers[queueName](resolve, reject);
+                } finally {
+                  return;
+                }
+              })
+              .catch((e: any) => {
+                console.log(e.message.red);
+                reject(e.message);
+              });
+          })
+          .catch((error: any) => reject(error.message));
+      });
     })
       .then((data: any) => {
         console.log({ data });
