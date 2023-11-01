@@ -31,7 +31,6 @@ const generatedImages = (images) => __awaiter(void 0, void 0, void 0, function* 
         console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
         throw new Error(error.message);
     }
-    console.log({ images });
     return images;
 });
 exports.generatedImages = generatedImages;

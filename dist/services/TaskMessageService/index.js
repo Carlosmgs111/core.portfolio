@@ -89,7 +89,7 @@ class TaskMessageService {
             const [functionName, message] = (0, utils_1.Mapfy)(_payload).entries().next().value;
             const formatedExchangeName = `${exchangeName}/type=${type}`;
             const queueName = `${formatedExchangeName}_1`;
-            this.createExchange(exchangeName).then(() => {
+            this.createExchange(exchangeName).then((exchange) => {
                 this.getChannel()
                     .then((_channel) => {
                     _channel
@@ -106,7 +106,6 @@ class TaskMessageService {
                 })
                     .catch((e) => console.log(e.message));
             });
-            console.log("SENDING!");
             if (receiverFunc) {
                 return this.receiveMessage(receiverFunc);
             }
@@ -123,40 +122,41 @@ class TaskMessageService {
             const formatedExchangeName = `${exchangeName}/type=${type}`;
             const queueName = `${formatedExchangeName}_1`;
             if (!(0, utils_1.Mapfy)(this.consumers).has(queueName)) {
-                this.getChannel().then((_channel) => {
-                    _channel
-                        .assertQueue(queueName, {
-                        exclusive: true,
-                    })
-                        .then(({ queue }) => {
-                        console.log({ queue });
+                this.createExchange(exchangeName).then(() => {
+                    this.getChannel().then((_channel) => {
                         _channel
-                            .bindQueue(queue, formatedExchangeName, queueName)
-                            .catch((e) => console.log({ e: e.message }));
-                        _channel
-                            .consume(queue, (message) => {
-                            const decoded = JSON.parse(message.content.toString());
-                            try {
-                                if (message !== null) {
-                                    if (Array.isArray(decoded))
-                                        cb(...decoded);
-                                    else
-                                        cb(decoded);
-                                    _channel.ack(message);
+                            .assertQueue(queueName, {
+                            exclusive: true,
+                        })
+                            .then(({ queue }) => {
+                            _channel
+                                .bindQueue(queue, formatedExchangeName, queueName)
+                                .catch((e) => console.log({ e: e.message }));
+                            _channel
+                                .consume(queue, (message) => {
+                                try {
+                                    if (message !== null) {
+                                        const decoded = JSON.parse(message.content.toString());
+                                        if (Array.isArray(decoded))
+                                            cb(...decoded);
+                                        else
+                                            cb(decoded);
+                                        _channel.ack(message);
+                                    }
                                 }
-                            }
-                            catch (e) {
-                            }
-                            finally {
-                                return;
-                            }
-                        })
-                            .then(({ consumerTag }) => {
-                            this.consumers[queueName] = consumerTag;
-                            // console.log({ consumerTag });
-                            console.log(this.consumers);
-                        })
-                            .catch((e) => { });
+                                catch (e) {
+                                }
+                                finally {
+                                    return;
+                                }
+                            })
+                                .then(({ consumerTag }) => {
+                                this.consumers[queueName] = consumerTag;
+                            })
+                                .catch((e) => {
+                                console.log(e);
+                            });
+                        });
                     });
                 });
             }

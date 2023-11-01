@@ -19,7 +19,7 @@ export const generatedImages = async (images: any) => {
     console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
     throw new Error(error.message);
   }
-  console.log({ images });
+  
   return images;
 };
 
