@@ -6,46 +6,13 @@ export class CQRSService {
   CommandService = DatabaseService(Adapters.SequelizeAdapter);
   lastSync: number = new Date().getTime();
 
-  constructor() {
-    TaskMessageService.createExchange("queryServiceCreateOne").receiveMessage({
-      queryServiceCreateOne: this.QueryService.createOne,
-    });
-    // TaskMessageService.createExchange(
-    //   "queryServiceCreateMany"
-    // ).receiveMessage({ queryServiceCreateMany: this.QueryService.createMany });
-    TaskMessageService.createExchange(
-      "queryServiceCreateOneRelationshipN2N"
-    ).receiveMessage({
-      queryServiceCreateOneRelationshipN2N:
-        this.QueryService.createOneRelationshipN2N,
-    });
-    TaskMessageService.createExchange(
-      "queryServiceRemoveOneRelationshipN2N"
-    ).receiveMessage({
-      queryServiceRemoveOneRelationshipN2N:
-        this.QueryService.removeOneRelationshipN2N,
-    });
-    TaskMessageService.createExchange(
-      "queryServiceSetOneRelationship2One"
-    ).receiveMessage({
-      queryServiceSetOneRelationship2One:
-        this.QueryService.setOneRelationship2One,
-    });
-    TaskMessageService.createExchange(
-      "queryServiceUnsetOneRelationship2One"
-    ).receiveMessage({
-      queryServiceUnsetOneRelationship2One:
-        this.QueryService.unsetOneRelationship2One,
-    });
-    TaskMessageService.createExchange("queryServiceUpdateOne").receiveMessage({
-      queryServiceUpdateOne: this.QueryService.updateOne,
-    });
-    // TaskMessageService.createExchange("queryServiceRemoveOne").receiveMessage({
-    //   queryServiceRemoveOne: this.QueryService.removeOne,
-    // });
-  }
+  constructor() {}
 
   createOne = async (entity: any, Entity: any, options: any = {}) => {
+    await TaskMessageService.assertExchange("queryServiceCreateOne");
+    await TaskMessageService.receiveMessage({
+      queryServiceCreateOne: this.QueryService.createOne,
+    });
     TaskMessageService.sendMessage({
       queryServiceCreateOne: {
         queryServiceCreateOne: [entity, Entity, options],
@@ -54,6 +21,10 @@ export class CQRSService {
     return await this.CommandService.createOne(entity, Entity, options);
   };
   createMany = async (entity: any, entities: any, options: any = {}) => {
+    await TaskMessageService.assertExchange("queryServiceCreateMany");
+    await TaskMessageService.receiveMessage({
+      queryServiceCreateMany: this.QueryService.createMany,
+    });
     TaskMessageService.sendMessage(
       {
         queryServiceCreateMany: {
@@ -73,17 +44,20 @@ export class CQRSService {
   findAll = async (entity: any, options: any = {}) =>
     await this.QueryService.findAll(entity, options);
   removeOne = async (entity: any, options: any) => {
-    TaskMessageService.sendMessage(
-      {
-        queryServiceRemoveOne: { queryServiceRemoveOne: [entity, options] },
-      },
-      { queryServiceRemoveOne: this.QueryService.removeOne }
-    ).then((result: any) => {
-      console.log({ result });
+    await TaskMessageService.assertExchange("queryServiceRemoveOne");
+    await TaskMessageService.receiveMessage({
+      queryServiceRemoveOne: this.QueryService.removeOne,
+    });
+    TaskMessageService.sendMessage({
+      queryServiceRemoveOne: { queryServiceRemoveOne: [entity, options] },
     });
     return await this.CommandService.removeOne(entity, options);
   };
   updateOne = async (entity: any, Entity: any, options: any = {}) => {
+    await TaskMessageService.assertExchange("queryServiceUpdateOne");
+    await TaskMessageService.receiveMessage({
+      queryServiceUpdateOne: this.QueryService.updateOne,
+    });
     const result = await this.CommandService.updateOne(entity, Entity, options);
     if (result)
       TaskMessageService.sendMessage({
@@ -94,6 +68,13 @@ export class CQRSService {
     return result;
   };
   setOneRelationship2One = async (entity: any, refs: any) => {
+    await TaskMessageService.assertExchange(
+      "queryServiceSetOneRelationship2One"
+    );
+    await TaskMessageService.receiveMessage({
+      queryServiceSetOneRelationship2One:
+        this.QueryService.setOneRelationship2One,
+    });
     TaskMessageService.sendMessage({
       queryServiceSetOneRelationship2One: {
         queryServiceSetOneRelationship2One: [entity, refs],
@@ -102,6 +83,13 @@ export class CQRSService {
     return await this.CommandService.setOneRelationship2One(entity, refs);
   };
   unsetOneRelationship2One = async (entity: any, refs: any) => {
+    await TaskMessageService.assertExchange(
+      "queryServiceUnsetOneRelationship2One"
+    );
+    await TaskMessageService.receiveMessage({
+      queryServiceUnsetOneRelationship2One:
+        this.QueryService.unsetOneRelationship2One,
+    });
     TaskMessageService.sendMessage({
       queryServiceUnsetOneRelationship2One: {
         queryServiceUnsetOneRelationship2One: [entity, refs],
@@ -110,6 +98,13 @@ export class CQRSService {
     return await this.CommandService.unsetOneRelationship2One(entity, refs);
   };
   createOneRelationshipN2N = async (refs: any) => {
+    await TaskMessageService.assertExchange(
+      "queryServiceCreateOneRelationshipN2N"
+    );
+    await TaskMessageService.receiveMessage({
+      queryServiceCreateOneRelationshipN2N:
+        this.QueryService.createOneRelationshipN2N,
+    });
     TaskMessageService.sendMessage({
       queryServiceCreateOneRelationshipN2N: {
         queryServiceCreateOneRelationshipN2N: [refs],
@@ -118,6 +113,13 @@ export class CQRSService {
     return await this.CommandService.createOneRelationshipN2N(refs);
   };
   removeOneRelationshipN2N = async (refs: any) => {
+    await TaskMessageService.assertExchange(
+      "queryServiceRemoveOneRelationshipN2N"
+    );
+    await TaskMessageService.receiveMessage({
+      queryServiceRemoveOneRelationshipN2N:
+        this.QueryService.removeOneRelationshipN2N,
+    });
     TaskMessageService.sendMessage({
       queryServiceRemoveOneRelationshipN2N: {
         queryServiceRemoveOneRelationshipN2N: [refs],
