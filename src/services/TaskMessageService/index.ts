@@ -16,67 +16,55 @@ export class TaskMessageService {
   channel: any = null;
   consumers: any = {};
 
-  constructor() {}
+  constructor() {
+    (async () => {
+      this.connection = await this.connectToRabbitMQ();
+    })();
+  }
 
-  getConnection = () =>
-    new Promise((resolve, reject) => {
-      if (this.connection) {
-        resolve(this.connection);
-      } else {
-        amqp
-          .connect(rabbitMQUrl)
-          .then((connection) => {
-            this.connection = connection;
-            resolve(connection);
-          })
-          .catch((error) => {
-            console.error("Error al conectar a RabbitMQ:", error);
-            reject(error);
-          });
+  async connectToRabbitMQ() {
+    if (this.connection) {
+      return this.connection;
+    }
+
+    try {
+      this.connection = await amqp.connect(rabbitMQUrl);
+      this.connection.on("close", () => {
+        this.connection = null;
+      });
+      return this.connection;
+    } catch (error) {
+      console.error("Error al conectar a RabbitMQ:", error);
+      throw error;
+    }
+  }
+
+  getChannel = async () => {
+    if (this.channel) {
+      return this.channel;
+    } else {
+      const connection = await this.connectToRabbitMQ();
+      try {
+        return await connection.createChannel();
+      } catch (e: any) {
+        console.log(e.message.red);
       }
-    });
+    }
+  };
 
-  getChannel = () =>
-    new Promise((resolve: any, reject: any) => {
-      if (this.channel) {
-        resolve(this.channel);
-      } else {
-        this.getConnection()
-          .then((_connection: any) => {
-            _connection
-              .createChannel()
-              .then((channel: any) => {
-                this.channel = channel;
-                resolve(channel);
-              })
-              .catch((error: any) => {
-                console.error("Error en setup:", error);
-                reject(error);
-              });
-          })
-          .catch((e) => console.log({ e }));
-      }
-    }).then((data) => data);
-
-  createExchange = (exchangeName: any, type: any = TYPE) => {
+  assertExchange = async (exchangeName: any, type: any = TYPE) => {
     const formatedExchangeName = `${exchangeName}/type=${type}`;
-    return new Promise((resolve, reject) => {
-      this.getChannel()
-        .then((_channel: any) => {
-          _channel
-            .assertExchange(formatedExchangeName, type, {
-              durable: false,
-              // exclusive: false,
-            })
-            .then(({ exchange }: any) => {
-              resolve(exchange);
-            })
-            .catch((e: any) => {
-              console.log({ "Error message in createExchange": e.message.red });
-            });
-        })
-        .catch((e) => console.log(e));
-    });
+    const _channel = await this.getChannel();
+
+    const { exchange } = await _channel.assertExchange(
+      formatedExchangeName,
+      type,
+      {
+        durable: false,
+        // exclusive: false,
+      }
+    );
+    return exchange;
   };
 
   sendMessage = async (
@@ -89,36 +77,29 @@ export class TaskMessageService {
     const [functionName, message] = Mapfy(_payload).entries().next().value;
     const formatedExchangeName = `${exchangeName}/type=${type}`;
     const queueName = `${formatedExchangeName}_1`;
+    try {
+      await this.assertExchange(exchangeName);
+      const _channel = await this.getChannel();
+      await _channel.assertExchange(formatedExchangeName, type, {
+        durable: false,
+        // exclusive: true,
+      });
+      await _channel.publish(
+        formatedExchangeName,
+        queueName,
+        Buffer.from(JSON.stringify(message))
+      );
+    } catch (e: any) {
+      console.log(e.message.gbRed);
+    }
 
-    this.createExchange(exchangeName).then((exchange: any) => {
-      this.getChannel()
-        .then((_channel: any) => {
-          _channel
-            .assertExchange(formatedExchangeName, type, {
-              durable: false,
-              // exclusive: true,
-            })
-            .finally(() => {
-              _channel.publish(
-                formatedExchangeName,
-                queueName,
-                Buffer.from(JSON.stringify(message))
-              );
-            })
-            .catch((e: any) => {
-              console.log({ "Error message in sendMessage": e.message.red });
-            });
-        })
-        .catch((e: any) => console.log(e.message));
-    });
     if (receiverFunc) {
-      return this.receiveMessage(receiverFunc);
+      await this.receiveMessage(receiverFunc);
     }
     return this;
   };
 
-  receiveMessage = (payload: any, type: any = TYPE): any => {
-    
+  receiveMessage = async (payload: any, type: any = TYPE): Promise<any> => {
     let [exchangeName, cb]: ["", Function] = ["", (...[]) => {}];
     if (payload instanceof Function) {
       [exchangeName, cb] = [payload.name, payload];
@@ -129,41 +110,36 @@ export class TaskMessageService {
     const queueName = `${formatedExchangeName}_1`;
 
     if (!Mapfy(this.consumers).has(queueName)) {
-      this.createExchange(exchangeName).then(() => {
-        this.getChannel().then((_channel: any) => {
-          _channel
-            .assertQueue(queueName, {
-              exclusive: true,
-            })
-            .then(({ queue }: any) => {
-              _channel
-                .bindQueue(queue, formatedExchangeName, queueName)
-                .catch((e: any) => console.log({ e: e.message }));
-              _channel
-                .consume(queue, (message: any) => {
-                  try {
-                    if (message !== null) {
-                      const decoded = JSON.parse(message.content.toString());
-                      if (Array.isArray(decoded)) cb(...decoded);
-                      else cb(decoded);
-                      _channel.ack(message);
-                    }
-                  } catch (e: any) {
-                  } finally {
-                    return;
-                  }
-                })
-                .then(({ consumerTag }: any) => {
-                  this.consumers[queueName] = consumerTag;
-                })
-                .catch((e: any) => {
-                  console.log(e);
-                });
-            });
-        });
+      await this.assertExchange(exchangeName);
+      const _channel = await this.getChannel();
+      const { queue } = await _channel.assertQueue(queueName, {
+        exclusive: true,
       });
+      await _channel
+        .bindQueue(queue, formatedExchangeName, queueName)
+        .catch((e: any) => console.log({ e: e.message }));
+
+      const consumerTag = await _channel.consume(queue, (message: any) => {
+        if (message !== null) {
+          const decoded = JSON.parse(message.content.toString());
+          if (Array.isArray(decoded))
+            cb(...decoded)
+              .then((_result: any) => {
+                console.log({ _result });
+              })
+              .catch((err: any) => console.log({ err }));
+          else
+            cb(decoded).then((_result: any) => {
+              console.log({ _result });
+            });
+          _channel.ack(message);
+        }
+      });
+      this.consumers[queueName] = consumerTag;
     }
   };
+
+  addEvent = (cb: any) => {};
 
   close = async () => {
     await this.channel.close();
