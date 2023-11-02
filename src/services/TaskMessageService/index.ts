@@ -19,6 +19,7 @@ export class TaskMessageService {
   constructor() {
     (async () => {
       this.connection = await this.connectToRabbitMQ();
+      await this.getChannel()
     })();
   }
 
@@ -30,11 +31,13 @@ export class TaskMessageService {
     try {
       this.connection = await amqp.connect(rabbitMQUrl);
       this.connection.on("close", () => {
+        this.channel.close();
+        this.channel = null;
         this.connection = null;
       });
       return this.connection;
     } catch (error) {
-      console.error("Error al conectar a RabbitMQ:", error);
+      console.error("Error al conectar a RabbitMQ: ", error);
       throw error;
     }
   }
@@ -45,7 +48,9 @@ export class TaskMessageService {
     } else {
       const connection = await this.connectToRabbitMQ();
       try {
-        return await connection.createChannel();
+        const channel = await connection.createChannel();
+        this.channel = channel;
+        return channel;
       } catch (e: any) {
         console.log(e.message.red);
       }
@@ -80,10 +85,6 @@ export class TaskMessageService {
     try {
       await this.assertExchange(exchangeName);
       const _channel = await this.getChannel();
-      await _channel.assertExchange(formatedExchangeName, type, {
-        durable: false,
-        // exclusive: true,
-      });
       await _channel.publish(
         formatedExchangeName,
         queueName,

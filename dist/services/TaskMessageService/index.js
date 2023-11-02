@@ -32,7 +32,9 @@ class TaskMessageService {
             else {
                 const connection = yield this.connectToRabbitMQ();
                 try {
-                    return yield connection.createChannel();
+                    const channel = yield connection.createChannel();
+                    this.channel = channel;
+                    return channel;
                 }
                 catch (e) {
                     console.log(e.message.red);
@@ -57,10 +59,6 @@ class TaskMessageService {
             try {
                 yield this.assertExchange(exchangeName);
                 const _channel = yield this.getChannel();
-                yield _channel.assertExchange(formatedExchangeName, type, {
-                    durable: false,
-                    // exclusive: true,
-                });
                 yield _channel.publish(formatedExchangeName, queueName, Buffer.from(JSON.stringify(message)));
             }
             catch (e) {
@@ -116,6 +114,7 @@ class TaskMessageService {
         });
         (() => __awaiter(this, void 0, void 0, function* () {
             this.connection = yield this.connectToRabbitMQ();
+            yield this.getChannel();
         }))();
     }
     connectToRabbitMQ() {
@@ -126,12 +125,14 @@ class TaskMessageService {
             try {
                 this.connection = yield amqplib_1.default.connect(rabbitMQUrl);
                 this.connection.on("close", () => {
+                    this.channel.close();
+                    this.channel = null;
                     this.connection = null;
                 });
                 return this.connection;
             }
             catch (error) {
-                console.error("Error al conectar a RabbitMQ:", error);
+                console.error("Error al conectar a RabbitMQ: ", error);
                 throw error;
             }
         });
