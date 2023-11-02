@@ -6,10 +6,15 @@ defaults:
     working-directory: ./
 
 jobs:
+  
   unit-test:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install PNPM
+        shell: bash
+        run: npm i -g pnpm
+        
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -21,7 +26,7 @@ jobs:
 
       - name: Install
         shell: bash
-        run: pnpm install --legacy-peer-deps
+        run: pnpm install
 
       - name: Run unit test
         shell: bash
@@ -54,12 +59,16 @@ jobs:
           POSTGRES_PORT: 5432
 
     steps:
+      - name: Install PNPM
+        shell: bash
+        run: npm i -g pnpm
+
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Install
         shell: bash
-        run: pnpm install --legacy-peer-deps
+        run: pnpm install 
 
       - name: Run e2e test
         shell: bash

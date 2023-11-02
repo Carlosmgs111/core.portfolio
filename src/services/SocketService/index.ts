@@ -69,21 +69,24 @@ export class SocketService {
   private setEvents = (socket: any) => {
     this.events.forEach((event: any) => {
       const [name, cb] = Mapfy(event).entries().next().value;
+      console.log({ name });
       socket.addListener(name, (payload: any) => {
         const [response, data] = Mapfy(payload).entries().next().value;
+        console.log({ response });
         if (Array.isArray(data))
           cb(...data)
-            .then((result: any) => {
-              socket.emit(response, result);
-              return result;
-            })
-            .catch((e: any) => console.log(e.message.bgRed));
+            // .then((result: any) => {
+            //   console.log({ result });
+            //   socket.emit(response, result);
+            //   return result;
+            // })
+            // .catch((e: any) => console.log(e.message.bgRed));
         // .finally(() => console.log("Solved!".green));
         else
-          cb(data).then((result: any) => {
+          cb(data)/* .then((result: any) => {
             socket.emit(response, result);
             return result;
-          });
+          }); */
         // .finally(() => console.log("Solved!".green));
       });
     });
@@ -97,7 +100,6 @@ export class SocketService {
     clients.forEach((client: any) => {
       client.close();
     });
-    
 
     await server.disconnectSockets();
     await server.close();

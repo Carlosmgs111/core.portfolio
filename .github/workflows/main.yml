@@ -9,6 +9,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Install PNPM
+        shell: bash
+        run: npm i -g pnpm
+
       - name: Checkout
         uses: actions/checkout@v2
 
@@ -18,13 +22,16 @@ jobs:
           node-version: 16.x
 
       - name: Install packages
-        run: pnpm install 
+        shell: bash
+        run: pnpm install
 
       - name: Run tests
+        shell: bash
         run: pnpm test
 
       - name: Install Railway
-        run: npm install -g @railway/cli
+        shell: bash
+        run: npm install -g @railway/cli 
 
       - name: Deploy
         run: railway up
