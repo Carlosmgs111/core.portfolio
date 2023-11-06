@@ -36,7 +36,7 @@ const generatedImages = (images) => __awaiter(void 0, void 0, void 0, function* 
 exports.generatedImages = generatedImages;
 const generateImages = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { prompt, options = {} } = data;
-    dependencies_1.TaskMessageService.sendMessage({
+    dependencies_1.TaskMessageService.publish({
         generateImages: {
             generateImages: [
                 prompt,

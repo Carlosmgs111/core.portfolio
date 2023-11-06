@@ -72,7 +72,7 @@ export class TaskMessageService {
     return exchange;
   };
 
-  sendMessage = async (
+  publish = async (
     payload: any,
     receiverFunc: any = undefined,
     conf: any = { type: TYPE }
@@ -82,8 +82,8 @@ export class TaskMessageService {
     const [functionName, message] = Mapfy(_payload).entries().next().value;
     const formatedExchangeName = `${exchangeName}/type=${type}`;
     const queueName = `${formatedExchangeName}_1`;
+    await this.assertExchange(exchangeName);
     try {
-      await this.assertExchange(exchangeName);
       const _channel = await this.getChannel();
       await _channel.publish(
         formatedExchangeName,
@@ -93,14 +93,10 @@ export class TaskMessageService {
     } catch (e: any) {
       console.log(e.message.gbRed);
     }
-
-    if (receiverFunc) {
-      await this.receiveMessage(receiverFunc);
-    }
     return this;
   };
 
-  receiveMessage = async (payload: any, type: any = TYPE): Promise<any> => {
+  subscribe = async (payload: any, type: any = TYPE): Promise<any> => {
     let [exchangeName, cb]: ["", Function] = ["", (...[]) => {}];
     if (payload instanceof Function) {
       [exchangeName, cb] = [payload.name, payload];
@@ -109,9 +105,9 @@ export class TaskMessageService {
     }
     const formatedExchangeName = `${exchangeName}/type=${type}`;
     const queueName = `${formatedExchangeName}_1`;
+    await this.assertExchange(exchangeName);
 
     if (!Mapfy(this.consumers).has(queueName)) {
-      await this.assertExchange(exchangeName);
       const _channel = await this.getChannel();
       const { queue } = await _channel.assertQueue(queueName, {
         exclusive: true,
@@ -138,6 +134,7 @@ export class TaskMessageService {
       });
       this.consumers[queueName] = consumerTag;
     }
+    return this;
   };
 
   addEvent = (cb: any) => {};

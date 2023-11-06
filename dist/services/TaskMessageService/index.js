@@ -50,26 +50,23 @@ class TaskMessageService {
             });
             return exchange;
         });
-        this.sendMessage = (payload, receiverFunc = undefined, conf = { type: TYPE }) => __awaiter(this, void 0, void 0, function* () {
+        this.publish = (payload, receiverFunc = undefined, conf = { type: TYPE }) => __awaiter(this, void 0, void 0, function* () {
             const { type } = conf;
             const [exchangeName, _payload] = (0, utils_1.Mapfy)(payload).entries().next().value;
             const [functionName, message] = (0, utils_1.Mapfy)(_payload).entries().next().value;
             const formatedExchangeName = `${exchangeName}/type=${type}`;
             const queueName = `${formatedExchangeName}_1`;
+            yield this.assertExchange(exchangeName);
             try {
-                yield this.assertExchange(exchangeName);
                 const _channel = yield this.getChannel();
                 yield _channel.publish(formatedExchangeName, queueName, Buffer.from(JSON.stringify(message)));
             }
             catch (e) {
                 console.log(e.message.gbRed);
             }
-            if (receiverFunc) {
-                yield this.receiveMessage(receiverFunc);
-            }
             return this;
         });
-        this.receiveMessage = (payload, type = TYPE) => __awaiter(this, void 0, void 0, function* () {
+        this.subscribe = (payload, type = TYPE) => __awaiter(this, void 0, void 0, function* () {
             let [exchangeName, cb] = ["", (...[]) => { }];
             if (payload instanceof Function) {
                 [exchangeName, cb] = [payload.name, payload];
@@ -79,8 +76,8 @@ class TaskMessageService {
             }
             const formatedExchangeName = `${exchangeName}/type=${type}`;
             const queueName = `${formatedExchangeName}_1`;
+            yield this.assertExchange(exchangeName);
             if (!(0, utils_1.Mapfy)(this.consumers).has(queueName)) {
-                yield this.assertExchange(exchangeName);
                 const _channel = yield this.getChannel();
                 const { queue } = yield _channel.assertQueue(queueName, {
                     exclusive: true,
@@ -106,6 +103,7 @@ class TaskMessageService {
                 });
                 this.consumers[queueName] = consumerTag;
             }
+            return this;
         });
         this.addEvent = (cb) => { };
         this.close = () => __awaiter(this, void 0, void 0, function* () {

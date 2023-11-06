@@ -26,7 +26,7 @@ export const generatedImages = async (images: any) => {
 export const generateImages = async (data: any) => {
   const { prompt, options = {} } = data;
 
-  TaskMessageService.sendMessage(
+  TaskMessageService.publish(
     {
       generateImages: {
         generateImages: [
