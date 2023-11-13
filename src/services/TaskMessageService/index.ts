@@ -61,15 +61,19 @@ export class TaskMessageService {
     const formatedExchangeName = `${exchangeName}/type=${type}`;
     const _channel = await this.getChannel();
 
-    const { exchange } = await _channel.assertExchange(
-      formatedExchangeName,
-      type,
-      {
-        durable: false,
-        // exclusive: false,
-      }
-    );
-    return exchange;
+    try {
+      const { exchange } = await _channel.assertExchange(
+        formatedExchangeName,
+        type,
+        {
+          durable: false,
+          // exclusive: false,
+        }
+      );
+      return exchange;
+    } catch (e) {
+      console.log({ e });
+    }
   };
 
   publish = async (
@@ -79,9 +83,8 @@ export class TaskMessageService {
   ) => {
     const { type }: any = conf;
     const [exchangeName, _payload] = Mapfy(payload).entries().next().value;
-    const [functionName, message] = Mapfy(_payload).entries().next().value;
+    const [queueName, message] = Mapfy(_payload).entries().next().value;
     const formatedExchangeName = `${exchangeName}/type=${type}`;
-    const queueName = `${formatedExchangeName}_1`;
     await this.assertExchange(exchangeName);
     try {
       const _channel = await this.getChannel();
@@ -97,14 +100,10 @@ export class TaskMessageService {
   };
 
   subscribe = async (payload: any, type: any = TYPE): Promise<any> => {
-    let [exchangeName, cb]: ["", Function] = ["", (...[]) => {}];
-    if (payload instanceof Function) {
-      [exchangeName, cb] = [payload.name, payload];
-    } else if (payload instanceof Object) {
-      [exchangeName, cb] = Mapfy(payload).entries().next().value;
-    }
+    const [exchangeName, _payload] = Mapfy(payload).entries().next().value;
+    const [queueName, cb] = Mapfy(_payload).entries().next().value;
+
     const formatedExchangeName = `${exchangeName}/type=${type}`;
-    const queueName = `${formatedExchangeName}_1`;
     await this.assertExchange(exchangeName);
 
     if (!Mapfy(this.consumers).has(queueName)) {
@@ -117,12 +116,19 @@ export class TaskMessageService {
         .catch((e: any) => console.log({ e: e.message }));
 
       const consumerTag = await _channel.consume(queue, (message: any) => {
+        const { content, replyTo, correlationId } = message;
+        console.log({ replyTo, correlationId });
         if (message !== null) {
-          const decoded = JSON.parse(message.content.toString());
+          const decoded = JSON.parse(content.toString());
           if (Array.isArray(decoded))
             cb(...decoded)
               .then((_result: any) => {
                 console.log({ _result });
+                if (correlationId && replyTo) {
+                  _channel.sendToQueue(replyTo, Buffer.from(_result.toString), {
+                    correlationId,
+                  });
+                }
               })
               .catch((err: any) => console.log({ err }));
           else

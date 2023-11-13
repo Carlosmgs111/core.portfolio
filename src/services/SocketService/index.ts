@@ -71,23 +71,25 @@ export class SocketService {
       const [name, cb] = Mapfy(event).entries().next().value;
       console.log({ name });
       socket.addListener(name, (payload: any) => {
+        console.log({ payload });
         const [response, data] = Mapfy(payload).entries().next().value;
         console.log({ response });
         if (Array.isArray(data))
           cb(...data)
-            // .then((result: any) => {
-            //   console.log({ result });
-            //   socket.emit(response, result);
-            //   return result;
-            // })
-            // .catch((e: any) => console.log(e.message.bgRed));
-        // .finally(() => console.log("Solved!".green));
+            .then((result: any) => {
+              console.log({ result });
+              socket.emit(response, result);
+              return result;
+            })
+            .catch((e: any) => console.log(e.message.bgRed))
+            .finally(() => console.log("Solved!".green));
         else
-          cb(data)/* .then((result: any) => {
-            socket.emit(response, result);
-            return result;
-          }); */
-        // .finally(() => console.log("Solved!".green));
+          cb(data)
+            .then((result: any) => {
+              socket.emit(response, result);
+              return result;
+            })
+            .finally(() => console.log("Solved!".green));
       });
     });
   };

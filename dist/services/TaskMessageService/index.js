@@ -44,18 +44,22 @@ class TaskMessageService {
         this.assertExchange = (exchangeName, type = TYPE) => __awaiter(this, void 0, void 0, function* () {
             const formatedExchangeName = `${exchangeName}/type=${type}`;
             const _channel = yield this.getChannel();
-            const { exchange } = yield _channel.assertExchange(formatedExchangeName, type, {
-                durable: false,
-                // exclusive: false,
-            });
-            return exchange;
+            try {
+                const { exchange } = yield _channel.assertExchange(formatedExchangeName, type, {
+                    durable: false,
+                    // exclusive: false,
+                });
+                return exchange;
+            }
+            catch (e) {
+                console.log({ e });
+            }
         });
         this.publish = (payload, receiverFunc = undefined, conf = { type: TYPE }) => __awaiter(this, void 0, void 0, function* () {
             const { type } = conf;
             const [exchangeName, _payload] = (0, utils_1.Mapfy)(payload).entries().next().value;
-            const [functionName, message] = (0, utils_1.Mapfy)(_payload).entries().next().value;
+            const [queueName, message] = (0, utils_1.Mapfy)(_payload).entries().next().value;
             const formatedExchangeName = `${exchangeName}/type=${type}`;
-            const queueName = `${formatedExchangeName}_1`;
             yield this.assertExchange(exchangeName);
             try {
                 const _channel = yield this.getChannel();
@@ -67,15 +71,9 @@ class TaskMessageService {
             return this;
         });
         this.subscribe = (payload, type = TYPE) => __awaiter(this, void 0, void 0, function* () {
-            let [exchangeName, cb] = ["", (...[]) => { }];
-            if (payload instanceof Function) {
-                [exchangeName, cb] = [payload.name, payload];
-            }
-            else if (payload instanceof Object) {
-                [exchangeName, cb] = (0, utils_1.Mapfy)(payload).entries().next().value;
-            }
+            const [exchangeName, _payload] = (0, utils_1.Mapfy)(payload).entries().next().value;
+            const [queueName, cb] = (0, utils_1.Mapfy)(_payload).entries().next().value;
             const formatedExchangeName = `${exchangeName}/type=${type}`;
-            const queueName = `${formatedExchangeName}_1`;
             yield this.assertExchange(exchangeName);
             if (!(0, utils_1.Mapfy)(this.consumers).has(queueName)) {
                 const _channel = yield this.getChannel();
@@ -86,12 +84,19 @@ class TaskMessageService {
                     .bindQueue(queue, formatedExchangeName, queueName)
                     .catch((e) => console.log({ e: e.message }));
                 const consumerTag = yield _channel.consume(queue, (message) => {
+                    const { content, replyTo, correlationId } = message;
+                    console.log({ replyTo, correlationId });
                     if (message !== null) {
-                        const decoded = JSON.parse(message.content.toString());
+                        const decoded = JSON.parse(content.toString());
                         if (Array.isArray(decoded))
                             cb(...decoded)
                                 .then((_result) => {
                                 console.log({ _result });
+                                if (correlationId && replyTo) {
+                                    _channel.sendToQueue(replyTo, Buffer.from(_result.toString), {
+                                        correlationId,
+                                    });
+                                }
                             })
                                 .catch((err) => console.log({ err }));
                         else

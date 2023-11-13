@@ -31,19 +31,15 @@ const generatedImages = (images) => __awaiter(void 0, void 0, void 0, function* 
         console.error(`Ocurrió un error al guardar la imagen: ${error}`.bgRed);
         throw new Error(error.message);
     }
+    dependencies_1.SocketService.sendMessage({});
     return images;
 });
 exports.generatedImages = generatedImages;
 const generateImages = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { prompt, options = {} } = data;
     dependencies_1.TaskMessageService.publish({
-        generateImages: {
-            generateImages: [
-                prompt,
-                ...Object.entries(options).flatMap((b) => b[1]),
-            ],
-        },
-    }, exports.generatedImages);
+        generateImages: [prompt, ...Object.entries(options).flatMap((b) => b[1])],
+    });
 });
 exports.generateImages = generateImages;
 dependencies_1.SocketService.addEvent({ generateImages: exports.generateImages });
