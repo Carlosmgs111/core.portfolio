@@ -14,12 +14,10 @@ export class SocketService {
 
   constructor(clients: any = [{ imageService: "http://127.0.0.1:8765" }]) {
     this.server.on("connection", (socket: Socket) => {
-      // console.log(`${socket.id} Connected!`.green);
       this.sockets[socket.id] = socket;
       this.setEvents(socket);
 
       socket.on("disconnect", () => {
-        // console.log(`${socket.id} Disconnected!`.red);
         const newSockets = Mapfy(this.sockets);
         newSockets.delete(socket.id);
         this.sockets = UnMapfy(newSockets);
@@ -55,33 +53,70 @@ export class SocketService {
   addEvent = (event: any) => this.events.push(event);
 
   sendMessage = (payload: any, receiverFunc: any) => {
-    const [service, _params] = Mapfy(payload).entries().next().value;
-    const [sendTo, params] = Mapfy(_params).entries().next().value;
-
-    let responseName = "receiver_function_not_provided";
-    if (receiverFunc) {
-      responseName = receiverFunc.name;
-      this.clients[service].on(responseName, receiverFunc);
+    const [client, sendTo, params, receiverFunctionName] =
+      this.extractRemoteHandlersSpecs(payload, receiverFunc);
+    if (Mapfy(this.clients).size && this.clients[client]) {
+      this.clients[client].emit(sendTo, { [receiverFunctionName]: params });
+      if (receiverFunc) {
+        return this.receiveMessage({
+          [client]: receiverFunc,
+        });
+      }
     }
-    this.clients[service].emit(sendTo, { [responseName]: params });
+    return this;
+  };
+
+  receiveMessage = (payload: any) => {
+    let [client, receiveIn, callback] =
+      this.extractRemoteHandlersSpecs(payload);
+    return new Promise((resolve, reject) => {
+      this.clients[client].on(receiveIn, (data: any) => {
+        let proccesedData = null;
+        const { payload, error } = data;
+        if (payload) proccesedData = payload;
+        resolve(callback(proccesedData));
+      });
+    });
+  };
+
+  extractRemoteHandlersSpecs = (object: any, receiverFunc: any = null) => {
+    let specs = <Array<any>>[];
+
+    const [client, _payload] = Mapfy(object).entries().next().value;
+    const [sendTo, paramsOrCallback] = Mapfy(_payload).entries().next().value;
+    specs = [client, sendTo, paramsOrCallback];
+    if (typeof receiverFunc === "string") specs = [...specs, receiverFunc];
+    else if (receiverFunc) {
+      specs = [...specs, this.extractFunctionSpecs(receiverFunc)[0]];
+    }
+
+    return specs;
+  };
+
+  extractFunctionSpecs = (object: any) => {
+    let [functionName, callback] = ["function_not_provided", ([]) => {}];
+    if (object instanceof Function) {
+      [functionName, callback] = [object.name, object];
+    } else if (callback instanceof Object) {
+      [functionName, callback] = Mapfy(object).entries().next().value;
+    }
+    return [functionName, callback];
   };
 
   private setEvents = (socket: any) => {
     this.events.forEach((event: any) => {
       const [name, cb] = Mapfy(event).entries().next().value;
-      console.log({ name });
       socket.addListener(name, (payload: any) => {
-        console.log({ payload });
         const [response, data] = Mapfy(payload).entries().next().value;
-        console.log({ response });
         if (Array.isArray(data))
           cb(...data)
             .then((result: any) => {
-              console.log({ result });
               socket.emit(response, result);
               return result;
             })
-            .catch((e: any) => console.log(e.message.bgRed))
+            .catch((e: any) =>
+              console.log(`Error in callback: ${e.message}`.bgRed)
+            )
             .finally(() => console.log("Solved!".green));
         else
           cb(data)

@@ -42,31 +42,63 @@ class SocketService {
         };
         this.addEvent = (event) => this.events.push(event);
         this.sendMessage = (payload, receiverFunc) => {
-            const [service, _params] = (0, utils_1.Mapfy)(payload).entries().next().value;
-            const [sendTo, params] = (0, utils_1.Mapfy)(_params).entries().next().value;
-            let responseName = "receiver_function_not_provided";
-            if (receiverFunc) {
-                responseName = receiverFunc.name;
-                this.clients[service].on(responseName, receiverFunc);
+            const [client, sendTo, params, receiverFunctionName] = this.extractRemoteHandlersSpecs(payload, receiverFunc);
+            if ((0, utils_1.Mapfy)(this.clients).size && this.clients[client]) {
+                this.clients[client].emit(sendTo, { [receiverFunctionName]: params });
+                if (receiverFunc) {
+                    return this.receiveMessage({
+                        [client]: receiverFunc,
+                    });
+                }
             }
-            this.clients[service].emit(sendTo, { [responseName]: params });
+            return this;
+        };
+        this.receiveMessage = (payload) => {
+            let [client, receiveIn, callback] = this.extractRemoteHandlersSpecs(payload);
+            return new Promise((resolve, reject) => {
+                this.clients[client].on(receiveIn, (data) => {
+                    let proccesedData = null;
+                    const { payload, error } = data;
+                    if (payload)
+                        proccesedData = payload;
+                    resolve(callback(proccesedData));
+                });
+            });
+        };
+        this.extractRemoteHandlersSpecs = (object, receiverFunc = null) => {
+            let specs = [];
+            const [client, _payload] = (0, utils_1.Mapfy)(object).entries().next().value;
+            const [sendTo, paramsOrCallback] = (0, utils_1.Mapfy)(_payload).entries().next().value;
+            specs = [client, sendTo, paramsOrCallback];
+            if (typeof receiverFunc === "string")
+                specs = [...specs, receiverFunc];
+            else if (receiverFunc) {
+                specs = [...specs, this.extractFunctionSpecs(receiverFunc)[0]];
+            }
+            return specs;
+        };
+        this.extractFunctionSpecs = (object) => {
+            let [functionName, callback] = ["function_not_provided", ([]) => { }];
+            if (object instanceof Function) {
+                [functionName, callback] = [object.name, object];
+            }
+            else if (callback instanceof Object) {
+                [functionName, callback] = (0, utils_1.Mapfy)(object).entries().next().value;
+            }
+            return [functionName, callback];
         };
         this.setEvents = (socket) => {
             this.events.forEach((event) => {
                 const [name, cb] = (0, utils_1.Mapfy)(event).entries().next().value;
-                console.log({ name });
                 socket.addListener(name, (payload) => {
-                    console.log({ payload });
                     const [response, data] = (0, utils_1.Mapfy)(payload).entries().next().value;
-                    console.log({ response });
                     if (Array.isArray(data))
                         cb(...data)
                             .then((result) => {
-                            console.log({ result });
                             socket.emit(response, result);
                             return result;
                         })
-                            .catch((e) => console.log(e.message.bgRed))
+                            .catch((e) => console.log(`Error in callback: ${e.message}`.bgRed))
                             .finally(() => console.log("Solved!".green));
                     else
                         cb(data)
@@ -89,11 +121,9 @@ class SocketService {
             yield server.close();
         });
         this.server.on("connection", (socket) => {
-            // console.log(`${socket.id} Connected!`.green);
             this.sockets[socket.id] = socket;
             this.setEvents(socket);
             socket.on("disconnect", () => {
-                // console.log(`${socket.id} Disconnected!`.red);
                 const newSockets = (0, utils_1.Mapfy)(this.sockets);
                 newSockets.delete(socket.id);
                 this.sockets = (0, utils_1.UnMapfy)(newSockets);

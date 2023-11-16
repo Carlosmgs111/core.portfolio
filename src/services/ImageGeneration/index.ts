@@ -20,17 +20,25 @@ export const generatedImages = async (images: any) => {
     throw new Error(error.message);
   }
 
-  SocketService.sendMessage({});
-
   return images;
 };
 
 export const generateImages = async (data: any) => {
   const { prompt, options = {} } = data;
 
-  TaskMessageService.publish({
-    generateImages: [prompt, ...Object.entries(options).flatMap((b) => b[1])],
-  });
+  const imagesGenerated = await SocketService.sendMessage(
+    {
+      imageService: {
+        generate_images: [
+          prompt,
+          ...Object.entries(options).flatMap((b) => b[1]),
+        ],
+      },
+    },
+    { generatedImages }
+  );
+
+  return imagesGenerated;
 };
 
 SocketService.addEvent({ generateImages });
