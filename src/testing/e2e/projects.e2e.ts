@@ -1,16 +1,14 @@
 import request from "supertest";
+import { asyncDelay } from "./utils";
 import { generateOneUser } from "../fakers/user.fake";
 import { app } from "../../infrastructure/apis/express";
 import { generateOneProject } from "../fakers/project.fake";
-import { models } from "../../services/DatabaseServices/SequelizeAdapter/infrastructure/models";
 import {
   SocketService,
   TaskMessageService,
   RepositoryService,
 } from "../../config/dependencies";
 import "colors";
-
-const { Project } = models;
 
 describe("Test for get all projects endpoint", () => {
   let server: any = null;
@@ -21,26 +19,26 @@ describe("Test for get all projects endpoint", () => {
       console.log("Test server running at port 4040")
     );
     const user = generateOneUser();
-    await request(app).post("/api/v1/signup").send(user);
-    const { token }: any = (await request(app).get("/api/v1/signin").send(user))
+    const { token } = (await request(app).post("/api/v1/signup").send(user))
       .body;
     userToken = token;
-    jest.setTimeout(20000);
-  });
+    await asyncDelay()
+  }, 20000);
 
   afterAll(async () => {
-    jest.setTimeout(20000);
     await server.close();
     // * Force cleanup of databases
     await RepositoryService.dropAllEntities();
     // * Close all services
     await SocketService.close();
-    await RepositoryService.close();
     await TaskMessageService.close();
-  });
+    await RepositoryService.close();
+  }, 20000);
 
   describe("test for create projects", () => {
+    jest.setTimeout(15000);
     test("should add a new project", async () => {
+      await asyncDelay()
       const { body } = await request(app)
         .post("/api/v1/projects")
         .send(generateOneProject())
@@ -49,7 +47,9 @@ describe("Test for get all projects endpoint", () => {
   });
 
   describe("test for get all projects", () => {
+    jest.setTimeout(15000);
     test("should return a list", async () => {
+      await asyncDelay()
       const { body } = await request(app)
         .get("/api/v1/projects")
         .set("Authorization", `Bearer ${userToken}`)

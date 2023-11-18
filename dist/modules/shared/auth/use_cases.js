@@ -34,7 +34,9 @@ const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     if (email) {
         console.log("Authentication Signup use case must be implemented! ".bgYellow);
     }
-    return yield entity_1.User.create(dependencies_1.RepositoryService, credentials);
+    const account = yield entity_1.User.create(dependencies_1.RepositoryService, credentials);
+    let response = dependencies_1.AuthServices.getAuthPackage(Object.assign(Object.assign({}, (0, utils_1.filterAttrs)(account, ["uuid", "email", "username", "privilege", "createdAt", "avatar"], false)), { apiKey: config_1.default.apiKey }));
+    return response;
 });
 exports.signup = signup;
 const unsubscribe = (credentials) => __awaiter(void 0, void 0, void 0, function* () {

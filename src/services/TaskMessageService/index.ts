@@ -5,9 +5,9 @@ import { Mapfy } from "../../utils";
 const { rabbitMQUrlDev, rabbitMQUrlProd } = config;
 const rabbitMQUrl = rabbitMQUrlDev || rabbitMQUrlProd;
 
-console.log(
-  !rabbitMQUrlDev ? "MQ PRODUCTION".bgGreen : "MQ DEVELOPMENT".bgYellow
-);
+// console.log(
+//   !rabbitMQUrlDev ? "MQ PRODUCTION".bgGreen : "MQ DEVELOPMENT".bgYellow
+// );
 
 const TYPE = "direct";
 
@@ -19,7 +19,7 @@ export class TaskMessageService {
   constructor() {
     (async () => {
       this.connection = await this.connectToRabbitMQ();
-      await this.getChannel();
+      this.channel = await this.getChannel();
     })();
   }
 
@@ -27,11 +27,10 @@ export class TaskMessageService {
     if (this.connection) {
       return this.connection;
     }
-
     try {
       this.connection = await amqp.connect(rabbitMQUrl);
       this.connection.on("close", () => {
-        this.channel.close();
+        // this.channel.close();
         this.channel = null;
         this.connection = null;
       });
@@ -46,9 +45,11 @@ export class TaskMessageService {
     if (this.channel) {
       return this.channel;
     } else {
-      const connection = await this.connectToRabbitMQ();
+      await new Promise((resolve: any) => {
+        setTimeout(resolve, 5000);
+      });
       try {
-        const channel = await connection.createChannel();
+        const channel = await this.connection.createChannel();
         this.channel = channel;
         return channel;
       } catch (e: any) {
@@ -117,13 +118,13 @@ export class TaskMessageService {
 
       const consumerTag = await _channel.consume(queue, (message: any) => {
         const { content, replyTo, correlationId } = message;
-        console.log({ replyTo, correlationId });
+        // console.log({ replyTo, correlationId });
         if (message !== null) {
           const decoded = JSON.parse(content.toString());
           if (Array.isArray(decoded))
             cb(...decoded)
               .then((_result: any) => {
-                console.log({ _result });
+                // console.log({ _result });
                 if (correlationId && replyTo) {
                   _channel.sendToQueue(replyTo, Buffer.from(_result.toString), {
                     correlationId,
@@ -148,5 +149,6 @@ export class TaskMessageService {
   close = async () => {
     await this.channel.close();
     await this.connection.close();
+    return;
   };
 }

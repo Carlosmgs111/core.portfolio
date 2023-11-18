@@ -1,6 +1,6 @@
 import request from "supertest";
+import { asyncDelay } from "./utils";
 import { app } from "../../infrastructure/apis/express";
-import { generateOneProject } from "../fakers/project.fake";
 import { generateOneUser } from "../fakers/user.fake";
 import { generateOneInstitution } from "../fakers/institution.fake";
 import { generateOneCertification } from "../fakers/certification.fake";
@@ -20,34 +20,33 @@ describe("Creation of a new certification", () => {
   beforeAll(async () => {
     server = app.listen(4080, () => "Test server running at port 4080");
     user = generateOneUser();
-    await request(app).post("/api/v1/signup").send(user);
-    const { token }: any = (await request(app).get("/api/v1/signin").send(user))
-      .body;
+    const { token }: any = (
+      await request(app).post("/api/v1/signup").send(user)
+    ).body;
     userToken = token;
+    await asyncDelay()
     institution = (
       await request(app)
         .post("/api/v1/institutions")
         .send(generateOneInstitution())
         .set("Authorization", `Bearer ${userToken}`)
     ).body;
-    jest.setTimeout(20000)
-  });
+  }, 20000);
 
   afterAll(async () => {
-    jest.setTimeout(20000)
     await server.close();
     // * Force cleanup of databases
     await RepositoryService.dropAllEntities();
     // * Close all services
-    await RepositoryService.close();
     await SocketService.close();
     await TaskMessageService.close();
-  });
+    await RepositoryService.close();
+  }, 20000);
 
   describe("Create a new certification and related with existing entities", () => {
+    jest.setTimeout(15000);
     test("Create a new certification", async () => {
-      await { user };
-      await { institution };
+      await asyncDelay()
       const { body } = await request(app)
         .post("/api/v1/certifications/")
         .send({
@@ -55,7 +54,6 @@ describe("Creation of a new certification", () => {
           emitedBy: institution.name,
         })
         .set("Authorization", `Bearer ${userToken}`);
-      await { body };
     });
   });
 });

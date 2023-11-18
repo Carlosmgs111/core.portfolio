@@ -208,7 +208,17 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
             yield infrastructure_1.connection.close();
         });
         this.dropAllEntities = () => __awaiter(this, void 0, void 0, function* () {
-            yield infrastructure_1.connection.dropDatabase();
+            // await connection.dropDatabase();
+            (0, utils_1.Mapfy)(models_1.default).forEach((model) => {
+                model.deleteMany({}, (err) => {
+                    if (err) {
+                        console.error(err);
+                    }
+                    else {
+                        console.log("Todos los documentos de la colección usuarios han sido eliminados.");
+                    }
+                });
+            });
         });
         (0, infrastructure_1.connect)();
     }

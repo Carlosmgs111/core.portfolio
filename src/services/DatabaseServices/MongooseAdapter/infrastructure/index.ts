@@ -6,8 +6,6 @@ if (process.argv.includes("DEV") || process.argv.includes("PROD")) test = false;
 
 const localURL = test ? config.mongoDBTestUrl : config.mongoDBLocalUrl;
 
-console.log({ test });
-
 export const connect = () =>
   mongoose.connect(localURL || config.mongoDBAtlasURL || "");
 
@@ -19,6 +17,5 @@ connection.once("open", () => {
 });
 
 connection.on("error", (err) => {
-  err;
   process.exit(0);
 });

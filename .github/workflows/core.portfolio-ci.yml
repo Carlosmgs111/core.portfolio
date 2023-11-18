@@ -6,7 +6,6 @@ defaults:
     working-directory: ./
 
 jobs:
-  
   unit-test:
     runs-on: ubuntu-latest
 
@@ -14,15 +13,15 @@ jobs:
       - name: Install PNPM
         shell: bash
         run: npm i -g pnpm
-        
+
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Setup Nodejs
         uses: actions/setup-node@v2
-        with: 
+        with:
           node-version: 16
-          cache: 'pnpm'
+          cache: "pnpm"
 
       - name: Install
         shell: bash
@@ -31,7 +30,7 @@ jobs:
       - name: Run unit test
         shell: bash
         run: pnpm run test
-  
+
   e2e-test:
     runs-on: ubuntu-latest
 
@@ -39,6 +38,11 @@ jobs:
       image: node:16
 
     services:
+      cqrs-service-e2e:
+        image: rabbitmq:3-management
+        ports:
+          - 15672:15672
+
       mongo-e2e:
         image: mongo:4.4
         ports:
@@ -46,7 +50,7 @@ jobs:
         env:
           MONGO_INITDB_ROOT_USERNAME: test
           MONGO_INITDB_ROOT_PASSWORD: p@55w0rd
-      
+
       postgres-e2e:
         image: postgres:latest
         ports:
@@ -68,14 +72,14 @@ jobs:
 
       - name: Install
         shell: bash
-        run: pnpm install 
+        run: pnpm install
 
       - name: Run e2e test
         shell: bash
         run: pnpm run test:e2e
         env:
-          MONGO_DB_NAME: test
-          MONGO_URL: mongodb://test:p%4055w0rd@localhost:27017/test?retryWrites=true&writeConcern=majority
+          RABBITMQ_URL_DEV: amqp://localhost
+          MONGODB_TEST_URL: mongodb://test:p%4055w0rd@localhost:27017/test?retryWrites=true&writeConcern=majority
           POSTGRES_USER: tester
           POSTGRES_PASSWORD: password
           POSTGRES_DATABASE: test

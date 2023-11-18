@@ -17,7 +17,7 @@ export const login = async (credentials: any) => {
       false
     ),
     apiKey: config.apiKey,
-  });
+});
   return response;
 };
 
@@ -28,7 +28,16 @@ export const signup = async (credentials: any) => {
       "Authentication Signup use case must be implemented! ".bgYellow
     );
   }
-  return await User.create(RepositoryService, credentials);
+  const account = await User.create(RepositoryService, credentials);
+  let response = AuthServices.getAuthPackage({
+    ...filterAttrs(
+      account,
+      ["uuid", "email", "username", "privilege", "createdAt", "avatar"],
+      false
+    ),
+    apiKey: config.apiKey,
+  });
+  return response;
 };
 
 export const unsubscribe = async (credentials: any) => {

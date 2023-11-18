@@ -270,6 +270,13 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
   };
 
   dropAllEntities = async () => {
-    await connection.dropDatabase();
+    // await connection.dropDatabase();
+    Mapfy(models).forEach((model: any) => {
+      model.deleteMany({}, (err: any) => {
+        if (err) {
+          console.error(err);
+        }
+      });
+    });
   };
 }

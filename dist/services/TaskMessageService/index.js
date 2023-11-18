@@ -30,9 +30,12 @@ class TaskMessageService {
                 return this.channel;
             }
             else {
-                const connection = yield this.connectToRabbitMQ();
+                yield new Promise((resolve) => {
+                    setTimeout(resolve, 5000);
+                });
+                // const connection = await this.connectToRabbitMQ();
                 try {
-                    const channel = yield connection.createChannel();
+                    const channel = yield this.connection.createChannel();
                     this.channel = channel;
                     return channel;
                 }
@@ -85,13 +88,13 @@ class TaskMessageService {
                     .catch((e) => console.log({ e: e.message }));
                 const consumerTag = yield _channel.consume(queue, (message) => {
                     const { content, replyTo, correlationId } = message;
-                    console.log({ replyTo, correlationId });
+                    // console.log({ replyTo, correlationId });
                     if (message !== null) {
                         const decoded = JSON.parse(content.toString());
                         if (Array.isArray(decoded))
                             cb(...decoded)
                                 .then((_result) => {
-                                console.log({ _result });
+                                // console.log({ _result });
                                 if (correlationId && replyTo) {
                                     _channel.sendToQueue(replyTo, Buffer.from(_result.toString), {
                                         correlationId,
@@ -112,23 +115,27 @@ class TaskMessageService {
         });
         this.addEvent = (cb) => { };
         this.close = () => __awaiter(this, void 0, void 0, function* () {
+            console.log("CLOSING!".bgRed);
             yield this.channel.close();
             yield this.connection.close();
+            return;
         });
         (() => __awaiter(this, void 0, void 0, function* () {
             this.connection = yield this.connectToRabbitMQ();
-            yield this.getChannel();
+            this.channel = yield this.getChannel();
         }))();
+        console.log("INITIALIZED!".bgYellow);
     }
     connectToRabbitMQ() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.connection) {
                 return this.connection;
             }
+            console.log("CONNECTION".bgCyan);
             try {
                 this.connection = yield amqplib_1.default.connect(rabbitMQUrl);
                 this.connection.on("close", () => {
-                    this.channel.close();
+                    // this.channel.close();
                     this.channel = null;
                     this.connection = null;
                 });
