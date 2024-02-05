@@ -18,7 +18,9 @@ const amqplib_1 = __importDefault(require("amqplib"));
 const utils_1 = require("../../utils");
 const { rabbitMQUrlDev, rabbitMQUrlProd } = config_1.default;
 const rabbitMQUrl = rabbitMQUrlDev || rabbitMQUrlProd;
-console.log(!rabbitMQUrlDev ? "MQ PRODUCTION".bgGreen : "MQ DEVELOPMENT".bgYellow);
+// console.log(
+//   !rabbitMQUrlDev ? "MQ PRODUCTION".bgGreen : "MQ DEVELOPMENT".bgYellow
+// );
 const TYPE = "direct";
 class TaskMessageService {
     constructor() {
@@ -33,7 +35,6 @@ class TaskMessageService {
                 yield new Promise((resolve) => {
                     setTimeout(resolve, 5000);
                 });
-                // const connection = await this.connectToRabbitMQ();
                 try {
                     const channel = yield this.connection.createChannel();
                     this.channel = channel;
@@ -57,6 +58,9 @@ class TaskMessageService {
             catch (e) {
                 console.log({ e });
             }
+            finally {
+                return null;
+            }
         });
         this.publish = (payload, receiverFunc = undefined, conf = { type: TYPE }) => __awaiter(this, void 0, void 0, function* () {
             const { type } = conf;
@@ -77,61 +81,69 @@ class TaskMessageService {
             const [exchangeName, _payload] = (0, utils_1.Mapfy)(payload).entries().next().value;
             const [queueName, cb] = (0, utils_1.Mapfy)(_payload).entries().next().value;
             const formatedExchangeName = `${exchangeName}/type=${type}`;
-            yield this.assertExchange(exchangeName);
-            if (!(0, utils_1.Mapfy)(this.consumers).has(queueName)) {
-                const _channel = yield this.getChannel();
-                const { queue } = yield _channel.assertQueue(queueName, {
-                    exclusive: true,
-                });
-                yield _channel
-                    .bindQueue(queue, formatedExchangeName, queueName)
-                    .catch((e) => console.log({ e: e.message }));
-                const consumerTag = yield _channel.consume(queue, (message) => {
-                    const { content, replyTo, correlationId } = message;
-                    // console.log({ replyTo, correlationId });
-                    if (message !== null) {
-                        const decoded = JSON.parse(content.toString());
-                        if (Array.isArray(decoded))
-                            cb(...decoded)
-                                .then((_result) => {
-                                // console.log({ _result });
-                                if (correlationId && replyTo) {
-                                    _channel.sendToQueue(replyTo, Buffer.from(_result.toString), {
-                                        correlationId,
-                                    });
-                                }
-                            })
-                                .catch((err) => console.log({ err }));
-                        else
-                            cb(decoded).then((_result) => {
-                                console.log({ _result });
-                            });
-                        _channel.ack(message);
-                    }
-                });
-                this.consumers[queueName] = consumerTag;
+            try {
+                yield this.assertExchange(exchangeName);
+                if (!(0, utils_1.Mapfy)(this.consumers).has(queueName)) {
+                    const _channel = yield this.getChannel();
+                    const { queue } = yield _channel.assertQueue(queueName, {
+                        exclusive: true,
+                    });
+                    yield _channel
+                        .bindQueue(queue, formatedExchangeName, queueName)
+                        .catch((e) => console.log({ e: e.message }));
+                    const consumerTag = yield _channel.consume(queue, (message) => {
+                        const { content, replyTo, correlationId } = message;
+                        // console.log({ replyTo, correlationId });
+                        if (message !== null) {
+                            const decoded = JSON.parse(content.toString());
+                            if (Array.isArray(decoded))
+                                cb(...decoded)
+                                    .then((_result) => {
+                                    // console.log({ _result });
+                                    if (correlationId && replyTo) {
+                                        _channel.sendToQueue(replyTo, Buffer.from(_result.toString), {
+                                            correlationId,
+                                        });
+                                    }
+                                })
+                                    .catch((err) => console.log({ err }));
+                            else
+                                cb(decoded).then((_result) => {
+                                    console.log({ _result });
+                                });
+                            _channel.ack(message);
+                        }
+                    });
+                    this.consumers[queueName] = consumerTag;
+                }
+            }
+            catch (e) {
+                console.error("Unable to subscribes");
             }
             return this;
         });
+        this.isOnline = () => this.channel && this.connection;
         this.addEvent = (cb) => { };
         this.close = () => __awaiter(this, void 0, void 0, function* () {
-            console.log("CLOSING!".bgRed);
             yield this.channel.close();
             yield this.connection.close();
             return;
         });
         (() => __awaiter(this, void 0, void 0, function* () {
-            this.connection = yield this.connectToRabbitMQ();
-            this.channel = yield this.getChannel();
+            try {
+                this.connection = yield this.connectToRabbitMQ();
+                this.channel = yield this.getChannel();
+            }
+            catch (e) {
+                console.error("Unable to connect");
+            }
         }))();
-        console.log("INITIALIZED!".bgYellow);
     }
     connectToRabbitMQ() {
         return __awaiter(this, void 0, void 0, function* () {
             if (this.connection) {
                 return this.connection;
             }
-            console.log("CONNECTION".bgCyan);
             try {
                 this.connection = yield amqplib_1.default.connect(rabbitMQUrl);
                 this.connection.on("close", () => {

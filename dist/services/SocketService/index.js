@@ -14,7 +14,7 @@ const socket_io_1 = require("socket.io");
 const socket_io_client_1 = require("socket.io-client");
 const utils_1 = require("../../utils");
 class SocketService {
-    constructor(clients = [{ imageService: "http://127.0.0.1:8765" }]) {
+    constructor(clients = []) {
         this.server = new socket_io_1.Server(7081, {
             cors: {
                 origin: "*",

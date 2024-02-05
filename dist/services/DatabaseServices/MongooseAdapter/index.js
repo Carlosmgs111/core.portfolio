@@ -214,9 +214,6 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
                     if (err) {
                         console.error(err);
                     }
-                    else {
-                        console.log("Todos los documentos de la colección usuarios han sido eliminados.");
-                    }
                 });
             });
         });

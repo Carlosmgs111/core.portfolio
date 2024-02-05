@@ -18,8 +18,12 @@ export class TaskMessageService {
 
   constructor() {
     (async () => {
-      this.connection = await this.connectToRabbitMQ();
-      this.channel = await this.getChannel();
+      try {
+        this.connection = await this.connectToRabbitMQ();
+        this.channel = await this.getChannel();
+      } catch (e) {
+        console.error("Unable to connect");
+      }
     })();
   }
 
@@ -74,6 +78,8 @@ export class TaskMessageService {
       return exchange;
     } catch (e) {
       console.log({ e });
+    } finally {
+      return null;
     }
   };
 
@@ -105,44 +111,53 @@ export class TaskMessageService {
     const [queueName, cb] = Mapfy(_payload).entries().next().value;
 
     const formatedExchangeName = `${exchangeName}/type=${type}`;
-    await this.assertExchange(exchangeName);
+    try {
+      await this.assertExchange(exchangeName);
+      if (!Mapfy(this.consumers).has(queueName)) {
+        const _channel = await this.getChannel();
+        const { queue } = await _channel.assertQueue(queueName, {
+          exclusive: true,
+        });
+        await _channel
+          .bindQueue(queue, formatedExchangeName, queueName)
+          .catch((e: any) => console.log({ e: e.message }));
 
-    if (!Mapfy(this.consumers).has(queueName)) {
-      const _channel = await this.getChannel();
-      const { queue } = await _channel.assertQueue(queueName, {
-        exclusive: true,
-      });
-      await _channel
-        .bindQueue(queue, formatedExchangeName, queueName)
-        .catch((e: any) => console.log({ e: e.message }));
-
-      const consumerTag = await _channel.consume(queue, (message: any) => {
-        const { content, replyTo, correlationId } = message;
-        // console.log({ replyTo, correlationId });
-        if (message !== null) {
-          const decoded = JSON.parse(content.toString());
-          if (Array.isArray(decoded))
-            cb(...decoded)
-              .then((_result: any) => {
-                // console.log({ _result });
-                if (correlationId && replyTo) {
-                  _channel.sendToQueue(replyTo, Buffer.from(_result.toString), {
-                    correlationId,
-                  });
-                }
-              })
-              .catch((err: any) => console.log({ err }));
-          else
-            cb(decoded).then((_result: any) => {
-              console.log({ _result });
-            });
-          _channel.ack(message);
-        }
-      });
-      this.consumers[queueName] = consumerTag;
+        const consumerTag = await _channel.consume(queue, (message: any) => {
+          const { content, replyTo, correlationId } = message;
+          // console.log({ replyTo, correlationId });
+          if (message !== null) {
+            const decoded = JSON.parse(content.toString());
+            if (Array.isArray(decoded))
+              cb(...decoded)
+                .then((_result: any) => {
+                  // console.log({ _result });
+                  if (correlationId && replyTo) {
+                    _channel.sendToQueue(
+                      replyTo,
+                      Buffer.from(_result.toString),
+                      {
+                        correlationId,
+                      }
+                    );
+                  }
+                })
+                .catch((err: any) => console.log({ err }));
+            else
+              cb(decoded).then((_result: any) => {
+                console.log({ _result });
+              });
+            _channel.ack(message);
+          }
+        });
+        this.consumers[queueName] = consumerTag;
+      }
+    } catch (e) {
+      console.error("Unable to subscribes");
     }
     return this;
   };
+  
+  isOnline = () => this.channel && this.connection;
 
   addEvent = (cb: any) => {};
 

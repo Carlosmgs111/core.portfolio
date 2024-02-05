@@ -12,7 +12,7 @@ export class SocketService {
   clients: any = {};
   events: any = [];
 
-  constructor(clients: any = [{ imageService: "http://127.0.0.1:8765" }]) {
+  constructor(clients: any = []) {
     this.server.on("connection", (socket: Socket) => {
       this.sockets[socket.id] = socket;
       this.setEvents(socket);

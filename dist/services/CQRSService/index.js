@@ -53,6 +53,7 @@ class CQRSService {
             });
         });
         this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            this.checkStatus();
             dependencies_1.TaskMessageService.publish({
                 queryService: {
                     createOne: [entity, Entity, options],
@@ -61,6 +62,7 @@ class CQRSService {
             return yield this.CommandService.createOne(entity, Entity, options);
         });
         this.createMany = (entity, entities, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            this.checkStatus();
             dependencies_1.TaskMessageService.publish({
                 queryService: {
                     createMany: [entity, entities, options],
@@ -71,12 +73,14 @@ class CQRSService {
         this.findOne = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () { return yield this.QueryService.findOne(entity, options); });
         this.findAll = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () { return yield this.QueryService.findAll(entity, options); });
         this.removeOne = (entity, options) => __awaiter(this, void 0, void 0, function* () {
+            this.checkStatus();
             dependencies_1.TaskMessageService.publish({
                 queryService: { removeOne: [entity, options] },
             });
             return yield this.CommandService.removeOne(entity, options);
         });
         this.updateOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+            this.checkStatus();
             this.TaskMessageService.publish({
                 queryService: {
                     updateOne: [entity, Entity, options],
@@ -85,6 +89,7 @@ class CQRSService {
             return yield this.CommandService.updateOne(entity, Entity, options);
         });
         this.setOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
+            this.checkStatus();
             dependencies_1.TaskMessageService.publish({
                 queryService: {
                     setOneRelationship2One: [entity, refs],
@@ -93,6 +98,7 @@ class CQRSService {
             return yield this.CommandService.setOneRelationship2One(entity, refs);
         });
         this.unsetOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
+            this.checkStatus();
             dependencies_1.TaskMessageService.publish({
                 queryService: {
                     unsetOneRelationship2One: [entity, refs],
@@ -101,6 +107,7 @@ class CQRSService {
             return yield this.CommandService.unsetOneRelationship2One(entity, refs);
         });
         this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
+            this.checkStatus();
             dependencies_1.TaskMessageService.publish({
                 queryService: {
                     createOneRelationshipN2N: [refs],
@@ -109,6 +116,7 @@ class CQRSService {
             return yield this.CommandService.createOneRelationshipN2N(refs);
         });
         this.removeOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
+            this.checkStatus();
             dependencies_1.TaskMessageService.publish({
                 queryService: {
                     removeOneRelationshipN2N: [refs],
@@ -118,6 +126,10 @@ class CQRSService {
         });
         this.checkOneRelationshipN2N = this.CommandService.checkOneRelationshipN2N;
         this.entities = Object.assign(Object.assign({}, this.CommandService.entities), this.QueryService.entities);
+        this.checkStatus = () => {
+            if (!dependencies_1.TaskMessageService.isOnline)
+                throw new Error("Task Message Service offline!");
+        };
         this.info = () => {
             console.table({
                 "Query Database Service": this.QueryService.serviceDescription,

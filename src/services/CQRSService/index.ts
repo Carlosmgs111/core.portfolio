@@ -50,6 +50,7 @@ export class CQRSService {
   };
 
   createOne = async (entity: any, Entity: any, options: any = {}) => {
+    this.checkStatus();
     TaskMessageService.publish({
       queryService: {
         createOne: [entity, Entity, options],
@@ -58,6 +59,7 @@ export class CQRSService {
     return await this.CommandService.createOne(entity, Entity, options);
   };
   createMany = async (entity: any, entities: any, options: any = {}) => {
+    this.checkStatus();
     TaskMessageService.publish({
       queryService: {
         createMany: [entity, entities, options],
@@ -70,12 +72,14 @@ export class CQRSService {
   findAll = async (entity: any, options: any = {}) =>
     await this.QueryService.findAll(entity, options);
   removeOne = async (entity: any, options: any) => {
+    this.checkStatus();
     TaskMessageService.publish({
       queryService: { removeOne: [entity, options] },
     });
     return await this.CommandService.removeOne(entity, options);
   };
   updateOne = async (entity: any, Entity: any, options: any = {}) => {
+    this.checkStatus();
     this.TaskMessageService.publish({
       queryService: {
         updateOne: [entity, Entity, options],
@@ -84,6 +88,7 @@ export class CQRSService {
     return await this.CommandService.updateOne(entity, Entity, options);
   };
   setOneRelationship2One = async (entity: any, refs: any) => {
+    this.checkStatus();
     TaskMessageService.publish({
       queryService: {
         setOneRelationship2One: [entity, refs],
@@ -92,6 +97,7 @@ export class CQRSService {
     return await this.CommandService.setOneRelationship2One(entity, refs);
   };
   unsetOneRelationship2One = async (entity: any, refs: any) => {
+    this.checkStatus();
     TaskMessageService.publish({
       queryService: {
         unsetOneRelationship2One: [entity, refs],
@@ -100,6 +106,7 @@ export class CQRSService {
     return await this.CommandService.unsetOneRelationship2One(entity, refs);
   };
   createOneRelationshipN2N = async (refs: any) => {
+    this.checkStatus();
     TaskMessageService.publish({
       queryService: {
         createOneRelationshipN2N: [refs],
@@ -108,6 +115,7 @@ export class CQRSService {
     return await this.CommandService.createOneRelationshipN2N(refs);
   };
   removeOneRelationshipN2N = async (refs: any) => {
+    this.checkStatus();
     TaskMessageService.publish({
       queryService: {
         removeOneRelationshipN2N: [refs],
@@ -117,6 +125,10 @@ export class CQRSService {
   };
   checkOneRelationshipN2N = this.CommandService.checkOneRelationshipN2N;
   entities = { ...this.CommandService.entities, ...this.QueryService.entities };
+  checkStatus = () => {
+    if (!TaskMessageService.isOnline)
+      throw new Error("Task Message Service offline!");
+  };
   info = () => {
     console.table({
       "Query Database Service": this.QueryService.serviceDescription,

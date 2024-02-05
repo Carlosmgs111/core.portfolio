@@ -10,7 +10,6 @@ let test = true;
 if (process.argv.includes("DEV") || process.argv.includes("PROD"))
     test = false;
 const localURL = test ? config_1.default.mongoDBTestUrl : config_1.default.mongoDBLocalUrl;
-console.log({ test });
 const connect = () => mongoose_1.default.connect(localURL || config_1.default.mongoDBAtlasURL || "");
 exports.connect = connect;
 exports.connection = mongoose_1.default.connection;
@@ -19,6 +18,5 @@ exports.connection.once("open", () => {
     ("Mongodb connection stablished");
 });
 exports.connection.on("error", (err) => {
-    err;
     process.exit(0);
 });

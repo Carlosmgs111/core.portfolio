@@ -1,5 +1,5 @@
 import fs from "fs";
-import { TaskMessageService, SocketService } from "../../config/dependencies";
+import { SocketService } from "../../config/dependencies";
 
 export const generatedImages = async (images: any) => {
   try {

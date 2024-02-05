@@ -7,11 +7,11 @@
     "test": "tests"
   },
   "scripts": {
-    "start": "pnpm copy && tsc-watch --onSuccess \"node dist/index.js PROD\"",
+    "start": "yarn copy && tsc-watch --onSuccess \"node dist/index.js PROD\"",
     "dev:ubuntu": "rsync -av --include='*/' --exclude='*.ts' ./src/  ./dist && tsc-watch --onSuccess \"node dist/index.js DEV\" ",
-    "dev": "pnpm copy && tsc-watch --onSuccess \"node dist/index.js DEV\" ",
+    "dev": "yarn copy && tsc-watch --onSuccess \"node dist/index.js DEV\" ",
     "test": "jest",
-    "copy": "robocopy ./src ./dist /S /E /s /nfl /ndl /xf *.ts /e | echo 'copied succesfully!'",
+    "copy": "robocopy cp/rsync ./src ./dist /S /E /s /nfl /ndl /xf *.ts /e | echo 'copied succesfully!'",
     "test:e2e": "jest --config ./src/testing/e2e/jest-e2e.json --detectOpenHandles",
     "build": "tsc",
     "postgres:migrations:generate": "sequelize-cli migration:generate --name",
@@ -19,11 +19,11 @@
     "postgres:migrations:revert": "sequelize-cli db:migrate:undo",
     "postgres:migrations:delete": "sequelize-cli db:migrate:undo:all",
     "postgres:migrations:drop": "sequelize-cli db:drop",
-    "p:m:generate": "pnpm postgres:migrations:generate",
-    "p:m:run": "pnpm postgres:migrations:run",
-    "p:m:revert": "pnpm postgres:migrations:revert",
-    "p:m:drop": "pnpm postgres:migrations:drop",
-    "p:m:stand": "pnpm p:m:revert && pnpm p:m:run"
+    "p:m:generate": "yarn postgres:migrations:generate",
+    "p:m:run": "yarn postgres:migrations:run",
+    "p:m:revert": "yarn postgres:migrations:revert",
+    "p:m:drop": "yarn postgres:migrations:drop",
+    "p:m:stand": "yarn p:m:revert && yarn p:m:run"
   },
   "repository": {
     "type": "git",

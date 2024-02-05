@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install PNPM
+      - name: Install YARN
         shell: bash
-        run: npm i -g pnpm
+        run: npm i -g yarn
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -21,15 +21,15 @@ jobs:
         uses: actions/setup-node@v2
         with:
           node-version: 16
-          cache: "pnpm"
+          cache: "yarn"
 
       - name: Install
         shell: bash
-        run: pnpm install
+        run: yarn install
 
       - name: Run unit test
         shell: bash
-        run: pnpm run test
+        run: yarn run test
 
   e2e-test:
     runs-on: ubuntu-latest
@@ -63,20 +63,17 @@ jobs:
           POSTGRES_PORT: 5432
 
     steps:
-      - name: Install PNPM
-        shell: bash
-        run: npm i -g pnpm
 
       - name: Checkout
         uses: actions/checkout@v2
 
       - name: Install
         shell: bash
-        run: pnpm install
+        run: yarn install
 
       - name: Run e2e test
         shell: bash
-        run: pnpm run test:e2e
+        run: yarn run test:e2e
         env:
           RABBITMQ_URL_DEV: amqp://localhost
           MONGODB_TEST_URL: mongodb://test:p%4055w0rd@localhost:27017/test?retryWrites=true&writeConcern=majority

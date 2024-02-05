@@ -17,6 +17,8 @@ export const RepositoryService = repositoryServices.CQRS();
 export const AuthServices = new AS();
 export const SocketService: any = new SS();
 
+SocketService.addClient({ imageService: "http://127.0.0.1:8765" });
+
 const apiVersions = ["v1"];
 const uiVersions = ["v1"];
 
