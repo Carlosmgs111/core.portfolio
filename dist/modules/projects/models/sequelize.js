@@ -22,7 +22,7 @@ exports.project_schema = {
     state: {
         allowNull: false,
         type: sequelize_1.DataTypes.STRING,
-        default: [],
+        default: "",
     },
     stack: {
         allowNull: false,

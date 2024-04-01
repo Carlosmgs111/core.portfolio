@@ -18,7 +18,7 @@ const {
   postgresDatabaseTest,
 } = config;
 
-const test = !false;
+const test = false;
 const PROD = !true; // ? true for use in production
 
 const USER = !PROD

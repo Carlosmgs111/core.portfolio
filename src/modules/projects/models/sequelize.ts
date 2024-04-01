@@ -20,7 +20,7 @@ export const project_schema = {
   state: {
     allowNull: false,
     type: DataTypes.STRING,
-    default: [],
+    default: "",
   },
   stack: {
     allowNull: false,
