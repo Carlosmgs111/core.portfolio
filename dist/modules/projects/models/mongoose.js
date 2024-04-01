@@ -27,6 +27,18 @@ const projectSchema = new mongoose_1.Schema({
         type: [String],
         required: true,
     },
+    stack: {
+        type: [String],
+        required: true,
+    },
+    state: {
+        type: String,
+        required: true,
+    },
+    kind: {
+        type: [String],
+        required: true,
+    },
     uri: {
         type: String,
         required: true,

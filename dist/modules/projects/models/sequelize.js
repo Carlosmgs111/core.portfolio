@@ -19,6 +19,21 @@ exports.project_schema = {
         type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),
         default: [],
     },
+    state: {
+        allowNull: false,
+        type: sequelize_1.DataTypes.STRING,
+        default: [],
+    },
+    stack: {
+        allowNull: false,
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),
+        default: [],
+    },
+    kind: {
+        allowNull: false,
+        type: sequelize_1.DataTypes.ARRAY(sequelize_1.DataTypes.STRING),
+        default: [],
+    },
     uri: { type: sequelize_1.DataTypes.STRING },
     version: { type: sequelize_1.DataTypes.STRING, allowNull: false },
     createdAt: { type: sequelize_1.DataTypes.DATE, allowNull: false, field: "created_at" },

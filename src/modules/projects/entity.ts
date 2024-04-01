@@ -1,5 +1,6 @@
 import { filterAttrs } from "../../utils";
 import { v4 as uuidv4 } from "uuid";
+import { kind, state, stack } from "src/enums";
 
 type IProject = {
   uuid: string;
@@ -8,6 +9,9 @@ type IProject = {
   descriptions: string[];
   images: string[];
   tags: string[];
+  stacks: stack[];
+  state: state;
+  kind: kind[];
   uri: string;
   version: string;
 };
@@ -19,6 +23,9 @@ export class Project {
   descriptions: string[];
   images: string[];
   tags: string[];
+  stacks: stack[];
+  state: state;
+  kind: kind[];
   uri: string;
   version: string;
   createdAt: number = 0;
@@ -31,6 +38,9 @@ export class Project {
     descriptions,
     images,
     tags,
+    stacks,
+    state,
+    kind,
     uri,
     version,
   }: IProject) {
@@ -40,6 +50,9 @@ export class Project {
     this.descriptions = descriptions;
     this.images = images;
     this.tags = tags;
+    this.stacks = stacks;
+    this.state = state;
+    this.kind = kind;
     this.uri = uri;
     this.version = version;
     this.createdAt = new Date().getTime();

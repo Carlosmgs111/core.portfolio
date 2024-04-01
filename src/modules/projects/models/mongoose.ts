@@ -7,6 +7,9 @@ export interface IProject extends Document {
   descriptions: [string];
   images: [string];
   tags: [string];
+  stack: [string];
+  state: string;
+  kind: [string];
   Users: [string];
   uri: string;
   version: string;
@@ -37,6 +40,18 @@ const projectSchema = new Schema<IProject>({
     required: true,
   },
   tags: {
+    type: [String],
+    required: true,
+  },
+  stack: {
+    type: [String],
+    required: true,
+  },
+  state: {
+    type: String,
+    required: true,
+  },
+  kind: {
     type: [String],
     required: true,
   },

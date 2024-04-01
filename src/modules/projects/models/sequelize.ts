@@ -17,6 +17,21 @@ export const project_schema = {
     type: DataTypes.ARRAY(DataTypes.STRING),
     default: [],
   },
+  state: {
+    allowNull: false,
+    type: DataTypes.STRING,
+    default: [],
+  },
+  stack: {
+    allowNull: false,
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    default: [],
+  },
+  kind: {
+    allowNull: false,
+    type: DataTypes.ARRAY(DataTypes.STRING),
+    default: [],
+  },
   uri: { type: DataTypes.STRING },
   version: { type: DataTypes.STRING, allowNull: false },
   createdAt: { type: DataTypes.DATE, allowNull: false, field: "created_at" },

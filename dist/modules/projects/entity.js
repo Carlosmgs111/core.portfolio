@@ -16,7 +16,7 @@ const uuid_1 = require("uuid");
 class Project {
     constructor({ uuid, 
     // userUUID,
-    name, descriptions, images, tags, uri, version, }) {
+    name, descriptions, images, tags, stacks, state, kind, uri, version, }) {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
@@ -40,6 +40,9 @@ class Project {
         this.descriptions = descriptions;
         this.images = images;
         this.tags = tags;
+        this.stacks = stacks;
+        this.state = state;
+        this.kind = kind;
         this.uri = uri;
         this.version = version;
         this.createdAt = new Date().getTime();
