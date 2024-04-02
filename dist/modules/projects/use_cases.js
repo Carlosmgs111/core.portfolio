@@ -14,6 +14,7 @@ const dependencies_1 = require("../../config/dependencies");
 const entity_1 = require("./entity");
 const entity_2 = require("../users/entity");
 const utils_1 = require("../../utils");
+const enums_1 = require("../../enums");
 const formatProjects = (projects) => projects.map((project) => (0, utils_1.filterAttrs)(Object.assign(Object.assign({}, project), { buildedBy: project.Users.map(({ username }) => username) }), ["Users"]));
 const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, user, size, page } = data;
@@ -23,7 +24,13 @@ const getProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
         size,
         page,
     });
-    return formatProjects(projects);
+    const formatedProjects = formatProjects(projects);
+    return {
+        projects: formatedProjects,
+        kind: (0, utils_1.fromEnumToArray)(enums_1.kind),
+        state: (0, utils_1.fromEnumToArray)(enums_1.state),
+        stack: (0, utils_1.fromEnumToArray)(enums_1.stack),
+    };
 });
 exports.getProjects = getProjects;
 const getOwnProjects = (data) => __awaiter(void 0, void 0, void 0, function* () {
@@ -37,7 +44,6 @@ const addProject = (data) => __awaiter(void 0, void 0, void 0, function* () { re
 exports.addProject = addProject;
 const addManyProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { projects, user } = data;
-    console.log({ projects });
     const newProjects = yield entity_1.Project.createMany(dependencies_1.RepositoryService, projects.map((c) => (Object.assign(Object.assign({}, c), { user }))));
     return formatProjects(newProjects);
 });

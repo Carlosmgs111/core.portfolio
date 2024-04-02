@@ -64,13 +64,13 @@ export const Enumfy = (object: Array<String> | Object) => {
 
 export const execFunc = async (func: Function | any) => {
   if (typeof func !== "function") {
-    ("Not implemented yet!".red);
+    "Not implemented yet!".red;
     return;
   }
   try {
     await func();
   } catch (e: any) {
-    (e.message.red);
+    e.message.red;
   }
 };
 
@@ -120,3 +120,11 @@ export const capitalize = (label: any, pluralize: boolean = false) => {
     (pluralize ? "s" : "")
   );
 };
+
+export const createEnumFromArray = (array: Array<any>) =>
+  Object.freeze(Object.fromEntries(array.map((item: any) => [item, item])));
+
+export const fromEnumToArray = (_enum: any) =>
+  new Array(Object.entries(_enum))[0]
+    .splice(Object.entries(_enum).length / 2)
+    .flatMap((e: any) => e[0]);

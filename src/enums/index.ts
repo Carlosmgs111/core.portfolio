@@ -1,3 +1,5 @@
+import { fromEnumToArray } from "../utils";
+
 export enum stack {
   apollographql,
   axios,
@@ -24,13 +26,12 @@ export enum stack {
   react,
   sequelize,
   socketio,
-  styledcomponent,
+  styledcomponents,
   terminal,
   typescript,
   vscode,
   webpack,
 }
-
 export enum state {
   developing,
   testing,

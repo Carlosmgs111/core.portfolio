@@ -73,7 +73,6 @@ export class Project {
   };
 
   static createMany = async (RepositoryService: any, data: any) => {
-    console.log({ data });
     const projectsCreated = await RepositoryService.createMany(
       RepositoryService.entities.Project,
       data.map((c: any) => new Project({ ...c, uuid: c.uuid || uuidv4() }))

@@ -1,7 +1,8 @@
 import { RepositoryService, AuthServices } from "../../config/dependencies";
 import { Project } from "./entity";
 import { User } from "../users/entity";
-import { filterAttrs } from "../../utils";
+import { filterAttrs, fromEnumToArray } from "../../utils";
+import { kind, state, stack } from "../../enums";
 
 const formatProjects = (projects: [Project]) =>
   projects.map((project: any) =>
@@ -22,7 +23,13 @@ export const getProjects = async (data: any) => {
     size,
     page,
   });
-  return formatProjects(projects);
+  const formatedProjects = formatProjects(projects);
+  return {
+    projects: formatedProjects,
+    kind: fromEnumToArray(kind),
+    state: fromEnumToArray(state),
+    stack: fromEnumToArray(stack),
+  };
 };
 
 export const getOwnProjects = async (data: any) => {
@@ -37,7 +44,6 @@ export const addProject = async (data: any) =>
 
 export const addManyProject = async (data: any) => {
   const { projects, user } = data;
-  console.log({ projects });
   const newProjects: any = await Project.createMany(
     RepositoryService,
     projects.map((c: any) => ({ ...c, user }))

@@ -13,7 +13,7 @@ const repositoryServices = {
 };
 
 export const TaskMessageService = new TMS();
-export const RepositoryService = repositoryServices.CQRS();
+export const RepositoryService = repositoryServices.DBS();
 export const AuthServices = new AS();
 export const SocketService: any = new SS();
 
