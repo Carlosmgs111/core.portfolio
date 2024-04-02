@@ -16,7 +16,7 @@ const uuid_1 = require("uuid");
 class Project {
     constructor({ uuid, 
     // userUUID,
-    name, descriptions, images, tags, stacks, state, kind, uri, version, }) {
+    name, descriptions, images, tags, stack, state, kind, uri, version, }) {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
@@ -40,7 +40,7 @@ class Project {
         this.descriptions = descriptions;
         this.images = images;
         this.tags = tags;
-        this.stacks = stacks;
+        this.stack = stack;
         this.state = state;
         this.kind = kind;
         this.uri = uri;
@@ -61,6 +61,7 @@ Project.new = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     return newProject;
 });
 Project.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({ data });
     const projectsCreated = yield RepositoryService.createMany(RepositoryService.entities.Project, data.map((c) => new Project(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
     for (let projectIdx in data) {
         yield RepositoryService.createOneRelationshipN2N([

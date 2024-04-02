@@ -37,6 +37,7 @@ const addProject = (data) => __awaiter(void 0, void 0, void 0, function* () { re
 exports.addProject = addProject;
 const addManyProject = (data) => __awaiter(void 0, void 0, void 0, function* () {
     const { projects, user } = data;
+    console.log({ projects });
     const newProjects = yield entity_1.Project.createMany(dependencies_1.RepositoryService, projects.map((c) => (Object.assign(Object.assign({}, c), { user }))));
     return formatProjects(newProjects);
 });

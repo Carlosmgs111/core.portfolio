@@ -37,6 +37,7 @@ export const addProject = async (data: any) =>
 
 export const addManyProject = async (data: any) => {
   const { projects, user } = data;
+  console.log({ projects });
   const newProjects: any = await Project.createMany(
     RepositoryService,
     projects.map((c: any) => ({ ...c, user }))

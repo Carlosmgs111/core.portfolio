@@ -9,7 +9,7 @@ type IProject = {
   descriptions: string[];
   images: string[];
   tags: string[];
-  stacks: stack[];
+  stack: stack[];
   state: state;
   kind: kind[];
   uri: string;
@@ -23,7 +23,7 @@ export class Project {
   descriptions: string[];
   images: string[];
   tags: string[];
-  stacks: stack[];
+  stack: stack[];
   state: state;
   kind: kind[];
   uri: string;
@@ -38,7 +38,7 @@ export class Project {
     descriptions,
     images,
     tags,
-    stacks,
+    stack,
     state,
     kind,
     uri,
@@ -50,7 +50,7 @@ export class Project {
     this.descriptions = descriptions;
     this.images = images;
     this.tags = tags;
-    this.stacks = stacks;
+    this.stack = stack;
     this.state = state;
     this.kind = kind;
     this.uri = uri;
@@ -73,6 +73,7 @@ export class Project {
   };
 
   static createMany = async (RepositoryService: any, data: any) => {
+    console.log({ data });
     const projectsCreated = await RepositoryService.createMany(
       RepositoryService.entities.Project,
       data.map((c: any) => new Project({ ...c, uuid: c.uuid || uuidv4() }))
