@@ -43,9 +43,10 @@ export const addManySkills = async (data: any) => {
 };
 
 export const deleteSkill = async (data: any) => {
-  await (
-    await Skill.load(RepositoryService, data)
-  ).remove(RepositoryService, { userUUID: data.user.uuid });
+  const { uuid, user } = data;
+  const result = await (
+    await Skill.load(RepositoryService, { uuid })
+  ).remove(RepositoryService, { userUUID: user.uuid, uuid });
   return { message: "Skill deleted", uuid: data.uuid };
 };
 

@@ -42,7 +42,6 @@ export default class SequelizeAdapter {
       if (!entityFounded) return null;
       return entityFounded.dataValues;
     } catch (e: any) {
-      e.message.red;
       throw boom.internal(e.message);
     }
   };

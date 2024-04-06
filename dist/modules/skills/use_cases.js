@@ -35,7 +35,8 @@ const addManySkills = (data) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.addManySkills = addManySkills;
 const deleteSkill = (data) => __awaiter(void 0, void 0, void 0, function* () {
-    yield (yield entity_1.Skill.load(dependencies_1.RepositoryService, data)).remove(dependencies_1.RepositoryService, { userUUID: data.user.uuid });
+    const { uuid, user } = data;
+    const result = yield (yield entity_1.Skill.load(dependencies_1.RepositoryService, { uuid })).remove(dependencies_1.RepositoryService, { userUUID: user.uuid, uuid });
     return { message: "Skill deleted", uuid: data.uuid };
 });
 exports.deleteSkill = deleteSkill;

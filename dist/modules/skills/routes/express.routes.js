@@ -8,6 +8,6 @@ exports.default = router
     .get("/", (0, express_2.expressHandlerAdapter)(use_cases_1.getAllSkills))
     .post("/", (0, express_2.expressHandlerAdapter)(use_cases_1.addNewSkill))
     .post("/skills", (0, express_2.expressHandlerAdapter)(use_cases_1.addManySkills))
-    .delete("/", (0, express_2.expressHandlerAdapter)(use_cases_1.deleteSkill))
+    .delete("/:uuid", (0, express_2.expressHandlerAdapter)(use_cases_1.deleteSkill))
     .patch("/", (0, express_2.expressHandlerAdapter)(use_cases_1.updateSkill))
     .patch("/:uuid", (0, express_2.expressHandlerAdapter)(use_cases_1.updateSkill));

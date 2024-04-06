@@ -61,15 +61,15 @@ export class Skill {
   };
 
   static load = async (RepositoryService: any, credentials: any) => {
-    const skill = await Skill.find(RepositoryService, credentials);
-    ({ Model: RepositoryService.Model, credentials });
+    const skill = await Skill.find(RepositoryService, { credentials });
+    console.log({ skill });
     if (!skill) throw new Error("Incorrect credentials!");
     const loadedSkill = new Skill(skill);
     return loadedSkill;
   };
 
   static find = async (RepositoryService: any, options: any) => {
-    ({ options });
+    console.log({ options });
     const skill: any = await RepositoryService.findOne(
       RepositoryService.entities.Skill,
       options
@@ -81,7 +81,7 @@ export class Skill {
     const removed = await RepositoryService.removeOneRelationshipN2N([
       [{ user: { uuid: options.userUUID } }, { skill: { uuid: this.uuid } }],
     ]);
-
+    console.log({ removed });
     if (!removed) return;
 
     return await RepositoryService.removeOne(RepositoryService.entities.Skill, {

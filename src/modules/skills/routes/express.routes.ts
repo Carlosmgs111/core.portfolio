@@ -14,6 +14,6 @@ export default router
   .get("/", expressHandlerAdapter(getAllSkills))
   .post("/", expressHandlerAdapter(addNewSkill))
   .post("/skills", expressHandlerAdapter(addManySkills))
-  .delete("/", expressHandlerAdapter(deleteSkill))
+  .delete("/:uuid", expressHandlerAdapter(deleteSkill))
   .patch("/", expressHandlerAdapter(updateSkill))
   .patch("/:uuid", expressHandlerAdapter(updateSkill));

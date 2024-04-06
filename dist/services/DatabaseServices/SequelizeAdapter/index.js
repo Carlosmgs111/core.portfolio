@@ -40,7 +40,6 @@ class SequelizeAdapter {
                 return entityFounded.dataValues;
             }
             catch (e) {
-                e.message.red;
                 throw boom_1.default.internal(e.message);
             }
         });

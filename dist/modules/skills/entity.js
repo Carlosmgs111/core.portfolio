@@ -21,6 +21,7 @@ class Skill {
             const removed = yield RepositoryService.removeOneRelationshipN2N([
                 [{ user: { uuid: options.userUUID } }, { skill: { uuid: this.uuid } }],
             ]);
+            console.log({ removed });
             if (!removed)
                 return;
             return yield RepositoryService.removeOne(RepositoryService.entities.Skill, {
@@ -69,15 +70,15 @@ Skill.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0
     return skillsCreated;
 });
 Skill.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const skill = yield Skill.find(RepositoryService, credentials);
-    ({ Model: RepositoryService.Model, credentials });
+    const skill = yield Skill.find(RepositoryService, { credentials });
+    console.log({ skill });
     if (!skill)
         throw new Error("Incorrect credentials!");
     const loadedSkill = new Skill(skill);
     return loadedSkill;
 });
 Skill.find = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {
-    ({ options });
+    console.log({ options });
     const skill = yield RepositoryService.findOne(RepositoryService.entities.Skill, options);
     return skill;
 });
