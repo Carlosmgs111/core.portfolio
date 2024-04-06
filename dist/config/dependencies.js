@@ -8,7 +8,7 @@ const repositoryServices = {
     DBS: () => (0, services_1.DatabaseService)(DatabaseServices_1.Adapters.MongooseAdapter),
 };
 exports.TaskMessageService = new services_1.TaskMessageService();
-exports.RepositoryService = repositoryServices.DBS();
+exports.RepositoryService = repositoryServices.CQRS();
 exports.AuthServices = new services_1.AuthServices();
 exports.SocketService = new services_1.SocketService();
 exports.SocketService.addClient({ imageService: "http://127.0.0.1:8765" });

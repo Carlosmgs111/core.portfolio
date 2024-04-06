@@ -63,7 +63,6 @@ export const updateProject = async (data: any) => {
   const result = await (
     await Project.load(RepositoryService, { credentials: { uuid } })
   ).update(RepositoryService, filterAttrs(data, ["uuid", "user", "token"]));
-
   return { updated: result };
 };
 
