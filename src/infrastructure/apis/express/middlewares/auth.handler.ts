@@ -9,6 +9,7 @@ interface UserJwtPayload {
   iat: number; // Issued at
   exp: number; // Expire time
   email: string; // The user email
+  username: string;
 }
 
 export const verifyToken = async (req: any) => {
