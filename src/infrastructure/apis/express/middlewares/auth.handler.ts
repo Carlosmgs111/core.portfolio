@@ -64,7 +64,7 @@ export async function authMiddleware(req: any, res: any, next: Function) {
     const payload = await verifyToken(req);
     req.user = await load({
       uuid: payload.uuid,
-      email: payload.email,
+      username: payload.username,
     });
   } catch (e: any) {
     console.log({ e });

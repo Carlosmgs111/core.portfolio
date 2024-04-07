@@ -71,7 +71,7 @@ function authMiddleware(req, res, next) {
             const payload = yield (0, exports.verifyToken)(req);
             req.user = yield (0, use_cases_1.load)({
                 uuid: payload.uuid,
-                email: payload.email,
+                username: payload.username,
             });
         }
         catch (e) {
