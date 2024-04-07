@@ -81,7 +81,6 @@ export class Skill {
     const removed = await RepositoryService.removeOneRelationshipN2N([
       [{ user: { uuid: options.userUUID } }, { skill: { uuid: this.uuid } }],
     ]);
-    console.log({ removed });
     if (!removed) return;
 
     return await RepositoryService.removeOne(RepositoryService.entities.Skill, {

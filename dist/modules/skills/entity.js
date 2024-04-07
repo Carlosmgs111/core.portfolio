@@ -21,7 +21,6 @@ class Skill {
             const removed = yield RepositoryService.removeOneRelationshipN2N([
                 [{ user: { uuid: options.userUUID } }, { skill: { uuid: this.uuid } }],
             ]);
-            console.log({ removed });
             if (!removed)
                 return;
             return yield RepositoryService.removeOne(RepositoryService.entities.Skill, {
