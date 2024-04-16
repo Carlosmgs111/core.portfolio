@@ -5,7 +5,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 const config_1 = __importDefault(require("../../../../config"));
 const { postgresUserDev, postgresPasswordDev, postgresHostDev, postgresPortDev, postgresDatabaseDev, postgresUserProd, postgresPasswordProd, postgresHostProd, postgresPortProd, postgresDatabaseProd, postgresUserTest, postgresPasswordTest, postgresHostTest, postgresPortTest, postgresDatabaseTest, } = config_1.default;
 const test = false;
-const PROD = !true; // ? true for use in production
+const PROD = true; // ? true for use in production
 const USER = !PROD
     ? encodeURIComponent(postgresUserDev || "")
     : encodeURIComponent(postgresUserProd || "");
@@ -17,6 +17,7 @@ const URI = `postgres://${USER}:${PASSWORD}@${!PROD ? postgresHostDev : postgres
         ? postgresDatabaseDev
         : postgresDatabaseProd
     : postgresDatabaseTest}`;
+console.log({ URI });
 module.exports = {
     development: {
         url: URI,

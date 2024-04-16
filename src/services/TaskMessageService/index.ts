@@ -65,7 +65,7 @@ export class TaskMessageService {
   assertExchange = async (exchangeName: any, type: any = TYPE) => {
     const formatedExchangeName = `${exchangeName}/type=${type}`;
     const _channel = await this.getChannel();
-
+    // TODO must be added a connection retry policy
     try {
       const { exchange } = await _channel.assertExchange(
         formatedExchangeName,

@@ -19,7 +19,7 @@ const {
 } = config;
 
 const test = false;
-const PROD = !true; // ? true for use in production
+const PROD = true; // ? true for use in production
 
 const USER = !PROD
   ? encodeURIComponent(postgresUserDev || "")
@@ -38,6 +38,7 @@ const URI = `postgres://${USER}:${PASSWORD}@${
       : postgresDatabaseProd
     : postgresDatabaseTest
 }`;
+console.log({ URI });
 export = {
   development: {
     url: URI,

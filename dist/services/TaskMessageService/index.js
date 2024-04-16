@@ -48,6 +48,7 @@ class TaskMessageService {
         this.assertExchange = (exchangeName, type = TYPE) => __awaiter(this, void 0, void 0, function* () {
             const formatedExchangeName = `${exchangeName}/type=${type}`;
             const _channel = yield this.getChannel();
+            // TODO must be added a connection retry policy
             try {
                 const { exchange } = yield _channel.assertExchange(formatedExchangeName, type, {
                     durable: false,
