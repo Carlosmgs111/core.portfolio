@@ -21,7 +21,7 @@ class Project {
         this.updatedAt = 0;
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const { uuid } = this;
-            const removed = yield RepositoryService.removeOneRelationshipN2N([
+            const removed = yield RepositoryService.unsetOneRelationshipManyToMany([
                 [{ user: { uuid: options.userUUID } }, { project: { uuid: this.uuid } }],
             ]);
             if (!removed)
@@ -55,7 +55,7 @@ Project.new = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     const uuid = (0, uuid_1.v4)();
     const newProject = yield RepositoryService.createOne(RepositoryService.entities.Project, new Project(Object.assign(Object.assign({}, data), { uuid })));
     // * Create relation Many to Many between User and Project entity
-    yield RepositoryService.createOneRelationshipN2N([
+    yield RepositoryService.setOneRelationshipManyToMany([
         [{ project: { uuid } }, { user: { uuid: data.user.uuid } }],
     ]);
     return newProject;
@@ -63,7 +63,7 @@ Project.new = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
 Project.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const projectsCreated = yield RepositoryService.createMany(RepositoryService.entities.Project, data.map((c) => new Project(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
     for (let projectIdx in data) {
-        yield RepositoryService.createOneRelationshipN2N([
+        yield RepositoryService.setOneRelationshipManyToMany([
             [
                 {
                     project: {

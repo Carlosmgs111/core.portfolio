@@ -40,7 +40,7 @@ export class Certification {
         },
       ]
     );
-    await RepositoryService.createOneRelationshipN2N([
+    await RepositoryService.setOneRelationshipManyToMany([
       [{ certification: { uuid } }, { user: { uuid: data.user.uuid } }],
     ]);
     return certification;
@@ -66,7 +66,7 @@ export class Certification {
     }
 
     for (let certificationIdx in data) {
-      await RepositoryService.createOneRelationshipN2N([
+      await RepositoryService.setOneRelationshipManyToMany(
         [
           {
             certification: {
@@ -75,7 +75,7 @@ export class Certification {
           },
           { user: { uuid: data[Number(certificationIdx)].user.uuid } },
         ],
-      ]);
+      );
     }
     return certificationsCreated;
   };
@@ -143,12 +143,12 @@ export class Certification {
       { certifications: { uuid: this.uuid } },
       [["Institution", { as: "Institution" }]]
     );
-    const removed = await RepositoryService.removeOneRelationshipN2N([
+    const removed = await RepositoryService.unsetOneRelationshipManyToMany(
       [
         { user: { uuid: options.userUUID } },
         { certification: { uuid: this.uuid } },
       ],
-    ]);
+    );
 
     if (!removed) return;
     return await RepositoryService.removeOne(

@@ -104,7 +104,7 @@ export class Note {
       { certifications: { uuid: this.uuid } },
       [["Institution", { as: "Institution" }]]
     );
-    const removed = await RepositoryService.removeOneRelationshipN2N([
+    const removed = await RepositoryService.unsetOneRelationshipManyToMany([
       [{ user: { uuid: options.userUUID } }, { note: { uuid: this.uuid } }],
     ]);
 

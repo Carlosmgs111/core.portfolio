@@ -43,12 +43,12 @@ class CQRSService {
             });
             yield dependencies_1.TaskMessageService.subscribe({
                 queryService: {
-                    createOneRelationshipN2N: this.QueryService.createOneRelationshipN2N,
+                    setOneRelationshipManyToMany: this.QueryService.setOneRelationshipManyToMany,
                 },
             });
             yield dependencies_1.TaskMessageService.subscribe({
                 queryService: {
-                    removeOneRelationshipN2N: this.QueryService.removeOneRelationshipN2N,
+                    unsetOneRelationshipManyToMany: this.QueryService.unsetOneRelationshipManyToMany,
                 },
             });
         });
@@ -106,23 +106,23 @@ class CQRSService {
             });
             return yield this.CommandService.unsetOneRelationship2One(entity, refs);
         });
-        this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
+        this.setOneRelationshipManyToMany = (refs) => __awaiter(this, void 0, void 0, function* () {
             this.checkStatus();
             dependencies_1.TaskMessageService.publish({
                 queryService: {
-                    createOneRelationshipN2N: [refs],
+                    setOneRelationshipManyToMany: [refs],
                 },
             });
-            return yield this.CommandService.createOneRelationshipN2N(refs);
+            return yield this.CommandService.setOneRelationshipManyToMany(refs);
         });
-        this.removeOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
+        this.unsetOneRelationshipManyToMany = (refs) => __awaiter(this, void 0, void 0, function* () {
             this.checkStatus();
             dependencies_1.TaskMessageService.publish({
                 queryService: {
-                    removeOneRelationshipN2N: [refs],
+                    unsetOneRelationshipManyToMany: [refs],
                 },
             });
-            return yield this.CommandService.removeOneRelationshipN2N(refs);
+            return yield this.CommandService.unsetOneRelationshipManyToMany(refs);
         });
         this.checkOneRelationshipN2N = this.CommandService.checkOneRelationshipN2N;
         this.entities = Object.assign(Object.assign({}, this.CommandService.entities), this.QueryService.entities);

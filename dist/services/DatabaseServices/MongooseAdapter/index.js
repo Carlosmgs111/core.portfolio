@@ -62,53 +62,53 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
                 return boom_1.default.conflict("Entity with same attribute!");
             }
         });
-        this.createOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
-            for (let ref of refs) {
-                const [from, to] = ref;
-                const [exist, { fromModel, toModel, fromLabel, fromQuery, toLabel, toQuery },] = yield this.checkOneRelationshipN2N(from, to);
-                if (exist)
-                    throw boom_1.default.conflict("Entity exist yet!");
-                yield fromModel.updateOne({
-                    [(0, utils_1.labelCases)(toLabel).CP]: [
-                        ...fromModel[(0, utils_1.labelCases)(toLabel).CP],
-                        toModel._id,
-                    ],
-                }, {
-                    uuid: fromQuery,
-                });
-                yield toModel.updateOne({
-                    [(0, utils_1.labelCases)(fromLabel).CP]: [
-                        ...toModel[(0, utils_1.labelCases)(fromLabel).CP],
-                        fromModel._id,
-                    ],
-                }, {
-                    uuid: toQuery,
-                });
-            }
+        this.setOneRelationshipManyToMany = (refs) => __awaiter(this, void 0, void 0, function* () {
+            // for (let ref of refs) {
+            const [from, to] = refs;
+            const [exist, { fromModel, toModel, fromLabel, fromQuery, toLabel, toQuery },] = yield this.checkOneRelationshipN2N(from, to);
+            if (exist)
+                throw boom_1.default.conflict("Entity exist yet!");
+            yield fromModel.updateOne({
+                [(0, utils_1.labelCases)(toLabel).CP]: [
+                    ...fromModel[(0, utils_1.labelCases)(toLabel).CP],
+                    toModel._id,
+                ],
+            }, {
+                uuid: fromQuery,
+            });
+            yield toModel.updateOne({
+                [(0, utils_1.labelCases)(fromLabel).CP]: [
+                    ...toModel[(0, utils_1.labelCases)(fromLabel).CP],
+                    fromModel._id,
+                ],
+            }, {
+                uuid: toQuery,
+            });
+            // }
         });
-        this.updateOneRelationshipN2N = this.createOneRelationshipN2N;
+        this.updateOneRelationshipN2N = this.setOneRelationshipManyToMany;
         // TODO rename to removeRelationship
-        this.removeOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
-            for (let ref of refs) {
-                const [from, to] = ref;
-                const [exist, { fromModel, toModel, fromRelated, toRelated, fromRelatedIndex, toRelatedIndex, fromLabel, toLabel, fromQuery, toQuery, },] = yield this.checkOneRelationshipN2N(from, to);
-                if (!exist)
-                    throw boom_1.default.conflict("Entity doesn't exist!");
-                if (fromRelatedIndex === -1 || toRelatedIndex === -1)
-                    return false;
-                fromRelated.splice(fromRelatedIndex, 1);
-                toRelated.splice(toRelatedIndex, 1);
-                yield fromModel.updateOne({
-                    [(0, utils_1.labelCases)(toLabel).CP]: [...fromRelated],
-                }, {
-                    uuid: fromQuery,
-                });
-                yield toModel.updateOne({
-                    [(0, utils_1.labelCases)(fromLabel).CP]: [...toRelated],
-                }, {
-                    uuid: toQuery,
-                });
-            }
+        this.unsetOneRelationshipManyToMany = (refs) => __awaiter(this, void 0, void 0, function* () {
+            // for (let ref of refs) {
+            const [from, to] = refs;
+            const [exist, { fromModel, toModel, fromRelated, toRelated, fromRelatedIndex, toRelatedIndex, fromLabel, toLabel, fromQuery, toQuery, },] = yield this.checkOneRelationshipN2N(from, to);
+            if (!exist)
+                throw boom_1.default.conflict("Entity doesn't exist!");
+            if (fromRelatedIndex === -1 || toRelatedIndex === -1)
+                return false;
+            fromRelated.splice(fromRelatedIndex, 1);
+            toRelated.splice(toRelatedIndex, 1);
+            yield fromModel.updateOne({
+                [(0, utils_1.labelCases)(toLabel).CP]: [...fromRelated],
+            }, {
+                uuid: fromQuery,
+            });
+            yield toModel.updateOne({
+                [(0, utils_1.labelCases)(fromLabel).CP]: [...toRelated],
+            }, {
+                uuid: toQuery,
+            });
+            // }
             return true;
         });
         this.setOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {

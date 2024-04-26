@@ -42,11 +42,9 @@ class Certification {
         });
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
             yield RepositoryService.unsetOneRelationship2One({ certifications: { uuid: this.uuid } }, [["Institution", { as: "Institution" }]]);
-            const removed = yield RepositoryService.removeOneRelationshipN2N([
-                [
-                    { user: { uuid: options.userUUID } },
-                    { certification: { uuid: this.uuid } },
-                ],
+            const removed = yield RepositoryService.unsetOneRelationshipManyToMany([
+                { user: { uuid: options.userUUID } },
+                { certification: { uuid: this.uuid } },
             ]);
             if (!removed)
                 return;
@@ -75,7 +73,7 @@ Certification.createOne = (RepositoryService, data) => __awaiter(void 0, void 0,
             institution: { name: emitedBy },
         },
     ]);
-    yield RepositoryService.createOneRelationshipN2N([
+    yield RepositoryService.setOneRelationshipManyToMany([
         [{ certification: { uuid } }, { user: { uuid: data.user.uuid } }],
     ]);
     return certification;
@@ -90,15 +88,13 @@ Certification.createMany = (RepositoryService, data) => __awaiter(void 0, void 0
         ]);
     }
     for (let certificationIdx in data) {
-        yield RepositoryService.createOneRelationshipN2N([
-            [
-                {
-                    certification: {
-                        uuid: certificationsCreated[Number(certificationIdx)].uuid,
-                    },
+        yield RepositoryService.setOneRelationshipManyToMany([
+            {
+                certification: {
+                    uuid: certificationsCreated[Number(certificationIdx)].uuid,
                 },
-                { user: { uuid: data[Number(certificationIdx)].user.uuid } },
-            ],
+            },
+            { user: { uuid: data[Number(certificationIdx)].user.uuid } },
         ]);
     }
     return certificationsCreated;

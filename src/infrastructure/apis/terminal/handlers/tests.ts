@@ -26,7 +26,7 @@ export const testsHandler = async (state: any) => {
     },
     [removeN2N]: async () => {
       (
-        await mongooseAdapter.removeOneRelationshipN2N([
+        await mongooseAdapter.unsetOneRelationshipManyToMany([
           [{ institution: { name: "EDTeam" } }, { user: { username } }],
         ])
       );

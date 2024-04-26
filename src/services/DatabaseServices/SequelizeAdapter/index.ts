@@ -59,10 +59,10 @@ export default class SequelizeAdapter {
     return this.getResult(updated);
   };
 
-  createOneRelationshipN2N = async (refs: any) => {
+  setOneRelationshipManyToMany = async (refs: any) => {
     let succesfully = false;
-    for (let ref of refs) {
-      const [from, to] = ref;
+    // for (let ref of refs) {
+      const [from, to] = refs;
       const [existed, data, relationshipLabel]: any =
         await this.checkOneRelationshipN2N(from, to);
       if (existed) throw boom.conflict("Entity existed yet!");
@@ -72,7 +72,7 @@ export default class SequelizeAdapter {
       });
       if (!newSupportEntity)
         throw boom.conflict("Support table doesn't created");
-    }
+    // }
     return succesfully;
   };
 
@@ -92,16 +92,16 @@ export default class SequelizeAdapter {
   };
 
   // TODO rename to removeRelationship
-  removeOneRelationshipN2N = async (refs: any) => {
-    for (let ref of refs) {
-      const [from, to] = ref;
+  unsetOneRelationshipManyToMany = async (refs: any) => {
+    // for (let ref of refs) {
+      const [from, to] = refs;
       const [existed, data, relationshipLabel] =
         await this.checkOneRelationshipN2N(from, to);
       if (!existed) throw boom.conflict("Relationship doesn't existed!");
       return Boolean(
         await this.removeOne(relationshipLabel, { credentials: data })
       );
-    }
+    // }
   };
 
   setOneRelationship2One = async (entity: any, refs: any) => {

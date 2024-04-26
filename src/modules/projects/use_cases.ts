@@ -96,7 +96,7 @@ export const migrateRelationship2OneToN2N = async () => {
     const { User, Users } = project;
     if (User && Users.length === 0) {
       ({ User, Users });
-      /* await RepositoryService.CommandService.createOneRelationshipN2N([
+      /* await RepositoryService.CommandService.setOneRelationshipManyToMany([
         [{ project: { uuid: project.uuid } }, { user: { uuid: User.uuid } }],
       ]); */
       /*  await RepositoryService.QueryService.setOneRelationship2One(

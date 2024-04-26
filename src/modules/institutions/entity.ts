@@ -36,7 +36,7 @@ export class Institution {
       institution
     );
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
-    await RepositoryService.createOneRelationshipN2N([
+    await RepositoryService.setOneRelationshipManyToMany([
       [{ institution: { uuid } }, { user: { uuid: data.user.uuid } }],
     ]);
     return institution;
@@ -72,7 +72,7 @@ export class Institution {
   unlink = async (RepositoryService: any, options: any) => {};
 
   remove = async (RepositoryService: any, options: any = {}) => {
-    await RepositoryService.removeOneRelationshipN2N([
+    await RepositoryService.unsetOneRelationshipManyToMany([
       [{ user: options.userUUID }, { institution: this.uuid }],
     ]);
     return await RepositoryService.removeOne(

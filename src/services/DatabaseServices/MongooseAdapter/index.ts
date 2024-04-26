@@ -69,82 +69,82 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
     }
   };
 
-  createOneRelationshipN2N = async (refs: any) => {
-    for (let ref of refs) {
-      const [from, to] = ref;
-      const [
-        exist,
-        { fromModel, toModel, fromLabel, fromQuery, toLabel, toQuery },
-      ]: any = await this.checkOneRelationshipN2N(from, to);
-      if (exist) throw boom.conflict("Entity exist yet!");
-      await fromModel.updateOne(
-        {
-          [labelCases(toLabel).CP]: [
-            ...fromModel[labelCases(toLabel).CP],
-            toModel._id,
-          ],
-        },
-        {
-          uuid: fromQuery,
-        }
-      );
-      await toModel.updateOne(
-        {
-          [labelCases(fromLabel).CP]: [
-            ...toModel[labelCases(fromLabel).CP],
-            fromModel._id,
-          ],
-        },
-        {
-          uuid: toQuery,
-        }
-      );
-    }
+  setOneRelationshipManyToMany = async (refs: any) => {
+    // for (let ref of refs) {
+    const [from, to] = refs;
+    const [
+      exist,
+      { fromModel, toModel, fromLabel, fromQuery, toLabel, toQuery },
+    ]: any = await this.checkOneRelationshipN2N(from, to);
+    if (exist) throw boom.conflict("Entity exist yet!");
+    await fromModel.updateOne(
+      {
+        [labelCases(toLabel).CP]: [
+          ...fromModel[labelCases(toLabel).CP],
+          toModel._id,
+        ],
+      },
+      {
+        uuid: fromQuery,
+      }
+    );
+    await toModel.updateOne(
+      {
+        [labelCases(fromLabel).CP]: [
+          ...toModel[labelCases(fromLabel).CP],
+          fromModel._id,
+        ],
+      },
+      {
+        uuid: toQuery,
+      }
+    );
+    // }
   };
 
-  updateOneRelationshipN2N = this.createOneRelationshipN2N;
+  updateOneRelationshipN2N = this.setOneRelationshipManyToMany;
 
   // TODO rename to removeRelationship
-  removeOneRelationshipN2N = async (refs: any) => {
-    for (let ref of refs) {
-      const [from, to] = ref;
-      const [
-        exist,
-        {
-          fromModel,
-          toModel,
-          fromRelated,
-          toRelated,
-          fromRelatedIndex,
-          toRelatedIndex,
-          fromLabel,
-          toLabel,
-          fromQuery,
-          toQuery,
-        },
-      ]: any = await this.checkOneRelationshipN2N(from, to);
-      if (!exist) throw boom.conflict("Entity doesn't exist!");
-      if (fromRelatedIndex === -1 || toRelatedIndex === -1) return false;
-      fromRelated.splice(fromRelatedIndex, 1);
-      toRelated.splice(toRelatedIndex, 1);
+  unsetOneRelationshipManyToMany = async (refs: any) => {
+    // for (let ref of refs) {
+    const [from, to] = refs;
+    const [
+      exist,
+      {
+        fromModel,
+        toModel,
+        fromRelated,
+        toRelated,
+        fromRelatedIndex,
+        toRelatedIndex,
+        fromLabel,
+        toLabel,
+        fromQuery,
+        toQuery,
+      },
+    ]: any = await this.checkOneRelationshipN2N(from, to);
+    if (!exist) throw boom.conflict("Entity doesn't exist!");
+    if (fromRelatedIndex === -1 || toRelatedIndex === -1) return false;
+    fromRelated.splice(fromRelatedIndex, 1);
+    toRelated.splice(toRelatedIndex, 1);
 
-      await fromModel.updateOne(
-        {
-          [labelCases(toLabel).CP]: [...fromRelated],
-        },
-        {
-          uuid: fromQuery,
-        }
-      );
-      await toModel.updateOne(
-        {
-          [labelCases(fromLabel).CP]: [...toRelated],
-        },
-        {
-          uuid: toQuery,
-        }
-      );
-    }
+    await fromModel.updateOne(
+      {
+        [labelCases(toLabel).CP]: [...fromRelated],
+      },
+      {
+        uuid: fromQuery,
+      }
+    );
+    await toModel.updateOne(
+      {
+        [labelCases(fromLabel).CP]: [...toRelated],
+      },
+      {
+        uuid: toQuery,
+      }
+    );
+    // }
     return true;
   };
 

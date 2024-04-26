@@ -18,7 +18,7 @@ class Skill {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            const removed = yield RepositoryService.removeOneRelationshipN2N([
+            const removed = yield RepositoryService.unsetOneRelationshipManyToMany([
                 [{ user: { uuid: options.userUUID } }, { skill: { uuid: this.uuid } }],
             ]);
             if (!removed)
@@ -47,7 +47,7 @@ Skill.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fu
     const uuid = (0, uuid_1.v4)();
     const skill = new Skill(Object.assign(Object.assign({}, data), { uuid }));
     yield RepositoryService.createOne(RepositoryService.entities.Skill, skill);
-    yield RepositoryService.createOneRelationshipN2N([
+    yield RepositoryService.setOneRelationshipManyToMany([
         [{ skill: { uuid } }, { user: { uuid: data.user.uuid } }],
     ]);
     return skill;
@@ -55,7 +55,7 @@ Skill.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fu
 Skill.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const skillsCreated = yield RepositoryService.createMany(RepositoryService.entities.Skill, data.map((c) => new Skill(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
     for (let skillIdx in data) {
-        yield RepositoryService.createOneRelationshipN2N([
+        yield RepositoryService.setOneRelationshipManyToMany([
             [
                 {
                     skill: {

@@ -34,7 +34,7 @@ export class Skill {
     const uuid = uuidv4();
     const skill = new Skill({ ...data, uuid });
     await RepositoryService.createOne(RepositoryService.entities.Skill, skill);
-    await RepositoryService.createOneRelationshipN2N([
+    await RepositoryService.setOneRelationshipManyToMany([
       [{ skill: { uuid } }, { user: { uuid: data.user.uuid } }],
     ]);
     return skill;
@@ -46,7 +46,7 @@ export class Skill {
       data.map((c: any) => new Skill({ ...c, uuid: c.uuid || uuidv4() }))
     );
     for (let skillIdx in data) {
-      await RepositoryService.createOneRelationshipN2N([
+      await RepositoryService.setOneRelationshipManyToMany([
         [
           {
             skill: {
@@ -78,7 +78,7 @@ export class Skill {
   };
 
   remove = async (RepositoryService: any, options: any = {}) => {
-    const removed = await RepositoryService.removeOneRelationshipN2N([
+    const removed = await RepositoryService.unsetOneRelationshipManyToMany([
       [{ user: { uuid: options.userUUID } }, { skill: { uuid: this.uuid } }],
     ]);
     if (!removed) return;

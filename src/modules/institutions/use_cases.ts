@@ -22,7 +22,7 @@ export const updateInstitution = async (data: any) => {
 export const linkToIntitution = async (data: any) => {
   const { institutionUUID, token } = data;
   const { user } = await verifyToken2(token);
-  RepositoryService.createOneRelationshipN2N([
+  RepositoryService.setOneRelationshipManyToMany([
     { label: "user", uuid: user.uuid },
     { label: "institution", uuid: institutionUUID },
   ]);

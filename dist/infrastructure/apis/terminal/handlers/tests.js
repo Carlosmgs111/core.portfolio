@@ -33,7 +33,7 @@ const testsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
             (yield sequelizeAdapter.checkOneRelationshipN2N({ certification: { title: "0" } }, { user: { username } }));
         }),
         [removeN2N]: () => __awaiter(void 0, void 0, void 0, function* () {
-            (yield mongooseAdapter.removeOneRelationshipN2N([
+            (yield mongooseAdapter.unsetOneRelationshipManyToMany([
                 [{ institution: { name: "EDTeam" } }, { user: { username } }],
             ]));
         }),

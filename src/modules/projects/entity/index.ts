@@ -64,7 +64,7 @@ export class Project {
       data.map((c: any) => new Project({ ...c, uuid: c.uuid || uuidv4() }))
     );
     for (let projectIdx in data) {
-      await RepositoryService.createOneRelationshipN2N([
+      await RepositoryService.setOneRelationshipManyToMany([
         [
           {
             project: {
@@ -106,7 +106,7 @@ export class Project {
 
   remove = async (RepositoryService: any, options: any = {}) => {
     const { uuid } = this;
-    const removed = await RepositoryService.removeOneRelationshipN2N([
+    const removed = await RepositoryService.unsetOneRelationshipManyToMany([
       [{ user: { uuid: options.userUUID } }, { project: { uuid: this.uuid } }],
     ]);
 

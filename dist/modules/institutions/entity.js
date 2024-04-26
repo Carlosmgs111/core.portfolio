@@ -24,7 +24,7 @@ class Institution {
         this.link = (RepositoryService, options) => __awaiter(this, void 0, void 0, function* () { });
         this.unlink = (RepositoryService, options) => __awaiter(this, void 0, void 0, function* () { });
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
-            yield RepositoryService.removeOneRelationshipN2N([
+            yield RepositoryService.unsetOneRelationshipManyToMany([
                 [{ user: options.userUUID }, { institution: this.uuid }],
             ]);
             return yield RepositoryService.removeOne(RepositoryService.entities.Institution, {
@@ -51,7 +51,7 @@ Institution.create = (RepositoryService, data) => __awaiter(void 0, void 0, void
     const institution = new Institution(Object.assign(Object.assign({}, data), { uuid }));
     yield RepositoryService.createOne(RepositoryService.entities.Institution, institution);
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
-    yield RepositoryService.createOneRelationshipN2N([
+    yield RepositoryService.setOneRelationshipManyToMany([
         [{ institution: { uuid } }, { user: { uuid: data.user.uuid } }],
     ]);
     return institution;

@@ -38,7 +38,7 @@ class Note {
         });
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
             yield RepositoryService.unsetOneRelationship2One({ certifications: { uuid: this.uuid } }, [["Institution", { as: "Institution" }]]);
-            const removed = yield RepositoryService.removeOneRelationshipN2N([
+            const removed = yield RepositoryService.unsetOneRelationshipManyToMany([
                 [{ user: { uuid: options.userUUID } }, { note: { uuid: this.uuid } }],
             ]);
             if (!removed)
