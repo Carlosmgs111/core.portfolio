@@ -39,12 +39,14 @@ export class CQRSService {
     });
     await TaskMessageService.subscribe({
       queryService: {
-        setOneRelationshipManyToMany: this.QueryService.setOneRelationshipManyToMany,
+        setOneRelationshipManyToMany:
+          this.QueryService.setOneRelationshipManyToMany,
       },
     });
     await TaskMessageService.subscribe({
       queryService: {
-        unsetOneRelationshipManyToMany: this.QueryService.unsetOneRelationshipManyToMany,
+        unsetOneRelationshipManyToMany:
+          this.QueryService.unsetOneRelationshipManyToMany,
       },
     });
   };
@@ -122,6 +124,15 @@ export class CQRSService {
       },
     });
     return await this.CommandService.unsetOneRelationshipManyToMany(refs);
+  };
+  setManyRelationshipsManyToMany = async (refsBatch: any) => {
+    // this.checkStatus();
+    // TaskMessageService.publish({
+    //   queryService: {
+    //     setManyRelationshipsManyToMany: [refsBatch],
+    //   },
+    // });
+    return await this.CommandService.setManyRelationshipsManyToMany(refsBatch);
   };
   checkOneRelationshipN2N = this.CommandService.checkOneRelationshipN2N;
   entities = { ...this.CommandService.entities, ...this.QueryService.entities };

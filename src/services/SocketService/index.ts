@@ -1,9 +1,10 @@
 import { Server, Socket } from "socket.io";
 import { connect } from "socket.io-client";
 import { Mapfy, UnMapfy } from "../../utils";
+import config from "../../config";
 
 export class SocketService {
-  server: Server = new Server(7081, {
+  server: Server = new Server(config.socketServicePort, {
     cors: {
       origin: "*",
     },

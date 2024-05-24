@@ -93,16 +93,18 @@ export class TaskMessageService {
     const [queueName, message] = Mapfy(_payload).entries().next().value;
     const formatedExchangeName = `${exchangeName}/type=${type}`;
     await this.assertExchange(exchangeName);
-    try {
-      const _channel = await this.getChannel();
-      await _channel.publish(
-        formatedExchangeName,
-        queueName,
-        Buffer.from(JSON.stringify(message))
-      );
-    } catch (e: any) {
-      console.log(e.message.gbRed);
-    }
+
+    this.getChannel()
+      .then((_channel: any) => {
+        _channel
+          .publish(
+            formatedExchangeName,
+            queueName,
+            Buffer.from(JSON.stringify(message))
+          )
+      })
+      .catch((e: any) => console.log(e.message.bgRed));
+
     return this;
   };
 
@@ -156,7 +158,7 @@ export class TaskMessageService {
     }
     return this;
   };
-  
+
   isOnline = () => this.channel && this.connection;
 
   addEvent = (cb: any) => {};

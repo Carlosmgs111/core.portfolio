@@ -55,7 +55,7 @@ export class Certification {
     );
 
     for (let certification in certificationsCreated) {
-      await RepositoryService.setOneRelationship2One(
+      RepositoryService.setOneRelationship2One(
         { certifications: { uuid: certificationsCreated[certification].uuid } },
         [
           {
@@ -65,17 +65,26 @@ export class Certification {
       );
     }
 
+    const refsBatch = data.map((_: any, index: any) => [
+      {
+        certification: {
+          uuid: certificationsCreated[Number(index)].uuid,
+        },
+      },
+      { user: { uuid: data[Number(index)].user.uuid } },
+    ]);
+
+    RepositoryService.setManyRelationshipsManyToMany(refsBatch);
+
     for (let certificationIdx in data) {
-      await RepositoryService.setOneRelationshipManyToMany(
-        [
-          {
-            certification: {
-              uuid: certificationsCreated[Number(certificationIdx)].uuid,
-            },
+      RepositoryService.setOneRelationshipManyToMany([
+        {
+          certification: {
+            uuid: certificationsCreated[Number(certificationIdx)].uuid,
           },
-          { user: { uuid: data[Number(certificationIdx)].user.uuid } },
-        ],
-      );
+        },
+        { user: { uuid: data[Number(certificationIdx)].user.uuid } },
+      ]);
     }
     return certificationsCreated;
   };
@@ -143,12 +152,10 @@ export class Certification {
       { certifications: { uuid: this.uuid } },
       [["Institution", { as: "Institution" }]]
     );
-    const removed = await RepositoryService.unsetOneRelationshipManyToMany(
-      [
-        { user: { uuid: options.userUUID } },
-        { certification: { uuid: this.uuid } },
-      ],
-    );
+    const removed = await RepositoryService.unsetOneRelationshipManyToMany([
+      { user: { uuid: options.userUUID } },
+      { certification: { uuid: this.uuid } },
+    ]);
 
     if (!removed) return;
     return await RepositoryService.removeOne(

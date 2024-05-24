@@ -69,13 +69,12 @@ class TaskMessageService {
             const [queueName, message] = (0, utils_1.Mapfy)(_payload).entries().next().value;
             const formatedExchangeName = `${exchangeName}/type=${type}`;
             yield this.assertExchange(exchangeName);
-            try {
-                const _channel = yield this.getChannel();
-                yield _channel.publish(formatedExchangeName, queueName, Buffer.from(JSON.stringify(message)));
-            }
-            catch (e) {
-                console.log(e.message.gbRed);
-            }
+            this.getChannel()
+                .then((_channel) => {
+                _channel
+                    .publish(formatedExchangeName, queueName, Buffer.from(JSON.stringify(message)));
+            })
+                .catch((e) => console.log(e.message.bgRed));
             return this;
         });
         this.subscribe = (payload, type = TYPE) => __awaiter(this, void 0, void 0, function* () {

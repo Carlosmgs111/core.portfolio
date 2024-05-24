@@ -59,51 +59,6 @@ export default class SequelizeAdapter {
     return this.getResult(updated);
   };
 
-  setOneRelationshipManyToMany = async (refs: any) => {
-    let succesfully = false;
-    // for (let ref of refs) {
-      const [from, to] = refs;
-      const [existed, data, relationshipLabel]: any =
-        await this.checkOneRelationshipN2N(from, to);
-      if (existed) throw boom.conflict("Entity existed yet!");
-      const newSupportEntity = await this.createOne(relationshipLabel, {
-        ...data,
-        uuid: uuidv4(),
-      });
-      if (!newSupportEntity)
-        throw boom.conflict("Support table doesn't created");
-    // }
-    return succesfully;
-  };
-
-  updateOneRelationshipN2N = async (refs: any) => {
-    let succesfully = false;
-    for (let ref of refs) {
-      const [from, to] = ref;
-      const [existed, data, relationshipLabel]: any =
-        await this.checkOneRelationshipN2N(from, to);
-      if (!existed) throw boom.conflict("Relationship doesn't existed!");
-      const updatedEntity = await this.updateOne(relationshipLabel, {
-        ...data,
-      });
-      if (!updatedEntity) throw boom.conflict("Support table doesn't created");
-    }
-    return succesfully;
-  };
-
-  // TODO rename to removeRelationship
-  unsetOneRelationshipManyToMany = async (refs: any) => {
-    // for (let ref of refs) {
-      const [from, to] = refs;
-      const [existed, data, relationshipLabel] =
-        await this.checkOneRelationshipN2N(from, to);
-      if (!existed) throw boom.conflict("Relationship doesn't existed!");
-      return Boolean(
-        await this.removeOne(relationshipLabel, { credentials: data })
-      );
-    // }
-  };
-
   setOneRelationship2One = async (entity: any, refs: any) => {
     const mainLabel = Mapfy(entity).keys().next().value;
     const mainQuery = Mapfy(entity).values().next().value;
@@ -131,6 +86,52 @@ export default class SequelizeAdapter {
       relations2One[`${ref}UUID`] = null;
     }
     return { ...entity, ...relations2One };
+  };
+
+  setOneRelationshipManyToMany = async (refs: any) => {
+    let succesfully = false;
+    const [from, to] = refs;
+    const [existed, data, relationshipLabel]: any =
+      await this.checkOneRelationshipN2N(from, to);
+    if (existed) throw boom.conflict("Entity existed yet!");
+    const newSupportEntity = await this.createOne(relationshipLabel, {
+      ...data,
+      uuid: uuidv4(),
+    });
+    if (!newSupportEntity) throw boom.conflict("Support table doesn't created");
+    return succesfully;
+  };
+
+  updateOneRelationshipN2N = async (refs: any) => {
+    let succesfully = false;
+    for (let ref of refs) {
+      const [from, to] = ref;
+      const [existed, data, relationshipLabel]: any =
+        await this.checkOneRelationshipN2N(from, to);
+      if (!existed) throw boom.conflict("Relationship doesn't existed!");
+      const updatedEntity = await this.updateOne(relationshipLabel, {
+        ...data,
+      });
+      if (!updatedEntity) throw boom.conflict("Support table doesn't created");
+    }
+    return succesfully;
+  };
+
+  // TODO rename to removeRelationship
+  unsetOneRelationshipManyToMany = async (refs: any) => {
+    const [from, to] = refs;
+    const [existed, data, relationshipLabel] =
+      await this.checkOneRelationshipN2N(from, to);
+    if (!existed) throw boom.conflict("Relationship doesn't existed!");
+    return Boolean(
+      await this.removeOne(relationshipLabel, { credentials: data })
+    );
+  };
+
+  setManyRelationshipsManyToMany = (refsBatch: any) => {
+    for (let refs of refsBatch) {
+      console.log({ refs });
+    }
   };
 
   checkOneRelationshipN2N = async (from: any, to: any) => {

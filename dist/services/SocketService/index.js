@@ -8,14 +8,18 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.SocketService = void 0;
 const socket_io_1 = require("socket.io");
 const socket_io_client_1 = require("socket.io-client");
 const utils_1 = require("../../utils");
+const config_1 = __importDefault(require("../../config"));
 class SocketService {
     constructor(clients = []) {
-        this.server = new socket_io_1.Server(7081, {
+        this.server = new socket_io_1.Server(config_1.default.socketServicePort, {
             cors: {
                 origin: "*",
             },

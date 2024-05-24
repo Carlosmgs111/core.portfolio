@@ -63,7 +63,6 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
             }
         });
         this.setOneRelationshipManyToMany = (refs) => __awaiter(this, void 0, void 0, function* () {
-            // for (let ref of refs) {
             const [from, to] = refs;
             const [exist, { fromModel, toModel, fromLabel, fromQuery, toLabel, toQuery },] = yield this.checkOneRelationshipN2N(from, to);
             if (exist)
@@ -84,12 +83,10 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
             }, {
                 uuid: toQuery,
             });
-            // }
         });
         this.updateOneRelationshipN2N = this.setOneRelationshipManyToMany;
         // TODO rename to removeRelationship
         this.unsetOneRelationshipManyToMany = (refs) => __awaiter(this, void 0, void 0, function* () {
-            // for (let ref of refs) {
             const [from, to] = refs;
             const [exist, { fromModel, toModel, fromRelated, toRelated, fromRelatedIndex, toRelatedIndex, fromLabel, toLabel, fromQuery, toQuery, },] = yield this.checkOneRelationshipN2N(from, to);
             if (!exist)
@@ -108,7 +105,6 @@ class MongooseAdapter /* implements DatabaseAdapter */ {
             }, {
                 uuid: toQuery,
             });
-            // }
             return true;
         });
         this.setOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {

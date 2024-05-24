@@ -124,6 +124,15 @@ class CQRSService {
             });
             return yield this.CommandService.unsetOneRelationshipManyToMany(refs);
         });
+        this.setManyRelationshipsManyToMany = (refsBatch) => __awaiter(this, void 0, void 0, function* () {
+            // this.checkStatus();
+            // TaskMessageService.publish({
+            //   queryService: {
+            //     setManyRelationshipsManyToMany: [refsBatch],
+            //   },
+            // });
+            return yield this.CommandService.setManyRelationshipsManyToMany(refsBatch);
+        });
         this.checkOneRelationshipN2N = this.CommandService.checkOneRelationshipN2N;
         this.entities = Object.assign(Object.assign({}, this.CommandService.entities), this.QueryService.entities);
         this.checkStatus = () => {

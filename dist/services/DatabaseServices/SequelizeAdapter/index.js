@@ -52,42 +52,6 @@ class SequelizeAdapter {
             const updated = yield models_1.models[entity].update(Entity, this.adapter(options));
             return this.getResult(updated);
         });
-        this.setOneRelationshipManyToMany = (refs) => __awaiter(this, void 0, void 0, function* () {
-            let succesfully = false;
-            // for (let ref of refs) {
-            const [from, to] = refs;
-            const [existed, data, relationshipLabel] = yield this.checkOneRelationshipN2N(from, to);
-            if (existed)
-                throw boom_1.default.conflict("Entity existed yet!");
-            const newSupportEntity = yield this.createOne(relationshipLabel, Object.assign(Object.assign({}, data), { uuid: (0, uuid_1.v4)() }));
-            if (!newSupportEntity)
-                throw boom_1.default.conflict("Support table doesn't created");
-            // }
-            return succesfully;
-        });
-        this.updateOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
-            let succesfully = false;
-            for (let ref of refs) {
-                const [from, to] = ref;
-                const [existed, data, relationshipLabel] = yield this.checkOneRelationshipN2N(from, to);
-                if (!existed)
-                    throw boom_1.default.conflict("Relationship doesn't existed!");
-                const updatedEntity = yield this.updateOne(relationshipLabel, Object.assign({}, data));
-                if (!updatedEntity)
-                    throw boom_1.default.conflict("Support table doesn't created");
-            }
-            return succesfully;
-        });
-        // TODO rename to removeRelationship
-        this.unsetOneRelationshipManyToMany = (refs) => __awaiter(this, void 0, void 0, function* () {
-            // for (let ref of refs) {
-            const [from, to] = refs;
-            const [existed, data, relationshipLabel] = yield this.checkOneRelationshipN2N(from, to);
-            if (!existed)
-                throw boom_1.default.conflict("Relationship doesn't existed!");
-            return Boolean(yield this.removeOne(relationshipLabel, { credentials: data }));
-            // }
-        });
         this.setOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
             const mainLabel = (0, utils_1.Mapfy)(entity).keys().next().value;
             const mainQuery = (0, utils_1.Mapfy)(entity).values().next().value;
@@ -114,6 +78,43 @@ class SequelizeAdapter {
             }
             return Object.assign(Object.assign({}, entity), relations2One);
         });
+        this.setOneRelationshipManyToMany = (refs) => __awaiter(this, void 0, void 0, function* () {
+            let succesfully = false;
+            const [from, to] = refs;
+            const [existed, data, relationshipLabel] = yield this.checkOneRelationshipN2N(from, to);
+            if (existed)
+                throw boom_1.default.conflict("Entity existed yet!");
+            const newSupportEntity = yield this.createOne(relationshipLabel, Object.assign(Object.assign({}, data), { uuid: (0, uuid_1.v4)() }));
+            if (!newSupportEntity)
+                throw boom_1.default.conflict("Support table doesn't created");
+            return succesfully;
+        });
+        this.updateOneRelationshipN2N = (refs) => __awaiter(this, void 0, void 0, function* () {
+            let succesfully = false;
+            for (let ref of refs) {
+                const [from, to] = ref;
+                const [existed, data, relationshipLabel] = yield this.checkOneRelationshipN2N(from, to);
+                if (!existed)
+                    throw boom_1.default.conflict("Relationship doesn't existed!");
+                const updatedEntity = yield this.updateOne(relationshipLabel, Object.assign({}, data));
+                if (!updatedEntity)
+                    throw boom_1.default.conflict("Support table doesn't created");
+            }
+            return succesfully;
+        });
+        // TODO rename to removeRelationship
+        this.unsetOneRelationshipManyToMany = (refs) => __awaiter(this, void 0, void 0, function* () {
+            const [from, to] = refs;
+            const [existed, data, relationshipLabel] = yield this.checkOneRelationshipN2N(from, to);
+            if (!existed)
+                throw boom_1.default.conflict("Relationship doesn't existed!");
+            return Boolean(yield this.removeOne(relationshipLabel, { credentials: data }));
+        });
+        this.setManyRelationshipsManyToMany = (refsBatch) => {
+            for (let refs of refsBatch) {
+                console.log({ refs });
+            }
+        };
         this.checkOneRelationshipN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
             const composeRelationshipLabel = (from, to) => {
                 if (models_1.models[`${(0, utils_1.labelCases)(from).CP}_${(0, utils_1.labelCases)(to).CP}`])

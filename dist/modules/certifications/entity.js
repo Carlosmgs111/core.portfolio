@@ -81,14 +81,23 @@ Certification.createOne = (RepositoryService, data) => __awaiter(void 0, void 0,
 Certification.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const certificationsCreated = yield RepositoryService.createMany(RepositoryService.entities.Certification, data.map((c) => new Certification(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
     for (let certification in certificationsCreated) {
-        yield RepositoryService.setOneRelationship2One({ certifications: { uuid: certificationsCreated[certification].uuid } }, [
+        RepositoryService.setOneRelationship2One({ certifications: { uuid: certificationsCreated[certification].uuid } }, [
             {
                 institution: { name: data[certification].emitedBy },
             },
         ]);
     }
+    const refsBatch = data.map((_, index) => [
+        {
+            certification: {
+                uuid: certificationsCreated[Number(index)].uuid,
+            },
+        },
+        { user: { uuid: data[Number(index)].user.uuid } },
+    ]);
+    RepositoryService.setManyRelationshipsManyToMany(refsBatch);
     for (let certificationIdx in data) {
-        yield RepositoryService.setOneRelationshipManyToMany([
+        RepositoryService.setOneRelationshipManyToMany([
             {
                 certification: {
                     uuid: certificationsCreated[Number(certificationIdx)].uuid,

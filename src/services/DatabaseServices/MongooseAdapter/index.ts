@@ -70,7 +70,6 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
   };
 
   setOneRelationshipManyToMany = async (refs: any) => {
-    // for (let ref of refs) {
     const [from, to] = refs;
     const [
       exist,
@@ -99,14 +98,12 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
         uuid: toQuery,
       }
     );
-    // }
   };
 
   updateOneRelationshipN2N = this.setOneRelationshipManyToMany;
 
   // TODO rename to removeRelationship
   unsetOneRelationshipManyToMany = async (refs: any) => {
-    // for (let ref of refs) {
     const [from, to] = refs;
     const [
       exist,
@@ -144,7 +141,6 @@ export default class MongooseAdapter /* implements DatabaseAdapter */ {
         uuid: toQuery,
       }
     );
-    // }
     return true;
   };
 

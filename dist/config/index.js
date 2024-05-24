@@ -28,6 +28,9 @@ const config = {
     jwtAccessSecret: String(process.env.JWT_ACCESS_SECRET || ""),
     jwtSignupSecret: String(process.env.JWT_SIGNUP_SECRET || ""),
     apiKey: String(process.env.API_KEY || ""),
+    /*  */
+    socketServicePort: Number(process.env.SOCKET_SERVICE_PORT || ""),
+    /*  */
     // jwtResetPasswordSecret: String(process.env.JWT_RESET_PASSWORD_SECRET),
     jwtExp: process.env.TOKEN_EXPIRATION,
     test: process.env.test && String(process.env.test || ""),
