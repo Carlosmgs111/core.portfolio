@@ -66,7 +66,8 @@ export class Project {
     );
     // * Create relation Many to Many between User and Project entity
     await RepositoryService.setOneRelationshipManyToMany([
-      [{ project: { uuid } }, { user: { uuid: data.user.uuid } }],
+      { project: { uuid } },
+      { user: { uuid: data.user.uuid } },
     ]);
 
     return newProject;
@@ -79,14 +80,12 @@ export class Project {
     );
     for (let projectIdx in data) {
       await RepositoryService.setOneRelationshipManyToMany([
-        [
-          {
-            project: {
-              uuid: projectsCreated[Number(projectIdx)].uuid,
-            },
+        {
+          project: {
+            uuid: projectsCreated[Number(projectIdx)].uuid,
           },
-          { user: { uuid: data[Number(projectIdx)].user.uuid } },
-        ],
+        },
+        { user: { uuid: data[Number(projectIdx)].user.uuid } },
       ]);
     }
     return projectsCreated.map((p: any, i: any) => ({
@@ -121,7 +120,8 @@ export class Project {
   remove = async (RepositoryService: any, options: any = {}) => {
     const { uuid } = this;
     const removed = await RepositoryService.unsetOneRelationshipManyToMany([
-      [{ user: { uuid: options.userUUID } }, { project: { uuid: this.uuid } }],
+      { user: { uuid: options.userUUID } },
+      { project: { uuid: this.uuid } },
     ]);
 
     if (!removed) return;

@@ -22,7 +22,8 @@ class Project {
         this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
             const { uuid } = this;
             const removed = yield RepositoryService.unsetOneRelationshipManyToMany([
-                [{ user: { uuid: options.userUUID } }, { project: { uuid: this.uuid } }],
+                { user: { uuid: options.userUUID } },
+                { project: { uuid: this.uuid } },
             ]);
             if (!removed)
                 return;
@@ -56,7 +57,8 @@ Project.new = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     const newProject = yield RepositoryService.createOne(RepositoryService.entities.Project, new Project(Object.assign(Object.assign({}, data), { uuid })));
     // * Create relation Many to Many between User and Project entity
     yield RepositoryService.setOneRelationshipManyToMany([
-        [{ project: { uuid } }, { user: { uuid: data.user.uuid } }],
+        { project: { uuid } },
+        { user: { uuid: data.user.uuid } },
     ]);
     return newProject;
 });
@@ -64,14 +66,12 @@ Project.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void
     const projectsCreated = yield RepositoryService.createMany(RepositoryService.entities.Project, data.map((c) => new Project(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
     for (let projectIdx in data) {
         yield RepositoryService.setOneRelationshipManyToMany([
-            [
-                {
-                    project: {
-                        uuid: projectsCreated[Number(projectIdx)].uuid,
-                    },
+            {
+                project: {
+                    uuid: projectsCreated[Number(projectIdx)].uuid,
                 },
-                { user: { uuid: data[Number(projectIdx)].user.uuid } },
-            ],
+            },
+            { user: { uuid: data[Number(projectIdx)].user.uuid } },
         ]);
     }
     return projectsCreated.map((p, i) => (Object.assign(Object.assign({}, p), { Users: [{ username: data[i].user.username }] })));
