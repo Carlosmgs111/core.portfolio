@@ -23,7 +23,7 @@ class Institution {
         this.updatedAt = 0;
         this.link = (RepositoryService, options) => __awaiter(this, void 0, void 0, function* () { });
         this.unlink = (RepositoryService, options) => __awaiter(this, void 0, void 0, function* () { });
-        this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.remove = (RepositoryService_1, ...args_1) => __awaiter(this, [RepositoryService_1, ...args_1], void 0, function* (RepositoryService, options = {}) {
             yield RepositoryService.unsetOneRelationshipManyToMany([
                 [{ user: options.userUUID }, { institution: this.uuid }],
             ]);
@@ -48,7 +48,7 @@ exports.Institution = Institution;
 _a = Institution;
 Institution.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = (0, uuid_1.v4)();
-    const institution = new Institution(Object.assign(Object.assign({}, data), { uuid }));
+    const institution = new _a(Object.assign(Object.assign({}, data), { uuid }));
     yield RepositoryService.createOne(RepositoryService.entities.Institution, institution);
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
     yield RepositoryService.setOneRelationshipManyToMany([
@@ -57,10 +57,10 @@ Institution.create = (RepositoryService, data) => __awaiter(void 0, void 0, void
     return institution;
 });
 Institution.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const project = yield Institution.find(RepositoryService, credentials);
+    const project = yield _a.find(RepositoryService, credentials);
     if (!project)
         throw new Error("Incorrect credentials!");
-    const institution = new Institution(project);
+    const institution = new _a(project);
     return institution;
 });
 Institution.find = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {

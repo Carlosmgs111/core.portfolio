@@ -17,7 +17,7 @@ class Skill {
     constructor({ uuid, userUUID, name, description, image, tags }) {
         this.createdAt = 0;
         this.updatedAt = 0;
-        this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.remove = (RepositoryService_1, ...args_1) => __awaiter(this, [RepositoryService_1, ...args_1], void 0, function* (RepositoryService, options = {}) {
             const removed = yield RepositoryService.unsetOneRelationshipManyToMany([
                 [{ user: { uuid: options.userUUID } }, { skill: { uuid: this.uuid } }],
             ]);
@@ -45,7 +45,7 @@ exports.Skill = Skill;
 _a = Skill;
 Skill.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = (0, uuid_1.v4)();
-    const skill = new Skill(Object.assign(Object.assign({}, data), { uuid }));
+    const skill = new _a(Object.assign(Object.assign({}, data), { uuid }));
     yield RepositoryService.createOne(RepositoryService.entities.Skill, skill);
     yield RepositoryService.setOneRelationshipManyToMany([
         [{ skill: { uuid } }, { user: { uuid: data.user.uuid } }],
@@ -53,7 +53,7 @@ Skill.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fu
     return skill;
 });
 Skill.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
-    const skillsCreated = yield RepositoryService.createMany(RepositoryService.entities.Skill, data.map((c) => new Skill(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
+    const skillsCreated = yield RepositoryService.createMany(RepositoryService.entities.Skill, data.map((c) => new _a(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
     for (let skillIdx in data) {
         yield RepositoryService.setOneRelationshipManyToMany([
             [
@@ -69,11 +69,11 @@ Skill.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0
     return skillsCreated;
 });
 Skill.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const skill = yield Skill.find(RepositoryService, { credentials });
+    const skill = yield _a.find(RepositoryService, { credentials });
     console.log({ skill });
     if (!skill)
         throw new Error("Incorrect credentials!");
-    const loadedSkill = new Skill(skill);
+    const loadedSkill = new _a(skill);
     return loadedSkill;
 });
 Skill.find = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {

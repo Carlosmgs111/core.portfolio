@@ -17,9 +17,11 @@ const boom_1 = __importDefault(require("@hapi/boom"));
 const config_1 = __importDefault(require("../../../../config"));
 const jose_1 = require("jose");
 const use_cases_1 = require("../../../../modules/users/use_cases");
+const url_1 = __importDefault(require("url"));
 const verifyToken = (req) => __awaiter(void 0, void 0, void 0, function* () {
     const { authorization } = req.headers;
-    const token = (authorization || "").replace("Bearer ", "");
+    const { token: urlToken } = url_1.default.parse(req.url || "", true).query;
+    const token = (authorization || urlToken || "").replace("Bearer ", "");
     try {
         const verified = yield (0, jose_1.jwtVerify)(token, new TextEncoder().encode(config_1.default.jwtAccessSecret));
         return verified.payload;
@@ -32,7 +34,6 @@ exports.verifyToken = verifyToken;
 // * for check api-key and verify its privilege
 function checkApiKey(req, res, next) {
     const apiKey = req.headers["api-key"];
-    ({ apiKey });
     if (apiKey === config_1.default.apiKey) {
         next();
     }

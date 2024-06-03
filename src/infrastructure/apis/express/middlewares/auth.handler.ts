@@ -1,8 +1,8 @@
 import boom from "@hapi/boom";
 import config from "../../../../config";
 import { SignJWT, jwtVerify, decodeJwt } from "jose";
-import { findBy } from "../../../../modules/users/use_cases";
 import { load } from "../../../../modules/users/use_cases";
+import url from "url";
 
 interface UserJwtPayload {
   uuid: string; // The user Id
@@ -14,7 +14,8 @@ interface UserJwtPayload {
 
 export const verifyToken = async (req: any) => {
   const { authorization } = req.headers;
-  const token = (authorization || "").replace("Bearer ", "");
+  const { token: urlToken } = url.parse(req.url || "", true).query;
+  const token = (authorization || urlToken || "").replace("Bearer ", "");
   try {
     const verified = await jwtVerify(
       token,
@@ -30,7 +31,6 @@ export const verifyToken = async (req: any) => {
 // * for check api-key and verify its privilege
 export function checkApiKey(req: any, res: any, next: Function) {
   const apiKey = req.headers["api-key"];
-  ({ apiKey });
   if (apiKey === config.apiKey) {
     next();
   } else {

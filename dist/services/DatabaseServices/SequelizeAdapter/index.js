@@ -20,19 +20,19 @@ const boom_1 = __importDefault(require("@hapi/boom"));
 class SequelizeAdapter {
     constructor({} = {}) {
         this.serviceDescription = "Sequelize Database Service Adapter";
-        this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.createOne = (entity_1, Entity_1, ...args_1) => __awaiter(this, [entity_1, Entity_1, ...args_1], void 0, function* (entity, Entity, options = {}) {
             const newEntity = yield models_1.models[entity].create(Entity, this.adapter(options));
             return newEntity.dataValues;
         });
-        this.createMany = (entity, entities, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.createMany = (entity_2, entities_1, ...args_2) => __awaiter(this, [entity_2, entities_1, ...args_2], void 0, function* (entity, entities, options = {}) {
             const entitiesCreated = yield models_1.models[entity].bulkCreate(entities, this.adapter(options));
             return entitiesCreated.map((e) => (Object.assign({}, e.dataValues)));
         });
-        this.findAll = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.findAll = (entity_3, ...args_3) => __awaiter(this, [entity_3, ...args_3], void 0, function* (entity, options = {}) {
             const entities = yield models_1.models[entity].findAll(this.adapter(options));
             return entities.map((e) => (Object.assign({}, e.dataValues)));
         });
-        this.findOne = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.findOne = (entity_4, ...args_4) => __awaiter(this, [entity_4, ...args_4], void 0, function* (entity, options = {}) {
             try {
                 const entityFounded = yield models_1.models[entity].findOne(this.adapter(options));
                 if (!entityFounded)
@@ -48,7 +48,7 @@ class SequelizeAdapter {
                 throw boom_1.default.forbidden("Must supply credentials for find and delete entity!");
             return yield models_1.models[entity].destroy(this.adapter(options));
         });
-        this.updateOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.updateOne = (entity_5, Entity_2, ...args_5) => __awaiter(this, [entity_5, Entity_2, ...args_5], void 0, function* (entity, Entity, options = {}) {
             const updated = yield models_1.models[entity].update(Entity, this.adapter(options));
             return this.getResult(updated);
         });

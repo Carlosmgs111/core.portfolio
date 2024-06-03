@@ -6,8 +6,13 @@ export const generatedImages = async (images: any) => {
     for (let image of images) {
       const { encoded_image, img_title, img_format } = image;
       const decodedImage = Buffer.from(encoded_image, "base64");
+      const imagesDirectory = "datasets/images/";
+      if (!fs.existsSync(imagesDirectory)) {
+        fs.mkdirSync(imagesDirectory, { recursive: true });
+        console.log("Directory created successfully.");
+      }
       fs.writeFile(
-        `datasets/images/${img_title}.${img_format}`,
+        `${imagesDirectory}${img_title}.${img_format}`,
         decodedImage,
         (err) => {
           if (err) throw err;
@@ -25,7 +30,6 @@ export const generatedImages = async (images: any) => {
 
 export const generateImages = async (data: any) => {
   const { prompt, options = {} } = data;
-
   const imagesGenerated = await SocketService.sendMessage(
     {
       imageService: {

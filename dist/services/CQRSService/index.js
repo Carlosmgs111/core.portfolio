@@ -52,7 +52,7 @@ class CQRSService {
                 },
             });
         });
-        this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.createOne = (entity_1, Entity_1, ...args_1) => __awaiter(this, [entity_1, Entity_1, ...args_1], void 0, function* (entity, Entity, options = {}) {
             this.checkStatus();
             dependencies_1.TaskMessageService.publish({
                 queryService: {
@@ -61,7 +61,7 @@ class CQRSService {
             });
             return yield this.CommandService.createOne(entity, Entity, options);
         });
-        this.createMany = (entity, entities, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.createMany = (entity_2, entities_1, ...args_2) => __awaiter(this, [entity_2, entities_1, ...args_2], void 0, function* (entity, entities, options = {}) {
             this.checkStatus();
             dependencies_1.TaskMessageService.publish({
                 queryService: {
@@ -70,8 +70,8 @@ class CQRSService {
             });
             return yield this.CommandService.createMany(entity, entities, options);
         });
-        this.findOne = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () { return yield this.QueryService.findOne(entity, options); });
-        this.findAll = (entity, options = {}) => __awaiter(this, void 0, void 0, function* () { return yield this.QueryService.findAll(entity, options); });
+        this.findOne = (entity_3, ...args_3) => __awaiter(this, [entity_3, ...args_3], void 0, function* (entity, options = {}) { return yield this.QueryService.findOne(entity, options); });
+        this.findAll = (entity_4, ...args_4) => __awaiter(this, [entity_4, ...args_4], void 0, function* (entity, options = {}) { return yield this.QueryService.findAll(entity, options); });
         this.removeOne = (entity, options) => __awaiter(this, void 0, void 0, function* () {
             this.checkStatus();
             dependencies_1.TaskMessageService.publish({
@@ -79,7 +79,7 @@ class CQRSService {
             });
             return yield this.CommandService.removeOne(entity, options);
         });
-        this.updateOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.updateOne = (entity_5, Entity_2, ...args_5) => __awaiter(this, [entity_5, Entity_2, ...args_5], void 0, function* (entity, Entity, options = {}) {
             this.checkStatus();
             this.TaskMessageService.publish({
                 queryService: {

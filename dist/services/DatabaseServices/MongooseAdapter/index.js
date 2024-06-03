@@ -20,7 +20,7 @@ const boom_1 = __importDefault(require("@hapi/boom"));
 class MongooseAdapter /* implements DatabaseAdapter */ {
     constructor({} = {}) {
         this.serviceDescription = "Mongoose Database Service Adapter";
-        this.createOne = (entity, Entity, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.createOne = (entity_1, Entity_1, ...args_1) => __awaiter(this, [entity_1, Entity_1, ...args_1], void 0, function* (entity, Entity, options = {}) {
             let newEntity = yield models_1.default[entity].create(Entity);
             return newEntity._doc;
         });

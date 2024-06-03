@@ -1,7 +1,7 @@
 import { apiConfig } from "../../../../config/dependencies";
 import { Router } from "express";
 import apiRoutes from "./api.routes";
-import uiRoutes from "./ui.routes"
+import uiRoutes from "./ui.routes";
 
 const router = Router();
 

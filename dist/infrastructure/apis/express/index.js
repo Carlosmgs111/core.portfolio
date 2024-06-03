@@ -12,7 +12,7 @@ const routes_1 = __importDefault(require("./routes"));
 const path_1 = require("path");
 const error_handler_1 = require("./middlewares/error.handler");
 const grantUrls_handler_1 = require("./middlewares/grantUrls.handler");
-// Create a new app server
+const dependencies_1 = require("../../../config/dependencies");
 exports.app = (0, express_1.default)();
 exports.app
     .set("port", config_1.default.serverPort)
@@ -38,6 +38,7 @@ exports.app
             "notes",
         ],
     ],
+    [["/ws/"], ["POST", "GET"]],
 ]))
     /* to check */
     .use((req, res, next) => {
@@ -57,6 +58,9 @@ exports.app
     .on("error", (error) => {
     console.log({ error });
 });
-exports.default = () => exports.app.listen(exports.app.get("port"), () => {
-    console.log(`🚀💼 Portfolio app listening on port ${exports.app.get("port")}`);
-});
+exports.default = () => {
+    dependencies_1.SocketService.setServer(exports.app);
+    // app.listen(app.get("port"), () => {
+    //   console.log(`🚀💼 Portfolio app listening on port ${app.get("port")}`);
+    // });
+};

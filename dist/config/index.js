@@ -44,6 +44,10 @@ const config = {
     /*  */
     rabbitMQUrlDev: String(process.env.RABBITMQ_URL_DEV || ""),
     rabbitMQUrlProd: String(process.env.RABBITMQ_URL_PROD || ""),
+    /*  */
+    imageServiceUrlDev: String(process.env.IMAGE_SERVICE_URL_DEV || ""),
+    imageServiceUrlProd: String(process.env.IMAGE_SERVICE_URL_PROD || ""),
+    websocketPath: String(process.env.WEBSOCKET_PATH || ""),
     // apiKey: String(process.env.API_KEY),
     // emailAddress: process.env.EMAIL_ADDRESS,
     // emailAppPassword: process.env.EMAIL_APP_PASSWORD,

@@ -45,7 +45,7 @@ class TaskMessageService {
                 }
             }
         });
-        this.assertExchange = (exchangeName, type = TYPE) => __awaiter(this, void 0, void 0, function* () {
+        this.assertExchange = (exchangeName_1, ...args_1) => __awaiter(this, [exchangeName_1, ...args_1], void 0, function* (exchangeName, type = TYPE) {
             const formatedExchangeName = `${exchangeName}/type=${type}`;
             const _channel = yield this.getChannel();
             // TODO must be added a connection retry policy
@@ -63,7 +63,7 @@ class TaskMessageService {
                 return null;
             }
         });
-        this.publish = (payload, receiverFunc = undefined, conf = { type: TYPE }) => __awaiter(this, void 0, void 0, function* () {
+        this.publish = (payload_1, ...args_2) => __awaiter(this, [payload_1, ...args_2], void 0, function* (payload, receiverFunc = undefined, conf = { type: TYPE }) {
             const { type } = conf;
             const [exchangeName, _payload] = (0, utils_1.Mapfy)(payload).entries().next().value;
             const [queueName, message] = (0, utils_1.Mapfy)(_payload).entries().next().value;
@@ -77,7 +77,7 @@ class TaskMessageService {
                 .catch((e) => console.log(e.message.bgRed));
             return this;
         });
-        this.subscribe = (payload, type = TYPE) => __awaiter(this, void 0, void 0, function* () {
+        this.subscribe = (payload_2, ...args_3) => __awaiter(this, [payload_2, ...args_3], void 0, function* (payload, type = TYPE) {
             const [exchangeName, _payload] = (0, utils_1.Mapfy)(payload).entries().next().value;
             const [queueName, cb] = (0, utils_1.Mapfy)(_payload).entries().next().value;
             const formatedExchangeName = `${exchangeName}/type=${type}`;

@@ -11,7 +11,7 @@ import {
   ormErrorHandler,
 } from "./middlewares/error.handler";
 import { grantUrls } from "./middlewares/grantUrls.handler";
-// Create a new app server
+import { SocketService } from "../../../config/dependencies";
 
 export const app = express();
 
@@ -40,6 +40,7 @@ app
           "notes",
         ],
       ],
+      [["/ws/"], ["POST", "GET"]],
     ])
   )
   /* to check */
@@ -64,7 +65,9 @@ app
     console.log({ error });
   });
 
-export default () =>
-  app.listen(app.get("port"), () => {
-    console.log(`🚀💼 Portfolio app listening on port ${app.get("port")}`);
-  });
+export default () => {
+  SocketService.setServer(app);
+  // app.listen(app.get("port"), () => {
+  //   console.log(`🚀💼 Portfolio app listening on port ${app.get("port")}`);
+  // });
+};

@@ -36,7 +36,7 @@ class Note {
             yield RepositoryService.updateOne(RepositoryService.entities.Note, Object.assign({ updatedAt: this.updatedAt }, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
             return this;
         });
-        this.remove = (RepositoryService, options = {}) => __awaiter(this, void 0, void 0, function* () {
+        this.remove = (RepositoryService_1, ...args_1) => __awaiter(this, [RepositoryService_1, ...args_1], void 0, function* (RepositoryService, options = {}) {
             yield RepositoryService.unsetOneRelationship2One({ certifications: { uuid: this.uuid } }, [["Institution", { as: "Institution" }]]);
             const removed = yield RepositoryService.unsetOneRelationshipManyToMany([
                 [{ user: { uuid: options.userUUID } }, { note: { uuid: this.uuid } }],
@@ -60,7 +60,7 @@ _a = Note;
 Note.createOne = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = data.uuid || (0, uuid_1.v4)();
     const { userUUID } = data, attrs = __rest(data, ["userUUID"]);
-    const note = yield RepositoryService.createOne(RepositoryService.entities.Note, new Note(Object.assign(Object.assign({}, attrs), { uuid })));
+    const note = yield RepositoryService.createOne(RepositoryService.entities.Note, new _a(Object.assign(Object.assign({}, attrs), { uuid })));
     yield RepositoryService.setOneRelationship2One({ notes: { uuid: note.uuid } }, [
         {
             user: { uuid: userUUID },
@@ -70,7 +70,7 @@ Note.createOne = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, 
 });
 Note.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     // ({ data });
-    const notesCreated = yield RepositoryService.createMany(RepositoryService.entities.Note, data.map((c) => new Note(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
+    const notesCreated = yield RepositoryService.createMany(RepositoryService.entities.Note, data.map((c) => new _a(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
     for (let note in notesCreated) {
         yield RepositoryService.setOneRelationship2One({ notes: { uuid: notesCreated[note].uuid } }, [
             {
@@ -81,10 +81,10 @@ Note.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0,
     return notesCreated;
 });
 Note.load = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {
-    const note = yield Note.find(RepositoryService, options);
+    const note = yield _a.find(RepositoryService, options);
     if (!note)
         throw new Error("Incorrect credentials!");
-    const loadedNote = new Note(note);
+    const loadedNote = new _a(note);
     ({ loadedNote });
     return loadedNote;
 });
@@ -92,7 +92,7 @@ Note.find = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, fu
     const note = yield RepositoryService.findOne(RepositoryService.entities.Note, options);
     return note;
 });
-Note.findAll = (RepositoryService, options = {}) => __awaiter(void 0, void 0, void 0, function* () {
+Note.findAll = (RepositoryService_1, ...args_1) => __awaiter(void 0, [RepositoryService_1, ...args_1], void 0, function* (RepositoryService, options = {}) {
     ({ options });
     const notes = yield RepositoryService.findAll(RepositoryService.entities.Note, options);
     return notes;

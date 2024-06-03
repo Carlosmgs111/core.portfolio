@@ -1,3 +1,4 @@
+import config from "./index";
 import { Adapters } from "../services/DatabaseServices";
 import {
   DatabaseService as DBS,
@@ -17,7 +18,14 @@ export const RepositoryService = repositoryServices.CQRS();
 export const AuthServices = new AS();
 export const SocketService: any = new SS();
 
-// SocketService.addClient({ imageService: "http://127.0.0.1:8765" }); /* // ! ⬅️ Disabled in production until the service is online */
+const imageService = config.imageServiceUrlDev || config.imageServiceUrlProd;
+
+SocketService.addClient({
+  imageService,
+  path: config.websocketPath,
+}); /* // ! ⬅️ Disabled in production until the service is online */
+
+// SocketService.addClient({ remoteImageService: config.imageServiceUrlProd });
 
 const apiVersions = ["v1"];
 const uiVersions = ["v1"];

@@ -47,15 +47,15 @@ Post.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     if (exist)
         throw boom_1.default.conflict("Entity exist yet!");
     const uuid = (0, uuid_1.v4)();
-    const post = yield RepositoryService.setOneRelationship2One(new Post(Object.assign(Object.assign({}, data), { uuid, createdAt: new Date().getTime(), updatedAt: new Date().getTime() })), [{ user: { uuid: data.user.uuid } }]);
+    const post = yield RepositoryService.setOneRelationship2One(new _a(Object.assign(Object.assign({}, data), { uuid, createdAt: new Date().getTime(), updatedAt: new Date().getTime() })), [{ user: { uuid: data.user.uuid } }]);
     yield RepositoryService.create(Object.assign({}, (0, utils_1.getEntityProperties)(post)));
     return post;
 });
 Post.load = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const user = yield Post.find(RepositoryService, { uuid: credentials.uuid });
+    const user = yield _a.find(RepositoryService, { uuid: credentials.uuid });
     if (!user)
         throw boom_1.default.notFound("Incorrect credentials!");
-    const account = new Post(user);
+    const account = new _a(user);
     return account;
 });
 Post.find = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {

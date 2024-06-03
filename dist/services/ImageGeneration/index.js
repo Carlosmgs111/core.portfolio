@@ -20,7 +20,12 @@ const generatedImages = (images) => __awaiter(void 0, void 0, void 0, function* 
         for (let image of images) {
             const { encoded_image, img_title, img_format } = image;
             const decodedImage = Buffer.from(encoded_image, "base64");
-            fs_1.default.writeFile(`datasets/images/${img_title}.${img_format}`, decodedImage, (err) => {
+            const imagesDirectory = "datasets/images/";
+            if (!fs_1.default.existsSync(imagesDirectory)) {
+                fs_1.default.mkdirSync(imagesDirectory, { recursive: true });
+                console.log("Directory created successfully.");
+            }
+            fs_1.default.writeFile(`${imagesDirectory}${img_title}.${img_format}`, decodedImage, (err) => {
                 if (err)
                     throw err;
                 console.log("La imagen fue guardada correctamente");

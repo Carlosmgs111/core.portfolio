@@ -2,19 +2,27 @@ import { Server, Socket } from "socket.io";
 import { connect } from "socket.io-client";
 import { Mapfy, UnMapfy } from "../../utils";
 import config from "../../config";
+import { createServer } from "http";
 
 export class SocketService {
-  server: Server = new Server(config.socketServicePort, {
-    cors: {
-      origin: "*",
-    },
-  });
+  server: Server | null = null;
   sockets: any = {};
   clients: any = {};
   events: any = [];
 
-  constructor(clients: any = []) {
+  constructor() {}
+
+  setServer = (app: any) => {
+    const server = createServer(app);
+    this.server = new Server(server, {
+      path: "/ws",
+      cors: {
+        origin: "*",
+        allowedHeaders: ["Authorization", "Content-Type"],
+      },
+    });
     this.server.on("connection", (socket: Socket) => {
+      console.log("Cliente conectado");
       this.sockets[socket.id] = socket;
       this.setEvents(socket);
 
@@ -24,29 +32,38 @@ export class SocketService {
         this.sockets = UnMapfy(newSockets);
       });
     });
-    if (clients) {
-      for (let client of clients) {
-        this.addClient(client);
-      }
-    }
-    return this;
-  }
+    server.listen(config.serverPort);
+  };
 
   addClient = (client: any) => {
-    const [alias, address]: any = Mapfy(client).entries().next().value;
+    const clientEntries = Mapfy(client).entries();
+    const [alias, address]: any = clientEntries.next().value;
+    const [_, path = ""]: any = clientEntries.next().value || [,];
+    const maxTries = 10;
+    let eTries: number = 0;
+    let dTries: number = 0;
+    const opts = { path };
 
-    this.clients[alias] = connect(address);
+    this.clients[alias] = connect(address, opts);
     this.clients[alias].on("connect", () => {
       console.log("Conexión establecida con el servidor.");
     });
     this.clients[alias].on("disconnect", () => {
+      if (++dTries > maxTries) {
+        this.clients[alias].disconnect();
+        console.log("Finalizado intestos de conexion".bgYellow);
+      }
       console.log("Conexión perdida con el servidor.");
     });
     this.clients[alias].on("message", (message: any) => {
       console.log(`Mensaje recibido del servidor: ${message.payload}`);
     });
     this.clients[alias].on("connect_error", (error: any) => {
-      console.error("Error de conexión:", error);
+      if (++eTries > maxTries) {
+        this.clients[alias].disconnect();
+        console.log("Finalizando intentos de conexion".bgYellow);
+      }
+      console.error("Error de conexión:", error.context.statusText);
     });
     return this;
   };
@@ -125,7 +142,7 @@ export class SocketService {
               socket.emit(response, result);
               return result;
             })
-            .finally(() => console.log("Solved!".green));
+            .finally(() => console.log("Solved!".bgGreen));
       });
     });
   };
@@ -138,7 +155,7 @@ export class SocketService {
     clients.forEach((client: any) => {
       client.close();
     });
-
+    if (!server) return;
     await server.disconnectSockets();
     await server.close();
   };

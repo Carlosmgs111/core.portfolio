@@ -10,9 +10,9 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Install YARN
+      - name: Install PNPM
         shell: bash
-        run: npm i -g yarn
+        run: npm i -g pnpm
 
       - name: Checkout
         uses: actions/checkout@v2
@@ -20,22 +20,22 @@ jobs:
       - name: Setup Nodejs
         uses: actions/setup-node@v2
         with:
-          node-version: 16
-          cache: "yarn"
+          node-version: 18
+          cache: "pnpm"
 
       - name: Install
         shell: bash
-        run: yarn install
+        run: pnpm install
 
       - name: Run unit test
         shell: bash
-        run: yarn run test
+        run: pnpm run test
 
   e2e-test:
     runs-on: ubuntu-latest
 
     container:
-      image: node:16
+      image: node:18
 
     services:
       cqrs-service-e2e:
@@ -63,17 +63,26 @@ jobs:
           POSTGRES_PORT: 5432
 
     steps:
-
       - name: Checkout
         uses: actions/checkout@v2
 
+      - name: Install PNPM
+        shell: bash
+        run: npm i -g pnpm
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v2
+        with:
+          node-version: 18
+          cache: "pnpm"
+
       - name: Install
         shell: bash
-        run: yarn install
+        run: pnpm install
 
       - name: Run e2e test
         shell: bash
-        run: yarn run test:e2e
+        run: pnpm run test:e2e
         env:
           RABBITMQ_URL_DEV: amqp://localhost
           MONGODB_TEST_URL: mongodb://test:p%4055w0rd@localhost:27017/test?retryWrites=true&writeConcern=majority

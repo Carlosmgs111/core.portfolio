@@ -17,30 +17,62 @@ const socket_io_1 = require("socket.io");
 const socket_io_client_1 = require("socket.io-client");
 const utils_1 = require("../../utils");
 const config_1 = __importDefault(require("../../config"));
+const http_1 = require("http");
 class SocketService {
-    constructor(clients = []) {
-        this.server = new socket_io_1.Server(config_1.default.socketServicePort, {
-            cors: {
-                origin: "*",
-            },
-        });
+    constructor() {
+        this.server = null;
         this.sockets = {};
         this.clients = {};
         this.events = [];
+        this.setServer = (app) => {
+            const server = (0, http_1.createServer)(app);
+            this.server = new socket_io_1.Server(server, {
+                path: "/ws",
+                cors: {
+                    origin: "*",
+                    allowedHeaders: ["Authorization", "Content-Type"],
+                },
+            });
+            this.server.on("connection", (socket) => {
+                console.log("Cliente conectado");
+                this.sockets[socket.id] = socket;
+                this.setEvents(socket);
+                socket.on("disconnect", () => {
+                    const newSockets = (0, utils_1.Mapfy)(this.sockets);
+                    newSockets.delete(socket.id);
+                    this.sockets = (0, utils_1.UnMapfy)(newSockets);
+                });
+            });
+            server.listen(config_1.default.serverPort);
+        };
         this.addClient = (client) => {
-            const [alias, address] = (0, utils_1.Mapfy)(client).entries().next().value;
-            this.clients[alias] = (0, socket_io_client_1.connect)(address);
+            const clientEntries = (0, utils_1.Mapfy)(client).entries();
+            const [alias, address] = clientEntries.next().value;
+            const [_, path = ""] = clientEntries.next().value || [,];
+            const maxTries = 10;
+            let eTries = 0;
+            let dTries = 0;
+            const opts = { path };
+            this.clients[alias] = (0, socket_io_client_1.connect)(address, opts);
             this.clients[alias].on("connect", () => {
                 console.log("Conexión establecida con el servidor.");
             });
             this.clients[alias].on("disconnect", () => {
+                if (++dTries > maxTries) {
+                    this.clients[alias].disconnect();
+                    console.log("Finalizado intestos de conexion".bgYellow);
+                }
                 console.log("Conexión perdida con el servidor.");
             });
             this.clients[alias].on("message", (message) => {
                 console.log(`Mensaje recibido del servidor: ${message.payload}`);
             });
             this.clients[alias].on("connect_error", (error) => {
-                console.error("Error de conexión:", error);
+                if (++eTries > maxTries) {
+                    this.clients[alias].disconnect();
+                    console.log("Finalizando intentos de conexion".bgYellow);
+                }
+                console.error("Error de conexión:", error.context.statusText);
             });
             return this;
         };
@@ -110,7 +142,7 @@ class SocketService {
                             socket.emit(response, result);
                             return result;
                         })
-                            .finally(() => console.log("Solved!".green));
+                            .finally(() => console.log("Solved!".bgGreen));
                 });
             });
         };
@@ -121,24 +153,11 @@ class SocketService {
             clients.forEach((client) => {
                 client.close();
             });
+            if (!server)
+                return;
             yield server.disconnectSockets();
             yield server.close();
         });
-        this.server.on("connection", (socket) => {
-            this.sockets[socket.id] = socket;
-            this.setEvents(socket);
-            socket.on("disconnect", () => {
-                const newSockets = (0, utils_1.Mapfy)(this.sockets);
-                newSockets.delete(socket.id);
-                this.sockets = (0, utils_1.UnMapfy)(newSockets);
-            });
-        });
-        if (clients) {
-            for (let client of clients) {
-                this.addClient(client);
-            }
-        }
-        return this;
     }
 }
 exports.SocketService = SocketService;
