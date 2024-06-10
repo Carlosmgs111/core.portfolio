@@ -8,10 +8,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetPassword = exports.update = exports.createOne = exports.findBy = exports.updateAvatar = exports.changeUsername = exports.load = exports.getAllUsername = exports.sayHello = exports.updateUser = exports.removeUser = exports.registerUser = void 0;
+exports.contactByEmail = exports.resetPassword = exports.update = exports.createOne = exports.findBy = exports.updateAvatar = exports.changeUsername = exports.load = exports.getAllUsername = exports.sayHello = exports.updateUser = exports.removeUser = exports.registerUser = void 0;
 const entity_1 = require("./entity");
 const dependencies_1 = require("../../config/dependencies");
+const config_1 = __importDefault(require("../../config"));
 const registerUser = (data) => __awaiter(void 0, void 0, void 0, function* () {
     return yield entity_1.User.create(dependencies_1.RepositoryService, data);
 });
@@ -70,3 +74,22 @@ const resetPassword = (credentials) => __awaiter(void 0, void 0, void 0, functio
     return { changed: result };
 });
 exports.resetPassword = resetPassword;
+const contactByEmail = (ctx) => __awaiter(void 0, void 0, void 0, function* () {
+    const { who, email, message } = ctx;
+    const composedHtmlMessage = `
+  <h3>${who}</h3>
+  <a href="mailto:${email}
+    ?subject=Hola ${who}
+    &body=Hola ${who}, gracias por contactarte conmigo">
+    <h4>${email}</h4>
+  </a>
+  <p>${message}</p>
+  `;
+    const result = yield dependencies_1.MailerService.sendMail({
+        to: [config_1.default.contactEmailAddress, config_1.default.mailerEmailAddress],
+        html: composedHtmlMessage,
+        subject: `Te han contacto por parte de ${who}`,
+    });
+    return result;
+});
+exports.contactByEmail = contactByEmail;

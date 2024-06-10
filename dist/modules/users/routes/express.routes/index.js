@@ -18,4 +18,5 @@ exports.default = router
     .patch("/username/change", (0, express_2.expressHandlerAdapter)(use_cases_1.changeUsername))
     .get("/username/all", (0, express_2.expressHandlerAdapter)(use_cases_1.getAllUsername))
     .patch("/avatar/update", (0, express_2.expressHandlerAdapter)(use_cases_1.updateAvatar))
+    .post("/contact", (0, express_2.expressHandlerAdapter)(use_cases_1.contactByEmail))
     .use("/password", password_routes_1.default);

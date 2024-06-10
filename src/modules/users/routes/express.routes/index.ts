@@ -8,6 +8,7 @@ import {
   changeUsername,
   updateAvatar,
   getAllUsername,
+  contactByEmail,
 } from "../../use_cases";
 import {
   createUserSchema,
@@ -39,4 +40,5 @@ export default router
   .patch("/username/change", expressHandlerAdapter(changeUsername))
   .get("/username/all", expressHandlerAdapter(getAllUsername))
   .patch("/avatar/update", expressHandlerAdapter(updateAvatar))
+  .post("/contact", expressHandlerAdapter(contactByEmail))
   .use("/password", passwordRoutes);

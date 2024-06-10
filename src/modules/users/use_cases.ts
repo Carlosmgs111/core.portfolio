@@ -1,5 +1,6 @@
 import { User } from "./entity";
-import { RepositoryService } from "../../config/dependencies";
+import { RepositoryService, MailerService } from "../../config/dependencies";
+import config from "../../config";
 
 export const registerUser = async (data: any) => {
   return await User.create(RepositoryService, data);
@@ -56,4 +57,23 @@ export const resetPassword = async (credentials: any) => {
     oldPassword,
   });
   return { changed: result };
+};
+
+export const contactByEmail = async (ctx: any) => {
+  const { who, email, message } = ctx;
+  const composedHtmlMessage = `
+  <h3>${who}</h3>
+  <a href="mailto:${email}
+    ?subject=Hola ${who}
+    &body=Hola ${who}, gracias por contactarte conmigo">
+    <h4>${email}</h4>
+  </a>
+  <p>${message}</p>
+  `;
+  const result = await MailerService.sendMail({
+    to: [config.contactEmailAddress, config.mailerEmailAddress],
+    html: composedHtmlMessage,
+    subject: `Te han contacto por parte de ${who}`,
+  });
+  return result;
 };

@@ -38,7 +38,7 @@ exports.app
             "notes",
         ],
     ],
-    [["/ws/"], ["POST", "GET"]],
+    [["/ws/", "users/contact"], ["POST", "GET"]],
 ]))
     /* to check */
     .use((req, res, next) => {

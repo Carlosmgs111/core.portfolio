@@ -48,6 +48,11 @@ const config = {
     imageServiceUrlDev: String(process.env.IMAGE_SERVICE_URL_DEV || ""),
     imageServiceUrlProd: String(process.env.IMAGE_SERVICE_URL_PROD || ""),
     websocketPath: String(process.env.WEBSOCKET_PATH || ""),
+    // MAILER CREDENTIALS
+    mailerEmailAddress: String(process.env.MAILER_EMAIL_ADDRESS) || "",
+    mailerEmailAppPassword: String(process.env.MAILER_EMAIL_APP_PASSWORD) || "",
+    // user
+    contactEmailAddress: String(process.env.CONTACT_EMAIL_ADDRESS || ""),
     // apiKey: String(process.env.API_KEY),
     // emailAddress: process.env.EMAIL_ADDRESS,
     // emailAppPassword: process.env.EMAIL_APP_PASSWORD,

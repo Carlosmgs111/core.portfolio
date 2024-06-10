@@ -6,6 +6,7 @@ import {
   TaskMessageService as TMS,
   CQRSService,
   SocketService as SS,
+  MailerService as MS
 } from "../services";
 
 const repositoryServices = {
@@ -17,6 +18,7 @@ export const TaskMessageService = new TMS();
 export const RepositoryService = repositoryServices.CQRS();
 export const AuthServices = new AS();
 export const SocketService: any = new SS();
+export const MailerService = new MS();
 
 const imageService = config.imageServiceUrlDev || config.imageServiceUrlProd;
 
