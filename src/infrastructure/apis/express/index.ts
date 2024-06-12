@@ -27,7 +27,10 @@ app
   // .use(passport)
   .use(
     grantUrls([
-      [["signin", "signup"], ["POST"]],
+      [
+        ["signin", "signup", "logout","checkifisonline"],
+        ["POST", "GET"],
+      ],
       [["certifications", "certifications/:username"]],
       [["images/availablesettings"]],
       [
@@ -40,7 +43,10 @@ app
           "notes",
         ],
       ],
-      [["/ws/", "users/contact"], ["POST", "GET"]],
+      [
+        ["/ws/", "users/contact"],
+        ["POST", "GET"],
+      ],
     ])
   )
   /* to check */

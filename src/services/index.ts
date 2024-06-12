@@ -4,6 +4,7 @@ import { CQRSService } from "./CQRSService";
 import { TaskMessageService } from "./TaskMessageService";
 import { SocketService } from "./SocketService";
 import { MailerService } from "./MailerService";
+import { ChatService } from "./ChatService";
 
 export {
   DatabaseService,
@@ -11,5 +12,6 @@ export {
   CQRSService,
   TaskMessageService,
   SocketService,
-  MailerService
+  MailerService,
+  ChatService
 };

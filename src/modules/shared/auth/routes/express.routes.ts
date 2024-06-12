@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { signup, login } from "../use_cases";
+import { signup, login, logout, checkIfIsOnline } from "../use_cases";
 import {
   createUserSchema,
   getUserSchema,
@@ -24,4 +24,6 @@ export default router
     "/signin",
     validatorHandler(getUserSchema, "body"),
     expressHandlerAdapter(login)
-  );
+  )
+  .get("/logout", expressHandlerAdapter(logout))
+  .get("/checkifisonline", expressHandlerAdapter(checkIfIsOnline));

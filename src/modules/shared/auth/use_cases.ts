@@ -1,6 +1,16 @@
 import { User } from "../../users/entity";
-import { RepositoryService, AuthServices } from "../../../config/dependencies";
-import { filterAttrs, encryptData, decryptData } from "../../../utils";
+import {
+  RepositoryService,
+  AuthServices,
+  SocketService,
+  ChatService,
+} from "../../../config/dependencies";
+import {
+  filterAttrs,
+  encryptData,
+  decryptData,
+  mapToList,
+} from "../../../utils";
 import config from "../../../config";
 import boom from "@hapi/boom";
 
@@ -9,6 +19,7 @@ export const login = async (credentials: any) => {
     credentials,
     // related: [["Institution"], ["Certification"]],
   });
+  ChatService.setIsOnline(true);
   if (!account) throw new Error("The account doesn't exist!");
   let response = AuthServices.getAuthPackage({
     ...filterAttrs(
@@ -17,8 +28,13 @@ export const login = async (credentials: any) => {
       false
     ),
     apiKey: config.apiKey,
-});
+  });
   return response;
+};
+
+export const logout = async (credentials?: any) => {
+  ChatService.setIsOnline(false);
+  return { message: "Logout succesfully!" };
 };
 
 export const signup = async (credentials: any) => {
@@ -39,6 +55,8 @@ export const signup = async (credentials: any) => {
   });
   return response;
 };
+
+export const checkIfIsOnline = () => ChatService.getIsOnline();
 
 export const unsubscribe = async (credentials: any) => {
   RepositoryService;

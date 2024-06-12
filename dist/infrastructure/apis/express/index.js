@@ -25,7 +25,10 @@ exports.app
     // .use(authRoutes)
     // .use(passport)
     .use((0, grantUrls_handler_1.grantUrls)([
-    [["signin", "signup"], ["POST"]],
+    [
+        ["signin", "signup", "logout", "checkifisonline"],
+        ["POST", "GET"],
+    ],
     [["certifications", "certifications/:username"]],
     [["images/availablesettings"]],
     [
@@ -38,7 +41,10 @@ exports.app
             "notes",
         ],
     ],
-    [["/ws/", "users/contact"], ["POST", "GET"]],
+    [
+        ["/ws/", "users/contact"],
+        ["POST", "GET"],
+    ],
 ]))
     /* to check */
     .use((req, res, next) => {

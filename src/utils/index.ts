@@ -128,3 +128,9 @@ export const fromEnumToArray = (_enum: any) =>
   new Array(Object.entries(_enum))[0]
     .splice(Object.entries(_enum).length / 2)
     .flatMap((e: any) => e[0]);
+
+export const mapToList = (data: any, onlyValues = true): any =>
+  Object.entries({ ...data }).map((data) => (onlyValues ? data[1] : data));
+
+export const listToMap = (data: any): any =>
+  Object.fromEntries([...data].map((data: any, index: any) => [index, data]));

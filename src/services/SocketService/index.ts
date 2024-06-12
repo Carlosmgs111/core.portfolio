@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { connect } from "socket.io-client";
-import { Mapfy, UnMapfy } from "../../utils";
+import { Mapfy, UnMapfy, listToMap, mapToList } from "../../utils";
 import config from "../../config";
 import { createServer } from "http";
 
@@ -8,7 +8,7 @@ export class SocketService {
   server: Server | null = null;
   sockets: any = {};
   clients: any = {};
-  events: any = [];
+  events: any = {};
 
   constructor() {}
 
@@ -25,7 +25,6 @@ export class SocketService {
       console.log("Cliente conectado");
       this.sockets[socket.id] = socket;
       this.setEvents(socket);
-
       socket.on("disconnect", () => {
         const newSockets = Mapfy(this.sockets);
         newSockets.delete(socket.id);
@@ -68,7 +67,10 @@ export class SocketService {
     return this;
   };
 
-  addEvent = (event: any) => this.events.push(event);
+  addEvent = (event: any) => {
+    const [eventName, eventCallback] = mapToList(event, false)[0];
+    this.events[eventName] = eventCallback;
+  };
 
   sendMessage = (payload: any, receiverFunc: any) => {
     const [client, sendTo, params, receiverFunctionName] =
@@ -122,14 +124,13 @@ export class SocketService {
   };
 
   private setEvents = (socket: any) => {
-    this.events.forEach((event: any) => {
-      const [name, cb] = Mapfy(event).entries().next().value;
+    Mapfy(this.events).forEach((cb: any, name: any) => {
       socket.addListener(name, (payload: any) => {
         const [response, data] = Mapfy(payload).entries().next().value;
         if (Array.isArray(data))
           cb(...data)
             .then((result: any) => {
-              socket.emit(response, result);
+              if (response) socket.emit(response, result);
               return result;
             })
             .catch((e: any) =>
@@ -139,9 +140,12 @@ export class SocketService {
         else
           cb(data)
             .then((result: any) => {
-              socket.emit(response, result);
+              if (response) socket.emit(response, result);
               return result;
             })
+            .catch((e: any) =>
+              console.log(`Error in callback: ${e.message}`.bgRed)
+            )
             .finally(() => console.log("Solved!".bgGreen));
       });
     });

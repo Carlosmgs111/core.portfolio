@@ -18,6 +18,6 @@ export const DatabaseService = (adapter: any = Adapters.SequelizeAdapter) => {
       return { databaseInterfaceName: this.serviceDescription };
     }
   }
-  
+
   return new DatabaseService({});
 };

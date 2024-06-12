@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.resetAuthPassword = exports.signin = exports.authSignin = exports.unsubscribe = exports.signup = exports.login = void 0;
+exports.resetAuthPassword = exports.signin = exports.authSignin = exports.unsubscribe = exports.checkIfIsOnline = exports.signup = exports.logout = exports.login = void 0;
 const entity_1 = require("../../users/entity");
 const dependencies_1 = require("../../../config/dependencies");
 const utils_1 = require("../../../utils");
@@ -23,12 +23,18 @@ const login = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
         credentials,
         // related: [["Institution"], ["Certification"]],
     });
+    dependencies_1.ChatService.setIsOnline(true);
     if (!account)
         throw new Error("The account doesn't exist!");
     let response = dependencies_1.AuthServices.getAuthPackage(Object.assign(Object.assign({}, (0, utils_1.filterAttrs)(account, ["uuid", "email", "username", "privilege", "createdAt", "avatar"], false)), { apiKey: config_1.default.apiKey }));
     return response;
 });
 exports.login = login;
+const logout = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+    dependencies_1.ChatService.setIsOnline(false);
+    return { message: "Logout succesfully!" };
+});
+exports.logout = logout;
 const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     const { username, email, password } = credentials;
     if (email) {
@@ -39,6 +45,8 @@ const signup = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     return response;
 });
 exports.signup = signup;
+const checkIfIsOnline = () => dependencies_1.ChatService.getIsOnline();
+exports.checkIfIsOnline = checkIfIsOnline;
 const unsubscribe = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
     dependencies_1.RepositoryService;
     const account = yield entity_1.User.authLoad(dependencies_1.RepositoryService, credentials);

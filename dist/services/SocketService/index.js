@@ -23,7 +23,7 @@ class SocketService {
         this.server = null;
         this.sockets = {};
         this.clients = {};
-        this.events = [];
+        this.events = {};
         this.setServer = (app) => {
             const server = (0, http_1.createServer)(app);
             this.server = new socket_io_1.Server(server, {
@@ -76,7 +76,10 @@ class SocketService {
             });
             return this;
         };
-        this.addEvent = (event) => this.events.push(event);
+        this.addEvent = (event) => {
+            const [eventName, eventCallback] = (0, utils_1.mapToList)(event, false)[0];
+            this.events[eventName] = eventCallback;
+        };
         this.sendMessage = (payload, receiverFunc) => {
             const [client, sendTo, params, receiverFunctionName] = this.extractRemoteHandlersSpecs(payload, receiverFunc);
             if ((0, utils_1.Mapfy)(this.clients).size && this.clients[client]) {
@@ -124,14 +127,14 @@ class SocketService {
             return [functionName, callback];
         };
         this.setEvents = (socket) => {
-            this.events.forEach((event) => {
-                const [name, cb] = (0, utils_1.Mapfy)(event).entries().next().value;
+            (0, utils_1.Mapfy)(this.events).forEach((cb, name) => {
                 socket.addListener(name, (payload) => {
                     const [response, data] = (0, utils_1.Mapfy)(payload).entries().next().value;
                     if (Array.isArray(data))
                         cb(...data)
                             .then((result) => {
-                            socket.emit(response, result);
+                            if (response)
+                                socket.emit(response, result);
                             return result;
                         })
                             .catch((e) => console.log(`Error in callback: ${e.message}`.bgRed))
@@ -139,9 +142,11 @@ class SocketService {
                     else
                         cb(data)
                             .then((result) => {
-                            socket.emit(response, result);
+                            if (response)
+                                socket.emit(response, result);
                             return result;
                         })
+                            .catch((e) => console.log(`Error in callback: ${e.message}`.bgRed))
                             .finally(() => console.log("Solved!".bgGreen));
                 });
             });

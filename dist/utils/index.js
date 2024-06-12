@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.fromEnumToArray = exports.createEnumFromArray = exports.capitalize = exports.normalize = exports.labelCases = exports.execFunc = exports.Enumfy = exports.setEnums = exports.getActionTypes = exports.settingName = exports.UnMapfy = exports.Mapfy = exports.getEntityProperties = exports.filterAttrs = exports.decryptData = exports.encryptData = void 0;
+exports.listToMap = exports.mapToList = exports.fromEnumToArray = exports.createEnumFromArray = exports.capitalize = exports.normalize = exports.labelCases = exports.execFunc = exports.Enumfy = exports.setEnums = exports.getActionTypes = exports.settingName = exports.UnMapfy = exports.Mapfy = exports.getEntityProperties = exports.filterAttrs = exports.decryptData = exports.encryptData = void 0;
 const pluralize_1 = require("pluralize");
 const crypto_js_1 = __importDefault(require("crypto-js"));
 function encryptData(data, key) {
@@ -134,3 +134,7 @@ const fromEnumToArray = (_enum) => new Array(Object.entries(_enum))[0]
     .splice(Object.entries(_enum).length / 2)
     .flatMap((e) => e[0]);
 exports.fromEnumToArray = fromEnumToArray;
+const mapToList = (data, onlyValues = true) => Object.entries(Object.assign({}, data)).map((data) => (onlyValues ? data[1] : data));
+exports.mapToList = mapToList;
+const listToMap = (data) => Object.fromEntries([...data].map((data, index) => [index, data]));
+exports.listToMap = listToMap;
