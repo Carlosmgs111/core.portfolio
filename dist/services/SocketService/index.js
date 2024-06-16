@@ -24,6 +24,7 @@ class SocketService {
         this.sockets = {};
         this.clients = {};
         this.events = {};
+        this.onDisconnectEvents = () => { };
         this.setServer = (app) => {
             const server = (0, http_1.createServer)(app);
             this.server = new socket_io_1.Server(server, {
@@ -34,13 +35,15 @@ class SocketService {
                 },
             });
             this.server.on("connection", (socket) => {
+                const { handshake: { query: { id }, }, } = socket;
                 console.log("Cliente conectado");
-                this.sockets[socket.id] = socket;
+                this.sockets[id] = socket;
                 this.setEvents(socket);
                 socket.on("disconnect", () => {
                     const newSockets = (0, utils_1.Mapfy)(this.sockets);
                     newSockets.delete(socket.id);
                     this.sockets = (0, utils_1.UnMapfy)(newSockets);
+                    this.onDisconnectEvents(socket);
                 });
             });
             server.listen(config_1.default.serverPort);
@@ -60,7 +63,7 @@ class SocketService {
             this.clients[alias].on("disconnect", () => {
                 if (++dTries > maxTries) {
                     this.clients[alias].disconnect();
-                    console.log("Finalizado intestos de conexion".bgYellow);
+                    console.log("Finalizado intentos de conexion".bgYellow);
                 }
                 console.log("Conexión perdida con el servidor.");
             });
@@ -102,6 +105,11 @@ class SocketService {
                         proccesedData = payload;
                     resolve(callback(proccesedData));
                 });
+            });
+        };
+        this.broadCast = (event, data) => {
+            (0, utils_1.mapToList)(this.sockets).map((socket, id) => {
+                socket.emit(event, data);
             });
         };
         this.extractRemoteHandlersSpecs = (object, receiverFunc = null) => {
@@ -151,6 +159,7 @@ class SocketService {
                 });
             });
         };
+        this.addOnDisconnectEvent = (event) => (this.onDisconnectEvents = event);
         this.close = () => __awaiter(this, void 0, void 0, function* () {
             const { server } = this;
             const clients = (0, utils_1.Mapfy)(this.clients);

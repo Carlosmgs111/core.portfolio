@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.AuthServices = exports.verifyToken2 = exports.verifyToken = exports.createToken = void 0;
+exports.AuthServices = exports.extractFromToken = exports.verifyToken2 = exports.verifyToken = exports.createToken = void 0;
 // import { createToken, verifyToken2 } from "../../infrastructure/auth/JWT";
 const expires_1 = require("./expires");
 const config_1 = __importDefault(require("../../config"));
@@ -28,7 +28,6 @@ exports.createToken = createToken;
 const verifyToken = (token, signature = config_1.default.jwtSignupSecret) => {
     try {
         const payload = jsonwebtoken_1.default.verify(token, signature);
-        ({ payload });
         if (!payload)
             throw new Error("Invalid Payload!");
         return payload;
@@ -43,7 +42,7 @@ const verifyToken2 = (token_1, ...args_1) => __awaiter(void 0, [token_1, ...args
     try {
         const verified = yield (0, jose_1.jwtVerify)(token, new TextEncoder().encode(signature));
         const { uuid, email, username } = verified.payload;
-        ({ uuid, email, username });
+        console.log({ uuid, email, username });
         return {
             user: yield (0, use_cases_1.signin)({
                 uuid,
@@ -57,6 +56,10 @@ const verifyToken2 = (token_1, ...args_1) => __awaiter(void 0, [token_1, ...args
     }
 });
 exports.verifyToken2 = verifyToken2;
+const extractFromToken = (token_2, ...args_2) => __awaiter(void 0, [token_2, ...args_2], void 0, function* (token, signature = config_1.default.jwtAccessSecret) {
+    return (yield (0, jose_1.jwtVerify)(token, new TextEncoder().encode(signature))).payload;
+});
+exports.extractFromToken = extractFromToken;
 class AuthServices {
     constructor() {
         this.createShortTimeKey = (payload) => {
@@ -72,6 +75,7 @@ class AuthServices {
                 apiKey: config_1.default.apiKey,
             };
         };
+        this.extractFromToken = exports.extractFromToken;
     }
 }
 exports.AuthServices = AuthServices;

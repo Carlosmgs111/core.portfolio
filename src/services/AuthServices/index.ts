@@ -21,7 +21,6 @@ export const verifyToken = (
 ) => {
   try {
     const payload: any = jwt.verify(token, signature);
-    ({ payload });
     if (!payload) throw new Error("Invalid Payload!");
     return payload;
   } catch (e) {
@@ -40,7 +39,7 @@ export const verifyToken2 = async (
       new TextEncoder().encode(signature)
     );
     const { uuid, email, username } = verified.payload;
-    ({ uuid, email, username });
+    console.log({ uuid, email, username });
     return {
       user: await signin({
         uuid,
@@ -51,6 +50,13 @@ export const verifyToken2 = async (
   } catch (e: any) {
     throw new Error("Invalid token");
   }
+};
+
+export const extractFromToken = async (
+  token: any,
+  signature: any = config.jwtAccessSecret
+) => {
+  return (await jwtVerify(token, new TextEncoder().encode(signature))).payload;
 };
 
 export class AuthServices {
@@ -71,4 +77,5 @@ export class AuthServices {
       apiKey: config.apiKey,
     };
   };
+  extractFromToken = extractFromToken;
 }

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.listToMap = exports.mapToList = exports.fromEnumToArray = exports.createEnumFromArray = exports.capitalize = exports.normalize = exports.labelCases = exports.execFunc = exports.Enumfy = exports.setEnums = exports.getActionTypes = exports.settingName = exports.UnMapfy = exports.Mapfy = exports.getEntityProperties = exports.filterAttrs = exports.decryptData = exports.encryptData = void 0;
+exports.genRandomId = exports.listToMap = exports.mapToList = exports.fromEnumToArray = exports.createEnumFromArray = exports.capitalize = exports.normalize = exports.labelCases = exports.execFunc = exports.Enumfy = exports.setEnums = exports.getActionTypes = exports.settingName = exports.UnMapfy = exports.Mapfy = exports.getEntityProperties = exports.filterAttrs = exports.decryptData = exports.encryptData = void 0;
 const pluralize_1 = require("pluralize");
 const crypto_js_1 = __importDefault(require("crypto-js"));
 function encryptData(data, key) {
@@ -138,3 +138,7 @@ const mapToList = (data, onlyValues = true) => Object.entries(Object.assign({}, 
 exports.mapToList = mapToList;
 const listToMap = (data) => Object.fromEntries([...data].map((data, index) => [index, data]));
 exports.listToMap = listToMap;
+const genRandomId = () => {
+    return Number(String(Math.random()).replace("0.", ""));
+};
+exports.genRandomId = genRandomId;

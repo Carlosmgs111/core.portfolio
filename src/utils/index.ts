@@ -134,3 +134,8 @@ export const mapToList = (data: any, onlyValues = true): any =>
 
 export const listToMap = (data: any): any =>
   Object.fromEntries([...data].map((data: any, index: any) => [index, data]));
+
+
+export const genRandomId = () => {
+  return Number(String(Math.random()).replace("0.", ""));
+};

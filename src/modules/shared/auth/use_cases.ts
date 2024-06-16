@@ -2,15 +2,9 @@ import { User } from "../../users/entity";
 import {
   RepositoryService,
   AuthServices,
-  SocketService,
   ChatService,
 } from "../../../config/dependencies";
-import {
-  filterAttrs,
-  encryptData,
-  decryptData,
-  mapToList,
-} from "../../../utils";
+import { filterAttrs, decryptData } from "../../../utils";
 import config from "../../../config";
 import boom from "@hapi/boom";
 

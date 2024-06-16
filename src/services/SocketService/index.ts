@@ -1,6 +1,6 @@
 import { Server, Socket } from "socket.io";
 import { connect } from "socket.io-client";
-import { Mapfy, UnMapfy, listToMap, mapToList } from "../../utils";
+import { Mapfy, UnMapfy, mapToList } from "../../utils";
 import config from "../../config";
 import { createServer } from "http";
 
@@ -9,6 +9,7 @@ export class SocketService {
   sockets: any = {};
   clients: any = {};
   events: any = {};
+  onDisconnectEvents: any = () => {};
 
   constructor() {}
 
@@ -22,13 +23,19 @@ export class SocketService {
       },
     });
     this.server.on("connection", (socket: Socket) => {
+      const {
+        handshake: {
+          query: { id },
+        },
+      }: any = socket;
       console.log("Cliente conectado");
-      this.sockets[socket.id] = socket;
+      this.sockets[id] = socket;
       this.setEvents(socket);
       socket.on("disconnect", () => {
         const newSockets = Mapfy(this.sockets);
         newSockets.delete(socket.id);
         this.sockets = UnMapfy(newSockets);
+        this.onDisconnectEvents(socket);
       });
     });
     server.listen(config.serverPort);
@@ -50,7 +57,7 @@ export class SocketService {
     this.clients[alias].on("disconnect", () => {
       if (++dTries > maxTries) {
         this.clients[alias].disconnect();
-        console.log("Finalizado intestos de conexion".bgYellow);
+        console.log("Finalizado intentos de conexion".bgYellow);
       }
       console.log("Conexión perdida con el servidor.");
     });
@@ -96,6 +103,12 @@ export class SocketService {
         if (payload) proccesedData = payload;
         resolve(callback(proccesedData));
       });
+    });
+  };
+
+  broadCast = (event: any, data: any) => {
+    mapToList(this.sockets).map((socket: any, id: any) => {
+      socket.emit(event, data);
     });
   };
 
@@ -150,6 +163,8 @@ export class SocketService {
       });
     });
   };
+
+  addOnDisconnectEvent = (event: any) => (this.onDisconnectEvents = event);
 
   close = async () => {
     const { server } = this;
