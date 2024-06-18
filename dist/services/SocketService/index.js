@@ -45,6 +45,9 @@ class SocketService {
                     this.sockets = (0, utils_1.UnMapfy)(newSockets);
                     this.onDisconnectEvents(socket);
                 });
+                socket.on("connect_error", (error) => {
+                    console.error("Error de conexión:", error.context.statusText);
+                });
             });
             server.listen(config_1.default.serverPort);
         };

@@ -9,35 +9,16 @@ export class ChatService {
 
   constructor() {
     SocketService.addEvent({
-      register: async ({ id, alias, kind }: any) => {
-        if (this.parties[id] && this.parties[id].kind === kind) return;
-        this.parties[id] = {
-          id,
-          kind,
-          alias,
-          rooms: [],
-          socket: SocketService.sockets[id],
-        };
-        const host = this.getFlatPartyByKind(this.getFlatParties(), "host");
-        if (kind === "guest" && host) {
-          this.addChatRoom([this.parties[id], this.parties[host.id]]);
-        }
-        mapToList(this.parties).forEach((party: any) => {
-          if (kind === "host" && party.id !== id) {
-            this.addChatRoom([party, this.parties[id]]);
-          }
-        });
-        SocketService.addOnDisconnectEvent((socket: any) => {
-          const socketId = socket.handshake.query.id;
-          this.removeFromChatRoom([this.parties[socketId]]);
-          delete this.parties[socketId];
-        });
-        this.parties[id].socket.emit("isOnline", { isOnline: this.isOnline });
-      },
+      register: this.register,
     });
     SocketService.addEvent({
-      message: async ({ message, from, to }: any) => {
-        this.parties[to.id].socket.emit("response", { message, from, to });
+      unregister: this.unregister,
+    });
+    SocketService.addEvent({
+      message: async ({ message, room }: any) => {
+        room.parties.forEach(({ partyId }: any) =>
+          this.parties[partyId].socket.emit("response", { message, room })
+        );
       },
     });
     SocketService.addEvent({
@@ -62,6 +43,37 @@ export class ChatService {
     flatParties.filter((p: any) => p.id == id)[0];
   getFlatPartyByKind = (flatParties: any, kind: any) =>
     flatParties.filter((p: any) => p.kind == kind)[0];
+  register = async ({ id, alias, kind }: any) => {
+    if (this.parties[id] && this.parties[id].kind === kind) return;
+    this.parties[id] = {
+      id,
+      kind,
+      alias,
+      rooms: [],
+      socket: SocketService.sockets[id],
+    };
+    const host = this.getFlatPartyByKind(this.getFlatParties(), "host");
+    if (kind === "guest" && host) {
+      this.addChatRoom([this.parties[id], this.parties[host.id]]);
+    }
+    mapToList(this.parties).forEach((party: any) => {
+      if (kind === "host" && party.id !== id) {
+        this.addChatRoom([party, this.parties[id]]);
+      }
+    });
+    SocketService.addOnDisconnectEvent((socket: any) => {
+      const socketId = socket.handshake.query.id;
+      this.removeFromChatRoom([this.parties[socketId]]);
+      delete this.parties[socketId];
+    });
+    this.parties[id].socket.emit("isOnline", { isOnline: this.isOnline });
+    mapToList(this.parties).forEach((party: any) =>
+      party.socket.emit("rooms", this.getChatRooms(party.rooms, party.id))
+    );
+  };
+  unregister = async ({ id }: any) => {
+    this.removeFromChatRoom([this.parties[id]]);
+  };
   addChatRoom = (parties: any) => {
     const chatRoomId = genRandomId();
     this.chatRooms[chatRoomId] = [];
@@ -69,7 +81,6 @@ export class ChatService {
       this.chatRooms[chatRoomId] = [...this.chatRooms[chatRoomId], party.id];
       party.rooms = [...party.rooms, chatRoomId];
       this.parties[party.id] = party;
-      this.parties[party.id].socket.emit("rooms", party.rooms);
     });
   };
   removeFromChatRoom = (parties: any) => {
@@ -83,6 +94,19 @@ export class ChatService {
           delete this.chatRooms[room];
         }
       });
+    });
+  };
+  getChatRooms = (rooms: any, idsToSkip: any = []) => {
+    return rooms.map((roomId: any) => {
+      const roomPack: any = { id: roomId, parties: [] };
+      this.chatRooms[roomId].forEach((partyId: any) => {
+        if (idsToSkip.includes(partyId)) return;
+        roomPack.parties.push({
+          partyId,
+          partyAlias: this.parties[partyId].alias,
+        });
+      });
+      return roomPack;
     });
   };
 }
