@@ -40,6 +40,7 @@ class SocketService {
                 this.sockets[id] = socket;
                 this.setEvents(socket);
                 socket.on("disconnect", () => {
+                    console.log("Socket disconnected!");
                     const newSockets = (0, utils_1.Mapfy)(this.sockets);
                     newSockets.delete(socket.id);
                     this.sockets = (0, utils_1.UnMapfy)(newSockets);
@@ -98,8 +99,8 @@ class SocketService {
             }
             return this;
         };
-        this.receiveMessage = (payload) => {
-            let [client, receiveIn, callback] = this.extractRemoteHandlersSpecs(payload);
+        this.receiveMessage = (_payload) => {
+            let [client, receiveIn, callback] = this.extractRemoteHandlersSpecs(_payload);
             return new Promise((resolve, reject) => {
                 this.clients[client].on(receiveIn, (data) => {
                     let proccesedData = null;
@@ -107,6 +108,8 @@ class SocketService {
                     if (payload)
                         proccesedData = payload;
                     resolve(callback(proccesedData));
+                    if (error)
+                        reject(error);
                 });
             });
         };
@@ -149,7 +152,7 @@ class SocketService {
                             return result;
                         })
                             .catch((e) => console.log(`Error in callback: ${e.message}`.bgRed))
-                            .finally(() => console.log("Solved!".green));
+                            .finally(() => console.log("Solved!".bgGreen));
                     else
                         cb(data)
                             .then((result) => {
@@ -157,8 +160,8 @@ class SocketService {
                                 socket.emit(response, result);
                             return result;
                         })
-                            .catch((e) => console.log(`Error in callback: ${e.message}`.bgRed))
-                            .finally(() => console.log("Solved!".bgGreen));
+                            .catch((e) => console.log(`Error in callback: ${e.message}`.red))
+                            .finally(() => console.log("Solved!".green));
                 });
             });
         };

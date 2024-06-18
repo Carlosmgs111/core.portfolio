@@ -32,6 +32,7 @@ export class SocketService {
       this.sockets[id] = socket;
       this.setEvents(socket);
       socket.on("disconnect", () => {
+        console.log("Socket disconnected!");
         const newSockets = Mapfy(this.sockets);
         newSockets.delete(socket.id);
         this.sockets = UnMapfy(newSockets);
@@ -96,15 +97,16 @@ export class SocketService {
     return this;
   };
 
-  receiveMessage = (payload: any) => {
+  receiveMessage = (_payload: any) => {
     let [client, receiveIn, callback] =
-      this.extractRemoteHandlersSpecs(payload);
+      this.extractRemoteHandlersSpecs(_payload);
     return new Promise((resolve, reject) => {
       this.clients[client].on(receiveIn, (data: any) => {
         let proccesedData = null;
         const { payload, error } = data;
         if (payload) proccesedData = payload;
         resolve(callback(proccesedData));
+        if (error) reject(error);
       });
     });
   };
@@ -152,7 +154,7 @@ export class SocketService {
             .catch((e: any) =>
               console.log(`Error in callback: ${e.message}`.bgRed)
             )
-            .finally(() => console.log("Solved!".green));
+            .finally(() => console.log("Solved!".bgGreen));
         else
           cb(data)
             .then((result: any) => {
@@ -160,9 +162,9 @@ export class SocketService {
               return result;
             })
             .catch((e: any) =>
-              console.log(`Error in callback: ${e.message}`.bgRed)
+              console.log(`Error in callback: ${e.message}`.red)
             )
-            .finally(() => console.log("Solved!".bgGreen));
+            .finally(() => console.log("Solved!".green));
       });
     });
   };

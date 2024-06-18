@@ -26,6 +26,14 @@ export class ChatService {
         this.setIsOnline(isOnline);
       },
     });
+    SocketService.addEvent({
+      updateAlias: async ({ id, alias }: any) => {
+        this.parties[id].alias = alias;
+        mapToList(this.parties).forEach((party: any) =>
+          party.socket.emit("rooms", this.getChatRooms(party.rooms, party.id))
+        );
+      },
+    });
   }
   getIsOnline = () => this.isOnline;
   setIsOnline = (isOnline: Boolean) => {
@@ -44,6 +52,7 @@ export class ChatService {
   getFlatPartyByKind = (flatParties: any, kind: any) =>
     flatParties.filter((p: any) => p.kind == kind)[0];
   register = async ({ id, alias, kind }: any) => {
+    console.log({ alias });
     if (this.parties[id] && this.parties[id].kind === kind) return;
     this.parties[id] = {
       id,
@@ -65,6 +74,9 @@ export class ChatService {
       const socketId = socket.handshake.query.id;
       this.removeFromChatRoom([this.parties[socketId]]);
       delete this.parties[socketId];
+      mapToList(this.parties).forEach((party: any) =>
+        party.socket.emit("rooms", this.getChatRooms(party.rooms, party.id))
+      );
     });
     this.parties[id].socket.emit("isOnline", { isOnline: this.isOnline });
     mapToList(this.parties).forEach((party: any) =>
@@ -73,6 +85,9 @@ export class ChatService {
   };
   unregister = async ({ id }: any) => {
     this.removeFromChatRoom([this.parties[id]]);
+    mapToList(this.parties).forEach((party: any) =>
+      party.socket.emit("rooms", this.getChatRooms(party.rooms, party.id))
+    );
   };
   addChatRoom = (parties: any) => {
     const chatRoomId = genRandomId();
