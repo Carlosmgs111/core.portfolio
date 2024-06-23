@@ -33,9 +33,15 @@ export const getEntityProperties = (Entity: any) => {
   return newObj;
 };
 
-export const Mapfy = (object: any) => new Map(Object.entries(object));
+export const Mapfy = (object: any): any => {
+  if (!object) return;
+  return new Map(Object.entries(object));
+};
 
-export const UnMapfy = (map: any) => Object.fromEntries(map.entries());
+export const UnMapfy = (map: any): any => {
+  if (!map) return;
+  return Object.fromEntries(map.entries());
+};
 
 export const settingName = (value: any) =>
   "set" + value.slice(0, 1).toUpperCase() + value.slice(1);
@@ -129,12 +135,19 @@ export const fromEnumToArray = (_enum: any) =>
     .splice(Object.entries(_enum).length / 2)
     .flatMap((e: any) => e[0]);
 
-export const mapToList = (data: any, onlyValues = true): any =>
-  Object.entries({ ...data }).map((data) => (onlyValues ? data[1] : data));
+export const mapToList = (data: any, onlyValues = true): any => {
+  if (!data) return;
+  return Object.entries({ ...data }).map((data) =>
+    onlyValues ? data[1] : data
+  );
+};
 
-export const listToMap = (data: any): any =>
-  Object.fromEntries([...data].map((data: any, index: any) => [index, data]));
-
+export const listToMap = (data: any): any => {
+  if (!data) return;
+  return Object.fromEntries(
+    [...data].map((data: any, index: any) => [index, data])
+  );
+};
 
 export const genRandomId = () => {
   return Number(String(Math.random()).replace("0.", ""));

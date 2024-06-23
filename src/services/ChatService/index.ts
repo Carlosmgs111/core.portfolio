@@ -16,6 +16,7 @@ export class ChatService {
     });
     SocketService.addEvent({
       message: async ({ message, room }: any) => {
+        if (!room.parties) return;
         room.parties.forEach(({ partyId }: any) =>
           this.parties[partyId].socket.emit("response", { message, room })
         );

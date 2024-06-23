@@ -151,7 +151,10 @@ class SocketService {
                                 socket.emit(response, result);
                             return result;
                         })
-                            .catch((e) => console.log(`Error in callback: ${e.message}`.bgRed))
+                            .catch((e) => {
+                            console.log(`Error in callback: ${e.message}`.bgRed);
+                            return e;
+                        })
                             .finally(() => console.log("Solved!".bgGreen));
                     else
                         cb(data)

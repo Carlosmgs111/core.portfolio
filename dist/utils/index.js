@@ -44,9 +44,17 @@ const getEntityProperties = (Entity) => {
     return newObj;
 };
 exports.getEntityProperties = getEntityProperties;
-const Mapfy = (object) => new Map(Object.entries(object));
+const Mapfy = (object) => {
+    if (!object)
+        return;
+    return new Map(Object.entries(object));
+};
 exports.Mapfy = Mapfy;
-const UnMapfy = (map) => Object.fromEntries(map.entries());
+const UnMapfy = (map) => {
+    if (!map)
+        return;
+    return Object.fromEntries(map.entries());
+};
 exports.UnMapfy = UnMapfy;
 const settingName = (value) => "set" + value.slice(0, 1).toUpperCase() + value.slice(1);
 exports.settingName = settingName;
@@ -134,9 +142,17 @@ const fromEnumToArray = (_enum) => new Array(Object.entries(_enum))[0]
     .splice(Object.entries(_enum).length / 2)
     .flatMap((e) => e[0]);
 exports.fromEnumToArray = fromEnumToArray;
-const mapToList = (data, onlyValues = true) => Object.entries(Object.assign({}, data)).map((data) => (onlyValues ? data[1] : data));
+const mapToList = (data, onlyValues = true) => {
+    if (!data)
+        return;
+    return Object.entries(Object.assign({}, data)).map((data) => onlyValues ? data[1] : data);
+};
 exports.mapToList = mapToList;
-const listToMap = (data) => Object.fromEntries([...data].map((data, index) => [index, data]));
+const listToMap = (data) => {
+    if (!data)
+        return;
+    return Object.fromEntries([...data].map((data, index) => [index, data]));
+};
 exports.listToMap = listToMap;
 const genRandomId = () => {
     return Number(String(Math.random()).replace("0.", ""));
