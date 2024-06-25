@@ -39,9 +39,6 @@
   "homepage": "https://github.com/Carlosmgs111/portfolio#readme",
   "dependencies": {
     "@hapi/boom": "^10.0.0",
-    "@types/amqplib": "^0.10.1",
-    "@types/nodemailer": "^6.4.15",
-    "@types/socket.io": "^3.0.2",
     "amqplib": "^0.10.3",
     "bcrypt": "^5.1.0",
     "bufferutil": "^4.0.8",
@@ -77,6 +74,9 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/amqplib": "^0.10.1",
+    "@types/nodemailer": "^6.4.15",
+    "@types/socket.io": "^3.0.2",
     "@faker-js/faker": "^7.6.0",
     "@types/bcrypt": "^5.0.0",
     "@types/colors": "^1.2.1",

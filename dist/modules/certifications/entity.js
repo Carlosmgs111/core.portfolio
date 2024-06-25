@@ -87,15 +87,15 @@ Certification.createMany = (RepositoryService, data) => __awaiter(void 0, void 0
             },
         ]);
     }
-    const refsBatch = data.map((_, index) => [
-        {
-            certification: {
-                uuid: certificationsCreated[Number(index)].uuid,
-            },
-        },
-        { user: { uuid: data[Number(index)].user.uuid } },
-    ]);
-    RepositoryService.setManyRelationshipsManyToMany(refsBatch);
+    // const refsBatch = data.map((_: any, index: any) => [
+    //   {
+    //     certification: {
+    //       uuid: certificationsCreated[Number(index)].uuid,
+    //     },
+    //   },
+    //   { user: { uuid: data[Number(index)].user.uuid } },
+    // ]);
+    // RepositoryService.setManyRelationshipsManyToMany(refsBatch);
     for (let certificationIdx in data) {
         RepositoryService.setOneRelationshipManyToMany([
             {

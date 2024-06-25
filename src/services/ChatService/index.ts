@@ -73,7 +73,8 @@ export class ChatService {
     });
     SocketService.addOnDisconnectEvent((socket: any) => {
       const socketId = socket.handshake.query.id;
-      this.removeFromChatRoom([this.parties[socketId]]);
+      if (this.parties[socketId])
+        this.removeFromChatRoom([this.parties[socketId]]);
       delete this.parties[socketId];
       mapToList(this.parties).forEach((party: any) =>
         party.socket.emit("rooms", this.getChatRooms(party.rooms, party.id))
@@ -100,7 +101,9 @@ export class ChatService {
     });
   };
   removeFromChatRoom = (parties: any) => {
+    if (!parties) return;
     parties.forEach((party: any) => {
+      if (!party.room) return;
       party.rooms.forEach((room: any) => {
         if (!this.chatRooms[room]) return;
         this.chatRooms[room].splice(this.chatRooms[room].indexOf(party.id), 1);
@@ -112,11 +115,14 @@ export class ChatService {
       });
     });
   };
+  // ! Use this to generarte a error and see how SocketService handle errors
   getChatRooms = (rooms: any, idsToSkip: any = []) => {
     return rooms.map((roomId: any) => {
       const roomPack: any = { id: roomId, parties: [] };
+      if (!this.chatRooms[roomId]) return;
       this.chatRooms[roomId].forEach((partyId: any) => {
         if (idsToSkip.includes(partyId)) return;
+        if (!roomPack.parties || !this.parties[partyId]) return;
         roomPack.parties.push({
           partyId,
           partyAlias: this.parties[partyId].alias,
