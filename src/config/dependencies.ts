@@ -8,11 +8,12 @@ import {
   SocketService as SS,
   MailerService as MS,
   ChatService as CS,
+  RESTAPIService as RS,
 } from "../services";
 
 const repositoryServices = {
   CQRS: () => new CQRSService(),
-  DBS: () => DBS(Adapters.MongooseAdapter),
+  DBS: () => DBS(Adapters.SequelizeAdapter),
 };
 
 export const TaskMessageService = new TMS();
@@ -21,6 +22,7 @@ export const AuthServices = new AS();
 export const SocketService: any = new SS();
 export const MailerService = new MS();
 export const ChatService = new CS();
+export const RESTAPIService = new RS();
 
 const imageService = config.imageServiceUrlDev || config.imageServiceUrlProd;
 

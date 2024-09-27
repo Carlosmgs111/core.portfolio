@@ -13,14 +13,15 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.resetAuthPassword = exports.signin = exports.authSignin = exports.unsubscribe = exports.checkIfIsOnline = exports.signup = exports.logout = exports.login = void 0;
-const entity_1 = require("../../users/entity");
+const entity_1 = require("../../users/domain/entity");
 const dependencies_1 = require("../../../config/dependencies");
 const utils_1 = require("../../../utils");
 const config_1 = __importDefault(require("../../../config"));
 const boom_1 = __importDefault(require("@hapi/boom"));
-const login = (credentials) => __awaiter(void 0, void 0, void 0, function* () {
+const login = (indexation) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log({ indexation });
     const account = yield entity_1.User.authLoad(dependencies_1.RepositoryService, {
-        credentials,
+        indexation,
         // related: [["Institution"], ["Certification"]],
     });
     dependencies_1.ChatService.setIsOnline(true);

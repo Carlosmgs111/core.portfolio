@@ -69,8 +69,9 @@ export class CQRSService {
     });
     return await this.CommandService.createMany(entity, entities, options);
   };
-  findOne = async (entity: any, options: any = {}) =>
-    await this.QueryService.findOne(entity, options);
+  findOne = async (entity: any, options: any = {}) => {
+    return await this.QueryService.findOne(entity, options);
+  };
   findAll = async (entity: any, options: any = {}) =>
     await this.QueryService.findAll(entity, options);
   removeOne = async (entity: any, options: any) => {

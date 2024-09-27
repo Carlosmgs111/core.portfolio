@@ -1,11 +1,7 @@
 import "colors";
-import app from "./infrastructure/apis/express/index";
+import "./modules";
 import terminal from "./infrastructure/apis/terminal";
-import { RepositoryService } from "./config/dependencies";
-
-RepositoryService.info();
 
 (async () => {
-  await app();
-  await terminal();
+  // await terminal();
 })();

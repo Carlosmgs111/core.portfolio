@@ -12,29 +12,34 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const models_1 = require("./infrastructure/models");
-const infrastructure_1 = require("./infrastructure");
+// import { models } from "../../../config/admin/infrastructure/models";
+const config_1 = __importDefault(require("../../../config"));
 const utils_1 = require("../../../utils");
+const sequelize_1 = require("sequelize");
 const uuid_1 = require("uuid");
 const boom_1 = __importDefault(require("@hapi/boom"));
 class SequelizeAdapter {
     constructor({} = {}) {
         this.serviceDescription = "Sequelize Database Service Adapter";
+        this.entities = {};
+        this.models = {};
+        this.tableNames = {};
+        this.tableSchemas = {};
         this.createOne = (entity_1, Entity_1, ...args_1) => __awaiter(this, [entity_1, Entity_1, ...args_1], void 0, function* (entity, Entity, options = {}) {
-            const newEntity = yield models_1.models[entity].create(Entity, this.adapter(options));
+            const newEntity = yield this.models[entity].create(Entity, this.adapter(options));
             return newEntity.dataValues;
         });
-        this.createMany = (entity_2, entities_1, ...args_2) => __awaiter(this, [entity_2, entities_1, ...args_2], void 0, function* (entity, entities, options = {}) {
-            const entitiesCreated = yield models_1.models[entity].bulkCreate(entities, this.adapter(options));
+        this.createMany = (entity_1, entities_1, ...args_1) => __awaiter(this, [entity_1, entities_1, ...args_1], void 0, function* (entity, entities, options = {}) {
+            const entitiesCreated = yield this.models[entity].bulkCreate(entities, this.adapter(options));
             return entitiesCreated.map((e) => (Object.assign({}, e.dataValues)));
         });
-        this.findAll = (entity_3, ...args_3) => __awaiter(this, [entity_3, ...args_3], void 0, function* (entity, options = {}) {
-            const entities = yield models_1.models[entity].findAll(this.adapter(options));
+        this.findAll = (entity_1, ...args_1) => __awaiter(this, [entity_1, ...args_1], void 0, function* (entity, options = {}) {
+            const entities = yield this.models[entity].findAll(this.adapter(options));
             return entities.map((e) => (Object.assign({}, e.dataValues)));
         });
-        this.findOne = (entity_4, ...args_4) => __awaiter(this, [entity_4, ...args_4], void 0, function* (entity, options = {}) {
+        this.findOne = (entity_1, ...args_1) => __awaiter(this, [entity_1, ...args_1], void 0, function* (entity, options = {}) {
             try {
-                const entityFounded = yield models_1.models[entity].findOne(this.adapter(options));
+                const entityFounded = yield this.models[entity].findOne(this.adapter(options));
                 if (!entityFounded)
                     return null;
                 return entityFounded.dataValues;
@@ -44,12 +49,12 @@ class SequelizeAdapter {
             }
         });
         this.removeOne = (entity, options) => __awaiter(this, void 0, void 0, function* () {
-            if (!options.credentials)
-                throw boom_1.default.forbidden("Must supply credentials for find and delete entity!");
-            return yield models_1.models[entity].destroy(this.adapter(options));
+            if (!options.indexation)
+                throw boom_1.default.forbidden("Must supply indexation for find and delete entity!");
+            return yield this.models[entity].destroy(this.adapter(options));
         });
-        this.updateOne = (entity_5, Entity_2, ...args_5) => __awaiter(this, [entity_5, Entity_2, ...args_5], void 0, function* (entity, Entity, options = {}) {
-            const updated = yield models_1.models[entity].update(Entity, this.adapter(options));
+        this.updateOne = (entity_1, Entity_1, ...args_1) => __awaiter(this, [entity_1, Entity_1, ...args_1], void 0, function* (entity, Entity, options = {}) {
+            const updated = yield this.models[entity].update(Entity, this.adapter(options));
             return this.getResult(updated);
         });
         this.setOneRelationship2One = (entity, refs) => __awaiter(this, void 0, void 0, function* () {
@@ -60,12 +65,12 @@ class SequelizeAdapter {
                 const label = (0, utils_1.Mapfy)(ref).keys().next().value;
                 const query = (0, utils_1.Mapfy)(ref).values().next().value;
                 // ({ label, query });
-                const referenced = yield models_1.models[(0, utils_1.labelCases)(label).CS].findOne({
+                const referenced = yield this.models[(0, utils_1.labelCases)(label).CS].findOne({
                     where: query,
                 });
                 relations2One[`${label}UUID`] = referenced.uuid;
             }
-            models_1.models[(0, utils_1.labelCases)(mainLabel).CS].update(relations2One, {
+            this.models[(0, utils_1.labelCases)(mainLabel).CS].update(relations2One, {
                 where: mainQuery,
             });
             return Object.assign(Object.assign({}, entity), relations2One);
@@ -81,6 +86,7 @@ class SequelizeAdapter {
         this.setOneRelationshipManyToMany = (refs) => __awaiter(this, void 0, void 0, function* () {
             let succesfully = false;
             const [from, to] = refs;
+            console.log({ from, to });
             const [existed, data, relationshipLabel] = yield this.checkOneRelationshipN2N(from, to);
             if (existed)
                 throw boom_1.default.conflict("Entity existed yet!");
@@ -108,7 +114,7 @@ class SequelizeAdapter {
             const [existed, data, relationshipLabel] = yield this.checkOneRelationshipN2N(from, to);
             if (!existed)
                 throw boom_1.default.conflict("Relationship doesn't existed!");
-            return Boolean(yield this.removeOne(relationshipLabel, { credentials: data }));
+            return Boolean(yield this.removeOne(relationshipLabel, { indexation: data }));
         });
         this.setManyRelationshipsManyToMany = (refsBatch) => {
             for (let refs of refsBatch) {
@@ -117,9 +123,9 @@ class SequelizeAdapter {
         };
         this.checkOneRelationshipN2N = (from, to) => __awaiter(this, void 0, void 0, function* () {
             const composeRelationshipLabel = (from, to) => {
-                if (models_1.models[`${(0, utils_1.labelCases)(from).CP}_${(0, utils_1.labelCases)(to).CP}`])
+                if (this.models[`${(0, utils_1.labelCases)(from).CP}_${(0, utils_1.labelCases)(to).CP}`])
                     return `${(0, utils_1.labelCases)(from).CP}_${(0, utils_1.labelCases)(to).CP}`;
-                if (models_1.models[`${(0, utils_1.labelCases)(to).CP}_${(0, utils_1.labelCases)(from).CP}`])
+                if (this.models[`${(0, utils_1.labelCases)(to).CP}_${(0, utils_1.labelCases)(from).CP}`])
                     return `${(0, utils_1.labelCases)(to).CP}_${(0, utils_1.labelCases)(from).CP}`;
                 throw boom_1.default.internal("Invalid labels");
             };
@@ -127,11 +133,11 @@ class SequelizeAdapter {
             const fromQuery = (0, utils_1.Mapfy)(from).values().next().value;
             const toLabel = (0, utils_1.Mapfy)(to).keys().next().value;
             const toQuery = (0, utils_1.Mapfy)(to).values().next().value;
-            const { uuid: fromUUID } = yield models_1.models[(0, utils_1.labelCases)(fromLabel).CS].findOne({
+            const { uuid: fromUUID } = yield this.models[(0, utils_1.labelCases)(fromLabel).CS].findOne({
                 where: fromQuery,
                 attributes: ["uuid"],
             });
-            const { uuid: toUUID } = yield models_1.models[(0, utils_1.labelCases)(toLabel).CS].findOne({
+            const { uuid: toUUID } = yield this.models[(0, utils_1.labelCases)(toLabel).CS].findOne({
                 where: toQuery,
                 attributes: ["uuid"],
             });
@@ -141,13 +147,13 @@ class SequelizeAdapter {
                 [`${toLabel}UUID`]: toUUID,
             };
             const existed = yield this.findOne(relationshipLabel, {
-                credentials: relationshipUUIDS,
+                indexation: relationshipUUIDS,
             });
             return [existed, relationshipUUIDS, relationshipLabel];
         });
         this.adapter = (OPS) => {
-            const { credentials = {}, related = [], size = 100, page = 0, as = null, } = OPS;
-            return Object.assign(Object.assign({}, OPS), { where: credentials, include: this.formatIncludeClosure(related), limit: Number(size), offset: Number(page), alias: as });
+            const { indexation = {}, related = [], size = 100, page = 0, as = null, } = OPS;
+            return Object.assign(Object.assign({}, OPS), { where: indexation, include: this.formatIncludeClosure(related), limit: Number(size), offset: Number(page), alias: as });
         };
         this.getResult = (result) => {
             if (Array.isArray(result))
@@ -156,18 +162,120 @@ class SequelizeAdapter {
         // * A function that is called in the constructor of the class. It is used to associate the models in
         // * the database.
         this.syncModels = () => __awaiter(this, void 0, void 0, function* () {
-            for (var model in models_1.models) {
-                models_1.models[model].associate && (yield models_1.models[model].associate(models_1.models));
+            for (var model in this.models) {
+                this.models[model].associate &&
+                    (yield this.models[model].associate(this.models));
             }
         });
-        this.entities = (0, utils_1.setEnums)(Object.entries(models_1.models).flatMap((m) => m[0]));
         this.close = () => __awaiter(this, void 0, void 0, function* () {
-            yield infrastructure_1.sequelize.close();
+            yield this.connection.close();
         });
         this.dropAllEntities = () => __awaiter(this, void 0, void 0, function* () {
-            yield infrastructure_1.sequelize.sync({ force: true });
+            yield this.connection.sync({ force: true });
         });
-        this.syncModels();
+        this.createJoinTable = (A, B) => {
+            A = A.tableName || A;
+            B = B.tableName || B;
+            const join_table_name = `${(0, utils_1.labelCases)(A).CP}_${(0, utils_1.labelCases)(B).CP}`;
+            const join_table_schema = {
+                uuid: {
+                    primaryKey: true,
+                    allowNull: false,
+                    unique: true,
+                    type: sequelize_1.DataTypes.STRING,
+                },
+                [`${(0, utils_1.labelCases)(A).LS}UUID`]: {
+                    field: `${(0, utils_1.labelCases)(A).LS}_uuid`,
+                    unique: false,
+                    allowNull: false,
+                    type: sequelize_1.DataTypes.STRING,
+                    references: {
+                        model: (0, utils_1.labelCases)(A).CP,
+                        key: "uuid",
+                        onDelete: "NO ACTION",
+                        onUpdate: "NO ACTION",
+                    },
+                },
+                [`${(0, utils_1.labelCases)(B).LS}UUID`]: {
+                    field: `${(0, utils_1.labelCases)(B).LS}_uuid`,
+                    unique: false,
+                    allowNull: false,
+                    type: sequelize_1.DataTypes.STRING,
+                    references: {
+                        model: (0, utils_1.labelCases)(B).CP,
+                        key: "uuid",
+                        onDelete: "NO ACTION",
+                        onUpdate: "NO ACTION",
+                    },
+                },
+            };
+            this.tableNames[join_table_name] = join_table_name;
+            this.tableSchemas[`${(0, utils_1.labelCases)(join_table_name).LP}_schema`] =
+                join_table_schema;
+            this.models[join_table_name] = this.connection.define(join_table_name, join_table_schema, {
+                createdAt: false,
+                updatedAt: false,
+            });
+        };
+        this.addModel = (modelName, model, model_table, model_schema) => {
+            this.models[modelName] = model;
+            this.entities = (0, utils_1.setEnums)(Object.entries(this.models).flatMap((m) => m[0]));
+            model.init(model_schema, {
+                sequelize: this.connection,
+                modelName: model_table,
+            });
+        };
+        this.joinTables = (ATableName, bTableName) => {
+            this.createJoinTable(this.models[ATableName], this.models[bTableName]);
+        };
+        const { postgresUserProd, postgresPasswordProd, postgresHostProd, postgresPortProd, postgresDatabaseProd, postgresDatabaseDev, postgresUserDev, postgresPasswordDev, postgresHostDev, postgresPortDev, postgresDatabaseTest, postgresUserTest, postgresPasswordTest, postgresHostTest, postgresPortTest, } = config_1.default;
+        let ENV = null;
+        if (process.argv.includes("DEV"))
+            ENV = "DEV";
+        if (process.argv.includes("PROD"))
+            ENV = "PROD";
+        let database = (() => {
+            if (ENV === "DEV")
+                return postgresDatabaseDev;
+            if (ENV === "PROD")
+                return postgresDatabaseProd;
+            return postgresDatabaseTest;
+        })();
+        let user = (() => {
+            if (ENV === "DEV")
+                return postgresUserDev;
+            if (ENV === "PROD")
+                return postgresUserProd;
+            return postgresUserTest;
+        })();
+        let PASSWORD = (() => {
+            if (ENV === "DEV")
+                return encodeURIComponent(postgresPasswordDev);
+            if (ENV === "PROD")
+                return encodeURIComponent(postgresPasswordProd);
+            return encodeURIComponent(postgresPasswordTest);
+        })();
+        let host = (() => {
+            if (ENV === "DEV")
+                return postgresHostDev;
+            if (ENV === "PROD")
+                return postgresHostProd;
+            return postgresHostTest;
+        })();
+        let port = (() => {
+            if (ENV === "DEV")
+                return Number(postgresPortDev);
+            if (ENV === "PROD")
+                return Number(postgresPortProd);
+            return Number(postgresPortTest);
+        })();
+        this.connection = new sequelize_1.Sequelize(database, user, PASSWORD, {
+            host,
+            port,
+            dialect: "postgres",
+            logging: false, //
+        });
+        // this.syncModels();
     }
     // ? pending to find an appropiated agnosthic name
     formatIncludeClosure(entitiesToInclude = []) {
@@ -177,7 +285,7 @@ class SequelizeAdapter {
             const { singular = false } = options;
             const { attributes = null, where = {}, as = null, } = this.adapter(queryOps);
             include.push({
-                model: models_1.models[model],
+                model: this.models[model],
                 as: as || (0, utils_1.labelCases)(model)[singular ? "CS" : "CP"],
                 attributes,
                 where,

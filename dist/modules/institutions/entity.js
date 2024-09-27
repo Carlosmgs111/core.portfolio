@@ -27,13 +27,13 @@ class Institution {
             yield RepositoryService.unsetOneRelationshipManyToMany([
                 [{ user: options.userUUID }, { institution: this.uuid }],
             ]);
-            return yield RepositoryService.removeOne(RepositoryService.entities.Institution, {
-                credentials: { uuid: this.uuid },
+            return yield RepositoryService.removeOne(RepositoryService.QueryService.entities.Institution, {
+                indexation: { uuid: this.uuid },
             });
         });
         this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
             this.updatedAt = new Date().getTime();
-            return yield RepositoryService.updateOne(RepositoryService.entities.Institution, Object.assign(Object.assign({}, this), data), { credentials: { uuid: this.uuid } });
+            return yield RepositoryService.updateOne(RepositoryService.QueryService.entities.Institution, Object.assign(Object.assign({}, this), data), { indexation: { uuid: this.uuid } });
         });
         this.uuid = uuid;
         this.name = name;
@@ -49,7 +49,7 @@ _a = Institution;
 Institution.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = (0, uuid_1.v4)();
     const institution = new _a(Object.assign(Object.assign({}, data), { uuid }));
-    yield RepositoryService.createOne(RepositoryService.entities.Institution, institution);
+    yield RepositoryService.createOne(RepositoryService.QueryService.entities.Institution, institution);
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
     yield RepositoryService.setOneRelationshipManyToMany([
         [{ institution: { uuid } }, { user: { uuid: data.user.uuid } }],
@@ -63,13 +63,13 @@ Institution.load = (RepositoryService, credentials) => __awaiter(void 0, void 0,
     const institution = new _a(project);
     return institution;
 });
-Institution.find = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {
-    const institution = yield RepositoryService.findOne(RepositoryService.entities.Institution, {
-        credentials,
+Institution.find = (RepositoryService, indexation) => __awaiter(void 0, void 0, void 0, function* () {
+    const institution = yield RepositoryService.findOne(RepositoryService.QueryService.entities.Institution, {
+        indexation,
     });
     return institution;
 });
 Institution.findAll = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {
-    const institutions = yield RepositoryService.findAll(RepositoryService.entities.Institution, options);
+    const institutions = yield RepositoryService.findAll(RepositoryService.QueryService.entities.Institution, options);
     return institutions;
 });

@@ -38,7 +38,7 @@ class Certification {
                     },
                 ]);
             }
-            return yield RepositoryService.updateOne(RepositoryService.entities.Certification, Object.assign({ updatedAt: this.updatedAt }, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
+            return yield RepositoryService.updateOne(RepositoryService.QueryService.entities.Certification, Object.assign({ updatedAt: this.updatedAt }, (0, utils_1.filterAttrs)(data, ["uuid", "user", "token"])), { credentials: { uuid: this.uuid } });
         });
         this.remove = (RepositoryService_1, ...args_1) => __awaiter(this, [RepositoryService_1, ...args_1], void 0, function* (RepositoryService, options = {}) {
             yield RepositoryService.unsetOneRelationship2One({ certifications: { uuid: this.uuid } }, [["Institution", { as: "Institution" }]]);
@@ -48,8 +48,8 @@ class Certification {
             ]);
             if (!removed)
                 return;
-            return yield RepositoryService.removeOne(RepositoryService.entities.Certification, {
-                credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["title", "uuid"], false),
+            return yield RepositoryService.removeOne(RepositoryService.QueryService.entities.Certification, {
+                indexation: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(this), ["title", "uuid"], false),
             });
         });
         this.uuid = uuid;
@@ -67,7 +67,7 @@ _a = Certification;
 Certification.createOne = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
     const uuid = data.uuid || (0, uuid_1.v4)();
     const { emitedBy } = data;
-    const certification = yield RepositoryService.createOne(RepositoryService.entities.Certification, new _a(Object.assign(Object.assign({}, data), { uuid })));
+    const certification = yield RepositoryService.createOne(RepositoryService.QueryService.entities.Certification, new _a(Object.assign(Object.assign({}, data), { uuid })));
     yield RepositoryService.setOneRelationship2One({ certifications: { uuid: certification.uuid } }, [
         {
             institution: { name: emitedBy },
@@ -79,7 +79,7 @@ Certification.createOne = (RepositoryService, data) => __awaiter(void 0, void 0,
     return certification;
 });
 Certification.createMany = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
-    const certificationsCreated = yield RepositoryService.createMany(RepositoryService.entities.Certification, data.map((c) => new _a(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
+    const certificationsCreated = yield RepositoryService.createMany(RepositoryService.QueryService.entities.Certification, data.map((c) => new _a(Object.assign(Object.assign({}, c), { uuid: c.uuid || (0, uuid_1.v4)() }))));
     for (let certification in certificationsCreated) {
         RepositoryService.setOneRelationship2One({ certifications: { uuid: certificationsCreated[certification].uuid } }, [
             {
@@ -116,10 +116,10 @@ Certification.load = (RepositoryService, options) => __awaiter(void 0, void 0, v
     return loadedCertification;
 });
 Certification.find = (RepositoryService, options) => __awaiter(void 0, void 0, void 0, function* () {
-    const certificate = yield RepositoryService.findOne(RepositoryService.entities.Certification, options);
+    const certificate = yield RepositoryService.findOne(RepositoryService.QueryService.entities.Certification, options);
     return certificate;
 });
 Certification.findAll = (RepositoryService_1, ...args_1) => __awaiter(void 0, [RepositoryService_1, ...args_1], void 0, function* (RepositoryService, options = {}) {
-    const certificates = yield RepositoryService.findAll(RepositoryService.entities.Certification, options);
+    const certificates = yield RepositoryService.findAll(RepositoryService.QueryService.entities.Certification, options);
     return certificates;
 });

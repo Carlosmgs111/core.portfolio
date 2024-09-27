@@ -1,5 +1,5 @@
 import { Strategy } from "passport-local";
-import { authSignin } from "../../../../modules/shared/auth/use_cases";
+import { authSignin } from "../../../../modules/shared/auth/domain/use_cases";
 
 export const LocalStrategy = new Strategy(
   {

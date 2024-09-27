@@ -1,6 +1,6 @@
 module.exports = {
-  config: "./dist/services/DatabaseServices/SequelizeAdapter/infrastructure/config.js",
-  "models-path": "./dist/services/DatabaseServices/SequelizeAdapter/infrastructure/models/",
-  "migrations-path": "./dist/services/DatabaseServices/SequelizeAdapter/infrastructure/migrations/",
-  "seeders-path": "./dist/services/DatabaseServices/SequelizeAdapter/infrastructure/seeders/",
+  config: "./dist/config/admin/infrastructure/config.js",
+  "models-path": "./dist/config/admin/infrastructure/models/",
+  "migrations-path": "./dist/config/admin/infrastructure/migrations/",
+  "seeders-path": "./dist/config/admin//infrastructure/seeders/",
 };

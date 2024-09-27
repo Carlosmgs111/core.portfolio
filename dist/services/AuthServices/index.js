@@ -18,7 +18,7 @@ const expires_1 = require("./expires");
 const config_1 = __importDefault(require("../../config"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const jose_1 = require("jose");
-const use_cases_1 = require("../../modules/shared/auth/use_cases");
+const use_cases_1 = require("../../modules/shared/auth/domain/use_cases");
 const createToken = (params, expiresIn = expires_1.expiresIn1Month, secret = config_1.default.jwtAccessSecret) => {
     return jsonwebtoken_1.default.sign(Object.assign({ sub: params._id || params.sub }, params), secret || "", {
         expiresIn,
@@ -56,7 +56,7 @@ const verifyToken2 = (token_1, ...args_1) => __awaiter(void 0, [token_1, ...args
     }
 });
 exports.verifyToken2 = verifyToken2;
-const extractFromToken = (token_2, ...args_2) => __awaiter(void 0, [token_2, ...args_2], void 0, function* (token, signature = config_1.default.jwtAccessSecret) {
+const extractFromToken = (token_1, ...args_1) => __awaiter(void 0, [token_1, ...args_1], void 0, function* (token, signature = config_1.default.jwtAccessSecret) {
     return (yield (0, jose_1.jwtVerify)(token, new TextEncoder().encode(signature))).payload;
 });
 exports.extractFromToken = extractFromToken;

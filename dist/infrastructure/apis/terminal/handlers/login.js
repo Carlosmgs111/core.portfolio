@@ -13,7 +13,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.loginHandler = void 0;
-const use_cases_1 = require("../../../../modules/shared/auth/use_cases");
+const use_cases_1 = require("../../../../modules/shared/auth/domain/use_cases");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
 const jose_1 = require("jose");

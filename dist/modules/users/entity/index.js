@@ -23,13 +23,13 @@ class User {
         this.createdAt = 0;
         this.updatedAt = 0;
         this.remove = (RepositoryService) => __awaiter(this, void 0, void 0, function* () {
-            return yield RepositoryService.removeOne(RepositoryService.entities.User, {
-                credentials: { uuid: this.uuid },
+            return yield RepositoryService.removeOne(RepositoryService.QueryService.entities.User, {
+                indexation: { uuid: this.uuid },
             });
         });
         this.update = (RepositoryService, data) => __awaiter(this, void 0, void 0, function* () {
             this.updatedAt = new Date().getTime();
-            return yield RepositoryService.updateOne(RepositoryService.entities.User, Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { credentials: { uuid: this.uuid } });
+            return yield RepositoryService.updateOne(RepositoryService.QueryService.entities.User, Object.assign({}, (0, utils_1.getEntityProperties)(Object.assign(Object.assign({}, this), data))), { indexation: { uuid: this.uuid } });
         });
         this.hashPassword = (password) => __awaiter(this, void 0, void 0, function* () {
             const salt = yield bcrypt_1.default.genSalt(10);
@@ -38,7 +38,7 @@ class User {
             return hash;
         });
         this.comparePassword = (password) => __awaiter(this, void 0, void 0, function* () { return yield bcrypt_1.default.compare(password, this.password); });
-        this.changePassword = (RepositoryService_1, _a) => __awaiter(this, [RepositoryService_1, _a], void 0, function* (RepositoryService, { newPassword, oldPassword }) {
+        this.changePassword = (RepositoryService_1, _b) => __awaiter(this, [RepositoryService_1, _b], void 0, function* (RepositoryService, { newPassword, oldPassword }) {
             if (yield this.comparePassword(oldPassword)) {
                 yield this.hashPassword(newPassword);
                 yield this.update(RepositoryService, {});
@@ -59,7 +59,7 @@ class User {
 exports.User = User;
 _a = User;
 User.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, function* () {
-    const exist = yield RepositoryService.findOne(RepositoryService.entities.User, {
+    const exist = yield RepositoryService.findOne(RepositoryService.QueryService.entities.User, {
         credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(data), ["email", "username"], false),
     });
     if (exist)
@@ -67,7 +67,7 @@ User.create = (RepositoryService, data) => __awaiter(void 0, void 0, void 0, fun
     const uuid = (0, uuid_1.v4)();
     const account = new _a(Object.assign(Object.assign({}, data), { uuid, privilege: "admin", createdAt: new Date().getTime(), updatedAt: new Date().getTime() }));
     yield account.hashPassword(account.password);
-    const result = yield RepositoryService.createOne(RepositoryService.entities.User, Object.assign({}, (0, utils_1.getEntityProperties)(account)));
+    const result = yield RepositoryService.createOne(RepositoryService.QueryService.entities.User, Object.assign({}, (0, utils_1.getEntityProperties)(account)));
     return account;
 });
 User.load = (RepositoryService_1, ...args_1) => __awaiter(void 0, [RepositoryService_1, ...args_1], void 0, function* (RepositoryService, options = {}) {
@@ -77,25 +77,25 @@ User.load = (RepositoryService_1, ...args_1) => __awaiter(void 0, [RepositorySer
     const account = new _a(user);
     return account;
 });
-User.authLoad = (RepositoryService_2, ...args_2) => __awaiter(void 0, [RepositoryService_2, ...args_2], void 0, function* (RepositoryService, options = {}) {
+User.authLoad = (RepositoryService_1, ...args_1) => __awaiter(void 0, [RepositoryService_1, ...args_1], void 0, function* (RepositoryService, options = {}) {
     const user = yield _a.find(RepositoryService, options);
     if (!user)
         throw boom_1.default.notFound("Incorrect credentials!");
-    if (!(yield _a.comparePassword(options.credentials.password, user.password)))
+    if (!(yield _a.comparePassword(options.indexation.password, user.password)))
         throw boom_1.default.conflict("Password doesn't match!");
     const account = new _a(user);
     return account;
 });
-User.find = (RepositoryService_3, ...args_3) => __awaiter(void 0, [RepositoryService_3, ...args_3], void 0, function* (RepositoryService, options = {}) {
-    const { credentials } = options;
-    if (!credentials)
+User.find = (RepositoryService_1, ...args_1) => __awaiter(void 0, [RepositoryService_1, ...args_1], void 0, function* (RepositoryService, options = {}) {
+    const { indexation } = options;
+    if (!indexation)
         throw boom_1.default.conflict("Indexation must be provided!");
-    const account = yield RepositoryService.findOne(RepositoryService.entities.User, Object.assign(Object.assign({}, options), { credentials: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(credentials), ["email", "username", "uuid"], false) }));
+    const account = yield RepositoryService.findOne(RepositoryService.QueryService.entities.User, Object.assign(Object.assign({}, options), { indexation: (0, utils_1.filterAttrs)((0, utils_1.getEntityProperties)(indexation), ["email", "username", "uuid"], false) }));
     if (!account)
         throw boom_1.default.conflict("Account doesn´t exist!");
     return account;
 });
-User.findAll = (DatabaseService_1, ...args_4) => __awaiter(void 0, [DatabaseService_1, ...args_4], void 0, function* (DatabaseService, options = {}) {
+User.findAll = (DatabaseService_1, ...args_1) => __awaiter(void 0, [DatabaseService_1, ...args_1], void 0, function* (DatabaseService, options = {}) {
     return (yield DatabaseService.findAll(DatabaseService.entities.User, options)).map((user) => (0, utils_1.filterAttrs)(user, ["privilege", "password"]));
 });
 User.certifications = (RepositoryService, credentials) => __awaiter(void 0, void 0, void 0, function* () {

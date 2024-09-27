@@ -12,18 +12,18 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.genRandomId = exports.listToMap = exports.mapToList = exports.fromEnumToArray = exports.createEnumFromArray = exports.capitalize = exports.normalize = exports.labelCases = exports.execFunc = exports.Enumfy = exports.setEnums = exports.getActionTypes = exports.settingName = exports.UnMapfy = exports.Mapfy = exports.getEntityProperties = exports.filterAttrs = exports.decryptData = exports.encryptData = void 0;
+exports.genRandomId = exports.listToMap = exports.mapToList = exports.fromEnumToArray = exports.createEnumFromArray = exports.capitalize = exports.normalize = exports.labelCases = exports.execFunc = exports.Enumfy = exports.setEnums = exports.getActionTypes = exports.settingName = exports.UnMapfy = exports.Mapfy = exports.getEntityProperties = exports.filterAttrs = void 0;
+exports.encryptData = encryptData;
+exports.decryptData = decryptData;
 const pluralize_1 = require("pluralize");
 const crypto_js_1 = __importDefault(require("crypto-js"));
 function encryptData(data, key) {
     return crypto_js_1.default.RC4.encrypt(data, key).toString();
 }
-exports.encryptData = encryptData;
 function decryptData(data, key) {
     const bytes = crypto_js_1.default.RC4.decrypt(data, key);
     return bytes.toString(crypto_js_1.default.enc.Utf8);
 }
-exports.decryptData = decryptData;
 const filterAttrs = (obj, toRemove, oclusive = true) => {
     const newObj = {};
     for (var attr in obj) {
