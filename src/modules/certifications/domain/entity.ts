@@ -1,7 +1,5 @@
-import { v4 as uuidv4 } from "uuid";
-import { getEntityProperties, filterAttrs } from "../../../utils";
-
-export class Certification {
+import { ICertification } from "./interface";
+export class Certification implements ICertification {
   uuid: string = "";
   title: string = "";
   emitedAt: number = 0; // * timestamp
@@ -25,7 +23,7 @@ export class Certification {
     RepositoryService: any,
     data: any
   ): Promise<Certification> => {
-    const uuid = data.uuid || uuidv4();
+    const { uuid } = data;
     const { emitedBy } = data;
     const certification = await RepositoryService.createOne(
       RepositoryService.QueryService.entities.Certification,
@@ -49,9 +47,7 @@ export class Certification {
   static createMany = async (RepositoryService: any, data: any) => {
     const certificationsCreated = await RepositoryService.createMany(
       RepositoryService.QueryService.entities.Certification,
-      data.map(
-        (c: any) => new Certification({ ...c, uuid: c.uuid || uuidv4() })
-      )
+      data
     );
 
     for (let certification in certificationsCreated) {
@@ -120,7 +116,6 @@ export class Certification {
       indexation: { uuid: this.uuid },
       related: [["Institution", { attributes: ["name"], as: "Institution" }]],
     });
-    data.emitedBy, emitedBy;
     if (data.emitedBy && emitedBy !== data.emitedBy) {
       "Must change relationship".bgYellow;
       await RepositoryService.unsetOneRelationship2One(
@@ -136,13 +131,9 @@ export class Certification {
         ]
       );
     }
-
     return await RepositoryService.updateOne(
       RepositoryService.QueryService.entities.Certification,
-      {
-        updatedAt: this.updatedAt,
-        ...filterAttrs(data, ["uuid", "user", "token"]),
-      },
+      { updatedAt: this.updatedAt, ...data },
       { indexation: { uuid: this.uuid } }
     );
   };
@@ -161,11 +152,7 @@ export class Certification {
     return await RepositoryService.removeOne(
       RepositoryService.QueryService.entities.Certification,
       {
-        indexation: filterAttrs(
-          getEntityProperties(this),
-          ["title", "uuid"],
-          false
-        ),
+        indexation: { uuid: this.uuid },
       }
     );
   };

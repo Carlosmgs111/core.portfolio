@@ -1,14 +1,14 @@
-import { RepositoryService } from "../../../../config/dependencies";
 import { Certification } from "../../domain/entity";
 import { User } from "../../../users/domain/entity";
-import boom from "@hapi/boom";
+import { RepositoryService } from "../../../../config/dependencies";
 import { verifyToken2 } from "../../../../services/AuthServices";
+import boom from "@hapi/boom";
 import { formatCertifications } from "../../DTOs";
 
-export const getCertifications = async (data: any) => {
+export const getCertifications = async (data: any, RS: any) => {
   const { username, user, size, page } = data;
   return formatCertifications(
-    await Certification.findAll(RepositoryService, {
+    await Certification.findAll(RS, {
       related: [
         [
           "User",
@@ -64,12 +64,12 @@ export const addManyCertifications = async (data: any) => {
 };
 
 export const updateCertification = async (data: any) => {
-  const { user, uuid } = data;
+  const { user, uuid, token, ...rest } = data;
   const result = await (
     await Certification.load(RepositoryService, {
       indexation: { uuid },
     })
-  ).update(RepositoryService, data);
+  ).update(RepositoryService, rest);
   return { updated: result };
 };
 

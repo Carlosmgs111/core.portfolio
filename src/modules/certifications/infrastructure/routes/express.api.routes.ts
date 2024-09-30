@@ -1,4 +1,7 @@
-import { RESTAPIService } from "../../../../config/dependencies";
+import {
+  RESTAPIService,
+  RepositoryService,
+} from "../../../../config/dependencies";
 import {
   addNewCertification,
   addManyCertifications,
@@ -27,7 +30,10 @@ export default RESTAPIService.addPath("/certifications", (router: any) => {
       // validatorHandler(createCertifications, "body"),
       controllerAdapter(addManyCertifications)
     )
-    .get("/", controllerAdapter(getCertifications))
+    .get(
+      "/",
+      controllerAdapter((ctx: any) => getCertifications(ctx, RepositoryService))
+    )
     .get("/hello", (req: any, res: any) => {
       ("hello");
       res.send("Hello");

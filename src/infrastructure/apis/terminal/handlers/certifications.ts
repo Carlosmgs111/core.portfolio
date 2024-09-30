@@ -23,7 +23,7 @@ const listByUsernameHandler = async (state: any) => {
         choices,
       },
     ]);
-    await getCertifications({ username: option });
+    await getCertifications({ username: option }, null);
     if (option === exit) running = false;
   }
 };
@@ -33,7 +33,7 @@ const listCertificationsHandler = async (state: any) => {
   const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
   const choices = [all, owns, byUser, test];
   const options = {
-    [all]: async () => console.log(await getCertifications({})),
+    [all]: async () => console.log(await getCertifications({}, null)),
     [owns]: async () => await getOwnCertifications({ token }),
     [byUser]: async () => await listByUsernameHandler(state),
     [test]: () => {},

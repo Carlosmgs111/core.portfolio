@@ -1,5 +1,5 @@
 import config from "../../../config";
-import mongoose, { Model } from "mongoose";
+import mongoose, { Model, model, Schema } from "mongoose";
 import { labelCases, Mapfy, setEnums } from "../../../utils";
 import { filterAttrs } from "../../../utils";
 import { DatabaseAdapterType } from "../IDatabaseAdapter";

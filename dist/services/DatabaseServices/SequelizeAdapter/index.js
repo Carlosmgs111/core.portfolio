@@ -51,7 +51,10 @@ class SequelizeAdapter {
         this.removeOne = (entity, options) => __awaiter(this, void 0, void 0, function* () {
             if (!options.indexation)
                 throw boom_1.default.forbidden("Must supply indexation for find and delete entity!");
-            return yield this.models[entity].destroy(this.adapter(options));
+            const result = yield this.models[entity].destroy(this.adapter(options));
+            if (result)
+                return { deleted: true };
+            return { delete: false };
         });
         this.updateOne = (entity_1, Entity_1, ...args_1) => __awaiter(this, [entity_1, Entity_1, ...args_1], void 0, function* (entity, Entity, options = {}) {
             const updated = yield this.models[entity].update(Entity, this.adapter(options));

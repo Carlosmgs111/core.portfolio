@@ -1,22 +1,13 @@
 import { RepositoryService } from "../../../../config/dependencies";
+import { ICertification } from "../../domain/interface";
 import { model, Schema, Document } from "mongoose";
 
-interface ICertification extends Document {
-  uuid: string;
-  title: string;
+interface IMongooseCertification extends ICertification {
   Users: Array<any>;
   Institution: string;
-  // institutionUUID: string;
-  emitedDate: number;
-  image: string;
-  url: string;
-  tags: String[];
-  emitedAt: number;
-  createdAt: number;
-  updatedAt: number;
 }
-
-const certificationSchema = new Schema<ICertification>({
+const modelName = "Certification";
+const schema = new Schema<IMongooseCertification>({
   uuid: {
     type: String,
     required: true,
@@ -54,9 +45,6 @@ const certificationSchema = new Schema<ICertification>({
   },
 });
 
-const Certification = model<ICertification>(
-  "Certification",
-  certificationSchema
-);
+const Model = model<IMongooseCertification>(modelName, schema);
 
-RepositoryService.QueryService.addModel("Certification", Certification);
+RepositoryService.QueryService.addModel(modelName, Model);

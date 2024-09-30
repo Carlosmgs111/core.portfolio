@@ -127,7 +127,9 @@ export default class SequelizeAdapter {
       throw boom.forbidden(
         "Must supply indexation for find and delete entity!"
       );
-    return await this.models[entity].destroy(this.adapter(options));
+    const result = await this.models[entity].destroy(this.adapter(options));
+    if (result) return { deleted: true };
+    return { delete: false };
   };
 
   updateOne = async (entity: any, Entity: any, options: any = {}) => {
