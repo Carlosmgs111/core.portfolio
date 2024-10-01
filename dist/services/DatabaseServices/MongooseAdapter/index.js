@@ -1,4 +1,27 @@
 "use strict";
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    var desc = Object.getOwnPropertyDescriptor(m, k);
+    if (!desc || ("get" in desc ? !m.__esModule : desc.writable || desc.configurable)) {
+      desc = { enumerable: true, get: function() { return m[k]; } };
+    }
+    Object.defineProperty(o, k2, desc);
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -24,7 +47,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const config_1 = __importDefault(require("../../../config"));
-const mongoose_1 = __importDefault(require("mongoose"));
+const mongoose_1 = __importStar(require("mongoose"));
 const utils_1 = require("../../../utils");
 const utils_2 = require("../../../utils");
 const boom_1 = __importDefault(require("@hapi/boom"));
@@ -221,7 +244,7 @@ class MongooseAdapter /* implements DatabaseAdapterType  */ {
         this.getPopulateMap = (related, include_id = false) => {
             const populates = [];
             related.forEach((r) => {
-                const [label, { as = null, attributes = [], credentials = {} } = {}] = r;
+                const [label, { as = null, attributes = [], indexation = {} } = {}] = r;
                 let select = `${include_id ? "_id " : "-_id "}`; // ? for exclude _id attribute
                 attributes.forEach((a) => (select += `${a} `));
                 populates.push({
@@ -247,8 +270,10 @@ class MongooseAdapter /* implements DatabaseAdapterType  */ {
                 });
             });
         });
-        this.addModel = (modelName, model) => {
-            this.models[modelName] = model;
+        this.addModel = (modelName, schema) => {
+            const modelSchema = new mongoose_1.Schema(schema);
+            const Model = (0, mongoose_1.model)(modelName, modelSchema);
+            this.models[modelName] = Model;
             this.entities = (0, utils_1.setEnums)(Object.entries(this.models).flatMap((m) => m[0]));
         };
         let test = true;

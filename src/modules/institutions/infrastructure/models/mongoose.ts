@@ -1,19 +1,6 @@
 import { RepositoryService } from "../../../../config/dependencies";
-import { model, Schema, Document } from "mongoose";
 
-export interface IInstitution extends Document {
-  uuid: string;
-  name: string;
-  businessName: string;
-  Users: Array<any>;
-  Certifications: Array<any>;
-  descriptions: Array<string>;
-  urls: Array<string>;
-  createdAt: number;
-  updatedAt: number;
-}
-
-const institutionSchema: any = new Schema<IInstitution>({
+RepositoryService.QueryService.addModel("Institution", {
   uuid: {
     type: String,
     required: true,
@@ -58,10 +45,3 @@ const institutionSchema: any = new Schema<IInstitution>({
     required: true,
   },
 });
-
-export const Institution = model<IInstitution>(
-  "Institution",
-  institutionSchema
-);
-
-RepositoryService.QueryService.addModel("Institution", Institution);

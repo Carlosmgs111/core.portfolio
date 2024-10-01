@@ -1,5 +1,5 @@
 import config from "../../../config";
-import mongoose, { Model, model, Schema } from "mongoose";
+import mongoose, { Model, model, Schema, Document } from "mongoose";
 import { labelCases, Mapfy, setEnums } from "../../../utils";
 import { filterAttrs } from "../../../utils";
 import { DatabaseAdapterType } from "../IDatabaseAdapter";
@@ -298,7 +298,7 @@ export default class MongooseAdapter /* implements DatabaseAdapterType  */ {
   private getPopulateMap = (related: any, include_id: boolean = false) => {
     const populates: any = [];
     related.forEach((r: any) => {
-      const [label, { as = null, attributes = [], credentials = {} } = {}] = r;
+      const [label, { as = null, attributes = [], indexation = {} } = {}] = r;
       let select = `${include_id ? "_id " : "-_id "}`; // ? for exclude _id attribute
       attributes.forEach((a: any) => (select += `${a} `));
       populates.push({
@@ -324,8 +324,10 @@ export default class MongooseAdapter /* implements DatabaseAdapterType  */ {
       });
     });
   };
-  addModel = (modelName: string, model: typeof Model) => {
-    this.models[modelName] = model;
+  addModel = (modelName: string, schema: Object) => {
+    const modelSchema = new Schema<Document>(schema);
+    const Model = model<Schema>(modelName, modelSchema);
+    this.models[modelName] = Model;
     this.entities = setEnums(
       Object.entries(this.models).flatMap((m: any) => m[0])
     );

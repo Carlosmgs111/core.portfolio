@@ -1,13 +1,6 @@
 import { RepositoryService } from "../../../../config/dependencies";
-import { ICertification } from "../../domain/interface";
-import { model, Schema, Document } from "mongoose";
 
-interface IMongooseCertification extends ICertification {
-  Users: Array<any>;
-  Institution: string;
-}
-const modelName = "Certification";
-const schema = new Schema<IMongooseCertification>({
+RepositoryService.QueryService.addModel("Certification", {
   uuid: {
     type: String,
     required: true,
@@ -44,7 +37,3 @@ const schema = new Schema<IMongooseCertification>({
     required: true,
   },
 });
-
-const Model = model<IMongooseCertification>(modelName, schema);
-
-RepositoryService.QueryService.addModel(modelName, Model);

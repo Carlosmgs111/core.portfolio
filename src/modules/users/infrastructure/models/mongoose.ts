@@ -1,23 +1,6 @@
 import { RepositoryService } from "../../../../config/dependencies";
-import { model, Schema, Document } from "mongoose";
 
-export interface IUser extends Document {
-  uuid: string;
-  username: string;
-  email: string;
-  password: string;
-  Certifications: Array<any>;
-  Institutions: Array<any>;
-  Projects: Array<any>;
-  Skills: Array<any>;
-  Notes: Array<any>;
-  privilege: string;
-  avatar: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-const userSchema: any = new Schema<IUser>({
+RepositoryService.QueryService.addModel("User", {
   uuid: {
     type: String,
     required: true,
@@ -59,6 +42,3 @@ const userSchema: any = new Schema<IUser>({
     required: true,
   },
 });
-
-export const User = model<IUser>("User", userSchema);
-RepositoryService.QueryService.addModel("User", User);

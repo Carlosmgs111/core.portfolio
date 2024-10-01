@@ -1,24 +1,6 @@
 import { RepositoryService } from "../../../../config/dependencies";
-import { model, Schema, Document } from "mongoose";
 
-export interface IProject extends Document {
-  uuid: string;
-  User: string;
-  name: string;
-  descriptions: [string];
-  images: [string];
-  tags: [string];
-  stack: [string];
-  state: string;
-  kind: [string];
-  Users: [string];
-  uri: string;
-  version: string;
-  createdAt: number;
-  updatedAt: number;
-}
-
-const projectSchema: any = new Schema<IProject>({
+RepositoryService.QueryService.addModel("Project", {
   uuid: {
     type: String,
     required: true,
@@ -74,7 +56,3 @@ const projectSchema: any = new Schema<IProject>({
     required: true,
   },
 });
-
-export const Project = model<IProject>("Project", projectSchema);
-
-RepositoryService.QueryService.addModel("Project", Project);
