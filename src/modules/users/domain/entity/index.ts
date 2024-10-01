@@ -1,7 +1,3 @@
-import { v4 as uuidv4 } from "uuid";
-import bcrypt from "bcrypt";
-import { getEntityProperties, filterAttrs } from "../../../../utils";
-import boom from "@hapi/boom";
 
 export class User {
   uuid: string;
@@ -20,8 +16,6 @@ export class User {
     password,
     privilege,
     avatar,
-    createdAt,
-    updatedAt,
   }: {
     uuid: string;
     username: string;
@@ -29,8 +23,6 @@ export class User {
     password: string;
     privilege: string;
     avatar: string;
-    createdAt: number;
-    updatedAt: number;
   }) {
     this.uuid = uuid;
     this.username = username;
@@ -38,81 +30,9 @@ export class User {
     this.password = password;
     this.privilege = privilege;
     this.avatar = avatar;
-    this.createdAt = createdAt;
-    this.updatedAt = updatedAt;
+    this.createdAt = new Date().getTime();
+    this.updatedAt = this.createdAt;
   }
-
-  static create = async (RepositoryService: any, data: any): Promise<any> => {
-    const exist = await RepositoryService.findOne(
-      RepositoryService.QueryService.entities.User,
-      {
-        credentials: filterAttrs(
-          getEntityProperties(data),
-          ["email", "username"],
-          false
-        ),
-      }
-    );
-    if (exist) throw boom.conflict("Entity exist yet!");
-    const uuid = uuidv4();
-    const account = new User({
-      ...data,
-      uuid,
-      privilege: "admin",
-      createdAt: new Date().getTime(),
-      updatedAt: new Date().getTime(),
-    });
-    await account.hashPassword(account.password);
-    const result = await RepositoryService.createOne(
-      RepositoryService.QueryService.entities.User,
-      {
-        ...getEntityProperties(account),
-      }
-    );
-    return account;
-  };
-
-  static load = async (RepositoryService: any, options: any = {}) => {
-    const user = await User.find(RepositoryService, options);
-    if (!user) throw boom.notFound("Incorrect credentials!");
-    const account = new User(user);
-    return account;
-  };
-
-  static authLoad = async (RepositoryService: any, options: any = {}) => {
-    const user = await User.find(RepositoryService, options);
-    if (!user) throw boom.notFound("Incorrect credentials!");
-    if (
-      !(await User.comparePassword(options.indexation.password, user.password))
-    )
-      throw boom.conflict("Password doesn't match!");
-    const account = new User(user);
-    return account;
-  };
-
-  static find = async (RepositoryService: any, options: any = {}) => {
-    const { indexation } = options;
-    if (!indexation) throw boom.conflict("Indexation must be provided!");
-    const account: any = await RepositoryService.findOne(
-      RepositoryService.QueryService.entities.User,
-      {
-        ...options,
-        indexation: filterAttrs(
-          getEntityProperties(indexation),
-          ["email", "username", "uuid"],
-          false
-        ),
-      }
-    );
-    if (!account) throw boom.conflict("Account doesn´t exist!");
-    return account;
-  };
-
-  static findAll = async (DatabaseService: any, options: any = {}) =>
-    (await DatabaseService.findAll(DatabaseService.entities.User, options)).map(
-      (user: any) => filterAttrs(user, ["privilege", "password"])
-    );
-
   remove = async (RepositoryService: any) => {
     return await RepositoryService.removeOne(
       RepositoryService.QueryService.entities.User,
@@ -121,34 +41,93 @@ export class User {
       }
     );
   };
-
   update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
-    return await RepositoryService.updateOne(
+    const result = await RepositoryService.updateOne(
       RepositoryService.QueryService.entities.User,
-      {
-        ...getEntityProperties({ ...this, ...data }),
-      },
+      data,
       { indexation: { uuid: this.uuid } }
     );
+    return result;
   };
-
+  changePassword = async (
+    RepositoryService: any,
+    { newPassword, oldPassword }: any,
+    bcrypt: any
+  ) => {
+    if (await this.comparePassword(oldPassword, bcrypt)) {
+      await this.hashPassword(newPassword, bcrypt);
+      await this.update(RepositoryService, {});
+      return true;
+    }
+    return false;
+  };
+  hashPassword = async (password: string | undefined, bcrypt: any) => {
+    const salt = await bcrypt.genSalt(10);
+    const hash = await bcrypt.hash(password || this.password, salt);
+    this.password = hash;
+    return hash;
+  };
+  comparePassword = async (password: string, bcrypt: any): Promise<Boolean> =>
+    await bcrypt.compare(password, this.password);
+  static create = async (
+    RepositoryService: any,
+    data: any,
+    bcrypt: any
+  ): Promise<any> => {
+    const account = new User({
+      ...data,
+      privilege: "admin",
+    });
+    await account.hashPassword(account.password, bcrypt);
+    const result = await RepositoryService.createOne(
+      RepositoryService.QueryService.entities.User,
+      account
+    );
+    return result;
+  };
+  static load = async (RepositoryService: any, options: any = {}) => {
+    const user = await User.find(RepositoryService, options);
+    const account = new User(user);
+    return account;
+  };
+  static authLoad = async (
+    RepositoryService: any,
+    options: any = {},
+    bcrypt: any
+  ) => {
+    const user = await User.find(RepositoryService, options);
+    if (
+      !(await User.comparePassword(
+        options.indexation.password,
+        user.password,
+        bcrypt
+      ))
+    )
+      throw new Error("Password doesn't match!");
+    const account = new User(user);
+    return account;
+  };
+  static find = async (RepositoryService: any, options: any = {}) => {
+    const { indexation } = options;
+    const account: any = await RepositoryService.findOne(
+      RepositoryService.QueryService.entities.User,
+      {
+        ...options,
+        indexation,
+      }
+    );
+    return account;
+  };
+  static findAll = async (DatabaseService: any, options: any = {}) =>
+    await DatabaseService.findAll(DatabaseService.entities.User, options);
   static certifications = async (RepositoryService: any, credentials: any) => {
     const user: any = await User.find(RepositoryService, {
       credentials,
       related: [["Certification"]],
     });
-    return user.Certifications.map((c: any) =>
-      filterAttrs(
-        {
-          ...(c.dataValues ? c.dataValues : c._doc),
-          grantedTo: user.username,
-        },
-        ["Users_Certifications"]
-      )
-    );
+    return user.Certifications;
   };
-
   static projects = async (RepositoryService: any, credentials: any) => {
     const user = await User.find(RepositoryService, {
       credentials,
@@ -156,29 +135,9 @@ export class User {
     });
     return user.Projects;
   };
-
-  hashPassword = async (password: string | undefined) => {
-    const salt = await bcrypt.genSalt(10);
-    const hash = await bcrypt.hash(password || this.password, salt);
-    this.password = hash;
-    return hash;
-  };
-
-  comparePassword = async (password: string): Promise<Boolean> =>
-    await bcrypt.compare(password, this.password);
-
-  static comparePassword = async (loaded: string, provided: string) =>
-    await bcrypt.compare(loaded, provided);
-
-  changePassword = async (
-    RepositoryService: any,
-    { newPassword, oldPassword }: any
-  ) => {
-    if (await this.comparePassword(oldPassword)) {
-      await this.hashPassword(newPassword);
-      await this.update(RepositoryService, {});
-      return true;
-    }
-    return false;
-  };
+  static comparePassword = async (
+    loaded: string,
+    provided: string,
+    bcrypt: any
+  ) => await bcrypt.compare(loaded, provided);
 }

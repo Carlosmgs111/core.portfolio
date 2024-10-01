@@ -1,17 +1,18 @@
+import bcrypt from "bcrypt"
 import { User } from "../domain/entity";
 import { RepositoryService, MailerService } from "../../../config/dependencies";
 import config from "../../../config";
 
 export const registerUser = async (data: any) => {
-  return await User.create(RepositoryService, data);
+  return await User.create(RepositoryService, data, bcrypt);
 };
 export const removeUser = async (data: any) => {
-  const user = await User.authLoad(RepositoryService, data);
+  const user = await User.authLoad(RepositoryService, data, bcrypt);
   return await user.remove(RepositoryService);
 };
 export const updateUser = async (data: any) => {
   return await (
-    await User.authLoad(RepositoryService, data)
+    await User.authLoad(RepositoryService, data, bcrypt)
   ).update(RepositoryService, data);
 };
 export const sayHello = (data: any) => data.user.sayHello(data.name);
@@ -46,7 +47,7 @@ export const createOne = async (label: string, args: any) => {
 /*  */
 export const update = async (credentials: any, data: any) => {
   RepositoryService;
-  const account = await User.authLoad(RepositoryService, credentials);
+  const account = await User.authLoad(RepositoryService, credentials, bcrypt);
   if (account) await account.update(RepositoryService, data);
 };
 

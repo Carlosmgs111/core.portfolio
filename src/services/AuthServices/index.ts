@@ -3,7 +3,7 @@ import { expiresIn1Month, expiresIn2H, expiresIn15Minutes } from "./expires";
 import config from "../../config";
 import jwt from "jsonwebtoken";
 import { jwtVerify } from "jose";
-import { signin } from "../../modules/shared/auth/domain/use_cases";
+import { signin } from "../../modules/shared/auth/application/use_cases";
 
 export const createToken = (
   params: any,

@@ -1,5 +1,5 @@
 import { RESTAPIService } from "../../../../../config/dependencies";
-import { signup, login, logout, checkIfIsOnline } from "../../domain/use_cases";
+import { signup, login, logout, checkIfIsOnline } from "../../application/use_cases";
 import {
   createUserSchema,
   getUserSchema,

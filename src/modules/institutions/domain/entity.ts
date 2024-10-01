@@ -1,5 +1,5 @@
-import { v4 as uuidv4 } from "uuid";
-type IInstitution = {
+
+type Props = {
   uuid: string;
   name: string;
   businessName: string;
@@ -16,7 +16,7 @@ export class Institution {
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({ uuid, name, businessName, descriptions, urls }: IInstitution) {
+  constructor({ uuid, name, businessName, descriptions, urls }: Props) {
     this.uuid = uuid;
     this.name = name;
     this.businessName = businessName;
@@ -29,8 +29,8 @@ export class Institution {
     RepositoryService: any,
     data: any
   ): Promise<Institution> => {
-    const uuid = uuidv4();
-    const institution = new Institution({ ...data, uuid });
+    const { uuid } = data;
+    const institution = new Institution(data);
     await RepositoryService.createOne(
       RepositoryService.QueryService.entities.Institution,
       institution

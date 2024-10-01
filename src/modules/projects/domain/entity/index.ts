@@ -1,7 +1,5 @@
-import { filterAttrs } from "../../../../utils";
-import { v4 as uuidv4 } from "uuid";
 
-type IProject = {
+type Props = {
   uuid: string;
   User: string;
   name: string;
@@ -42,7 +40,7 @@ export class Project {
     kind,
     uri,
     version,
-  }: IProject) {
+  }: Props) {
     this.uuid = uuid;
     this.User = User;
     this.name = name;
@@ -58,10 +56,10 @@ export class Project {
     this.updatedAt = new Date().getTime();
   }
   static new = async (RepositoryService: any, data: any): Promise<string> => {
-    const uuid = uuidv4();
+    const { uuid } = data;
     const newProject = await RepositoryService.createOne(
       RepositoryService.QueryService.entities.Project,
-      new Project({ ...data, uuid })
+      new Project(data)
     );
     await RepositoryService.setOneRelationship2One(
       { project: { uuid: newProject.uuid } },
@@ -73,7 +71,7 @@ export class Project {
   static createMany = async (RepositoryService: any, data: any) => {
     const projectsCreated = await RepositoryService.createMany(
       RepositoryService.QueryService.entities.Project,
-      data.map((c: any) => new Project({ ...c, uuid: c.uuid || uuidv4() }))
+      data
     );
     for (let projectIdx in data) {
       await RepositoryService.setOneRelationshipManyToMany([
@@ -132,11 +130,12 @@ export class Project {
 
   update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
+    console.log(data)
     return await RepositoryService.updateOne(
       RepositoryService.QueryService.entities.Project,
       {
         updatedAt: this.updatedAt,
-        ...filterAttrs(data, ["uuid", "user", "token"]),
+        data,
       },
       { indexation: { uuid: this.uuid } }
     );

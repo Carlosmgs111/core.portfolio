@@ -11,7 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.LocalStrategy = void 0;
 const passport_local_1 = require("passport-local");
-const use_cases_1 = require("../../../../modules/shared/auth/domain/use_cases");
+const use_cases_1 = require("../../../../modules/shared/auth/application/use_cases");
 exports.LocalStrategy = new passport_local_1.Strategy({
     usernameField: "email",
     passwordField: "password",
