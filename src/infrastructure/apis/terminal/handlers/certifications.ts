@@ -6,6 +6,7 @@ import {
 import { getAllUsername } from "../../../../modules/users/application/use_cases";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
+import { RepositoryService } from "../../../../config/dependencies";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 
@@ -34,7 +35,8 @@ const listCertificationsHandler = async (state: any) => {
   const choices = [all, owns, byUser, test];
   const options = {
     [all]: async () => console.log(await getCertifications({}, null)),
-    [owns]: async () => await getOwnCertifications({ token }),
+    [owns]: async () =>
+      await getOwnCertifications(RepositoryService, { token }),
     [byUser]: async () => await listByUsernameHandler(state),
     [test]: () => {},
   };

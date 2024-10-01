@@ -10,11 +10,11 @@ import config from "../../../../config";
 import boom from "@hapi/boom";
 
 export const login = async (indexation: any) => {
-  console.log({ indexation });
+  const { user, token, ...rest } = indexation;
   const account = await User.authLoad(
     RepositoryService,
     {
-      indexation,
+      indexation: rest,
       // related: [["Institution"], ["Certification"]],
     },
     bcrypt

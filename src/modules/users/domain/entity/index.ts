@@ -1,4 +1,3 @@
-
 export class User {
   uuid: string;
   username: string;
@@ -93,27 +92,22 @@ export class User {
   };
   static authLoad = async (
     RepositoryService: any,
-    options: any = {},
+    { indexation }: any = {},
     bcrypt: any
   ) => {
-    const user = await User.find(RepositoryService, options);
-    if (
-      !(await User.comparePassword(
-        options.indexation.password,
-        user.password,
-        bcrypt
-      ))
-    )
+    const { password, ...rest } = indexation;
+    const user = await User.find(RepositoryService, { indexation: rest });
+    if (!(await User.comparePassword(password, user.password, bcrypt)))
       throw new Error("Password doesn't match!");
     const account = new User(user);
     return account;
   };
   static find = async (RepositoryService: any, options: any = {}) => {
     const { indexation } = options;
+    console.log({ indexation });
     const account: any = await RepositoryService.findOne(
       RepositoryService.QueryService.entities.User,
       {
-        ...options,
         indexation,
       }
     );
@@ -121,16 +115,19 @@ export class User {
   };
   static findAll = async (DatabaseService: any, options: any = {}) =>
     await DatabaseService.findAll(DatabaseService.entities.User, options);
-  static certifications = async (RepositoryService: any, credentials: any) => {
+  static certifications = async (
+    RepositoryService: any,
+    { indexation }: any
+  ) => {
     const user: any = await User.find(RepositoryService, {
-      credentials,
+      indexation,
       related: [["Certification"]],
     });
     return user.Certifications;
   };
-  static projects = async (RepositoryService: any, credentials: any) => {
+  static projects = async (RepositoryService: any, { indexation }: any) => {
     const user = await User.find(RepositoryService, {
-      credentials,
+      indexation,
       related: [["Project"]],
     });
     return user.Projects;

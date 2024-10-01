@@ -1,14 +1,13 @@
 import { Certification } from "../../domain/entity";
 import { User } from "../../../users/domain/entity";
-import { RepositoryService } from "../../../../config/dependencies";
-import { verifyToken2 } from "../../../../services/AuthServices";
+import { formatCertifications } from "../DTOs";
 import boom from "@hapi/boom";
-import { formatCertifications } from "../../DTOs";
+("🚯");
 
-export const getCertifications = async (data: any, RS: any) => {
+export const getCertifications = async (RepositoryService: any, data: any) => {
   const { username, user, size, page } = data;
   return formatCertifications(
-    await Certification.findAll(RS, {
+    await Certification.findAll(RepositoryService, {
       related: [
         [
           "User",
@@ -28,19 +27,27 @@ export const getCertifications = async (data: any, RS: any) => {
   );
 };
 
-export const getOwnCertifications = async (data: any) => {
-  const { token } = data;
-  const { user } = await verifyToken2(token);
+export const getOwnCertifications = async (
+  RepositoryService: any,
+  data: any
+) => {
+  const { token, user } = data;
   return await User.certifications(RepositoryService, {
-    username: user.username,
+    indexation: { username: user.username },
   });
 };
 
-export const getCertificationByUUID = async (data: any) => {
+export const getCertificationByUUID = async (
+  RepositoryService: any,
+  data: any
+) => {
   return await Certification.find(RepositoryService, data);
 };
 
-export const addNewCertification = async (data: any) => {
+export const addNewCertification = async (
+  RepositoryService: any,
+  data: any
+) => {
   if (!data.user) throw boom.conflict("A user must be instanced!");
   const certification = await Certification.createOne(RepositoryService, data);
   return {
@@ -50,7 +57,10 @@ export const addNewCertification = async (data: any) => {
   };
 };
 
-export const addManyCertifications = async (data: any) => {
+export const addManyCertifications = async (
+  RepositoryService: any,
+  data: any
+) => {
   const { certifications, user, emitedBy } = data;
   const newCertifications = await Certification.createMany(
     RepositoryService,
@@ -63,7 +73,10 @@ export const addManyCertifications = async (data: any) => {
   }));
 };
 
-export const updateCertification = async (data: any) => {
+export const updateCertification = async (
+  RepositoryService: any,
+  data: any
+) => {
   const { user, uuid, token, ...rest } = data;
   const result = await (
     await Certification.load(RepositoryService, {
@@ -73,7 +86,10 @@ export const updateCertification = async (data: any) => {
   return { updated: result };
 };
 
-export const removeCertification = async (data: any) => {
+export const removeCertification = async (
+  RepositoryService: any,
+  data: any
+) => {
   await (
     await Certification.load(RepositoryService, {
       indexation: { uuid: data.uuid },

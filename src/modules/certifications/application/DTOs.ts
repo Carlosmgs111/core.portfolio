@@ -1,5 +1,5 @@
-import { filterAttrs } from "../../utils";
-import { Certification } from "./domain/entity";
+import { filterAttrs } from "../../../utils";
+import { Certification } from "../domain/entity";
 
 export const formatCertifications = (certifications: [Certification]) =>
   certifications

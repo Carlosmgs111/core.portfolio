@@ -16,14 +16,15 @@ exports.userHandler = void 0;
 const use_cases_1 = require("../../../../modules/certifications/application/use_cases");
 const inquirer_1 = __importDefault(require("inquirer"));
 const utils_1 = require("../../../../utils");
+const dependencies_1 = require("../../../../config/dependencies");
 inquirer_1.default.registerPrompt("loop", require("inquirer-loop")(inquirer_1.default));
 const listCertificationsHandler = (state) => __awaiter(void 0, void 0, void 0, function* () {
     const { token } = state;
     const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
     const choices = [all, owns, byUser, test];
     const options = {
-        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return (yield (0, use_cases_1.getCertifications)({}, null)); }),
-        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return (yield (0, use_cases_1.getOwnCertifications)({ token })); }),
+        [all]: () => __awaiter(void 0, void 0, void 0, function* () { return yield (0, use_cases_1.getCertifications)({}, null); }),
+        [owns]: () => __awaiter(void 0, void 0, void 0, function* () { return yield (0, use_cases_1.getOwnCertifications)(dependencies_1.RepositoryService, { token }); }),
         [test]: () => { },
     };
     const { option } = yield inquirer_1.default.prompt([
