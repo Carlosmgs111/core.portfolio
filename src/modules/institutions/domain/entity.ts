@@ -32,7 +32,7 @@ export class Institution {
     const { uuid } = data;
     const institution = new Institution(data);
     await RepositoryService.createOne(
-      RepositoryService.QueryService.entities.Institution,
+      RepositoryService.entities.Institution,
       institution
     );
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
@@ -51,7 +51,7 @@ export class Institution {
 
   static find = async (RepositoryService: any, indexation: any) => {
     const institution: any = await RepositoryService.findOne(
-      RepositoryService.QueryService.entities.Institution,
+      RepositoryService.entities.Institution,
       {
         indexation,
       }
@@ -61,7 +61,7 @@ export class Institution {
 
   static findAll = async (RepositoryService: any, options: any) => {
     const institutions: any = await RepositoryService.findAll(
-      RepositoryService.QueryService.entities.Institution,
+      RepositoryService.entities.Institution,
       options
     );
     return institutions;
@@ -76,7 +76,7 @@ export class Institution {
       [{ user: options.userUUID }, { institution: this.uuid }],
     ]);
     return await RepositoryService.removeOne(
-      RepositoryService.QueryService.entities.Institution,
+      RepositoryService.entities.Institution,
       {
         indexation: { uuid: this.uuid },
       }
@@ -86,7 +86,7 @@ export class Institution {
   update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
     return await RepositoryService.updateOne(
-      RepositoryService.QueryService.entities.Institution,
+      RepositoryService.entities.Institution,
       { ...this, ...data },
       { indexation: { uuid: this.uuid } }
     );

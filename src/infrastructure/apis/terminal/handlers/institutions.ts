@@ -5,6 +5,7 @@ import {
 } from "../../../../modules/institutions/application/use_cases";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
+import { RepositoryService } from "../../../../config/dependencies";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 
@@ -19,7 +20,7 @@ export const institutionsHandler = async (state: any) => {
   ];
   const choices = [add, update, removeOne, read, exit];
   const options = {
-    [read]: async () => (await getAllInstitutions({})),
+    [read]: async () => await getAllInstitutions(RepositoryService, {}),
     [exit]: async () => (running = false),
   };
   while (running) {

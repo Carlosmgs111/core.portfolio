@@ -3,6 +3,7 @@ import config from "../../../config";
 import { SignJWT, jwtVerify, decodeJwt } from "jose";
 import { load } from "../../../modules/users/application/use_cases";
 import url from "url";
+import { RepositoryService } from "../../../config/dependencies";
 
 interface UserJwtPayload {
   uuid: string; // The user Id
@@ -63,7 +64,7 @@ export function checkRoles(...roles: string[]) {
 export async function authMiddleware(req: any, res: any, next: Function) {
   try {
     const payload = await verifyToken(req);
-    req.user = await load({
+    req.user = await load(RepositoryService, {
       uuid: payload.uuid,
       username: payload.username,
     });

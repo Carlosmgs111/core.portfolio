@@ -1,16 +1,23 @@
-import { DatabaseService, Adapters } from "../DatabaseServices";
+import { RepositoryService, Adapters } from "../RepositoryService";
 import { TaskMessageService } from "../../config/dependencies";
 
+
 export class CQRSService {
-  QueryService = DatabaseService(Adapters.MongooseAdapter);
-  CommandService = DatabaseService(Adapters.SequelizeAdapter);
+  QueryService = RepositoryService(Adapters.MongooseAdapter);
+  CommandService = RepositoryService(Adapters.SequelizeAdapter);
   lastSync: number = new Date().getTime();
+  entities: any = {};
 
   private TaskMessageService: any = TaskMessageService;
 
   constructor() {
     (async () => {
       await this.initSetup();
+      console.log(this.CommandService.entities);
+      this.entities = {
+        ...this.CommandService.entities,
+        ...this.QueryService.entities,
+      };
     })();
   }
 
@@ -136,7 +143,6 @@ export class CQRSService {
     return await this.CommandService.setManyRelationshipsManyToMany(refsBatch);
   };
   checkOneRelationshipN2N = this.CommandService.checkOneRelationshipN2N;
-  entities = { ...this.CommandService.entities, ...this.QueryService.entities };
   checkStatus = () => {
     if (!TaskMessageService.isOnline)
       throw new Error("Task Message Service offline!");

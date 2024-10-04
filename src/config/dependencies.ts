@@ -1,19 +1,19 @@
 import config from "./index";
-import { Adapters } from "../services/DatabaseServices";
+import { Adapters } from "../services/RepositoryService";
 import {
-  DatabaseService as DBS,
+  RepositoryService as RS,
   AuthServices as AS,
   TaskMessageService as TMS,
   CQRSService,
   SocketService as SS,
   MailerService as MS,
   ChatService as CS,
-  RESTAPIService as RS,
+  RESTAPIService as RA,
 } from "../services";
 
 const repositoryServices = {
   CQRS: () => new CQRSService(),
-  DBS: () => DBS(Adapters.SequelizeAdapter),
+  DBS: () => RS(Adapters.SequelizeAdapter),
 };
 
 export const TaskMessageService = new TMS();
@@ -22,7 +22,7 @@ export const AuthServices = new AS();
 export const SocketService: any = new SS();
 export const MailerService = new MS();
 export const ChatService = new CS();
-export const RESTAPIService = new RS();
+export const RESTAPIService = new RA();
 
 const imageService = config.imageServiceUrlDev || config.imageServiceUrlProd;
 

@@ -1,36 +1,37 @@
 import { Institution } from "../domain/entity";
-import { RepositoryService } from "../../../config/dependencies";
-import { verifyToken2 } from "../../../services/AuthServices";
-import boom from "@hapi/boom";
 
-export const addNewInstitution = async (data: any) => {
-  if (!data.user) throw boom.conflict("A user must be instanced!");
+export const addNewInstitution = async (RepositoryService: any, data: any) => {
   const institution = await Institution.create(RepositoryService, data);
   return institution;
 };
 
-export const getAllInstitutions = async (data: any) => {
+export const getAllInstitutions = async (RepositoryService: any, data: any) => {
   return await Institution.findAll(RepositoryService, data);
 };
 
-export const updateInstitution = async (data: any) => {
+export const updateInstitution = async (RepositoryService: any, data: any) => {
   return await (
     await Institution.load(RepositoryService, { uuid: data.uuid })
   ).update(RepositoryService, data);
 };
 
-export const linkToIntitution = async (data: any) => {
-  const { institutionUUID, token } = data;
-  const { user } = await verifyToken2(token);
+export const linkToIntitution = async (
+  RepositoryService: any,
+  data: any
+) => {
+  const { institutionUUID, token, user } = data;
   RepositoryService.setOneRelationshipManyToMany([
     { label: "user", uuid: user.uuid },
     { label: "institution", uuid: institutionUUID },
   ]);
 };
 
-export const unlinkFromInstitution = async (data: any) => {};
+export const unlinkFromInstitution = async (
+  RepositoryService: any,
+  data: any
+) => {};
 
-export const deleteInstitution = async (data: any) => {
+export const deleteInstitution = async (RepositoryService: any, data: any) => {
   await (
     await Institution.load(RepositoryService, { uuid: data.uuid })
   ).remove(RepositoryService, { userUUID: data.user.uuid });

@@ -1,7 +1,5 @@
-
-type Props = {
+type ProjectProps = {
   uuid: string;
-  User: string;
   name: string;
   descriptions: string[];
   images: string[];
@@ -15,7 +13,6 @@ type Props = {
 
 export class Project {
   uuid: string;
-  User: string;
   name: string;
   descriptions: string[];
   images: string[];
@@ -30,7 +27,6 @@ export class Project {
 
   constructor({
     uuid,
-    User,
     name,
     descriptions,
     images,
@@ -40,9 +36,8 @@ export class Project {
     kind,
     uri,
     version,
-  }: Props) {
+  }: ProjectProps) {
     this.uuid = uuid;
-    this.User = User;
     this.name = name;
     this.descriptions = descriptions;
     this.images = images;
@@ -58,7 +53,7 @@ export class Project {
   static new = async (RepositoryService: any, data: any): Promise<string> => {
     const { uuid } = data;
     const newProject = await RepositoryService.createOne(
-      RepositoryService.QueryService.entities.Project,
+      RepositoryService.entities.Project,
       new Project(data)
     );
     await RepositoryService.setOneRelationship2One(
@@ -70,7 +65,7 @@ export class Project {
 
   static createMany = async (RepositoryService: any, data: any) => {
     const projectsCreated = await RepositoryService.createMany(
-      RepositoryService.QueryService.entities.Project,
+      RepositoryService.entities.Project,
       data
     );
     for (let projectIdx in data) {
@@ -98,7 +93,7 @@ export class Project {
 
   static find = async (RepositoryService: any, options: any) => {
     const account: any = await RepositoryService.findOne(
-      RepositoryService.QueryService.entities.Project,
+      RepositoryService.entities.Project,
       options
     );
     return account;
@@ -106,7 +101,7 @@ export class Project {
 
   static findAll = async (RepositoryService: any, options: any = {}) => {
     const projects: any = await RepositoryService.findAll(
-      RepositoryService.QueryService.entities.Project,
+      RepositoryService.entities.Project,
       options
     );
     return projects;
@@ -121,7 +116,7 @@ export class Project {
 
     if (!removed) return;
     return await RepositoryService.removeOne(
-      RepositoryService.QueryService.entities.Project,
+      RepositoryService.entities.Project,
       {
         indexation: { uuid },
       }
@@ -130,9 +125,9 @@ export class Project {
 
   update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
-    console.log(data)
+    console.log(data);
     return await RepositoryService.updateOne(
-      RepositoryService.QueryService.entities.Project,
+      RepositoryService.entities.Project,
       {
         updatedAt: this.updatedAt,
         data,

@@ -1,3 +1,12 @@
+type UserProps = {
+  uuid: string;
+  username: string;
+  email: string;
+  password: string;
+  privilege: string;
+  avatar: string;
+};
+
 export class User {
   uuid: string;
   username: string;
@@ -15,14 +24,7 @@ export class User {
     password,
     privilege,
     avatar,
-  }: {
-    uuid: string;
-    username: string;
-    email: string;
-    password: string;
-    privilege: string;
-    avatar: string;
-  }) {
+  }: UserProps) {
     this.uuid = uuid;
     this.username = username;
     this.email = !email ? `${uuid}@${username}.email` : email;
@@ -33,17 +35,14 @@ export class User {
     this.updatedAt = this.createdAt;
   }
   remove = async (RepositoryService: any) => {
-    return await RepositoryService.removeOne(
-      RepositoryService.QueryService.entities.User,
-      {
-        indexation: { uuid: this.uuid },
-      }
-    );
+    return await RepositoryService.removeOne(RepositoryService.User, {
+      indexation: { uuid: this.uuid },
+    });
   };
   update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
     const result = await RepositoryService.updateOne(
-      RepositoryService.QueryService.entities.User,
+      RepositoryService.User,
       data,
       { indexation: { uuid: this.uuid } }
     );
@@ -80,7 +79,7 @@ export class User {
     });
     await account.hashPassword(account.password, bcrypt);
     const result = await RepositoryService.createOne(
-      RepositoryService.QueryService.entities.User,
+      RepositoryService.User,
       account
     );
     return result;
@@ -106,7 +105,7 @@ export class User {
     const { indexation } = options;
     console.log({ indexation });
     const account: any = await RepositoryService.findOne(
-      RepositoryService.QueryService.entities.User,
+      RepositoryService.User,
       {
         indexation,
       }

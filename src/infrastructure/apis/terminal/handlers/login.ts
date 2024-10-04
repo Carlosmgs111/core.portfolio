@@ -6,6 +6,12 @@ import {
 import inquirer from "inquirer";
 import { Enumfy, execFunc } from "../../../../utils";
 import { decodeJwt } from "jose";
+import {
+  AuthServices,
+  ChatService,
+  RepositoryService,
+} from "../../../../config/dependencies";
+import bcrypt from "bcrypt";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 
@@ -29,13 +35,11 @@ const signupHandler = async (state: any) => {
 
   if (rePassword !== password) throw new Error("Password doesn't match");
 
-  (
-    await signup({
-      email,
-      password,
-      username,
-    })
-  );
+  await signup(RepositoryService, AuthServices, bcrypt, {
+    email,
+    password,
+    username,
+  });
 };
 
 const signinHandler = async (state: any) => {
@@ -49,10 +53,16 @@ const signinHandler = async (state: any) => {
     },
   ]);
 
-  const { token } = await login({
-    email,
-    password,
-  });
+  const { token } = await login(
+    RepositoryService,
+    ChatService,
+    AuthServices,
+    bcrypt,
+    {
+      email,
+      password,
+    }
+  );
 
   const { exp, username }: any = decodeJwt(token);
 
@@ -76,7 +86,7 @@ const unsubscribeHandler = async () => {
       message: "Are you sure you want to signout?",
     },
   ]);
-  if (confirm) await unsubscribe({ email, password });
+  if (confirm) await unsubscribe(RepositoryService, bcrypt, { email, password });
 };
 
 export const loginHandler = async (state: any) => {

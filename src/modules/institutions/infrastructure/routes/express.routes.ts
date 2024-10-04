@@ -1,4 +1,7 @@
-import { RESTAPIService } from "../../../../config/dependencies";
+import {
+  RESTAPIService,
+  RepositoryService,
+} from "../../../../config/dependencies";
 import {
   addNewInstitution,
   getAllInstitutions,
@@ -10,8 +13,11 @@ const { controllerAdapter } = RESTAPIService;
 
 export default RESTAPIService.addPath("/institutions", (router: any) => {
   router
-    .post("/", controllerAdapter(addNewInstitution))
-    .get("/", controllerAdapter(getAllInstitutions))
-    .patch("/", controllerAdapter(updateInstitution))
-    .delete("/", controllerAdapter(deleteInstitution));
+    .post(
+      "/",
+      controllerAdapter((ctx: any) => addNewInstitution(RepositoryService, ctx))
+    )
+    .get("/", controllerAdapter((ctx: any) => getAllInstitutions(RepositoryService, ctx)))
+    .patch("/", controllerAdapter((ctx: any) => updateInstitution(RepositoryService, ctx)))
+    .delete("/", controllerAdapter((ctx: any) => deleteInstitution(RepositoryService, ctx)));
 });

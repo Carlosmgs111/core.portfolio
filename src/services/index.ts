@@ -1,4 +1,4 @@
-import { DatabaseService } from "./DatabaseServices";
+import { RepositoryService } from "./RepositoryService";
 import { AuthServices } from "./AuthServices";
 import { CQRSService } from "./CQRSService";
 import { TaskMessageService } from "./TaskMessageService";
@@ -8,7 +8,7 @@ import { ChatService } from "./ChatService";
 import { RESTAPIService } from "./RESTAPIService";
 
 export {
-  DatabaseService,
+  RepositoryService,
   AuthServices,
   CQRSService,
   TaskMessageService,

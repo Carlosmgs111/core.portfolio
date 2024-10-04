@@ -4,6 +4,8 @@ import config from "../../config";
 import jwt from "jsonwebtoken";
 import { jwtVerify } from "jose";
 import { signin } from "../../modules/shared/auth/application/use_cases";
+import { RepositoryService } from "../../config/dependencies";
+import bcrypt from "bcrypt";
 
 export const createToken = (
   params: any,
@@ -41,7 +43,7 @@ export const verifyToken2 = async (
     const { uuid, email, username } = verified.payload;
     console.log({ uuid, email, username });
     return {
-      user: await signin({
+      user: await signin(RepositoryService, bcrypt, {
         uuid,
         email,
         username,
@@ -77,5 +79,6 @@ export class AuthServices {
       apiKey: config.apiKey,
     };
   };
+  
   extractFromToken = extractFromToken;
 }

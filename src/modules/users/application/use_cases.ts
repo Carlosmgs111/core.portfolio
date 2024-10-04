@@ -1,57 +1,84 @@
-import bcrypt from "bcrypt"
 import { User } from "../domain/entity";
-import { RepositoryService, MailerService } from "../../../config/dependencies";
 import config from "../../../config";
 
-export const registerUser = async (data: any) => {
+export const registerUser = async (
+  RepositoryService: any,
+  bcrypt: any,
+  data: any
+) => {
   return await User.create(RepositoryService, data, bcrypt);
 };
-export const removeUser = async (data: any) => {
+export const removeUser = async (
+  RepositoryService: any,
+  bcrypt: any,
+  data: any
+) => {
   const user = await User.authLoad(RepositoryService, data, bcrypt);
   return await user.remove(RepositoryService);
 };
-export const updateUser = async (data: any) => {
+export const updateUser = async (
+  RepositoryService: any,
+  bcrypt: any,
+  data: any
+) => {
   return await (
     await User.authLoad(RepositoryService, data, bcrypt)
   ).update(RepositoryService, data);
 };
 export const sayHello = (data: any) => data.user.sayHello(data.name);
 
-export const getAllUsername = async () =>
+export const getAllUsername = async (RepositoryService: any) =>
   (await User.findAll(RepositoryService)).map((u: any) => u.username);
 
-export const load = async (credentials: any) =>
-  await User.load(RepositoryService, { indexation: credentials });
+export const load = async (RepositoryService: any, indexation: any) =>
+  await User.load(RepositoryService, { indexation });
 
-export const changeUsername = async (credentials: any) => {
+export const changeUsername = async (
+  RepositoryService: any,
+  credentials: any
+) => {
   const { user, newUsername } = credentials;
-  ({ user, newUsername });
   await user.update(RepositoryService, { username: newUsername });
 };
 
-export const updateAvatar = async (credentials: any) => {
+export const updateAvatar = async (
+  RepositoryService: any,
+  credentials: any
+) => {
   const { newAvatar, user } = credentials;
   await user.update(RepositoryService, { avatar: newAvatar });
 };
 /*  */
 const entities: any = { User };
 
-export const findBy = async (label: string, findBy: any) => {
+export const findBy = async (RepositoryService: any, findBy: any) => {
   // ({ findBy });
-  return await entities[label].find(RepositoryService, { credentials: findBy });
+  return await User.find(RepositoryService, { indexation: findBy });
 };
 
-export const createOne = async (label: string, args: any) => {
+export const createOne = async (
+  RepositoryService: any,
+  label: string,
+  args: any
+) => {
   return await entities[label].new(RepositoryService, args);
 };
 /*  */
-export const update = async (credentials: any, data: any) => {
+export const update = async (
+  RepositoryService: any,
+  bcrypt: any,
+  credentials: any,
+  data: any
+) => {
   RepositoryService;
   const account = await User.authLoad(RepositoryService, credentials, bcrypt);
   if (account) await account.update(RepositoryService, data);
 };
 
-export const resetPassword = async (credentials: any) => {
+export const resetPassword = async (
+  RepositoryService: any,
+  credentials: any
+) => {
   const { oldPassword, newPassword, username, token, user } = credentials;
   const result = await user.changePassword(RepositoryService, {
     newPassword,
@@ -60,7 +87,7 @@ export const resetPassword = async (credentials: any) => {
   return { changed: result };
 };
 
-export const contactByEmail = async (ctx: any) => {
+export const contactByEmail = async (MailerService: any, ctx: any) => {
   const { who, email, message } = ctx;
   const composedHtmlMessage = `
   <h3>${who}</h3>

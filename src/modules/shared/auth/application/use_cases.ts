@@ -1,16 +1,15 @@
 import { User } from "../../../users/domain/entity";
-import bcrypt from "bcrypt";
-import {
-  RepositoryService,
-  AuthServices,
-  ChatService,
-} from "../../../../config/dependencies";
-import { filterAttrs, decryptData } from "../../../../utils";
 import config from "../../../../config";
-import boom from "@hapi/boom";
+import { filterAttrs, decryptData } from "../../../../utils";
 
-export const login = async (indexation: any) => {
-  const { user, token, ...rest } = indexation;
+export const login = async (
+  RepositoryService: any,
+  ChatService: any,
+  AuthServices: any,
+  bcrypt: any,
+  indexation: any
+) => {
+  const { token, ...rest } = indexation;
   const account = await User.authLoad(
     RepositoryService,
     {
@@ -32,12 +31,17 @@ export const login = async (indexation: any) => {
   return response;
 };
 
-export const logout = async (credentials?: any) => {
+export const logout = async (ChatService: any, credentials?: any) => {
   ChatService.setIsOnline(false);
   return { message: "Logout succesfully!" };
 };
 
-export const signup = async (credentials: any) => {
+export const signup = async (
+  RepositoryService: any,
+  AuthServices: any,
+  bcrypt: any,
+  credentials: any
+) => {
   const { username, email, password } = credentials;
   if (email) {
     console.log(
@@ -56,15 +60,22 @@ export const signup = async (credentials: any) => {
   return response;
 };
 
-export const checkIfIsOnline = () => ChatService.getIsOnline();
+export const checkIfIsOnline = (ChatService: any) => ChatService.getIsOnline();
 
-export const unsubscribe = async (credentials: any) => {
-  RepositoryService;
+export const unsubscribe = async (
+  RepositoryService: any,
+  bcrypt: any,
+  credentials: any
+) => {
   const account = await User.authLoad(RepositoryService, credentials, bcrypt);
   if (account) await account.remove(RepositoryService);
 };
 
-export const authSignin = async (credentials: any) => {
+export const authSignin = async (
+  RepositoryService: any,
+  bcrypt: any,
+  credentials: any
+) => {
   RepositoryService;
   const entity = await User.authLoad(RepositoryService, credentials, bcrypt);
   if (!entity) throw new Error("The account doesn't exist!");
@@ -73,19 +84,28 @@ export const authSignin = async (credentials: any) => {
   return entity;
 };
 
-export const signin = async (data: any) => {
+export const signin = async (
+  RepositoryService: any,
+  bcrypt: any,
+  data: any
+) => {
   if (
     !(
       new Map(Object.entries(data)).has("email") ||
       new Map(Object.entries(data)).has("username")
     )
   )
-    throw boom.badRequest("Require username or email!");
+    throw new Error("Require username or email!");
   return await User.authLoad(RepositoryService, { credentials: data }, bcrypt);
 };
 
 // ! possible vulnerability detected!
-export const resetAuthPassword = async (credentials: any) => {
+export const resetAuthPassword = async (
+  RepositoryService: any,
+  AuthServices: any,
+  bcrypt: any,
+  credentials: any
+) => {
   RepositoryService;
   const { token } = credentials;
   ({ token });

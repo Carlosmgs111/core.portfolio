@@ -12,7 +12,7 @@ inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 
 const listByUsernameHandler = async (state: any) => {
   let running = true;
-  const usernames = await getAllUsername();
+  const usernames = await getAllUsername(RepositoryService);
   const exit = "Salir";
   const choices = [...usernames, exit];
   while (running) {
@@ -34,7 +34,7 @@ const listCertificationsHandler = async (state: any) => {
   const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
   const choices = [all, owns, byUser, test];
   const options = {
-    [all]: async () => console.log(await getCertifications({}, null)),
+    [all]: async () => console.log(await getCertifications(RepositoryService, {})),
     [owns]: async () =>
       await getOwnCertifications(RepositoryService, { token }),
     [byUser]: async () => await listByUsernameHandler(state),

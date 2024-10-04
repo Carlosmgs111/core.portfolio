@@ -1,73 +1,55 @@
-import { RepositoryService, AuthServices } from "../../../config/dependencies";
 import { Project } from "../domain/entity";
 import { User } from "../../users/domain/entity";
-import { filterAttrs, fromEnumToArray } from "../../../utils";
-import { kind, state, stack } from "../../../enums";
-
-const formatProjects = (projects: [Project]) =>
-  projects.map((project: any) =>
-    filterAttrs(
-      {
-        ...project,
-        buildedBy: project.Users.map(({ username }: any) => username),
-      },
-      ["Users"]
-    )
-  );
-
-export const getProjects = async (data: any) => {
-  const { username, user, size, page } = data;
-  ({ user });
+import { serializeProjects } from "./DTOs";
+export const getProjects = async (RepositoryService: any, data: any) => {
+  const { size, page } = data;
   const projects = await Project.findAll(RepositoryService, {
     related: [["User", { attributes: ["username"] }]],
     size,
     page,
   });
-  const formatedProjects = formatProjects(projects);
   return {
-    projects: formatedProjects,
-    kind: fromEnumToArray(kind),
-    state: fromEnumToArray(state),
-    stack: fromEnumToArray(stack),
+    projects: serializeProjects(projects),
   };
 };
 
-export const getOwnProjects = async (data: any) => {
-  ({ data });
-  const { token } = data;
-  const { user } = await AuthServices.verifyKey(token);
+export const getOwnProjects = async (RepositoryService: any, data: any) => {
+  const { token, user } = data;
   return await User.projects(RepositoryService, user);
 };
 
-export const addProject = async (data: any) =>
+export const addProject = async (RepositoryService: any, data: any) =>
   await Project.new(RepositoryService, data);
 
-export const addManyProject = async (data: any) => {
+export const addManyProject = async (RepositoryService: any, data: any) => {
   const { projects, user } = data;
   const newProjects: any = await Project.createMany(
     RepositoryService,
     projects.map((c: any) => ({ ...c, user }))
   );
-  return formatProjects(newProjects);
+  return serializeProjects(newProjects);
 };
 
-export const deleteProject = async (data: any) => {
+export const deleteProject = async (RepositoryService: any, data: any) => {
   await (
     await Project.load(RepositoryService, { indexation: { uuid: data.uuid } })
   ).remove(RepositoryService, { userUUID: data.user.uuid });
   return { message: "Project deleted", uuid: data.uuid };
 };
 
-export const updateProject = async (data: any) => {
-  const { user, uuid } = data;
+export const updateProject = async (RepositoryService: any, data: any) => {
+  const { user, uuid, token, ...rest } = data;
   const result = await (
     await Project.load(RepositoryService, { indexation: { uuid } })
-  ).update(RepositoryService, filterAttrs(data, ["uuid", "user", "token"]));
+  ).update(RepositoryService, rest);
   return { updated: result };
 };
 
 // ! used only when the structure of a entity change and is necessary a reorder o modification of some attributes without change integrity of entity data
-export const migrateDescriptionToDescriptions = async (data: any) => {
+export const migrateDescriptionToDescriptions = async (
+  RepositoryService: any,
+  data: any
+) => {
   const projects = await RepositoryService.findAll(
     RepositoryService.entities.Project
   );
@@ -75,12 +57,16 @@ export const migrateDescriptionToDescriptions = async (data: any) => {
   for (var project of projects) {
     const descriptions = project.description.split(". ");
     ({ descriptions });
-    await updateProject({ uuid: project.uuid, descriptions, user: data.user });
+    await updateProject(RepositoryService, {
+      uuid: project.uuid,
+      descriptions,
+      user: data.user,
+    });
   }
   return "OK!";
 };
 
-export const migrateRelationship2OneToN2N = async () => {
+export const migrateRelationship2OneToN2N = async (RepositoryService: any) => {
   const projects = await Project.findAll(RepositoryService, {
     related: [
       [

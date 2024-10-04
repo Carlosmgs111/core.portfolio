@@ -1,10 +1,10 @@
 import "../../../../testing/mocks/DatabaseService.stub";
 import { RepositoryService } from "../../../../config/dependencies";
-import { User } from "../../../users/entity";
-import { Certification } from "../../entity";
-import { Institution } from "../../../institutions/entity";
+import { User } from "../../../users/domain/entity";
+import { Certification } from "../../domain/entity";
+import { Institution } from "../../../institutions/domain/entity";
 import { addNewCertification } from ".";
-
+import bcrypt from "bcrypt";
 
 describe("Aggregates of certificates", () => {
   const userCredentials = {
@@ -28,8 +28,8 @@ describe("Aggregates of certificates", () => {
 
   beforeAll(async () => {
     // spyFindOne.mockResolvedValue(userCredentials);
-    user = await User.create(RepositoryService, userCredentials);
-    ({ user });
+    user = await User.create(RepositoryService, userCredentials, bcrypt);
+    console.log("USER", user);
     institution = await Institution.create(RepositoryService, {
       ...institutionData,
       user,
@@ -50,7 +50,10 @@ describe("Aggregates of certificates", () => {
       };
       // ({ fakeCollection });
       // ({RepositoryService})
-      certification = await addNewCertification(certificationData);
+      certification = await addNewCertification(
+        RepositoryService,
+        certificationData
+      );
       ({ certification });
       // expect(certification.Institution).toEqual(institution.uuid);
       expect(certification.createdAt).toBeGreaterThan(0);

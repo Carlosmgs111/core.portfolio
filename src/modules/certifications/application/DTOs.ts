@@ -1,8 +1,8 @@
 import { filterAttrs } from "../../../utils";
-import { Certification } from "../domain/entity";
+import { Certificate } from "../domain/entity";
 
-export const formatCertifications = (certifications: [Certification]) =>
-  certifications
+export const serializeCertificates = (certificates: [Certificate]) =>
+  certificates
     .map((certification: any) =>
       filterAttrs(
         {

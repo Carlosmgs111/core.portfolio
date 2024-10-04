@@ -1,4 +1,8 @@
-import { RESTAPIService } from "../../../../../config/dependencies";
+import {
+  RESTAPIService,
+  RepositoryService,
+} from "../../../../../config/dependencies";
+import bcrypt from "bcrypt";
 import passwordRoutes from "./password.routes";
 import {
   registerUser,
@@ -10,36 +14,48 @@ import {
   getAllUsername,
   contactByEmail,
 } from "../../../application/use_cases";
-import {
-  createUserSchema,
-  getUserSchema,
-  updateUserSchema,
-} from "../../../../../infrastructure/schemas/user.schema";
-// import { validatorHandler } from "../../../../infrastructure/apis/express/middlewares/validator.handler";
 
 const { controllerAdapter } = RESTAPIService;
 
 export default RESTAPIService.addPath("", (router: any) => {
   router
-    .get("/sayhello", controllerAdapter(sayHello))
+    .get(
+      "/sayhello",
+      controllerAdapter((ctx: any) => (ctx: any) => sayHello(ctx))
+    )
     .post(
       "/",
-      // validatorHandler(createUserSchema, "body"),
-      controllerAdapter(registerUser)
+      controllerAdapter((ctx: any) =>
+        registerUser(RepositoryService, bcrypt, ctx)
+      )
     )
     .patch(
       "/",
-      // validatorHandler(updateUserSchema, "body"),
-      controllerAdapter(updateUser)
+      controllerAdapter((ctx: any) =>
+        updateUser(RepositoryService, bcrypt, ctx)
+      )
     )
     .delete(
       "/",
-      // validatorHandler(getUserSchema, "body"),
-      controllerAdapter(removeUser)
+      controllerAdapter((ctx: any) =>
+        removeUser(RepositoryService, bcrypt, ctx)
+      )
     )
-    .patch("/username/change", controllerAdapter(changeUsername))
-    .get("/username/all", controllerAdapter(getAllUsername))
-    .patch("/avatar/update", controllerAdapter(updateAvatar))
-    .post("/contact", controllerAdapter(contactByEmail))
+    .patch(
+      "/username/change",
+      controllerAdapter((ctx: any) => changeUsername(RepositoryService, ctx))
+    )
+    .get(
+      "/username/all",
+      controllerAdapter((ctx: any) => getAllUsername(RepositoryService))
+    )
+    .patch(
+      "/avatar/update",
+      controllerAdapter((ctx: any) => updateAvatar(RepositoryService, ctx))
+    )
+    .post(
+      "/contact",
+      controllerAdapter((ctx: any) => contactByEmail(RepositoryService, ctx))
+    )
     .use("/password", passwordRoutes);
 });

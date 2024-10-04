@@ -1,5 +1,15 @@
-import { ICertification } from "./interface";
-export class Certification implements ICertification {
+export type CertificateProps = {
+  uuid: string;
+  title: string;
+  image: string;
+  url: string;
+  tags: string[];
+  emitedAt: number;
+  createdAt: number;
+  updatedAt: number;
+};
+
+export class Certificate {
   uuid: string = "";
   title: string = "";
   emitedAt: number = 0; // * timestamp
@@ -9,7 +19,7 @@ export class Certification implements ICertification {
   createdAt: number = 0;
   updatedAt: number = 0;
 
-  constructor({ uuid, title, emitedAt, image, url, tags }: any) {
+  constructor({ uuid, title, emitedAt, image, url, tags }: CertificateProps) {
     this.uuid = uuid;
     this.title = title;
     this.emitedAt = emitedAt;
@@ -22,12 +32,12 @@ export class Certification implements ICertification {
   static createOne = async (
     RepositoryService: any,
     data: any
-  ): Promise<Certification> => {
+  ): Promise<Certificate> => {
     const { uuid } = data;
     const { emitedBy } = data;
     const certification = await RepositoryService.createOne(
       RepositoryService.QueryService.entities.Certification,
-      new Certification({ ...data, uuid })
+      new Certificate({ ...data, uuid })
     );
 
     await RepositoryService.setOneRelationship2One(
@@ -86,15 +96,15 @@ export class Certification implements ICertification {
   };
 
   static load = async (RepositoryService: any, options: any) => {
-    const certification = await Certification.find(RepositoryService, options);
+    const certification = await Certificate.find(RepositoryService, options);
     if (!certification) throw new Error("Incorrect credentials!");
-    const loadedCertification = new Certification(certification);
+    const loadedCertification = new Certificate(certification);
     return loadedCertification;
   };
 
   static find = async (RepositoryService: any, options: any) => {
     const certificate: any = await RepositoryService.findOne(
-      RepositoryService.QueryService.entities.Certification,
+      RepositoryService.entities.Certification,
       options
     );
     return certificate;
@@ -102,7 +112,7 @@ export class Certification implements ICertification {
 
   static findAll = async (RepositoryService: any, options: any = {}) => {
     const certificates: any = await RepositoryService.findAll(
-      RepositoryService.QueryService.entities.Certification,
+      RepositoryService.entities.Certification,
       options
     );
     return certificates;
@@ -112,7 +122,7 @@ export class Certification implements ICertification {
     this.updatedAt = new Date().getTime();
     const {
       Institution: { name: emitedBy },
-    } = await Certification.find(RepositoryService, {
+    } = await Certificate.find(RepositoryService, {
       indexation: { uuid: this.uuid },
       related: [["Institution", { attributes: ["name"], as: "Institution" }]],
     });

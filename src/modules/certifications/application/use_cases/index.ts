@@ -1,13 +1,11 @@
-import { Certification } from "../../domain/entity";
+import { Certificate } from "../../domain/entity";
 import { User } from "../../../users/domain/entity";
-import { formatCertifications } from "../DTOs";
-import boom from "@hapi/boom";
-("🚯");
+import { serializeCertificates } from "../DTOs";
 
 export const getCertifications = async (RepositoryService: any, data: any) => {
   const { username, user, size, page } = data;
-  return formatCertifications(
-    await Certification.findAll(RepositoryService, {
+  return serializeCertificates(
+    await Certificate.findAll(RepositoryService, {
       related: [
         [
           "User",
@@ -41,15 +39,14 @@ export const getCertificationByUUID = async (
   RepositoryService: any,
   data: any
 ) => {
-  return await Certification.find(RepositoryService, data);
+  return await Certificate.find(RepositoryService, data);
 };
 
 export const addNewCertification = async (
   RepositoryService: any,
   data: any
 ) => {
-  if (!data.user) throw boom.conflict("A user must be instanced!");
-  const certification = await Certification.createOne(RepositoryService, data);
+  const certification = await Certificate.createOne(RepositoryService, data);
   return {
     ...certification,
     emitedBy: data.emitedBy,
@@ -62,7 +59,7 @@ export const addManyCertifications = async (
   data: any
 ) => {
   const { certifications, user, emitedBy } = data;
-  const newCertifications = await Certification.createMany(
+  const newCertifications = await Certificate.createMany(
     RepositoryService,
     certifications.map((c: any) => ({ ...c, user }))
   );
@@ -79,7 +76,7 @@ export const updateCertification = async (
 ) => {
   const { user, uuid, token, ...rest } = data;
   const result = await (
-    await Certification.load(RepositoryService, {
+    await Certificate.load(RepositoryService, {
       indexation: { uuid },
     })
   ).update(RepositoryService, rest);
@@ -91,7 +88,7 @@ export const removeCertification = async (
   data: any
 ) => {
   await (
-    await Certification.load(RepositoryService, {
+    await Certificate.load(RepositoryService, {
       indexation: { uuid: data.uuid },
     })
   ).remove(RepositoryService, { userUUID: data.user.uuid });

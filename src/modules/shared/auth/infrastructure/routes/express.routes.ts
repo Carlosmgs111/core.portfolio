@@ -1,11 +1,16 @@
-import { RESTAPIService } from "../../../../../config/dependencies";
-import { signup, login, logout, checkIfIsOnline } from "../../application/use_cases";
 import {
-  createUserSchema,
-  getUserSchema,
-  updateUserSchema,
-} from "../../../../../infrastructure/schemas/user.schema";
-// import { validatorHandler } from "../../../../infrastructure/apis/express/middlewares/validator.handler";
+  RESTAPIService,
+  RepositoryService,
+  ChatService,
+  AuthServices,
+} from "../../../../../config/dependencies";
+import {
+  signup,
+  login,
+  logout,
+  checkIfIsOnline,
+} from "../../application/use_cases";
+import bcrypt from "bcrypt";
 
 const { controllerAdapter } = RESTAPIService;
 
@@ -13,19 +18,28 @@ export default RESTAPIService.addPath("", (router: any) => {
   router
     .post(
       "/signup",
-      // validatorHandler(createUserSchema, "body"),
-      controllerAdapter(signup)
+      controllerAdapter((ctx: any) =>
+        signup(RepositoryService, AuthServices, bcrypt, ctx)
+      )
     )
     .get(
       "/signin",
-      // validatorHandler(getUserSchema, "body"),
-      controllerAdapter(login)
+      controllerAdapter((ctx: any) =>
+        login(RepositoryService, ChatService, AuthServices, bcrypt, ctx)
+      )
     )
     .post(
       "/signin",
-      // validatorHandler(getUserSchema, "body"),
-      controllerAdapter(login)
+      controllerAdapter((ctx: any) =>
+        login(RepositoryService, ChatService, AuthServices, bcrypt, ctx)
+      )
     )
-    .get("/logout", controllerAdapter(logout))
-    .get("/checkifisonline", controllerAdapter(checkIfIsOnline));
+    .get(
+      "/logout",
+      controllerAdapter((ctx: any) => logout(ChatService, ctx))
+    )
+    .get(
+      "/checkifisonline",
+      controllerAdapter((ctx: any) => checkIfIsOnline(ChatService))
+    );
 });

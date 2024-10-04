@@ -4,6 +4,7 @@ import {
 } from "../../../../modules/projects/application/use_cases";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
+import { RepositoryService } from "../../../../config/dependencies";
 
 inquirer.registerPrompt("loop", require("inquirer-loop")(inquirer));
 
@@ -12,8 +13,8 @@ const listProjectsHandler = async (state: any) => {
   const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
   const choices = [all, owns, byUser, test];
   const options = {
-    [all]: async () => (await getProjects({})),
-    [owns]: async () => (await getOwnProjects({ token })),
+    [all]: async () => await getProjects(RepositoryService, {}),
+    [owns]: async () => await getOwnProjects(RepositoryService, { token }),
     [test]: () => {},
   };
   const { option } = await inquirer.prompt([

@@ -1,4 +1,5 @@
 import { Strategy, ExtractJwt, StrategyOptions } from "passport-jwt";
+import { RepositoryService } from "src/config/dependencies";
 import boom from "@hapi/boom";
 import config from "../../../../config";
 import { findBy } from "../../../../modules/users/application/use_cases";
@@ -12,8 +13,7 @@ export const JwtStrategy = new Strategy(opts, async (payload, done) => {
   const { email,} = payload;
   // ({ JwtStrategyEmail:email });
   try {
-    const entity = await findBy("Account", { email });
-    // ({ entity });
+    const entity = await findBy(RepositoryService, { email });
     if (entity) {
       return done(null, entity);
     }

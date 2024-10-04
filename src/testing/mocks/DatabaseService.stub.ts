@@ -1,3 +1,4 @@
+import { Query } from "mongoose";
 import { setEnums } from "../../utils";
 
 export const fakeDatabase: any = {
@@ -45,7 +46,9 @@ async function removeOne(this: any, entity: any, fake: any) {
   fakeDatabase[entity].splice(index, 1);
   return null;
 }
-
+const entities = setEnums(
+  Object.entries(fakeDatabase).flatMap((m: any) => m[0])
+);
 export const DatabaseServiceStub = {
   createOne,
   findOne,
@@ -58,7 +61,10 @@ export const DatabaseServiceStub = {
   unsetOneRelationshipManyToMany: () => {},
   setOneRelationship2One: () => {},
   unsetOneRelationship2One: () => {},
-  entities: setEnums(Object.entries(fakeDatabase).flatMap((m: any) => m[0])),
+  entities,
+  QueryService: {
+    entities: entities,
+  },
 };
 
 export const spyCreateOne = jest.spyOn(DatabaseServiceStub, "createOne");

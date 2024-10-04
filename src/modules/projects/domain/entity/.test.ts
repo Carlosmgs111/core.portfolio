@@ -1,4 +1,4 @@
-import { Project } from "./";
+import { Project } from ".";
 
 describe("Lifecycle of project entity", () => {
   test("Create a new project", () => {
@@ -8,6 +8,9 @@ describe("Lifecycle of project entity", () => {
       descriptions: ["A test project"],
       images: ["https://images.com"],
       tags: ["lorem", "ipsum"],
+      stack: ["lorem"],
+      state: "draft",
+      kind: ["lorem"],
       uri: "https://test.project.com",
       version: "0.1.2",
     });
