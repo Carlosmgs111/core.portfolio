@@ -1,0 +1,8 @@
+body {
+  padding: 10vw;
+  font-size: 2.4rem;
+  display: flex;
+  gap: 40px;
+  flex-direction: row;
+  flex-wrap: wrap; 
+}

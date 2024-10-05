@@ -3,7 +3,7 @@ import { generateImages, availabelSettings, modifyImages } from "../";
 
 const { controllerAdapter } = RESTAPIService;
 
-export default RESTAPIService.addPath("", (router: any) => {
+export default RESTAPIService.addPath("/images", (router: any) => {
   router
     .post("/generate", controllerAdapter(generateImages))
     .get("/availablesettings", controllerAdapter(availabelSettings))

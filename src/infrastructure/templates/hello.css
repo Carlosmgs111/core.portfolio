@@ -1,4 +1,8 @@
-body{
+body {
   padding: 10vw;
-  font-size:2rem;
+  font-size: 2rem;
+  display: flex;
+  gap: 40px;
+  flex-direction: column;
+  flex-wrap: wrap;
 }

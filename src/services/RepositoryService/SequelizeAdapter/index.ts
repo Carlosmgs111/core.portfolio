@@ -47,33 +47,31 @@ export default class SequelizeAdapter {
       postgresPortTest,
     } = config;
 
-    let ENV = null;
-    if (process.argv.includes("DEV")) ENV = "DEV";
-    if (process.argv.includes("PROD")) ENV = "PROD";
+    const ENV = process.env.mode;
 
     let database: string = (() => {
-      if (ENV === "DEV") return postgresDatabaseDev;
-      if (ENV === "PROD") return postgresDatabaseProd;
+      if (ENV === "development") return postgresDatabaseDev;
+      if (ENV === "production") return postgresDatabaseProd;
       return postgresDatabaseTest;
     })();
     let user: string = (() => {
-      if (ENV === "DEV") return postgresUserDev;
-      if (ENV === "PROD") return postgresUserProd;
+      if (ENV === "development") return postgresUserDev;
+      if (ENV === "production") return postgresUserProd;
       return postgresUserTest;
     })();
     let PASSWORD: string = (() => {
-      if (ENV === "DEV") return encodeURIComponent(postgresPasswordDev);
-      if (ENV === "PROD") return encodeURIComponent(postgresPasswordProd);
+      if (ENV === "development") return encodeURIComponent(postgresPasswordDev);
+      if (ENV === "production") return encodeURIComponent(postgresPasswordProd);
       return encodeURIComponent(postgresPasswordTest);
     })();
     let host: string = (() => {
-      if (ENV === "DEV") return postgresHostDev;
-      if (ENV === "PROD") return postgresHostProd;
+      if (ENV === "development") return postgresHostDev;
+      if (ENV === "production") return postgresHostProd;
       return postgresHostTest;
     })();
     let port: number = (() => {
-      if (ENV === "DEV") return Number(postgresPortDev);
-      if (ENV === "PROD") return Number(postgresPortProd);
+      if (ENV === "development") return Number(postgresPortDev);
+      if (ENV === "production") return Number(postgresPortProd);
       return Number(postgresPortTest);
     })();
     this.connection = new Sequelize(database, user, PASSWORD, {

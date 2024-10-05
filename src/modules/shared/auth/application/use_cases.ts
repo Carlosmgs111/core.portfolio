@@ -9,7 +9,7 @@ export const login = async (
   bcrypt: any,
   indexation: any
 ) => {
-  const { token, ...rest } = indexation;
+  const { token, user, ...rest } = indexation;
   const account = await User.authLoad(
     RepositoryService,
     {

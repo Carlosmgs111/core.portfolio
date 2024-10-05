@@ -36,7 +36,7 @@ export class Certificate {
     const { uuid } = data;
     const { emitedBy } = data;
     const certification = await RepositoryService.createOne(
-      RepositoryService.QueryService.entities.Certification,
+      RepositoryService.entities.Certification,
       new Certificate({ ...data, uuid })
     );
 
@@ -56,7 +56,7 @@ export class Certificate {
 
   static createMany = async (RepositoryService: any, data: any) => {
     const certificationsCreated = await RepositoryService.createMany(
-      RepositoryService.QueryService.entities.Certification,
+      RepositoryService.entities.Certification,
       data
     );
 
@@ -142,7 +142,7 @@ export class Certificate {
       );
     }
     return await RepositoryService.updateOne(
-      RepositoryService.QueryService.entities.Certification,
+      RepositoryService.entities.Certification,
       { updatedAt: this.updatedAt, ...data },
       { indexation: { uuid: this.uuid } }
     );
@@ -160,7 +160,7 @@ export class Certificate {
 
     if (!removed) return;
     return await RepositoryService.removeOne(
-      RepositoryService.QueryService.entities.Certification,
+      RepositoryService.entities.Certification,
       {
         indexation: { uuid: this.uuid },
       }

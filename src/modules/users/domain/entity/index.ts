@@ -42,7 +42,7 @@ export class User {
   update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
     const result = await RepositoryService.updateOne(
-      RepositoryService.User,
+      RepositoryService.entities.User,
       data,
       { indexation: { uuid: this.uuid } }
     );
@@ -95,6 +95,7 @@ export class User {
     bcrypt: any
   ) => {
     const { password, ...rest } = indexation;
+    console.log({ password, ...rest });
     const user = await User.find(RepositoryService, { indexation: rest });
     if (!(await User.comparePassword(password, user.password, bcrypt)))
       throw new Error("Password doesn't match!");
@@ -105,7 +106,7 @@ export class User {
     const { indexation } = options;
     console.log({ indexation });
     const account: any = await RepositoryService.findOne(
-      RepositoryService.User,
+      RepositoryService.entities.User,
       {
         indexation,
       }

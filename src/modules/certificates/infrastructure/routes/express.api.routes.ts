@@ -32,7 +32,6 @@ export default RESTAPIService.addPath("/certifications", (router: any) => {
       controllerAdapter((ctx: any) => getCertifications(RepositoryService, ctx))
     )
     .get("/hello", (req: any, res: any) => {
-      ("hello");
       res.send("Hello");
     })
     .get(

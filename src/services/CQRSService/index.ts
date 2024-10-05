@@ -13,7 +13,7 @@ export class CQRSService {
   constructor() {
     (async () => {
       await this.initSetup();
-      console.log(this.CommandService.entities);
+      // TODO Check before every query if entities are available
       this.entities = {
         ...this.CommandService.entities,
         ...this.QueryService.entities,
@@ -77,6 +77,7 @@ export class CQRSService {
     return await this.CommandService.createMany(entity, entities, options);
   };
   findOne = async (entity: any, options: any = {}) => {
+    console.log({entity, options})
     return await this.QueryService.findOne(entity, options);
   };
   findAll = async (entity: any, options: any = {}) =>

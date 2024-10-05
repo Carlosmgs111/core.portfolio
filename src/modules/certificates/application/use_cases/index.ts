@@ -25,6 +25,7 @@ export const getCertifications = async (RepositoryService: any, data: any) => {
   );
 };
 
+
 export const getOwnCertifications = async (
   RepositoryService: any,
   data: any

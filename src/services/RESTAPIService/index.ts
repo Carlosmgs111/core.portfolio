@@ -3,8 +3,7 @@ import config from "../../config";
 import { SocketService } from "../../config/dependencies";
 import morgan from "morgan";
 import cors from "cors";
-// import routes from "./routes";
-import { join, dirname } from "path";
+import { join } from "path";
 import {
   logErrors,
   errorHandler,
@@ -28,7 +27,7 @@ export class RESTAPIService {
       .use(express.json({ limit: "200mb" }))
       .use(express.urlencoded({ limit: "200mb", extended: false }))
       .set("view engine", "pug")
-      .set("views", join(dirname(dirname(__dirname)), "templates"))
+      .set("views", join(__dirname, "templates"))
       // .use(authRoutes)
       // .use(passport)
       .use(
@@ -42,11 +41,8 @@ export class RESTAPIService {
           [
             [
               "institutions",
-              "skills",
               "projects",
-              "cqrs",
               "users/username/all",
-              "notes",
             ],
           ],
           [

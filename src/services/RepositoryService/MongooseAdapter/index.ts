@@ -2,6 +2,7 @@ import config from "../../../config";
 import mongoose, { Model, model, Schema, Document } from "mongoose";
 import { labelCases, Mapfy, setEnums } from "../../../utils";
 import { filterAttrs } from "../../../utils";
+import boom from "@hapi/boom";
 import { DatabaseAdapterType } from "../IDatabaseAdapter";
 
 interface models {
@@ -19,7 +20,6 @@ interface options {
   orderBy?: {};
 }
 
-import boom from "@hapi/boom";
 export default class MongooseAdapter /* implements DatabaseAdapterType  */ {
   serviceDescription: string = "Mongoose Database Service Adapter";
   connection: typeof mongoose.connection;
@@ -27,7 +27,7 @@ export default class MongooseAdapter /* implements DatabaseAdapterType  */ {
   models: models = {};
   constructor({ url }: any = {}) {
     let test = true;
-    if (process.argv.includes("DEV") || process.argv.includes("PROD"))
+    if (process.env.mode === "development" || process.env.mode === "production")
       test = false;
     const localURL = test ? config.mongoDBTestUrl : config.mongoDBLocalUrl;
     mongoose.connect(localURL || config.mongoDBAtlasURL || "");
@@ -83,6 +83,7 @@ export default class MongooseAdapter /* implements DatabaseAdapterType  */ {
   };
   findOne = async (entity: string, options: options) => {
     const { indexation, related = [] } = options;
+    console.log(entity, this.models)
     if (!indexation) throw boom.conflict("Indexation must be provided!");
     const entityFounded = await this.models[entity]
       .findOne(indexation)
