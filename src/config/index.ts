@@ -53,6 +53,7 @@ const config = {
   mailerEmailAppPassword: String(process.env.MAILER_EMAIL_APP_PASSWORD || ""),
   // user
   contactEmailAddress: String(process.env.CONTACT_EMAIL_ADDRESS || ""),
+  mode: String(process.env.MODE || ""),
   // apiKey: String(process.env.API_KEY),
   // emailAddress: process.env.EMAIL_ADDRESS,
   // emailAppPassword: process.env.EMAIL_APP_PASSWORD,

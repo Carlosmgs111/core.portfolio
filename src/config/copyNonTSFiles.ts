@@ -1,6 +1,7 @@
 import * as path from "path";
 import * as fs from "fs-extra";
 import * as glob from "glob";
+import config from "../config";
 
 const rootDir = path.resolve(path.dirname(path.dirname(__dirname)));
 const srcDir = path.resolve(rootDir, "src");
@@ -8,8 +9,7 @@ const destDir = path.resolve(rootDir, "dist");
 const ignorePatterns = ["**/*.ts", "**/*.tsx"];
 
 async function copyNonTsFiles() {
-  console.log(process.env.MODE);
-  if (process.env.MODE === "production") {
+  if (config.mode === "production") {
     console.log(
       "Estamos en modo producción. Eliminando directorio de distribución."
     );

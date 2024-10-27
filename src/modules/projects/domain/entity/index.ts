@@ -125,12 +125,12 @@ export class Project {
 
   update = async (RepositoryService: any, data: any) => {
     this.updatedAt = new Date().getTime();
-    console.log(data);
+    console.log({ data });
     return await RepositoryService.updateOne(
       RepositoryService.entities.Project,
       {
         updatedAt: this.updatedAt,
-        data,
+        ...data,
       },
       { indexation: { uuid: this.uuid } }
     );

@@ -1,6 +1,9 @@
 import { Project } from "../domain/entity";
 import { User } from "../../users/domain/entity";
 import { serializeProjects } from "./DTOs";
+/*  */
+import { fromEnumToArray } from "../../../utils";
+import { kind, state, stack } from "../../../enums";
 export const getProjects = async (RepositoryService: any, data: any) => {
   const { size, page } = data;
   const projects = await Project.findAll(RepositoryService, {
@@ -10,6 +13,10 @@ export const getProjects = async (RepositoryService: any, data: any) => {
   });
   return {
     projects: serializeProjects(projects),
+    /*  */
+    kind: fromEnumToArray(kind),
+    state: fromEnumToArray(state),
+    stack: fromEnumToArray(stack),
   };
 };
 
@@ -42,6 +49,7 @@ export const updateProject = async (RepositoryService: any, data: any) => {
   const result = await (
     await Project.load(RepositoryService, { indexation: { uuid } })
   ).update(RepositoryService, rest);
+  console.log({result})
   return { updated: result };
 };
 

@@ -1,7 +1,7 @@
 // import { models } from "../../../config/admin/infrastructure/models";
 import config from "../../../config";
 import { labelCases, Mapfy, setEnums } from "../../../utils";
-import { Model, Sequelize, DataTypes } from "sequelize";
+import { Sequelize, DataTypes } from "sequelize";
 import { v4 as uuidv4 } from "uuid";
 import boom from "@hapi/boom";
 
@@ -45,9 +45,10 @@ export default class SequelizeAdapter {
       postgresPasswordTest,
       postgresHostTest,
       postgresPortTest,
+      mode
     } = config;
 
-    const ENV = process.env.mode;
+    const ENV = mode;
 
     let database: string = (() => {
       if (ENV === "development") return postgresDatabaseDev;
