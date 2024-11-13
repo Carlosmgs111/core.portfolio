@@ -1,7 +1,7 @@
 import {
-  getCertifications,
-  updateCertification,
-  getOwnCertifications,
+  getCertificates,
+  updateCertificate,
+  getOwnCertificates,
 } from "../../../../modules/certificates/application/use_cases";
 import { getAllUsername } from "../../../../modules/users/application/use_cases";
 import inquirer from "inquirer";
@@ -24,7 +24,7 @@ const listByUsernameHandler = async (state: any) => {
         choices,
       },
     ]);
-    await getCertifications({ username: option }, null);
+    await getCertificates({ username: option }, null);
     if (option === exit) running = false;
   }
 };
@@ -34,9 +34,9 @@ const listCertificationsHandler = async (state: any) => {
   const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
   const choices = [all, owns, byUser, test];
   const options = {
-    [all]: async () => console.log(await getCertifications(RepositoryService, {})),
+    [all]: async () => console.log(await getCertificates(RepositoryService, {})),
     [owns]: async () =>
-      await getOwnCertifications(RepositoryService, { token }),
+      await getOwnCertificates(RepositoryService, { token }),
     [byUser]: async () => await listByUsernameHandler(state),
     [test]: () => {},
   };

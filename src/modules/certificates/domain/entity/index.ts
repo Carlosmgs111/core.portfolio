@@ -55,9 +55,10 @@ export class Certificate {
   };
 
   static createMany = async (RepositoryService: any, data: any) => {
+    const newCertificates  = data.map((c: any) => new Certificate(c));
     const certificationsCreated = await RepositoryService.createMany(
       RepositoryService.entities.Certification,
-      data
+      newCertificates
     );
 
     for (let certification in certificationsCreated) {

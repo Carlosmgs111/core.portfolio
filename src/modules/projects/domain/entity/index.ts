@@ -51,31 +51,35 @@ export class Project {
     this.updatedAt = new Date().getTime();
   }
   static new = async (RepositoryService: any, data: any): Promise<string> => {
-    const { uuid } = data;
-    const newProject = await RepositoryService.createOne(
+    const newProject = new Project(data);
+    const response = await RepositoryService.createOne(
       RepositoryService.entities.Project,
-      new Project(data)
+      newProject
     );
     await RepositoryService.setOneRelationship2One(
-      { project: { uuid: newProject.uuid } },
+      { project: { uuid: data.uuid } },
       [{ user: { uuid: data.user.uuid } }]
     );
-    return newProject;
+    return response;
   };
 
   static createMany = async (RepositoryService: any, data: any) => {
+    const newProjects = data.map(
+      (projectData: any) => new Project(projectData)
+    );
     const projectsCreated = await RepositoryService.createMany(
       RepositoryService.entities.Project,
-      data
+      newProjects
     );
-    for (let projectIdx in data) {
+    console.log({ newProjects });
+    for (let newProject of newProjects) {
       await RepositoryService.setOneRelationshipManyToMany([
         {
           project: {
-            uuid: projectsCreated[Number(projectIdx)].uuid,
+            uuid: newProject.uuid,
           },
         },
-        { user: { uuid: data[Number(projectIdx)].user.uuid } },
+        { user: { uuid: data[0].user.uuid } },
       ]);
     }
     return projectsCreated.map((p: any, i: any) => ({

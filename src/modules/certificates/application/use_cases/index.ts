@@ -2,7 +2,7 @@ import { Certificate } from "../../domain/entity";
 import { User } from "../../../users/domain/entity";
 import { serializeCertificates } from "../DTOs";
 
-export const getCertifications = async (RepositoryService: any, data: any) => {
+export const getCertificates = async (RepositoryService: any, data: any) => {
   const { username, user, size, page } = data;
   return serializeCertificates(
     await Certificate.findAll(RepositoryService, {
@@ -26,7 +26,7 @@ export const getCertifications = async (RepositoryService: any, data: any) => {
 };
 
 
-export const getOwnCertifications = async (
+export const getOwnCertificates = async (
   RepositoryService: any,
   data: any
 ) => {
@@ -36,14 +36,14 @@ export const getOwnCertifications = async (
   });
 };
 
-export const getCertificationByUUID = async (
+export const getCertificateByUUID = async (
   RepositoryService: any,
   data: any
 ) => {
   return await Certificate.find(RepositoryService, data);
 };
 
-export const addNewCertification = async (
+export const addNewCertificate = async (
   RepositoryService: any,
   data: any
 ) => {
@@ -55,14 +55,14 @@ export const addNewCertification = async (
   };
 };
 
-export const addManyCertifications = async (
+export const addManyCertificates = async (
   RepositoryService: any,
   data: any
 ) => {
-  const { certifications, user, emitedBy } = data;
+  const { certificates, user, emitedBy } = data;
   const newCertifications = await Certificate.createMany(
     RepositoryService,
-    certifications.map((c: any) => ({ ...c, user }))
+    certificates.map((c: any) => ({ ...c, user }))
   );
   return newCertifications.map((c: any) => ({
     ...c,
@@ -71,7 +71,7 @@ export const addManyCertifications = async (
   }));
 };
 
-export const updateCertification = async (
+export const updateCertificate= async (
   RepositoryService: any,
   data: any
 ) => {
@@ -84,7 +84,7 @@ export const updateCertification = async (
   return { updated: result };
 };
 
-export const removeCertification = async (
+export const removeCertificate = async (
   RepositoryService: any,
   data: any
 ) => {

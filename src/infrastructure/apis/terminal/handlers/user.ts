@@ -1,7 +1,7 @@
 import {
-  getCertifications,
-  updateCertification,
-  getOwnCertifications,
+  getCertificates,
+  updateCertificate,
+  getOwnCertificates,
 } from "../../../../modules/certificates/application/use_cases";
 import inquirer from "inquirer";
 import { execFunc } from "../../../../utils";
@@ -14,9 +14,9 @@ const listCertificationsHandler = async (state: any) => {
   const [all, owns, byUser, test] = ["Todos", "Propios", "Por Usuario", "Test"];
   const choices = [all, owns, byUser, test];
   const options = {
-    [all]: async () => await getCertifications({}, null),
+    [all]: async () => await getCertificates({}, null),
     [owns]: async () =>
-      await getOwnCertifications(RepositoryService, { token }),
+      await getOwnCertificates(RepositoryService, { token }),
     [test]: () => {},
   };
   const { option } = await inquirer.prompt([

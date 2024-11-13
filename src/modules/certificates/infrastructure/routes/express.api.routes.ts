@@ -3,33 +3,33 @@ import {
   RepositoryService,
 } from "../../../../config/dependencies";
 import {
-  addNewCertification,
-  addManyCertifications,
-  getCertifications,
-  removeCertification,
-  updateCertification,
-  getOwnCertifications,
+  addNewCertificate,
+  addManyCertificates,
+  getCertificates,
+  removeCertificate,
+  updateCertificate,
+  getOwnCertificates,
 } from "../../application/use_cases";
 
 const { controllerAdapter } = RESTAPIService;
 
-export default RESTAPIService.addPath("/certifications", (router: any) => {
+export default RESTAPIService.addPath("/certificates", (router: any) => {
   router
     .post(
       "/",
       controllerAdapter((ctx: any) =>
-        addNewCertification(RepositoryService, ctx)
+        addNewCertificate(RepositoryService, ctx)
       )
     )
     .post(
-      "/certifications",
+      "/certificates",
       controllerAdapter((ctx: any) =>
-        addManyCertifications(RepositoryService, ctx)
+        addManyCertificates(RepositoryService, ctx)
       )
     )
     .get(
       "/",
-      controllerAdapter((ctx: any) => getCertifications(RepositoryService, ctx))
+      controllerAdapter((ctx: any) => getCertificates(RepositoryService, ctx))
     )
     .get("/hello", (req: any, res: any) => {
       res.send("Hello");
@@ -37,29 +37,29 @@ export default RESTAPIService.addPath("/certifications", (router: any) => {
     .get(
       "/me",
       controllerAdapter((ctx: any) =>
-        getOwnCertifications(RepositoryService, ctx)
+        getOwnCertificates(RepositoryService, ctx)
       )
     )
     .get(
       "/:username",
-      controllerAdapter((ctx: any) => getCertifications(RepositoryService, ctx))
+      controllerAdapter((ctx: any) => getCertificates(RepositoryService, ctx))
     )
     .delete(
       "/",
       controllerAdapter((ctx: any) =>
-        removeCertification(RepositoryService, ctx)
+        removeCertificate(RepositoryService, ctx)
       )
     )
     .delete(
       "/:uuid",
       controllerAdapter((ctx: any) =>
-        removeCertification(RepositoryService, ctx)
+        removeCertificate(RepositoryService, ctx)
       )
     )
     .patch(
       "/",
       controllerAdapter((ctx: any) =>
-        updateCertification(RepositoryService, ctx)
+        updateCertificate(RepositoryService, ctx)
       )
     );
 });

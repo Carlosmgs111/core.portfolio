@@ -36,7 +36,7 @@ export class RESTAPIService {
             ["signin", "signup", "logout", "checkifisonline"],
             ["POST", "GET"],
           ],
-          [["certifications", "certifications/:username"]],
+          [["certificates", "certificates/:username"]],
           [["images/availablesettings"]],
           [
             [

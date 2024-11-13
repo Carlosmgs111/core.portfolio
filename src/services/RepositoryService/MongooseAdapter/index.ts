@@ -264,6 +264,7 @@ export default class MongooseAdapter /* implements DatabaseAdapterType  */ {
     const fromModel = await this.models[labelCases(fromLabel).CS].findOne(
       fromQuery
     );
+    console.log({ fromModel });
     const toModel = await this.models[labelCases(toLabel).CS].findOne(toQuery);
     const fromRelated = fromModel[labelCases(toLabel).CP];
     const fromRelatedIndex = fromModel[labelCases(toLabel).CP].indexOf(

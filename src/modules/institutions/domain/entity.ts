@@ -1,4 +1,3 @@
-
 type Props = {
   uuid: string;
   name: string;
@@ -29,7 +28,7 @@ export class Institution {
     RepositoryService: any,
     data: any
   ): Promise<Institution> => {
-    const { uuid } = data;
+    const { uuid, user } = data;
     const institution = new Institution(data);
     await RepositoryService.createOne(
       RepositoryService.entities.Institution,
@@ -37,7 +36,7 @@ export class Institution {
     );
     // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
     await RepositoryService.setOneRelationshipManyToMany([
-      [{ institution: { uuid } }, { user: { uuid: data.user.uuid } }],
+      [{ institution: { uuid } }, { user: { uuid: user.uuid } }],
     ]);
     return institution;
   };
