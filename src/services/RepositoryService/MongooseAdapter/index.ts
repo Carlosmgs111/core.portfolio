@@ -3,7 +3,6 @@ import mongoose, { Model, model, Schema, Document } from "mongoose";
 import { labelCases, Mapfy, setEnums } from "../../../utils";
 import { filterAttrs } from "../../../utils";
 import boom from "@hapi/boom";
-import { DatabaseAdapterType } from "../IDatabaseAdapter";
 
 interface models {
   [key: string]: typeof Model;
@@ -83,7 +82,7 @@ export default class MongooseAdapter /* implements DatabaseAdapterType  */ {
   };
   findOne = async (entity: string, options: options) => {
     const { indexation, related = [] } = options;
-    console.log(entity, this.models)
+    console.log(entity, this.models);
     if (!indexation) throw boom.conflict("Indexation must be provided!");
     const entityFounded = await this.models[entity]
       .findOne(indexation)
@@ -120,6 +119,7 @@ export default class MongooseAdapter /* implements DatabaseAdapterType  */ {
   };
   setOneRelationshipManyToMany = async (refs: any) => {
     const [from, to] = refs;
+    console.log({ refs });
     const [
       exist,
       { fromModel, toModel, fromLabel, fromQuery, toLabel, toQuery },
@@ -264,7 +264,6 @@ export default class MongooseAdapter /* implements DatabaseAdapterType  */ {
     const fromModel = await this.models[labelCases(fromLabel).CS].findOne(
       fromQuery
     );
-    console.log({ fromModel });
     const toModel = await this.models[labelCases(toLabel).CS].findOne(toQuery);
     const fromRelated = fromModel[labelCases(toLabel).CP];
     const fromRelatedIndex = fromModel[labelCases(toLabel).CP].indexOf(

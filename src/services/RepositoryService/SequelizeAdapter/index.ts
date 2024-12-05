@@ -169,7 +169,7 @@ export default class SequelizeAdapter {
   };
 
   setOneRelationshipManyToMany = async (refs: any) => {
-    let succesfully = false;
+    let successfully = false;
     const [from, to] = refs;
     console.log({ from, to });
     const [existed, data, relationshipLabel]: any =
@@ -180,11 +180,11 @@ export default class SequelizeAdapter {
       uuid: uuidv4(),
     });
     if (!newSupportEntity) throw boom.conflict("Support table doesn't created");
-    return succesfully;
+    return successfully;
   };
 
   updateOneRelationshipN2N = async (refs: any) => {
-    let succesfully = false;
+    let successfully = false;
     for (let ref of refs) {
       const [from, to] = ref;
       const [existed, data, relationshipLabel]: any =
@@ -195,7 +195,7 @@ export default class SequelizeAdapter {
       });
       if (!updatedEntity) throw boom.conflict("Support table doesn't created");
     }
-    return succesfully;
+    return successfully;
   };
 
   // TODO rename to removeRelationship
@@ -272,7 +272,7 @@ export default class SequelizeAdapter {
     };
   };
 
-  // ? pending to find an appropiated agnosthic name
+  // ? pending to find an appropriated agnostic name
   formatIncludeClosure(entitiesToInclude: any = []) {
     const include: Object[] = [];
     entitiesToInclude.forEach((e: any) => {

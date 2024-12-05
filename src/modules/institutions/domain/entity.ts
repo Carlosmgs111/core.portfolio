@@ -34,9 +34,10 @@ export class Institution {
       RepositoryService.entities.Institution,
       institution
     );
-    // ? This can be called in another method for be unecessary to relate a user with institution when it is creted
+    // ? This can be called in another method for be unnecessary to relate a user with institution when it is created
     await RepositoryService.setOneRelationshipManyToMany([
-      [{ institution: { uuid } }, { user: { uuid: user.uuid } }],
+      { institution: { uuid } },
+      { user: { uuid: user.uuid } },
     ]);
     return institution;
   };

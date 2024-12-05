@@ -44,5 +44,9 @@
   },
   "peacock.color": "#bad803",
   "editor.fontSize": 12,
-  "terminal.integrated.fontSize": 12
+  "terminal.integrated.fontSize": 12,
+  "cSpell.words": [
+    "Mapfy",
+    "uuidv"
+  ]
 }
