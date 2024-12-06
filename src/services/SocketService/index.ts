@@ -32,14 +32,14 @@ export class SocketService {
       this.sockets[id] = socket;
       this.setEvents(socket);
       socket.on("disconnect", () => {
-        console.log("Socket disconnected!");
+        console.log("[SocketService] - Socket disconnected!");
         const newSockets = Mapfy(this.sockets);
         newSockets.delete(socket.id);
         this.sockets = UnMapfy(newSockets);
         this.onDisconnectEvents(socket);
       });
       socket.on("connect_error", (error: any) => {
-        console.error("Error de conexión:", error.context.statusText);
+        console.error("[SocketService] - Error de conexión:", error.context.statusText);
       });
     });
     server.listen(config.serverPort);
@@ -50,30 +50,30 @@ export class SocketService {
     const [alias, address]: any = clientEntries.next().value;
     const [_, path = ""]: any = clientEntries.next().value || [,];
     const maxTries = 10;
-    let eTries: number = 0;
-    let dTries: number = 0;
+    let errorConnectionTries: number = 0;
+    let disconnectionTries: number = 0;
     const opts = { path };
 
     this.clients[alias] = connect(address, opts);
     this.clients[alias].on("connect", () => {
-      console.log("Conexión establecida con el servidor.");
+      console.log("[SocketService] - Conexión establecida con el servidor.");
     });
     this.clients[alias].on("disconnect", () => {
-      if (++dTries > maxTries) {
+      if (++disconnectionTries > maxTries) {
         this.clients[alias].disconnect();
-        console.log("Finalizado intentos de conexion".bgYellow);
+        console.log("[SocketService] - Finalizado intentos de conexion");
       }
-      console.log("Conexión perdida con el servidor.");
+      console.log("[SocketService] - Conexión perdida con el servidor.");
     });
     this.clients[alias].on("message", (message: any) => {
       console.log(`Mensaje recibido del servidor: ${message.payload}`);
     });
     this.clients[alias].on("connect_error", (error: any) => {
-      if (++eTries > maxTries) {
+      if (++errorConnectionTries > maxTries) {
         this.clients[alias].disconnect();
-        console.log("Finalizando intentos de conexion".bgYellow);
+        console.log("[SocketService] - Finalizando intentos de conexion");
       }
-      console.error("Error de conexión:", error.context.statusText);
+      console.error("[SocketService] - Error de conexión:", error.context.statusText);
     });
     return this;
   };
@@ -152,7 +152,7 @@ export class SocketService {
               return result;
             })
             .catch((e: any) => {
-              console.log(`Error in callback: ${e.message}`.bgRed);
+              console.log(`[SocketService] - Error in callback: ${e.message}`);
               return e;
             })
             .finally(() => console.log("Solved!".bgGreen));
@@ -163,7 +163,7 @@ export class SocketService {
               return result;
             })
             .catch((e: any) =>
-              console.log(`Error in callback: ${e.message}`.red)
+              console.log(`[SocketService] - Error in callback: ${e.message}`)
             )
             .finally(() => console.log("Solved!".green));
       });

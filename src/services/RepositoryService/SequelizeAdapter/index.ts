@@ -89,6 +89,7 @@ export default class SequelizeAdapter {
     Entity: any,
     options: any = {}
   ): Promise<typeof Entity | null> => {
+    console.log(this.models, entity);
     const newEntity = await this.models[entity].create(
       Entity,
       this.adapter(options)
@@ -315,9 +316,7 @@ export default class SequelizeAdapter {
   private createJoinTable = (A: any, B: any) => {
     A = A.tableName || A;
     B = B.tableName || B;
-
     const join_table_name = `${labelCases(A).CP}_${labelCases(B).CP}`;
-
     const join_table_schema = {
       uuid: {
         primaryKey: true,

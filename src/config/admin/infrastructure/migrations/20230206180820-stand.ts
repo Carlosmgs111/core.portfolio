@@ -1,59 +1,82 @@
 import { RepositoryService } from "../../../../config/dependencies";
+import {
+  User,
+  user_schema,
+  user_table,
+} from "../../../../modules/users/infrastructure/models/sequelize";
+import {
+  Certification,
+  certification_schema,
+  certification_table,
+} from "../../../../modules/certificates/infrastructure/models/sequelize";
+import {
+  Institution,
+  institution_schema,
+  institution_table,
+} from "../../../../modules/institutions/infrastructure/models/sequelize";
+import {
+  Project,
+  project_schema,
+  project_table,
+} from "../../../../modules/projects/infrastructure/models/sequelize";
+RepositoryService.CommandService.addModel(
+  "Certification",
+  Certification,
+  certification_table,
+  certification_schema
+);
+RepositoryService.CommandService.addModel(
+  "User",
+  User,
+  user_table,
+  user_schema
+);
+RepositoryService.CommandService.addModel(
+  "Institution",
+  Institution,
+  institution_table,
+  institution_schema
+);
+RepositoryService.CommandService.addModel(
+  "Project",
+  Project,
+  project_table,
+  project_schema
+);
+RepositoryService.CommandService.joinTables("User", "Certification");
+RepositoryService.CommandService.joinTables("User", "Institution");
+RepositoryService.CommandService.joinTables("User", "Project");
 
 const { tableSchemas, tableNames } = RepositoryService.CommandService;
-
 const {
-  user_schema,
-  certification_schema,
-  project_schema,
-  institution_schema,
-  post_schema,
-  skill_schema,
-  note_schema,
   users_certifications_schema,
   users_institutions_schema,
-  users_skills_schema,
   users_projects_schema,
 } = tableSchemas;
-const {
-  user_table,
-  certification_table,
-  project_table,
-  institution_table,
-  post_table,
-  skill_table,
-  note_table,
-  users_certifications_table,
-  users_institutions_table,
-  users_projects_table,
-  users_skills_table,
-} = tableNames;
-
+const { Users_Certifications, Users_Institutions, Users_Projects } = tableNames;
+console.log({
+  tableNames,
+  users_certifications_schema,
+  users_institutions_schema,
+  users_projects_schema,
+});
 export = {
   async up(queryInterface: any, Sequelize: any) {
     await queryInterface.createTable(user_table, user_schema);
     await queryInterface.createTable(institution_table, institution_schema);
     await queryInterface.createTable(certification_table, certification_schema);
     await queryInterface.createTable(project_table, project_schema);
-    await queryInterface.createTable(post_table, post_schema);
-    await queryInterface.createTable(skill_table, skill_schema);
     await queryInterface.createTable(
-      users_certifications_table,
+      Users_Certifications,
       users_certifications_schema
     );
     await queryInterface.createTable(
-      users_institutions_table,
+      Users_Institutions,
       users_institutions_schema
     );
-    await queryInterface.createTable(
-      users_projects_table,
-      users_projects_schema
-    );
-    await queryInterface.createTable(users_skills_table, users_skills_schema);
-    await queryInterface.createTable(note_table, note_schema);
+    await queryInterface.createTable(Users_Projects, users_projects_schema);
   },
-
   async down(queryInterface: any, Sequelize: any) {
-    await queryInterface.dropAllTables();
+    // await queryInterface.dropAllTables();
   },
 };

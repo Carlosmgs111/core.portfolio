@@ -66,8 +66,9 @@ export class User {
     this.password = hash;
     return hash;
   };
-  comparePassword = async (password: string, bcrypt: any): Promise<Boolean> =>
-    await bcrypt.compare(password, this.password);
+  comparePassword = async (password: string, bcrypt: any): Promise<Boolean> => {
+    return await bcrypt.compare(password, this.password);
+  };
   static create = async (
     RepositoryService: any,
     data: any,
@@ -79,7 +80,7 @@ export class User {
     });
     await account.hashPassword(account.password, bcrypt);
     const result = await RepositoryService.createOne(
-      RepositoryService.User,
+      RepositoryService.entities.User,
       account
     );
     return result;
@@ -97,6 +98,7 @@ export class User {
     const { password, ...rest } = indexation;
     console.log({ password, ...rest });
     const user = await User.find(RepositoryService, { indexation: rest });
+    console.log({user});
     if (!(await User.comparePassword(password, user.password, bcrypt)))
       throw new Error("Password doesn't match!");
     const account = new User(user);

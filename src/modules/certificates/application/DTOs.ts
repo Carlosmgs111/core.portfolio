@@ -3,13 +3,13 @@ import { Certificate } from "../domain/entity";
 
 export const serializeCertificates = (certificates: [Certificate]) =>
   certificates
-    .map((certification: any) =>
+    .map((certificate: any) =>
       filterAttrs(
         {
-          ...certification,
-          emitedAt: new Date(certification.emitedAt).getTime(),
-          grantedTo: certification.Users[0].username,
-          emitedBy: certification.Institution.name,
+          ...certificate,
+          emitedAt: new Date(certificate.emitedAt).getTime(),
+          grantedTo: certificate.Users ? certificate.Users[0]?.username : "",
+          emitedBy: certificate.Institution ? certificate.Institution?.name : "",
         },
         ["Users", "Institution"]
       )

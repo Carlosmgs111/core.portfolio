@@ -6,19 +6,19 @@ export const getCertificates = async (RepositoryService: any, data: any) => {
   const { username, user, size, page } = data;
   return serializeCertificates(
     await Certificate.findAll(RepositoryService, {
-      related: [
-        [
-          "User",
-          {
-            attributes: ["username"],
-            // ! ⚠️ must implement a correct use of filtered finding with related entities
-            // ? ⚠️ this just work fine with sequelize adapter
-            // ? ⚠️ must be implemented in mongoose adapter
-            credentials: username && { username },
-          },
-        ],
-        ["Institution", { attributes: ["name"], as: "Institution" }],
-      ],
+      // related: [
+      //   [
+      //     "User",
+      //     {
+      //       attributes: ["username"],
+      //       // ! ⚠️ must implement a correct use of filtered finding with related entities
+      //       // ? ⚠️ this just work fine with sequelize adapter
+      //       // ? ⚠️ must be implemented in mongoose adapter
+      //       credentials: username && { username },
+      //     },
+      //   ],
+      //   ["Institution", { attributes: ["name"], as: "Institution" }],
+      // ],
       size,
       page,
     })

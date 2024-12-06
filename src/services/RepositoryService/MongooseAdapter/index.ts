@@ -260,7 +260,6 @@ export default class MongooseAdapter /* implements DatabaseAdapterType  */ {
     const fromQuery = Mapfy(from).values().next().value;
     const toLabel = Mapfy(to).keys().next().value;
     const toQuery = Mapfy(to).values().next().value;
-
     const fromModel = await this.models[labelCases(fromLabel).CS].findOne(
       fromQuery
     );
@@ -269,13 +268,11 @@ export default class MongooseAdapter /* implements DatabaseAdapterType  */ {
     const fromRelatedIndex = fromModel[labelCases(toLabel).CP].indexOf(
       toModel._id
     );
-
     const toRelated = toModel[labelCases(fromLabel).CP];
     const toRelatedIndex = toModel[labelCases(fromLabel).CP].indexOf(
       fromModel._id
     );
     const exist = fromRelatedIndex !== -1 || toRelatedIndex !== -1;
-
     return [
       exist,
       {

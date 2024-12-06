@@ -40,7 +40,9 @@
       "progressBar.background": "#0D9373",
       "notificationsInfoIcon.foreground": "#0D9373",
       "editor.selectionBackground": "#0D937333"
-    }
+    },
+    "statusBar.background": "#bad803",
+    "statusBar.foreground": "#15202b"
   },
   "peacock.color": "#bad803",
   "editor.fontSize": 12,

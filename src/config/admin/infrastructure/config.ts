@@ -19,7 +19,7 @@ const {
 } = config;
 
 const test = false;
-const PROD = true; // ? true for use in production
+const PROD = false; // ? true for use in production
 
 const USER = !PROD
   ? encodeURIComponent(postgresUserDev || "")
