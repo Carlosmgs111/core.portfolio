@@ -28,9 +28,10 @@ export class SocketService {
           query: { id },
         },
       }: any = socket;
-      console.log("Cliente conectado");
+      console.log("Client connected");
       this.sockets[id] = socket;
       this.setEvents(socket);
+
       socket.on("disconnect", () => {
         console.log("[SocketService] - Socket disconnected!");
         const newSockets = Mapfy(this.sockets);
@@ -39,11 +40,17 @@ export class SocketService {
         this.onDisconnectEvents(socket);
       });
       socket.on("connect_error", (error: any) => {
-        console.error("[SocketService] - Error de conexión:", error.context.statusText);
+        console.error(
+          "[SocketService] - Error de conexión:",
+          error.context.statusText
+        );
       });
     });
     server.listen(config.serverPort);
+    console.log({server})
   };
+
+  onSameOrigin = (socket: Socket) => {};
 
   addClient = (client: any) => {
     const clientEntries = Mapfy(client).entries();
@@ -53,7 +60,6 @@ export class SocketService {
     let errorConnectionTries: number = 0;
     let disconnectionTries: number = 0;
     const opts = { path };
-
     this.clients[alias] = connect(address, opts);
     this.clients[alias].on("connect", () => {
       console.log("[SocketService] - Conexión establecida con el servidor.");
@@ -73,7 +79,10 @@ export class SocketService {
         this.clients[alias].disconnect();
         console.log("[SocketService] - Finalizando intentos de conexion");
       }
-      console.error("[SocketService] - Error de conexión:", error.context.statusText);
+      console.error(
+        "[SocketService] - Error de conexión:",
+        error.context.statusText
+      );
     });
     return this;
   };
@@ -97,15 +106,15 @@ export class SocketService {
     return this;
   };
 
-  receiveMessage = (_payload: any) => {
+  receiveMessage = (payload: any) => {
     let [client, receiveIn, callback] =
-      this.extractRemoteHandlersSpecs(_payload);
+      this.extractRemoteHandlersSpecs(payload);
     return new Promise((resolve, reject) => {
       this.clients[client].on(receiveIn, (data: any) => {
-        let proccesedData = null;
+        let processedData = null;
         const { payload, error } = data;
-        if (payload) proccesedData = payload;
-        resolve(callback(proccesedData));
+        if (payload) processedData = payload;
+        resolve(callback(processedData));
         if (error) reject(error);
       });
     });
@@ -119,7 +128,6 @@ export class SocketService {
 
   extractRemoteHandlersSpecs = (object: any, receiverFunc: any = null) => {
     let specs = <Array<any>>[];
-
     const [client, _payload] = Mapfy(object).entries().next().value;
     const [sendTo, paramsOrCallback] = Mapfy(_payload).entries().next().value;
     specs = [client, sendTo, paramsOrCallback];
@@ -127,7 +135,6 @@ export class SocketService {
     else if (receiverFunc) {
       specs = [...specs, this.extractFunctionSpecs(receiverFunc)[0]];
     }
-
     return specs;
   };
 
@@ -184,4 +191,6 @@ export class SocketService {
     await server.disconnectSockets();
     await server.close();
   };
+
+  joinRoom = (socket: any, room: any) => socket.join(room);
 }
