@@ -47,16 +47,13 @@ export class SocketService {
       });
     });
     server.listen(config.serverPort);
-    console.log({server})
   };
-
-  onSameOrigin = (socket: Socket) => {};
 
   addClient = (client: any) => {
     const clientEntries = Mapfy(client).entries();
     const [alias, address]: any = clientEntries.next().value;
     const [_, path = ""]: any = clientEntries.next().value || [,];
-    const maxTries = 10;
+    const maxTries = 3;
     let errorConnectionTries: number = 0;
     let disconnectionTries: number = 0;
     const opts = { path };
@@ -192,5 +189,8 @@ export class SocketService {
     await server.close();
   };
 
-  joinRoom = (socket: any, room: any) => socket.join(room);
+  joinRoom = (socket: any, room: any) => {
+    socket.socket.join(room);
+    console.log(socket.socket.rooms);
+  };
 }

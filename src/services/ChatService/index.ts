@@ -4,12 +4,16 @@ import { SocketService } from "../../config/dependencies";
 export class ChatService {
   isOnline: Boolean = false;
   parties: any = {};
-  chatRooms: any = {};
+  rooms: any = {};
 
   constructor() {
     SocketService.addEvent({
-      register: this.register,
+      register: this.register2,
     });
+    // ! =======================================================================
+    // SocketService.addEvent({
+    //   register: this.register,
+    // });
     SocketService.addEvent({
       unregister: this.unregister,
     });
@@ -52,8 +56,20 @@ export class ChatService {
     flatParties.filter((p: any) => p.id == id)[0];
   getFlatPartyByKind = (flatParties: any, kind: any) =>
     flatParties.filter((p: any) => p.kind == kind)[0];
+  register2 = async ({ id, alias, kind }: any) => {
+    this.parties[id] = {
+      id,
+      kind,
+      alias,
+      rooms: { [id]: { id, parties: [] } },
+      socket: SocketService.sockets[id],
+    };
+    SocketService.joinRoom({ socket: SocketService.sockets[id], room: "main" });
+    // SocketService.joinRoom({ socket: SocketService.sockets[id], room: "other" });
+    // SocketService.joinRoom({ socket: SocketService.sockets[id], room: "another" });
+    this.parties[id].socket.emit("rooms", this.getChatRooms(["main"]));
+  };
   register = async ({ id, alias, kind }: any) => {
-    // console.log({ id, alias, kind });
     if (this.parties[id] && this.parties[id].kind === kind) return;
     this.parties[id] = {
       id,
@@ -68,19 +84,13 @@ export class ChatService {
     }
     if (/* !pass && */ kind === "host") {
       mapToList(this.parties).forEach((party: any) => {
-        console.log({ party });
         if (
           party.socket.handshake.headers.origin ===
           SocketService.sockets[id].handshake.headers.origin
         ) {
-          // console.log({ party });
           party.rooms.forEach((roomId: any) => {
-            console.log({ roomId });
-            this.chatRooms[roomId] = [
-              ...new Set([...this.chatRooms[roomId], id]),
-            ];
+            this.rooms[roomId] = [...new Set([...this.rooms[roomId], id])];
           });
-          // console.log(this.chatRooms);
           return;
         }
         if (party.id !== id) {
@@ -96,7 +106,6 @@ export class ChatService {
       }
       delete this.parties[socketId];
       mapToList(this.parties).forEach((party: any) => {
-        // console.log({ party });
         party.socket.emit("rooms", this.getChatRooms(party.rooms, party.id));
       });
     });
@@ -104,14 +113,12 @@ export class ChatService {
     mapToList(this.parties).forEach((party: any) =>
       party.socket.emit("rooms", this.getChatRooms(party.rooms, party.id))
     );
-    console.log("this.chatRooms in register: ", this.chatRooms);
-    console.log("this.parties in register: ", this.parties);
   };
   joinRoom = async ({ id, room }: any) => {
-    this.chatRooms[room] = [...this.chatRooms[room], id];
+    this.rooms[room] = [...this.rooms[room], id];
   };
   leaveRoom = async ({ id, room }: any) => {
-    this.chatRooms[room].splice(this.chatRooms[room].indexOf(id), 1);
+    this.rooms[room].splice(this.rooms[room].indexOf(id), 1);
   };
   unregister = async ({ id }: any) => {
     this.removeFromChatRoom([this.parties[id]]);
@@ -121,34 +128,31 @@ export class ChatService {
   };
   addChatRoom = (parties: any) => {
     const chatRoomId = genRandomId();
-    this.chatRooms[chatRoomId] = [];
+    this.rooms[chatRoomId] = [];
     parties.forEach((party: any) => {
-      this.chatRooms[chatRoomId] = [...this.chatRooms[chatRoomId], party.id];
+      this.rooms[chatRoomId] = [...this.rooms[chatRoomId], party.id];
       party.rooms = [...party.rooms, chatRoomId];
       this.parties[party.id] = party;
-      // console.log({ party });
     });
   };
   joinChatRoom = (party: any, room: any) => {
-    if (!this.chatRooms[room]) return;
-    this.chatRooms[room] = [...this.chatRooms[room], party.id];
+    if (!this.rooms[room]) return;
+    this.rooms[room] = [...this.rooms[room], party.id];
     party.rooms = [...party.rooms, room];
     this.parties[party.id] = party;
   };
   removeFromChatRoom = (parties: any) => {
-    // console.log({ parties });
     if (!parties) return;
     parties.forEach((party: any) => {
-      // console.log(party.rooms);
       if (!party.rooms) return;
       party.rooms.forEach((room: any) => {
-        if (!this.chatRooms[room]) return;
+        if (!this.rooms[room]) return;
         this.leaveRoom({ id: party.id, room });
-        if (this.chatRooms[room].length < 2) {
-          const lastParty = this.parties[this.chatRooms[room][0]];
+        if (this.rooms[room].length < 2) {
+          const lastParty = this.parties[this.rooms[room][0]];
           if (!lastParty) return;
           lastParty.rooms.splice(lastParty.rooms.indexOf(room), 1);
-          delete this.chatRooms[room];
+          delete this.rooms[room];
         }
       });
     });
@@ -157,8 +161,8 @@ export class ChatService {
   getChatRooms = (rooms: any, idsToSkip: any = []) => {
     return rooms.map((roomId: any) => {
       const roomPack: any = { id: roomId, parties: [] };
-      if (!this.chatRooms[roomId]) return;
-      this.chatRooms[roomId].forEach((partyId: any) => {
+      if (!this.rooms[roomId]) return;
+      this.rooms[roomId].forEach((partyId: any) => {
         if (idsToSkip.includes(partyId)) return;
         if (!roomPack.parties || !this.parties[partyId]) return;
         roomPack.parties.push({
