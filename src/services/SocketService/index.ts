@@ -23,15 +23,9 @@ export class SocketService {
       },
     });
     this.server.on("connection", (socket: Socket) => {
-      const {
-        handshake: {
-          query: { id },
-        },
-      }: any = socket;
-      console.log("Client connected");
+      const { id }: any = socket;
       this.sockets[id] = socket;
       this.setEvents(socket);
-
       socket.on("disconnect", () => {
         console.log("[SocketService] - Socket disconnected!");
         const newSockets = Mapfy(this.sockets);
@@ -179,8 +173,6 @@ export class SocketService {
   close = async () => {
     const { server } = this;
     const clients = Mapfy(this.clients);
-    const sockets = Mapfy(this.sockets);
-
     clients.forEach((client: any) => {
       client.close();
     });
@@ -188,9 +180,15 @@ export class SocketService {
     await server.disconnectSockets();
     await server.close();
   };
-
-  joinRoom = (socket: any, room: any) => {
-    socket.socket.join(room);
-    console.log(socket.socket.rooms);
+  joinRoom = ({ socket, room }: any) => {
+    socket.join(room);
+  };
+  getAllRooms = () => {
+    if (!this.server) return;
+    return this.server.of("/").adapter.rooms;
+  };
+  getSocketRooms = (socket: any) => {
+    if (!socket) return;
+    return socket.rooms;
   };
 }
