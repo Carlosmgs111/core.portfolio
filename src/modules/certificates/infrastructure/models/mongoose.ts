@@ -26,7 +26,7 @@ RepositoryService.QueryService.addModel("Certification", {
     unique: true,
   },
   tags: { type: [String] },
-  emitedAt: { type: Number },
+  emitedAt: { type: Number }, 
   createdAt: {
     type: Number,
     required: true,
