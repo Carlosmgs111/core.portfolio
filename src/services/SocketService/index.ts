@@ -180,8 +180,10 @@ export class SocketService {
     await server.disconnectSockets();
     await server.close();
   };
-  joinRoom = ({ socket, room }: any) => {
-    socket.join(room);
+  joinRoom = (room: string, ...sockets: Array<any>) => {
+    sockets.forEach((socket: any) => {
+      socket.join(room);
+    });
   };
   getAllRooms = () => {
     if (!this.server) return;
@@ -189,6 +191,7 @@ export class SocketService {
   };
   getSocketRooms = (socket: any) => {
     if (!socket) return;
+    console.log(socket.rooms);
     return socket.rooms;
   };
 }
