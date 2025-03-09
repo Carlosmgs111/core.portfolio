@@ -11,6 +11,7 @@ export const RepositoryService = (adapter: any = Adapters.SequelizeAdapter) => {
   class DatabaseService extends adapter {
     constructor(props: any) {
       super(props);
+      console.log("Building Repository Service".bgBlue)
     }
 
     info() {

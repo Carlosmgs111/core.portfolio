@@ -18,7 +18,7 @@ export class TaskMessageService {
   private channelPool: any[] = [];
   private channelCreationInProgress: boolean = false;
   lapseRetries = 1000;
-  maxRetries = 10;
+  maxRetries = 3;
   currentRetry = 0;
   subscriptions: any = {};
 

@@ -23,15 +23,9 @@ export class SocketService {
       },
     });
     this.server.on("connection", (socket: Socket) => {
-      const {
-        handshake: {
-          query: { id },
-        },
-      }: any = socket;
-      console.log("Client connected");
+      const { id }: any = socket;
       this.sockets[id] = socket;
       this.setEvents(socket);
-
       socket.on("disconnect", () => {
         console.log("[SocketService] - Socket disconnected!");
         const newSockets = Mapfy(this.sockets);
@@ -47,16 +41,13 @@ export class SocketService {
       });
     });
     server.listen(config.serverPort);
-    console.log({server})
   };
-
-  onSameOrigin = (socket: Socket) => {};
 
   addClient = (client: any) => {
     const clientEntries = Mapfy(client).entries();
     const [alias, address]: any = clientEntries.next().value;
     const [_, path = ""]: any = clientEntries.next().value || [,];
-    const maxTries = 10;
+    const maxTries = 3;
     let errorConnectionTries: number = 0;
     let disconnectionTries: number = 0;
     const opts = { path };
@@ -182,8 +173,6 @@ export class SocketService {
   close = async () => {
     const { server } = this;
     const clients = Mapfy(this.clients);
-    const sockets = Mapfy(this.sockets);
-
     clients.forEach((client: any) => {
       client.close();
     });
@@ -191,6 +180,18 @@ export class SocketService {
     await server.disconnectSockets();
     await server.close();
   };
-
-  joinRoom = (socket: any, room: any) => socket.join(room);
+  joinRoom = (room: string, ...sockets: Array<any>) => {
+    sockets.forEach((socket: any) => {
+      socket.join(room);
+    });
+  };
+  getAllRooms = () => {
+    if (!this.server) return;
+    return this.server.of("/").adapter.rooms;
+  };
+  getSocketRooms = (socket: any) => {
+    if (!socket) return;
+    console.log(socket.rooms);
+    return socket.rooms;
+  };
 }
